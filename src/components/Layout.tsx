@@ -28,10 +28,24 @@ export function Layout() {
             <nav className="flex space-x-6 items-center text-sm">
               <button
                 onClick={toggleTheme}
-                className="p-2 text-text-secondary hover:text-text-primary rounded-full hover:bg-surface-hover transition-colors"
+                className={`w-[52px] h-[26px] rounded-full p-[3px] transition-colors duration-200 relative flex items-center flex-shrink-0 ${
+                  isDark ? 'bg-[#2A3A38]' : 'bg-[#E3EBE9]'
+                }`}
                 aria-label="Toggle theme"
               >
-                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                <div
+                  className={`w-[20px] h-[20px] rounded-full flex items-center justify-center transition-all duration-250 shadow-sm ${
+                    isDark 
+                      ? 'translate-x-[26px] bg-[#1A2E2E] text-[#3B7DD8]' 
+                      : 'translate-x-0 bg-[#3B7DD8] text-white'
+                  }`}
+                >
+                  {isDark ? (
+                    <Moon className="w-3.5 h-3.5 fill-[#3B7DD8] text-[#3B7DD8]" />
+                  ) : (
+                    <Sun className="w-3.5 h-3.5 fill-white text-white" />
+                  )}
+                </div>
               </button>
               
               <Link to="/courses" className="text-text-secondary hover:text-text-primary font-medium transition-colors">
