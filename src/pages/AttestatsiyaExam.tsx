@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
+import {
+  ChevronLeft,
+  ChevronRight,
   Bookmark,
   AlertTriangle,
   Flag,
@@ -23,7 +23,7 @@ function ExamProgressBar({ current, total }: { current: number; total: number })
         <span className="text-sm font-medium text-[#334155]">{current} / {total} savol ({pct}%)</span>
       </div>
       <div className="w-full h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
-        <div 
+        <div
           className="h-full bg-[#2563EB] rounded-full transition-all duration-300"
           style={{ width: `${pct}%` }}
         />
@@ -32,41 +32,38 @@ function ExamProgressBar({ current, total }: { current: number; total: number })
   );
 }
 
-function AnswerOption({ 
-  letter, text, isSelected, onClick 
-}: { 
+function AnswerOption({
+  letter, text, isSelected, onClick
+}: {
   letter: string; text: string; isSelected: boolean; onClick: () => void;
 }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center text-left min-h-[56px] px-[18px] py-4 rounded-[14px] border transition-all duration-[180ms] cursor-pointer group ${
-        isSelected
+      className={`w-full flex items-center text-left min-h-[56px] px-[18px] py-4 rounded-[14px] border transition-all duration-[180ms] cursor-pointer group ${isSelected
           ? 'bg-[#EFF6FF] border-[#2563EB] shadow-[0_0_0_3px_rgba(37,99,235,0.12)]'
           : 'bg-white border-[#CBD5E1] hover:bg-[#F5F9FF] hover:border-[#93C5FD]'
-      }`}
+        }`}
     >
       {/* Radio circle */}
-      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3.5 flex-shrink-0 transition-colors ${
-        isSelected ? 'border-[#2563EB] bg-[#2563EB]' : 'border-[#CBD5E1] group-hover:border-[#93C5FD]'
-      }`}>
+      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3.5 flex-shrink-0 transition-colors ${isSelected ? 'border-[#2563EB] bg-[#2563EB]' : 'border-[#CBD5E1] group-hover:border-[#93C5FD]'
+        }`}>
         {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
       </div>
-      <span className={`text-[15px] leading-relaxed ${
-        isSelected ? 'text-[#0F172A] font-medium' : 'text-[#334155]'
-      }`}>
+      <span className={`text-[15px] leading-relaxed ${isSelected ? 'text-[#0F172A] font-medium' : 'text-[#334155]'
+        }`}>
         <span className="font-semibold mr-1.5">{letter}.</span>{text}
       </span>
     </button>
   );
 }
 
-function QuestionNavigator({ 
-  questions, currentIndex, userAnswers, flaggedQuestions, onSelect 
-}: { 
-  questions: ExamQuestion[]; 
-  currentIndex: number; 
-  userAnswers: { [id: string]: number }; 
+function QuestionNavigator({
+  questions, currentIndex, userAnswers, flaggedQuestions, onSelect
+}: {
+  questions: ExamQuestion[];
+  currentIndex: number;
+  userAnswers: { [id: string]: number };
   flaggedQuestions: Set<string>;
   onSelect: (idx: number) => void;
 }) {
@@ -119,7 +116,7 @@ function ConfirmFinishModal({
         </div>
 
         <p className="text-[15px] text-[#334155] leading-relaxed bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
-          Siz <span className="font-bold text-[#0F172A]">{answeredCount} / {totalCount}</span> ta savolga javob berdingiz. 
+          Siz <span className="font-bold text-[#0F172A]">{answeredCount} / {totalCount}</span> ta savolga javob berdingiz.
           Testni yakunlashni xohlaysizmi?
         </p>
 
@@ -296,7 +293,7 @@ export default function AttestatsiyaExam() {
   return (
     <div className="fixed inset-0 z-[60] bg-[#F8FAFC] overflow-y-auto">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6">
-        
+
         {/* Exam Title */}
         <div className="mb-2">
           <span className="text-xs font-semibold text-[#2563EB] bg-[#EFF6FF] px-3 py-1 rounded-full uppercase tracking-wider">
@@ -312,10 +309,10 @@ export default function AttestatsiyaExam() {
 
         {/* Main two-column layout */}
         <div className="flex flex-col lg:flex-row gap-6">
-          
+
           {/* Left: Question card (75%) */}
           <div className="flex-1 lg:w-3/4 min-w-0">
-            <div 
+            <div
               className="bg-white rounded-[20px] border border-[#E2E8F0] p-7 sm:p-8"
               style={{ boxShadow: '0 10px 30px rgba(15, 23, 42, 0.06)' }}
             >
@@ -324,13 +321,12 @@ export default function AttestatsiyaExam() {
                 <span className="text-sm font-semibold text-[#64748B]">
                   Savol {currentQuestionIndex + 1} / {questions.length}
                 </span>
-                <button 
+                <button
                   onClick={toggleFlag}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                    isFlagged 
-                      ? 'bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B]' 
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isFlagged
+                      ? 'bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B]'
                       : 'bg-[#F1F5F9] text-[#64748B] hover:bg-[#E2E8F0] border border-transparent'
-                  }`}
+                    }`}
                 >
                   <Bookmark className="w-4 h-4" fill={isFlagged ? '#F59E0B' : 'none'} />
                   Belgilash
@@ -379,7 +375,7 @@ export default function AttestatsiyaExam() {
               {/* Keyboard hint */}
               <p className="text-[12px] text-[#64748B] text-center mt-4">
                 <span className="inline-flex gap-1">
-                  {['A','B','C','D'].map(k => (
+                  {['A', 'B', 'C', 'D'].map(k => (
                     <kbd key={k} className="px-1.5 py-0.5 bg-[#F1F5F9] border border-[#E2E8F0] rounded text-[11px] font-mono">{k}</kbd>
                   ))}
                 </span>
@@ -396,11 +392,10 @@ export default function AttestatsiyaExam() {
             <div className="lg:sticky lg:top-6 space-y-4">
 
               {/* Timer card */}
-              <div className={`rounded-2xl border p-5 transition-colors ${
-                isTimeCritical 
-                  ? 'bg-[#FEF2F2] border-[#FCA5A5]' 
+              <div className={`rounded-2xl border p-5 transition-colors ${isTimeCritical
+                  ? 'bg-[#FEF2F2] border-[#FCA5A5]'
                   : 'bg-white border-[#E2E8F0]'
-              }`}
+                }`}
                 style={isTimeCritical ? {} : { boxShadow: '0 4px 12px rgba(15, 23, 42, 0.04)' }}
               >
                 <div className="flex items-center gap-2 mb-3">
@@ -409,9 +404,8 @@ export default function AttestatsiyaExam() {
                     Qolgan vaqt
                   </span>
                 </div>
-                <div className={`text-[30px] font-bold font-mono tracking-tight ${
-                  isTimeCritical ? 'text-[#DC2626]' : 'text-[#0F172A]'
-                }`}>
+                <div className={`text-[30px] font-bold font-mono tracking-tight ${isTimeCritical ? 'text-[#DC2626]' : 'text-[#0F172A]'
+                  }`}>
                   {formatTime(timeLeft)}
                 </div>
               </div>
