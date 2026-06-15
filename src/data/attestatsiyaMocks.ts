@@ -68,40 +68,113 @@ export const mockModules: Module[] = [
       {
         id: "l1_1",
         moduleId: "m1",
-        title: "Axborot va uning xossalari",
+        title: "Axborot, ma'lumot va bilim",
         status: "completed",
         videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-        content: `### Axborot va uning xossalari
+        content: `# Axborot, ma'lumot va bilim tushunchalari
 
-Axborot — atrof-muhitdagi narsalar, hodisalar va jarayonlar to'g'risidagi ma'lumotlar yig'indisidir.
+## Axborot nima?
 
-#### Axborotning asosiy xossalari:
-1. **Qimmatliligi (Foydaliligi)** — muayyan maqsadga erishishda muhimligi bilan belgilanadi.
-2. **Ishonchliligi** — haqiqatga mos kelishi.
-3. **To'liqligi** — qaror qabul qilish uchun yetarli ma'lumotga egaligi.
-4. **Tushunarliligi** — qabul qiluvchi tilida va unga mos formatda ekanligi.
-5. **Dolzarbligi** — ayni vaqtda ahamiyatli bo'lishi.
+**Axborot** — bu atrofimizdagi dunyo, jarayonlar va hodisalar haqidagi xabarlar,
+bilimlar majmuasi. Axborot insonning bilim olishi, qaror qabul qilishi va
+muloqot qilishi uchun asosdir.
 
-Axborot turli ko'rinishlarda uzatilishi va saqlanishi mumkin: matn, audio, video, grafik yoki multimedia formatida.`
+## Ma'lumot va bilim — farqi nimada?
+
+- **Ma'lumot (data)** — qayta ishlanmagan, xom fakt va raqamlar. Masalan: "25", "Tashkent", "14:30"
+- **Axborot (information)** — kontekstga ega, ma'noli ma'lumot. Masalan: "Bugun havo harorati 25°C"
+- **Bilim (knowledge)** — axborotni tushunish va undan amaliyotda foydalanish qobiliyati.
+  Masalan: "25°C da yengil kiyim kiyish kerak, chunki issiq"
+
+**Ketma-ketlik:** Ma'lumot → Axborot → Bilim
+
+## Axborotning xossalari
+
+- **To'liqlik** — qaror qabul qilish uchun yetarli bo'lishi
+- **Ishonchlilik** — haqiqatga mos kelishi
+- **Aniqlik** — noaniqliklarsiz
+- **Dolzarblik** — vaqtga mos kelishi
+- **Tushunarlilik** — qabul qiluvchiga mos shaklda berilishi
+
+## Axborotni kodlashtirish
+
+Kompyuter axborotni faqat ikkilik (binary) ko'rinishda — 0 va 1 raqamlari orqali
+saqlaydi va qayta ishlaydi. Bu **bit** deb ataladi (binary digit).
+
+- **1 bit** — 0 yoki 1
+- **1 bayt** = 8 bit
+- **1 Kbayt** = 1024 bayt
+- **1 Mbayt** = 1024 Kbayt
+- **1 Gbayt** = 1024 Mbayt
+
+## Axborot hajmini hisoblash
+
+Matnni kodlashda har bir belgi (harf, raqam, belgi) odatda **1 bayt** egallaydi
+(ASCII kodlash uchun).
+
+**Misol:** "Salom" so'zi nechta baytni egallaydi?
+"Salom" — 5 ta belgidan iborat → 5 bayt
+
+## Axborot uzatish tezligi
+
+Tezlik **bit/sekund (bps)** da o'lchanadi:
+- 1 Kbit/s = 1024 bit/s
+- 1 Mbit/s = 1024 Kbit/s
+
+**Misol:** Internet tezligi 8 Mbit/s. 1 sekundda nechta bayt yuklab olinadi?
+8 Mbit/s ÷ 8 = 1 Mbayt/s
+
+## Xulosa
+
+Ma'lumot, axborot va bilim — bir-biriga bog'liq, lekin farqli tushunchalar.
+Kompyuterda axborot bitlar va baytlar orqali o'lchanadi, va hajm/tezlik
+hisoblashlari amaliy masalalarda muhim ahamiyatga ega.`
       },
       {
         id: "l1_2",
         moduleId: "m1",
-        title: "Axborot o'lchov birliklari",
+        title: "Raqamli etika va mualliflik huquqi",
         status: "completed",
         videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-        content: `### Axborot o'lchov birliklari
+        content: `# Raqamli etika va mualliflik huquqi
 
-Axborotning eng kichik o'lchov birligi **bit** (binary digit) hisoblanadi. U 0 yoki 1 qiymatini qabul qiladi.
+## Raqamli etika nima?
 
-#### Asosiy birliklar jadvali:
-* **1 Bayt** = 8 bit
-* **1 Kilobayt (KB)** = 1024 Bayt
-* **1 Megabayt (MB)** = 1024 KB
-* **1 Gigabayt (GB)** = 1024 MB
-* **1 Terabayt (TB)** = 1024 GB
+Raqamli etika — internetdan va texnologiyalardan foydalanishda axloqiy
+me'yorlarga rioya qilishdir: boshqalarning shaxsiy ma'lumotlariga hurmat,
+to'g'ri muloqot, va qonunlarga rioya qilish.
 
-*Masalan:* Katta hajmdagi video darsliklarni saqlashda odatda Gigabayt (GB) birligidan foydalaniladi.`
+## Mualliflik huquqi (Copyright)
+
+**Mualliflik huquqi** — muallifning o'z asari (matn, rasm, musiqa, dasturiy
+ta'minot) ustidan qonuniy nazorat huquqi. Boshqa birovning asarini ruxsatsiz
+nusxalash, tarqatish yoki o'zgartirish — qonun buzilishi hisoblanadi.
+
+## Litsenziya turlari
+
+- **Mualliflik huquqi bilan himoyalangan** — to'liq nazorat muallifda
+- **Creative Commons** — muallif ba'zi huquqlarni beradi (masalan, ko'chirish
+  mumkin, lekin tijoriy maqsadda emas)
+- **Ochiq manba (Open Source)** — dasturiy ta'minot kodini ko'rish, o'zgartirish
+  va tarqatish ruxsat etiladi (masalan, Linux)
+
+## Shaxsiy ma'lumotlarni himoya qilish
+
+- Parollarni hech kimga bermang
+- Ijtimoiy tarmoqlarda shaxsiy ma'lumotlarni (manzil, telefon) oshkor qilmang
+- Noma'lum havolalarni bosishdan saqlaning (fishing xavfi)
+
+## Plagiat
+
+**Plagiat** — boshqa muallifning matnini/g'oyasini o'ziniki sifatida
+taqdim etish. Internetdan olingan ma'lumotdan foydalanganda manbani
+ko'rsatish (sitatsiya) majburiy.
+
+## Xulosa
+
+Raqamli dunyoda ishlashda mualliflik huquqlariga rioya qilish, shaxsiy
+ma'lumotlarni himoya qilish va etik me'yorlarga amal qilish — har bir
+foydalanuvchining mas'uliyati.`
       }
     ]
   },
@@ -358,84 +431,201 @@ export const mockExams: MockExam[] = [
 
 // 50 Questions for Exam e1 and e2
 export const mockQuestions: Question[] = [
-  // Module 1 (1-6)
+  // Module 1 (1-15)
   {
     id: "q1",
     moduleId: "m1",
-    text: "Quyidagilardan qaysi biri axborotning ishonchlilik xossasini bildiradi?",
+    text: "Qayta ishlanmagan, kontekstsiz xom faktlar va raqamlar qanday ataladi?",
     options: [
-      "Axborotning amaliy masalalarni yechish uchun muhimligi",
-      "Axborotning ob'ektiv borliqni to'g'ri va xatolarsiz aks ettirishi",
-      "Axborotning qaror qabul qilish uchun to'liq bo'lishi",
-      "Axborotning qabul qiluvchi uchun tushunarli tilda bo'lishi"
+      "Ma'lumot (data)",
+      "Axborot (information)",
+      "Bilim (knowledge)",
+      "Signal"
     ],
-    correctOptionIndex: 1,
-    explanation: "Ishonchlilik (validity) - ma'lumotning haqiqiy holatga va real borliqqa mos kelishini ifodalaydi."
+    correctOptionIndex: 0,
+    explanation: "Qayta ishlanmagan, kontekstsiz xarakterdagi faktlar va raqamlar ma'lumot (data) deyiladi."
   },
   {
     id: "q2",
     moduleId: "m1",
-    text: "15 Kilobayt necha bitga teng?",
+    text: "Quyidagilardan qaysi biri axborotning asosiy xossalariga kirmaydi?",
     options: [
-      "122,880 bit",
-      "15,360 bit",
-      "15,000 bit",
-      "120,000 bit"
+      "To'liqlik",
+      "Ishonchlilik",
+      "Rang",
+      "Dolzarblik"
     ],
-    correctOptionIndex: 0,
-    explanation: "15 KB = 15 * 1024 Bayt = 15360 Bayt. 15360 Bayt * 8 bit = 122880 bit."
+    correctOptionIndex: 2,
+    explanation: "Rang axborotning xossasi emas. Asosiy xossalariga to'liqlik, ishonchlilik, aniqlik, dolzarblik va tushunarlilik kiradi."
   },
   {
     id: "q3",
     moduleId: "m1",
-    text: "Axborotni to'plash, saqlash, qayta ishlash va uzatish usullari hamda vositalari nima deb ataladi?",
+    text: "1 bayt nechta bitga teng?",
     options: [
-      "Axborot texnologiyalari",
-      "Dasturiy ta'minot",
-      "Kompyuter arxitekturasi",
-      "Telekommunikatsiya tizimlari"
+      "4 bit",
+      "8 bit",
+      "16 bit",
+      "1024 bit"
     ],
-    correctOptionIndex: 0,
-    explanation: "Axborot texnologiyalari - axborotni yig'ish, saqlash, qayta ishlash va tarqatish jarayonlarining texnik va uslubiy vositalari majmuidir."
+    correctOptionIndex: 1,
+    explanation: "1 bayt har doim 8 bitga teng."
   },
   {
     id: "q4",
     moduleId: "m1",
-    text: "ASCII kodlash tizimida bitta belgi xotirada qancha joy oladi?",
+    text: "1 Mbayt necha baytga teng?",
     options: [
-      "1 bit",
-      "1 bayt",
-      "2 bayt",
-      "4 bit"
+      "1000 bayt",
+      "1024 bayt",
+      "1024 Kbayt",
+      "1024 Gbayt"
     ],
-    correctOptionIndex: 1,
-    explanation: "ASCII kodlash jadvalida har bir belgi 8 bit (ya'ni 1 bayt) xotira egallaydi."
+    correctOptionIndex: 2,
+    explanation: "1 Megabayt = 1024 Kilobayt (Kbayt) ga teng."
   },
   {
     id: "q5",
     moduleId: "m1",
-    text: "Quyidagilardan qaysi biri axborotning dolzarblik xususiyatini eng to'g'ri ifodalaydi?",
+    text: "\"Tashkent\" so'zi ASCII kodlashda nechta baytni egallaydi?",
     options: [
-      "Haqiqatga mos kelishi",
-      "Faqat kerakli hajmda taqdim etilishi",
-      "Hozirgi vaqtda qaror qabul qilish uchun yaroqli bo'lishi",
-      "Foydalanuvchiga hech qanday zarar keltirmasligi"
+      "6 bayt",
+      "7 bayt",
+      "8 bayt",
+      "16 bayt"
     ],
     correctOptionIndex: 2,
-    explanation: "Dolzarblik - axborotning ayni damdagi muammolarni hal qilishda ahamiyatliligidir."
+    explanation: "\"Tashkent\" so'zi 8 ta belgidan iborat bo'lib, ASCII kodlashda har bir belgi 1 bayt joy egallaganligi uchun jami 8 bayt bo'ladi."
   },
   {
     id: "q6",
     moduleId: "m1",
-    text: "Unicode kodlash tizimida bitta belgi xotirada odatda necha bayt joy egallaydi?",
+    text: "Internet tezligi 16 Mbit/s bo'lsa, 1 sekundda taxminan necha Mbayt ma'lumot yuklanadi?",
     options: [
-      "1 bayt",
-      "2 bayt",
-      "4 bayt",
-      "8 bayt"
+      "1 Mbayt",
+      "2 Mbayt",
+      "8 Mbayt",
+      "16 Mbayt"
     ],
     correctOptionIndex: 1,
-    explanation: "Unicode (UTF-16) kodlash tizimida har bir belgini ifodalash uchun 2 bayt (16 bit) ajratiladi."
+    explanation: "1 bayt = 8 bit bo'lgani sababli, Mbit/s ni Mbayt/s ga o'tkazish uchun 8 ga bo'lish kifoya: 16 Mbit/s ÷ 8 = 2 Mbayt/s."
+  },
+  {
+    id: "q6_2",
+    moduleId: "m1",
+    text: "Boshqa muallifning asarini ruxsatsiz o'ziniki sifatida taqdim etish qanday ataladi?",
+    options: [
+      "Sitatsiya",
+      "Plagiat",
+      "Litsenziya",
+      "Lisensiya kodlash"
+    ],
+    correctOptionIndex: 1,
+    explanation: "Boshqa muallifning asari yoki g'oyasini o'ziniki qilib ko'rsatish plagiat (ko'chirmakashlik) deyiladi."
+  },
+  {
+    id: "q6_3",
+    moduleId: "m1",
+    text: "Dasturiy ta'minot kodini ko'rish, o'zgartirish va tarqatishga ruxsat beruvchi litsenziya turi qanday ataladi?",
+    options: [
+      "Mualliflik huquqi bilan himoyalangan",
+      "Ochiq manba (Open Source)",
+      "Tijoriy litsenziya",
+      "Maxfiy kod"
+    ],
+    correctOptionIndex: 1,
+    explanation: "Ochiq manbali (Open Source) dasturlarning kodini erkin ko'rish, o'zgartirish va tarqatish mumkin."
+  },
+  {
+    id: "q6_4",
+    moduleId: "m1",
+    text: "Quyidagi qaysi misol \"bilim\" (knowledge) darajasiga to'g'ri keladi?",
+    options: [
+      "\"25\" raqami",
+      "\"Bugun harorat 25°C\"",
+      "\"25°C da yengil kiyim kiyish kerak\"",
+      "Termometr ko'rsatkichi"
+    ],
+    correctOptionIndex: 2,
+    explanation: "Axborotdan amaliy foydalanish va undan xulosa chiqarish qobiliyati bilim hisoblanadi."
+  },
+  {
+    id: "q6_5",
+    moduleId: "m1",
+    text: "Internetda shaxsiy ma'lumotlarni himoya qilish bo'yicha qaysi xatti-harakat noto'g'ri?",
+    options: [
+      "Parolni murakkab qilib tuzish",
+      "Ijtimoiy tarmoqda telefon raqamini ochiq qo'yish",
+      "Noma'lum havolalarni bosmaslik",
+      "Ikki bosqichli tasdiqlashdan foydalanish"
+    ],
+    correctOptionIndex: 1,
+    explanation: "Ijtimoiy tarmoqlarda telefon raqami yoki manzil kabi shaxsiy ma'lumotlarni hammaga ochiq qoldirish xavfsizlik qoidalariga ziddir."
+  },
+  {
+    id: "q6_6",
+    moduleId: "m1",
+    text: "5 MB hajmdagi fayl 2 Mbit/s tezlikda taxminan necha sekundda yuklanadi?",
+    options: [
+      "2.5 sekund",
+      "5 sekund",
+      "20 sekund",
+      "40 sekund"
+    ],
+    correctOptionIndex: 2,
+    explanation: "5 Megabayt (MB) = 40 Megabit (Mbit). Yuklash vaqti: 40 Mbit ÷ 2 Mbit/s = 20 sekund."
+  },
+  {
+    id: "q6_7",
+    moduleId: "m1",
+    text: "Kompyuter axborotni qaysi sanoq sistemasida saqlaydi va qayta ishlaydi?",
+    options: [
+      "O'nlik (decimal)",
+      "Ikkilik (binary)",
+      "O'n oltilik (hex)",
+      "Sakkizlik (octal)"
+    ],
+    correctOptionIndex: 1,
+    explanation: "Kompyuter ballar ma'lumotlarni ikkilik (binary) kod ko'rinishida — 0 va 1 raqamlari orqali qayta ishlaydi."
+  },
+  {
+    id: "q6_8",
+    moduleId: "m1",
+    text: "Internetdan olingan matndan foydalanganda nima qilish majburiy?",
+    options: [
+      "Matnni o'zgartirmasdan ishlatish",
+      "Manbani ko'rsatish (sitatsiya)",
+      "Matnni tarjima qilish",
+      "Hech narsa qilish shart emas"
+    ],
+    correctOptionIndex: 1,
+    explanation: "Plagiatning oldini olish va mualliflik huquqini hurmat qilish uchun manbani ko'rsatish shart."
+  },
+  {
+    id: "q6_9",
+    moduleId: "m1",
+    text: "O'qituvchi darsda \"Bugun 30 ta o'quvchidan 27 tasi testdan o'tdi\" deydi. Bu ma'lumot-axborot-bilim zanjirida nimani ifodalaydi?",
+    options: [
+      "Faqat ma'lumot, chunki bu raqam",
+      "Axborot, chunki kontekstga ega ma'noli xabar",
+      "Bilim, chunki amaliy xulosa chiqarilgan",
+      "Hech qaysi bosqichga to'g'ri kelmaydi"
+    ],
+    correctOptionIndex: 1,
+    explanation: "Bu xabar ma'lum kontekst va mazmunga ega bo'lganligi sababli axborot (information) hisoblanadi."
+  },
+  {
+    id: "q6_10",
+    moduleId: "m1",
+    text: "Creative Commons litsenziyasi haqida qaysi fikr to'g'ri?",
+    options: [
+      "Asar ustidan barcha huquqlar bekor qilinadi",
+      "Muallif ba'zi huquqlarni saqlab, ba'zilarini beradi",
+      "Faqat davlat tashkilotlari foydalanishi mumkin",
+      "Bu mualliflik huquqi bilan bir xil narsa"
+    ],
+    correctOptionIndex: 1,
+    explanation: "Creative Commons (CC) muallifga o'z asaridan erkin foydalanish shartlarini (masalan, fajat notijorat) belgilash imkonini beradi."
   },
   
   // Module 2 (7-12)

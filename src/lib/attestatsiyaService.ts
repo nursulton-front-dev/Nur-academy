@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { mockQuestions, mockExams, mockExamResult, mockModules } from '../data/attestatsiyaMocks';
+import { mockQuestions, mockExams, mockExamResult, mockModules, mockTopicTests } from '../data/attestatsiyaMocks';
 
 export interface ExamQuestion {
   id: string;
@@ -82,12 +82,24 @@ export const attestatsiyaService = {
       localStorage.setItem(answersKey, JSON.stringify({}));
     }
 
+    // Filter questions based on whether it is a topic test (t1, t2...) or exam (e1, e2...)
+    let filteredQuestions = [...mockQuestions];
+    if (mockExamId.startsWith('t')) {
+      const topicTest = mockTopicTests.find(t => t.id === mockExamId);
+      if (topicTest) {
+        filteredQuestions = mockQuestions.filter(q => q.moduleId === topicTest.moduleId);
+      }
+    } else {
+      // Mock exams are limited to 50 questions
+      filteredQuestions = mockQuestions.slice(0, 50);
+    }
+
     // Sanitize questions by stripping out correctOptionIndex and explanation
-    const sanitizedQuestions: ExamQuestion[] = mockQuestions.map((q, idx) => ({
+    const sanitizedQuestions: ExamQuestion[] = filteredQuestions.map((q: any, idx) => ({
       id: q.id,
-      domain: q.domain,
-      subdomain: q.subdomain,
-      question_type: q.question_type,
+      domain: q.domain || q.moduleId || 'Metodika',
+      subdomain: q.subdomain || '',
+      question_type: q.question_type || 'single_choice',
       text: q.text,
       options: q.options,
       order_index: idx + 1
@@ -146,15 +158,29 @@ export const attestatsiyaService = {
     }
 
     // 2. Offline Mock Simulation
+    const attemptsStr = localStorage.getItem(LOCAL_ATTEMPTS_KEY) || '{}';
+    const attempts = JSON.parse(attemptsStr);
+    const examId = Object.keys(attempts).find(k => attempts[k] === attemptId) || 'e1';
+
+    let filteredQuestions = [...mockQuestions];
+    if (examId.startsWith('t')) {
+      const topicTest = mockTopicTests.find(t => t.id === examId);
+      if (topicTest) {
+        filteredQuestions = mockQuestions.filter(q => q.moduleId === topicTest.moduleId);
+      }
+    } else {
+      filteredQuestions = mockQuestions.slice(0, 50);
+    }
+
     const answersKey = `answers_${attemptId}`;
     const userAnswers = JSON.parse(localStorage.getItem(answersKey) || '{}');
 
     let correctCount = 0;
-    const totalCount = mockQuestions.length;
+    const totalCount = filteredQuestions.length;
     const domainScores: { [domain: string]: { correct: number, total: number } } = {};
     const answersReview: any[] = [];
 
-    mockQuestions.forEach(q => {
+    filteredQuestions.forEach(q => {
       const selectedIdx = userAnswers[q.id] !== undefined ? Number(userAnswers[q.id]) : -1;
       const isCorrect = selectedIdx === q.correctOptionIndex;
 
@@ -163,7 +189,7 @@ export const attestatsiyaService = {
       }
 
       // Track domain scores
-      const domain = q.domain || 'Metodika';
+      const domain = (q as any).domain || q.moduleId || 'Metodika';
       if (!domainScores[domain]) {
         domainScores[domain] = { correct: 0, total: 0 };
       }
@@ -197,9 +223,6 @@ export const attestatsiyaService = {
     localStorage.setItem(`result_${attemptId}`, JSON.stringify(mockResponse));
 
     // Clear active attempt pointer
-    const attempts = JSON.parse(localStorage.getItem(LOCAL_ATTEMPTS_KEY) || '{}');
-    // Find mockExamId matching this attemptId
-    const examId = Object.keys(attempts).find(k => attempts[k] === attemptId);
     if (examId) {
       delete attempts[examId];
       localStorage.setItem(LOCAL_ATTEMPTS_KEY, JSON.stringify(attempts));
