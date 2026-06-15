@@ -14,7 +14,7 @@ Ushbu hujjat Supabase SQL skripti qo'llanilgandan so'ng platformaning barcha qis
 * **Kutilayotgan natija:** Quyidagi barcha 20 ta jadval ro'yxati chiqishi kerak:
   - *Main:* `profiles`, `courses`, `course_translations`, `modules`, `module_translations`, `lessons`, `lesson_translations`, `quizzes`, `questions`, `question_translations`, `answers`, `answer_translations`, `enrollments`, `progress`.
   - *Attestatsiya:* `question_bank`, `question_bank_translations`, `mock_exams`, `mock_exam_questions`, `exam_attempts`, `exam_answers`.
-* **Holat:** [ ] ✅ / ❌
+* **Holat:** [ ] ✅
 
 ### 1.2 RLS faolligini tekshirish
 * **Harakat:** Supabase Dashboard-da har bir jadval yonida **RLS Enabled** belgisi borligini tekshiring yoki SQL orqali tekshiring:
@@ -22,12 +22,12 @@ Ushbu hujjat Supabase SQL skripti qo'llanilgandan so'ng platformaning barcha qis
   select tablename, rowsecurity from pg_tables where schemaname = 'public';
   ```
 * **Kutilayotgan natija:** Barcha jadvallar uchun `rowsecurity` ustunida `true` qiymati bo'lishi kerak.
-* **Holat:** [ ] ✅ / ❌
+* **Holat:** [ ] ✅
 
 ### 1.3 Anonim foydalanuvchi orqali o'qish huquqi (SELECT)
 * **Harakat:** Brauzerda login qilmasdan `http://localhost:3000/courses` yoki `http://localhost:3000/attestatsiya` sahifalarini oching.
 * **Kutilayotgan natija:** Kurslar ro'yxati va modullar muvaffaqiyatli yuklanishi kerak (Xatolik yoki 401/403 kodlari chiqmasligi kerak).
-* **Holat:** [ ] ✅ / ❌
+* **Holat:** [ ] ❌ http://localhost:3000/courses` kurslar ko'rinmayapti
 
 ### 1.4 Avtorizatsiyasiz yozish taqiqlanishi (INSERT/UPDATE)
 * **Harakat:** Brauzer konsolida (F12 -> Console) login qilmasdan quyidagi kodni ishga tushiring:
@@ -37,7 +37,19 @@ Ushbu hujjat Supabase SQL skripti qo'llanilgandan so'ng platformaning barcha qis
   console.log(error);
   ```
 * **Kutilayotgan natija:** Konsolda `new row violates row-level security policy` yoki `401 Unauthorized` xatoligi chiqishi kerak.
-* **Holat:** [ ] ✅ / ❌
+* **Holat:** [ ] ❌(react-dom_client.js?v=7eeef696:20103 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+ScriptLoaderMain.js:2 [runtime] SendMessageToBackground AnnotateScriptLoaderInitilized
+ScriptLoaderMain.js:2 [runtime] SendMessageToBackground ANNOTATE_SL_INJECT_MAIN_SCRIPT
+ContentMain.js:76130 [Intervention] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: chrome-extension://gdojjgflncpbcfmenbkndfhoamlhajmf/files/fonts/icons/extension-icons.woff2?561
+posajcqpwnzhdxhqvbic.supabase.co/rest/v1/rest/v1/courses?select=*:1  Failed to load resource: the server responded with a status of 404 ()
+CourseCatalog.tsx:46 Error fetching courses: Object
+$RefreshSig$ @ CourseCatalog.tsx:46
+posajcqpwnzhdxhqvbic.supabase.co/rest/v1/rest/v1/courses?select=*:1  Failed to load resource: the server responded with a status of 404 ()
+CourseCatalog.tsx:46 Error fetching courses: Object
+$RefreshSig$ @ CourseCatalog.tsx:46
+Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type “allow pasting” below and press Enter to allow pasting.
+Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type “allow pasting” below and press Enter to allow pasting.
+)
 
 ---
 
@@ -46,7 +58,7 @@ Ushbu hujjat Supabase SQL skripti qo'llanilgandan so'ng platformaning barcha qis
 ### 2.1 Yangi foydalanuvchi ro'yxatdan o'tishi
 * **Harakat:** `http://localhost:3000/signup` sahifasiga o'ting, yangi email va parol kiriting, ro'yxatdan o'ting.
 * **Kutilayotgan natija:** Muvaffaqiyatli ro'yxatdan o'tish va dashboardga yo'naltirilish.
-* **Holat:** [ ] ✅ / ❌
+* **Holat:** [❌ ] Invalid path specified in request URL
 
 ### 2.2 Avtomatik profil yaratilishi (Trigger tekshiruvi)
 * **Harakat:** Supabase-da **SQL Editor** orqali `profiles` jadvalini tekshiring:
@@ -54,18 +66,21 @@ Ushbu hujjat Supabase SQL skripti qo'llanilgandan so'ng platformaning barcha qis
   select * from public.profiles where id = 'yangi-ro'yxatdan-o'tgan-user-id';
   ```
 * **Kutilayotgan natija:** Yangi foydalanuvchi ID-si bilan qator yaratilgan va uning `role` qiymati avtomatik ravishda `'student'` bo'lgan bo'lishi kerak.
-* **Holat:** [ ] ✅ / ❌
+* **Holat:** [❌ ] Failed to run sql query: ERROR:  42601: syntax error at or near "yxatdan"
+LINE 1:  select * from public.profiles where id = 'yangi-ro'yxatdan-o'tgan-user-id' limit 100;
+                                                            ^
+Note: A limit of 100 was applied to your query. If this was the cause of a syntax error, try selecting "No limit" instead and re-run the query.
 
 ### 2.3 Kirish (Login) jarayoni
 * **Harakat:** `http://localhost:3000/login` sahifasidan chiqib (Sign Out), hozirgina yaratilgan email va parol yordamida qayta kiring.
 * **Kutilayotgan natija:** Tizimga muvaffaqiyatli kirish va profil ma'lumotlarining yuklanishi.
-* **Holat:** [ ] ✅ / ❌
+* **Holat:** [❌ ] Failed to run sql query: ERROR:  42601: syntax error at or near "yxatdan"
 
 ### 2.4 "Email not confirmed" muammosi (Agar elektron pochtani tasdiqlash so'ralsa)
 * **Harakat:** Agar kirish paytida xatolik yuz bersa, Supabase Dashboard-ga kiring:
   - **Authentication** -> **Providers** -> **Email** bo'limiga o'ting.
   - **Confirm email** sozlamasini o'chiring (Toggle off) va **Save** tugmasini bosing.
-* **Holat:** [ ] ✅ / ❌
+* **Holat:** [❌ ] Invalid path specified in request URL
 
 ---
 
@@ -74,7 +89,7 @@ Ushbu hujjat Supabase SQL skripti qo'llanilgandan so'ng platformaning barcha qis
 ### 3.1 "Google bilan kirish" tugmasini tekshirish
 * **Harakat:** `/login` yoki `/signup` sahifasidagi **Google bilan kirish** tugmasini bosing.
 * **Kutilayotgan natija:** Google avtorizatsiya oynasiga yo'naltirilish, profilni tanlash va tizimga muvaffaqiyatli qaytish.
-* **Holat:** [ ] ✅ / ❌
+* **Holat:** [❌ ] {"message":"No API key found in request","hint":"No `apikey` request header or url param was found."}
 
 ### 3.2 Google Provayder sozlamalari (Muammolar kelib chiqqanda)
 * **Harakat:** Sozlamalarni tekshiring:

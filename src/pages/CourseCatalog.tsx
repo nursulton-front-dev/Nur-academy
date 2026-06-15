@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Link } from 'react-router-dom';
-import { BookOpen, Search } from 'lucide-react';
+import { BookOpen, Search, GraduationCap } from 'lucide-react';
 
 interface CourseWithTranslation {
   id: string;
@@ -57,6 +57,13 @@ export default function CourseCatalog() {
     (course.description && course.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  // Check if search matches attestatsiya course
+  const attestatsiyaTitle = "Informatika o'qituvchilari attestatsiyasi";
+  const attestatsiyaDesc = "Informatika fani o'qituvchilarini toifa va attestatsiya imtihonlariga tayyorlovchi maxsus dastur. 8 ta asosiy modul, 50+ savol, mock imtihonlar.";
+  const showAttestatsiya = !searchQuery || 
+    attestatsiyaTitle.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    attestatsiyaDesc.toLowerCase().includes(searchQuery.toLowerCase());
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
@@ -77,11 +84,43 @@ export default function CourseCatalog() {
         </div>
       </div>
 
+      {/* Featured: Attestatsiya course (always visible) */}
+      {showAttestatsiya && (
+        <div className="mb-10">
+          <Link 
+            to="/attestatsiya" 
+            className="block group bg-gradient-to-r from-accent-blue/5 to-success-green/5 rounded-2xl border-2 border-accent-blue/20 hover:border-accent-blue/40 overflow-hidden hover:shadow-xl transition-all duration-300"
+          >
+            <div className="flex flex-col md:flex-row items-stretch">
+              <div className="md:w-1/3 bg-gradient-to-br from-accent-blue to-[#1d4ed8] flex items-center justify-center p-10 min-h-[180px]">
+                <GraduationCap className="w-20 h-20 text-white/80 group-hover:scale-110 transition-transform duration-300" />
+              </div>
+              <div className="flex-1 p-8">
+                <span className="inline-flex items-center gap-1.5 bg-accent-blue/10 text-accent-blue px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                  ⭐ Tavsiya etilgan
+                </span>
+                <h3 className="font-serif font-bold text-2xl text-text-primary mb-3 group-hover:text-accent-blue transition-colors">
+                  {attestatsiyaTitle}
+                </h3>
+                <p className="text-text-secondary mb-4 leading-relaxed">
+                  {attestatsiyaDesc}
+                </p>
+                <div className="flex items-center gap-4 text-sm text-text-secondary">
+                  <span className="flex items-center gap-1"><BookOpen className="w-4 h-4" /> 8 modul</span>
+                  <span className="flex items-center gap-1">📝 50+ savol</span>
+                  <span className="flex items-center gap-1">🎯 Mock imtihonlar</span>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      )}
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue"></div>
         </div>
-      ) : filteredCourses.length === 0 ? (
+      ) : filteredCourses.length === 0 && !showAttestatsiya ? (
         <div className="bg-surface border border-border-card rounded-xl p-12 text-center">
           <BookOpen className="w-16 h-16 text-text-secondary mx-auto mb-4 opacity-50" />
           <h2 className="text-xl font-medium text-text-primary mb-2">Kurslar topilmadi</h2>

@@ -64,37 +64,37 @@ export default function AttestatsiyaExamResult() {
   };
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto dark:text-[#EAF3F0] transition-colors duration-250">
+    <div className="space-y-8 max-w-4xl mx-auto transition-colors duration-250">
       {/* Title / Main Banner */}
-      <div className="bg-[#F6F9F8] dark:bg-[#1E2B29] rounded-2xl border border-[#E3EBE9] dark:border-[#2A3A38] p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-center gap-6 shadow-sm">
+      <div className="bg-primary-bg rounded-2xl border border-border-card p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-center gap-6 shadow-sm">
         <div className="space-y-2 text-center sm:text-left">
           <span className="text-[10px] bg-[#3B7DD8]/10 text-[#3B7DD8] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
             Natija e'lon qilindi
           </span>
-          <h1 className="font-serif font-extrabold text-2xl sm:text-3xl text-[#1A2E2E] dark:text-[#EAF3F0]">
+          <h1 className="font-serif font-extrabold text-2xl sm:text-3xl text-text-primary">
             {exam.title}
           </h1>
-          <p className="text-sm text-[#5C7370] dark:text-gray-400">
+          <p className="text-sm text-text-secondary">
             Imtihon topshirilgan vaqti: Bugun, {new Date().toLocaleDateString('uz-UZ')}
           </p>
         </div>
 
         {/* Large Score Circle */}
-        <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-[#3B7DD8] flex flex-col items-center justify-center bg-white dark:bg-[#1E2B29] shadow-md flex-shrink-0">
-          <span className="text-3xl sm:text-4xl font-extrabold text-[#1A2E2E] dark:text-[#EAF3F0]">
+        <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-[#3B7DD8] flex flex-col items-center justify-center bg-surface border-border-card shadow-md flex-shrink-0">
+          <span className="text-3xl sm:text-4xl font-extrabold text-text-primary">
             {score}
           </span>
-          <span className="text-xs font-semibold text-[#5C7370] dark:text-gray-400 uppercase border-t border-[#E3EBE9] dark:border-[#2A3A38] pt-1 mt-1">
+          <span className="text-xs font-semibold text-text-secondary uppercase border-t border-border-card pt-1 mt-1">
             / 100 ball
           </span>
         </div>
       </div>
 
       {/* Breakdown by Modules */}
-      <div className="bg-white dark:bg-[#1E2B29] rounded-xl border border-[#E3EBE9] dark:border-[#2A3A38] p-6 shadow-sm space-y-6">
-        <div className="flex items-center space-x-2 pb-3 border-b border-[#E3EBE9]/50 dark:border-[#2A3A38]/50">
+      <div className="bg-surface rounded-xl border border-border-card p-6 shadow-sm space-y-6">
+        <div className="flex items-center space-x-2 pb-3 border-b border-border-card/50">
           <BookOpen className="w-5 h-5 text-[#3B7DD8]" />
-          <h2 className="font-serif font-bold text-lg sm:text-xl text-[#1A2E2E] dark:text-[#EAF3F0]">
+          <h2 className="font-serif font-bold text-lg sm:text-xl text-text-primary">
             Bo'limlar bo'yicha tahlil
           </h2>
         </div>
@@ -108,14 +108,14 @@ export default function AttestatsiyaExamResult() {
             return (
               <div key={idx} className="space-y-2">
                 <div className="flex justify-between items-center text-xs sm:text-sm">
-                  <span className="font-medium text-[#1A2E2E] dark:text-[#EAF3F0] truncate pr-4">
+                  <span className="font-medium text-text-primary truncate pr-4">
                     {item.title}
                   </span>
                   <span className={`font-bold ${textColorClass}`}>
                     {item.correct}/{item.total} ({percentage}%)
                   </span>
                 </div>
-                <div className="w-full bg-[#E3EBE9] dark:bg-[#2A3A38] h-2.5 rounded-full overflow-hidden">
+                <div className="w-full bg-border-card h-2.5 rounded-full overflow-hidden">
                   <div 
                     className={`${colorClass} h-full rounded-full transition-all duration-500`}
                     style={{ width: `${percentage}%` }}
@@ -132,14 +132,14 @@ export default function AttestatsiyaExamResult() {
         <div className="flex gap-3 w-full sm:w-auto">
           <Link
             to="/attestatsiya"
-            className="flex-1 sm:flex-none inline-flex items-center justify-center space-x-1.5 border border-[#E3EBE9] dark:border-[#2A3A38] hover:bg-[#F6F9F8] dark:hover:bg-[#16201F] text-[#1A2E2E] dark:text-[#EAF3F0] px-5 py-3 rounded-xl text-sm font-semibold transition-colors"
+            className="flex-1 sm:flex-none inline-flex items-center justify-center space-x-1.5 border border-border-card hover:bg-primary-bg text-text-primary px-5 py-3 rounded-xl text-sm font-semibold transition-colors"
           >
             <Home className="w-4 h-4" />
             <span>Asosiy sahifa</span>
           </Link>
           <Link
             to={`/attestatsiya/imtihon/${id}`}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center space-x-1.5 border border-[#E3EBE9] dark:border-[#2A3A38] hover:bg-[#F6F9F8] dark:hover:bg-[#16201F] text-[#1A2E2E] dark:text-[#EAF3F0] px-5 py-3 rounded-xl text-sm font-semibold transition-colors"
+            className="flex-1 sm:flex-none inline-flex items-center justify-center space-x-1.5 border border-border-card hover:bg-primary-bg text-text-primary px-5 py-3 rounded-xl text-sm font-semibold transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Qayta topshirish</span>
@@ -158,7 +158,7 @@ export default function AttestatsiyaExamResult() {
       {/* Answers Review Section */}
       {showReview && (
         <div className="space-y-6 pt-4 animate-fadeIn">
-          <h3 className="font-serif font-bold text-xl text-[#1A2E2E] dark:text-[#EAF3F0] pb-2 border-b border-[#E3EBE9] dark:border-[#2A3A38]">
+          <h3 className="font-serif font-bold text-xl text-text-primary pb-2 border-b border-border-card">
             Savollar va javoblar tahlili
           </h3>
 
@@ -178,7 +178,7 @@ export default function AttestatsiyaExamResult() {
                 >
                   {/* Question Title */}
                   <div className="flex justify-between items-start gap-4">
-                    <span className="text-xs font-semibold text-[#5C7370] dark:text-gray-400">
+                    <span className="text-xs font-semibold text-text-secondary">
                       Savol {idx + 1}
                     </span>
                     <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full ${
@@ -200,7 +200,7 @@ export default function AttestatsiyaExamResult() {
                     </span>
                   </div>
 
-                  <h4 className="text-[#1A2E2E] dark:text-[#EAF3F0] font-medium leading-relaxed">
+                  <h4 className="text-text-primary font-medium leading-relaxed">
                     {q.text}
                   </h4>
 
@@ -210,7 +210,7 @@ export default function AttestatsiyaExamResult() {
                       const wasSelected = selectedAnswer === optIdx;
                       const wasCorrect = q.correct_answer === optIdx;
 
-                      let optStyle = "border-gray-200 dark:border-[#2A3A38] text-[#5C7370] dark:text-gray-300 bg-white dark:bg-[#1E2B29]";
+                      let optStyle = "border-border-card text-text-secondary bg-surface";
                       if (wasCorrect) {
                         optStyle = "border-[#4CAF82] text-[#4CAF82] bg-[#4CAF82]/10 font-medium";
                       } else if (wasSelected && !isCorrect) {
@@ -233,8 +233,8 @@ export default function AttestatsiyaExamResult() {
 
                   {/* Explanation */}
                   {q.explanation && (
-                    <div className="bg-gray-50 dark:bg-[#16201F] p-4 rounded-lg border border-gray-100 dark:border-[#2A3A38] text-xs text-[#5C7370] dark:text-gray-400 leading-relaxed">
-                      <span className="font-bold text-[#1A2E2E] dark:text-[#EAF3F0] block mb-1">Izoh (Tushuntirish):</span>
+                    <div className="bg-primary-bg p-4 rounded-lg border border-border-card text-xs text-text-secondary leading-relaxed">
+                      <span className="font-bold text-text-primary block mb-1">Izoh (Tushuntirish):</span>
                       {q.explanation}
                     </div>
                   )}

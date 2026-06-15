@@ -47,23 +47,23 @@ export default function AttestatsiyaLesson() {
   const parentModule = mockModules.find(m => m.id === lesson.moduleId);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 transition-colors duration-250">
       {/* Breadcrumbs / Parent Info */}
-      <div className="flex items-center space-x-2 text-xs text-[#5C7370] pb-2 border-b border-[#E3EBE9]/50">
-        <Link to="/attestatsiya" className="hover:underline">Attestatsiya</Link>
+      <div className="flex items-center space-x-2 text-xs text-text-secondary pb-2 border-b border-border-card/50">
+        <Link to="/attestatsiya" className="hover:underline text-text-secondary">Attestatsiya</Link>
         <span>/</span>
-        <span className="truncate">{parentModule?.title}</span>
+        <span className="truncate text-text-secondary">{parentModule?.title}</span>
       </div>
 
       {/* Lesson Title */}
       <div className="space-y-2">
-        <h1 className="text-2xl sm:text-3xl font-serif font-extrabold text-[#1A2E2E]">
+        <h1 className="text-2xl sm:text-3xl font-serif font-extrabold text-text-primary">
           {lesson.title}
         </h1>
       </div>
 
       {/* Video Block */}
-      <div className="aspect-video bg-[#020617] rounded-xl overflow-hidden relative group border border-[#E3EBE9] shadow-inner">
+      <div className="aspect-video bg-[#020617] rounded-xl overflow-hidden relative group border border-border-card shadow-inner">
         {lesson.videoUrl && isPlaying ? (
           <video 
             src={lesson.videoUrl} 
@@ -94,24 +94,24 @@ export default function AttestatsiyaLesson() {
       </div>
 
       {/* Text Synopsis (Markdown renderer simulator) */}
-      <div className="bg-white rounded-xl border border-[#E3EBE9] p-6 space-y-4">
-        <div className="flex items-center space-x-2 pb-3 border-b border-[#E3EBE9]/50 mb-4">
+      <div className="bg-surface rounded-xl border border-border-card p-6 space-y-4">
+        <div className="flex items-center space-x-2 pb-3 border-b border-border-card/50 mb-4">
           <FileText className="w-5 h-5 text-[#3B7DD8]" />
-          <h2 className="font-serif font-bold text-lg text-[#1A2E2E]">Dars konspekti</h2>
+          <h2 className="font-serif font-bold text-lg text-text-primary">Dars konspekti</h2>
         </div>
 
-        <div className="prose max-w-none text-[#1A2E2E] text-sm sm:text-base leading-relaxed space-y-4">
+        <div className="prose max-w-none text-text-primary text-sm sm:text-base leading-relaxed space-y-4">
           {/* Simple formatting helper for markdown to HTML simulator */}
           {lesson.content.split('\n\n').map((paragraph, pIdx) => {
             if (paragraph.startsWith('### ')) {
-              return <h3 key={pIdx} className="text-xl font-serif font-bold text-[#1A2E2E] mt-6 mb-2">{paragraph.replace('### ', '')}</h3>;
+              return <h3 key={pIdx} className="text-xl font-serif font-bold text-text-primary mt-6 mb-2">{paragraph.replace('### ', '')}</h3>;
             }
             if (paragraph.startsWith('#### ')) {
-              return <h4 key={pIdx} className="text-lg font-serif font-bold text-[#1A2E2E] mt-4 mb-2">{paragraph.replace('#### ', '')}</h4>;
+              return <h4 key={pIdx} className="text-lg font-serif font-bold text-text-primary mt-4 mb-2">{paragraph.replace('#### ', '')}</h4>;
             }
             if (paragraph.startsWith('* ')) {
               return (
-                <ul key={pIdx} className="list-disc pl-5 space-y-1 my-3">
+                <ul key={pIdx} className="list-disc pl-5 space-y-1 my-3 text-text-secondary">
                   {paragraph.split('\n').map((li, liIdx) => (
                     <li key={liIdx}>{li.replace('* ', '')}</li>
                   ))}
@@ -120,20 +120,20 @@ export default function AttestatsiyaLesson() {
             }
             if (paragraph.startsWith('1. ') || paragraph.startsWith('2. ') || paragraph.startsWith('3. ')) {
               return (
-                <ol key={pIdx} className="list-decimal pl-5 space-y-1 my-3">
+                <ol key={pIdx} className="list-decimal pl-5 space-y-1 my-3 text-text-secondary">
                   {paragraph.split('\n').map((li, liIdx) => (
                     <li key={liIdx}>{li.substring(3)}</li>
                   ))}
                 </ol>
               );
             }
-            return <p key={pIdx} className="text-[#5C7370] leading-relaxed">{paragraph}</p>;
+            return <p key={pIdx} className="text-text-secondary leading-relaxed">{paragraph}</p>;
           })}
         </div>
       </div>
 
       {/* Navigation Buttons */}
-      <div className="flex justify-between items-center pt-6 border-t border-[#E3EBE9]">
+      <div className="flex justify-between items-center pt-6 border-t border-border-card">
         {prevLesson ? (
           <Link
             to={`/attestatsiya/dars/${prevLesson.id}`}

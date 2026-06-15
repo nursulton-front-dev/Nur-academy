@@ -33,6 +33,11 @@ export default function AttestatsiyaLayout() {
     }
   }, [location.pathname]);
 
+  // Scroll to top on navigation to prevent layout overlap issues
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   const toggleModule = (moduleId: string) => {
     setExpandedModules(prev => ({
       ...prev,
@@ -41,12 +46,12 @@ export default function AttestatsiyaLayout() {
   };
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-[#F6F9F8] dark:bg-[#16201F] border-r border-[#E3EBE9] dark:border-[#2A3A38] text-[#1A2E2E] dark:text-[#EAF3F0] transition-colors duration-250">
+    <div className="flex flex-col h-full bg-primary-bg border-r border-border-card text-text-primary transition-colors duration-250">
       {/* Sidebar Header */}
-      <div className="p-4 border-b border-[#E3EBE9] dark:border-[#2A3A38]">
+      <div className="p-4 border-b border-border-card">
         <Link to="/" className="flex items-center space-x-2 mb-1">
           <div className="w-6 h-6 bg-[#3B7DD8] rounded flex items-center justify-center text-white font-bold text-xs">N</div>
-          <span className="font-serif font-bold text-lg text-[#1A2E2E] dark:text-[#EAF3F0]">Nur Academy</span>
+          <span className="font-serif font-bold text-lg text-text-primary">Nur Academy</span>
         </Link>
         <Link to="/attestatsiya" className="text-xs font-semibold text-[#3B7DD8] tracking-wider uppercase flex items-center gap-1 hover:underline">
           <LayoutDashboard className="w-3.5 h-3.5" />
@@ -63,7 +68,7 @@ export default function AttestatsiyaLayout() {
             className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
               location.pathname === '/attestatsiya' 
                 ? 'bg-[#3B7DD8]/10 text-[#3B7DD8]' 
-                : 'hover:bg-[#E3EBE9]/50 dark:hover:bg-[#2A3A38]/30 text-[#1A2E2E] dark:text-[#EAF3F0]'
+                : 'hover:bg-primary-bg/50 text-text-primary'
             }`}
           >
             <BookOpen className="w-4 h-4" />
@@ -73,7 +78,7 @@ export default function AttestatsiyaLayout() {
 
         {/* Materiallar (Modules) */}
         <div>
-          <h3 className="px-3 text-xs font-semibold text-[#5C7370] dark:text-gray-400 uppercase tracking-wider mb-2">
+          <h3 className="px-3 text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
             Materiallar
           </h3>
           <div className="space-y-1">
@@ -83,28 +88,28 @@ export default function AttestatsiyaLayout() {
                 <div key={mod.id} className="space-y-0.5">
                   <button
                     onClick={() => toggleModule(mod.id)}
-                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-[#1A2E2E] dark:text-[#EAF3F0] hover:bg-[#E3EBE9]/50 dark:hover:bg-[#2A3A38]/30 transition-colors text-left"
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-text-primary hover:bg-primary-bg/50 transition-colors text-left"
                   >
                     <span className="truncate pr-2">{mod.title}</span>
                     {isExpanded ? (
-                      <ChevronDown className="w-4 h-4 text-[#5C7370] dark:text-gray-400 flex-shrink-0" />
+                      <ChevronDown className="w-4 h-4 text-text-secondary flex-shrink-0" />
                     ) : (
-                      <ChevronRight className="w-4 h-4 text-[#5C7370] dark:text-gray-400 flex-shrink-0" />
+                      <ChevronRight className="w-4 h-4 text-text-secondary flex-shrink-0" />
                     )}
                   </button>
 
                   {isExpanded && (
-                    <div className="pl-4 pr-1 py-1 space-y-1 border-l border-[#E3EBE9] dark:border-[#2A3A38] ml-4">
+                    <div className="pl-4 pr-1 py-1 space-y-1 border-l border-border-card ml-4">
                       {mod.lessons.map((les) => {
                         const isCurrent = location.pathname === `/attestatsiya/dars/${les.id}`;
                         const isCompleted = les.status === 'completed';
                         const isLocked = les.status === 'locked';
 
-                        let statusIcon = <PlayCircle className="w-4 h-4 text-[#5C7370] dark:text-gray-400" />;
+                        let statusIcon = <PlayCircle className="w-4 h-4 text-text-secondary" />;
                         if (isCompleted) {
                           statusIcon = <CheckCircle2 className="w-4 h-4 text-[#4CAF82]" />;
                         } else if (isLocked) {
-                          statusIcon = <Lock className="w-3.5 h-3.5 text-[#5C7370] dark:text-gray-500" />;
+                          statusIcon = <Lock className="w-3.5 h-3.5 text-text-secondary opacity-50" />;
                         }
 
                         return (
@@ -119,8 +124,8 @@ export default function AttestatsiyaLayout() {
                               isCurrent 
                                 ? 'bg-[#3B7DD8] text-white' 
                                 : isLocked 
-                                  ? 'opacity-50 cursor-not-allowed text-[#5C7370] dark:text-gray-500' 
-                                  : 'hover:bg-[#E3EBE9]/50 dark:hover:bg-[#2A3A38]/30 text-[#1A2E2E] dark:text-[#EAF3F0]'
+                                  ? 'opacity-50 cursor-not-allowed text-text-secondary' 
+                                  : 'hover:bg-primary-bg/50 text-text-primary'
                             }`}
                           >
                             <span className="flex-shrink-0">{statusIcon}</span>
@@ -138,7 +143,7 @@ export default function AttestatsiyaLayout() {
 
         {/* Testlar Section */}
         <div>
-          <h3 className="px-3 text-xs font-semibold text-[#5C7370] dark:text-gray-400 uppercase tracking-wider mb-2">
+          <h3 className="px-3 text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
             Testlar
           </h3>
           <div className="space-y-1">
@@ -148,7 +153,7 @@ export default function AttestatsiyaLayout() {
               className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 location.pathname === '/attestatsiya/testlar' 
                   ? 'bg-[#3B7DD8]/10 text-[#3B7DD8]' 
-                  : 'hover:bg-[#E3EBE9]/50 dark:hover:bg-[#2A3A38]/30 text-[#1A2E2E] dark:text-[#EAF3F0]'
+                  : 'hover:bg-primary-bg/50 text-text-primary'
               }`}
             >
               <FileText className="w-4 h-4" />
@@ -160,7 +165,7 @@ export default function AttestatsiyaLayout() {
               className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 location.pathname === '/attestatsiya/testlar' 
                   ? 'bg-[#3B7DD8]/10 text-[#3B7DD8]' 
-                  : 'hover:bg-[#E3EBE9]/50 dark:hover:bg-[#2A3A38]/30 text-[#1A2E2E] dark:text-[#EAF3F0]'
+                  : 'hover:bg-primary-bg/50 text-text-primary'
               }`}
             >
               <FileText className="w-4 h-4 text-[#3B7DD8]" />
@@ -173,16 +178,16 @@ export default function AttestatsiyaLayout() {
   );
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-[#F6F9F8] dark:bg-[#16201F] transition-colors duration-250">
+    <div className="flex flex-col md:flex-row min-h-screen bg-primary-bg transition-colors duration-250">
       {/* Mobile Top Header */}
-      <div className="flex md:hidden items-center justify-between px-4 py-3 bg-white dark:bg-[#1E2B29] border-b border-[#E3EBE9] dark:border-[#2A3A38] sticky top-16 z-30">
+      <div className="flex md:hidden items-center justify-between px-4 py-3 bg-surface border-b border-border-card sticky top-16 z-30">
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-1 text-[#1A2E2E] dark:text-[#EAF3F0]"
+          className="p-1 text-text-primary"
         >
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
-        <span className="font-serif font-bold text-base text-[#1A2E2E] dark:text-[#EAF3F0]">Attestatsiya Kursi</span>
+        <span className="font-serif font-bold text-base text-text-primary">Attestatsiya Kursi</span>
         <div className="w-6"></div>
       </div>
 
@@ -202,7 +207,7 @@ export default function AttestatsiyaLayout() {
 
       {/* Main Content Area */}
       <main className="flex-grow p-4 sm:p-8 overflow-x-hidden min-h-[calc(100vh-64px)]">
-        <div className="max-w-5xl mx-auto bg-white dark:bg-[#1E2B29] rounded-2xl border border-[#E3EBE9] dark:border-[#2A3A38] p-6 sm:p-8 shadow-sm transition-colors duration-250">
+        <div className="max-w-5xl mx-auto bg-surface rounded-2xl border border-border-card p-6 sm:p-8 shadow-sm transition-colors duration-250">
           <Outlet />
         </div>
       </main>
