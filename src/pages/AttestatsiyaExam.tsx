@@ -10,7 +10,7 @@ import {
   CheckCircle2,
   Circle
 } from 'lucide-react';
-import { mockExams } from '../data/attestatsiyaMocks';
+import { mockExams, completeTestOrExam } from '../data/attestatsiyaMocks';
 import { attestatsiyaService, ExamQuestion } from '../lib/attestatsiyaService';
 
 /* ───────────────────── Sub-components ───────────────────── */
@@ -245,7 +245,10 @@ export default function AttestatsiyaExam() {
     try {
       setIsLoading(true);
       setShowConfirmModal(false);
-      await attestatsiyaService.finishExam(attemptId);
+      const res = await attestatsiyaService.finishExam(attemptId);
+      if (res && res.score !== undefined) {
+        completeTestOrExam(id || '', res.score);
+      }
       navigate(`/attestatsiya/imtihon/${id}/natija?attempt_id=${attemptId}`);
     } catch (err) {
       console.error("Failed to finish exam", err);

@@ -1093,3 +1093,181 @@ export const mockExamResult: ExamResult = {
     "q50": 0  // Wrong
   }
 };
+
+// --- Progress Management for Presentation Mode ---
+const MODULES_KEY = 'nur_academy_mock_modules_v2';
+const TOPIC_TESTS_KEY = 'nur_academy_mock_topic_tests_v2';
+const EXAMS_KEY = 'nur_academy_mock_exams_v2';
+
+export function saveProgressToLocalStorage() {
+  localStorage.setItem(MODULES_KEY, JSON.stringify(mockModules));
+  localStorage.setItem(TOPIC_TESTS_KEY, JSON.stringify(mockTopicTests));
+  localStorage.setItem(EXAMS_KEY, JSON.stringify(mockExams));
+}
+
+export function resetDefaultProgress() {
+  localStorage.removeItem(MODULES_KEY);
+  localStorage.removeItem(TOPIC_TESTS_KEY);
+  localStorage.removeItem(EXAMS_KEY);
+  localStorage.removeItem('nur_academy_mock_attempts');
+
+  // Set m1 as current, others locked
+  mockModules.forEach((m, mIdx) => {
+    if (mIdx === 0) {
+      m.status = 'current';
+      m.lessons.forEach((l, lIdx) => {
+        l.status = lIdx === 0 ? 'current' : 'locked';
+      });
+    } else {
+      m.status = 'locked';
+      m.lessons.forEach(l => {
+        l.status = 'locked';
+      });
+    }
+  });
+
+  // Topic tests: t1 is not_started, others locked
+  mockTopicTests.forEach((t, tIdx) => {
+    t.status = tIdx === 0 ? 'not_started' : 'locked';
+    t.score = null;
+  });
+
+  // Exams: e1, e2, e3 are not_started, others locked
+  mockExams.forEach((e, eIdx) => {
+    e.status = eIdx < 3 ? 'not_started' : 'locked';
+    e.score = null;
+  });
+
+  saveProgressToLocalStorage();
+}
+
+export function loadProgressFromLocalStorage() {
+  const savedModules = localStorage.getItem(MODULES_KEY);
+  const savedTopicTests = localStorage.getItem(TOPIC_TESTS_KEY);
+  const savedExams = localStorage.getItem(EXAMS_KEY);
+
+  if (savedModules) {
+    try {
+      const parsed = JSON.parse(savedModules);
+      mockModules.length = 0;
+      mockModules.push(...parsed);
+    } catch (e) {
+      resetDefaultProgress();
+    }
+  } else {
+    // If not set, start with a completely fresh state (0% completed)
+    resetDefaultProgress();
+  }
+
+  if (savedTopicTests) {
+    try {
+      const parsed = JSON.parse(savedTopicTests);
+      mockTopicTests.length = 0;
+      mockTopicTests.push(...parsed);
+    } catch (e) {}
+  }
+
+  if (savedExams) {
+    try {
+      const parsed = JSON.parse(savedExams);
+      mockExams.length = 0;
+      mockExams.push(...parsed);
+    } catch (e) {}
+  }
+}
+
+export function resetAllProgress() {
+  resetDefaultProgress();
+  if (typeof window !== 'undefined') {
+    window.location.reload();
+  }
+}
+
+export function completeLessonAndUnlockNext(lessonId: string) {
+  let foundLesson = false;
+  let nextLessonToUnlock: any = null;
+  let nextModuleToUnlock: any = null;
+
+  for (let mIdx = 0; mIdx < mockModules.length; mIdx++) {
+    const m = mockModules[mIdx];
+    const lIdx = m.lessons.findIndex(l => l.id === lessonId);
+    if (lIdx !== -1) {
+      const l = m.lessons[lIdx];
+      l.status = 'completed';
+      foundLesson = true;
+
+      if (lIdx + 1 < m.lessons.length) {
+        nextLessonToUnlock = m.lessons[lIdx + 1];
+      } else {
+        m.status = 'completed';
+        if (mIdx + 1 < mockModules.length) {
+          nextModuleToUnlock = mockModules[mIdx + 1];
+        }
+      }
+      break;
+    }
+  }
+
+  if (foundLesson) {
+    if (nextLessonToUnlock) {
+      if (nextLessonToUnlock.status === 'locked') {
+        nextLessonToUnlock.status = 'current';
+      }
+    } else if (nextModuleToUnlock) {
+      if (nextModuleToUnlock.status === 'locked') {
+        nextModuleToUnlock.status = 'current';
+        if (nextModuleToUnlock.lessons.length > 0) {
+          nextModuleToUnlock.lessons[0].status = 'current';
+        }
+      }
+    }
+
+    // Auto-unlock corresponding topic test
+    const mIdx = mockModules.findIndex(m => m.lessons.some(l => l.id === lessonId));
+    if (mIdx !== -1 && mockModules[mIdx].status === 'completed') {
+      if (mockTopicTests[mIdx]) {
+        mockTopicTests[mIdx].status = 'not_started';
+      }
+    }
+
+    saveProgressToLocalStorage();
+  }
+}
+
+export function completeTestOrExam(id: string, score: number) {
+  // Check if it's a topic test
+  const topicIdx = mockTopicTests.findIndex(t => t.id === id);
+  if (topicIdx !== -1) {
+    mockTopicTests[topicIdx].status = 'completed';
+    mockTopicTests[topicIdx].score = score;
+    // Unlock next topic test if previous module was completed
+    if (topicIdx + 1 < mockTopicTests.length) {
+      const nextTest = mockTopicTests[topicIdx + 1];
+      const nextModCompleted = mockModules[topicIdx + 1]?.status === 'completed';
+      if (nextTest.status === 'locked' && nextModCompleted) {
+        nextTest.status = 'not_started';
+      }
+    }
+  }
+
+  // Check if it's a mock exam
+  const examIdx = mockExams.findIndex(e => e.id === id);
+  if (examIdx !== -1) {
+    mockExams[examIdx].status = 'completed';
+    mockExams[examIdx].score = score;
+    // Unlock next mock exam
+    if (examIdx + 1 < mockExams.length) {
+      if (mockExams[examIdx + 1].status === 'locked') {
+        mockExams[examIdx + 1].status = 'not_started';
+      }
+    }
+  }
+
+  saveProgressToLocalStorage();
+}
+
+// Automatically load on import
+if (typeof window !== 'undefined') {
+  loadProgressFromLocalStorage();
+}
+

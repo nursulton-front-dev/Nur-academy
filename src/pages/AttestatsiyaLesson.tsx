@@ -8,7 +8,7 @@ import {
   BookOpen, 
   FileText 
 } from 'lucide-react';
-import { mockModules, Lesson } from '../data/attestatsiyaMocks';
+import { mockModules, Lesson, completeLessonAndUnlockNext } from '../data/attestatsiyaMocks';
 
 export default function AttestatsiyaLesson() {
   const { id } = useParams<{ id: string }>();
@@ -33,6 +33,7 @@ export default function AttestatsiyaLesson() {
     if (current) {
       setLesson(current);
       setIsPlaying(false); // Reset video state on lesson change
+      completeLessonAndUnlockNext(current.id);
     } else {
       // If lesson not found, redirect to landing
       navigate('/attestatsiya');

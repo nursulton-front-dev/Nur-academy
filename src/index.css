@@ -16,16 +16,16 @@
   }
 
   .dark {
-    --theme-primary-bg: #16201F;
-    --theme-text-primary: #EAF3F0;
-    --theme-text-secondary: #8EABA7;
+    --theme-primary-bg: #090D16;
+    --theme-text-primary: #F8FAFC;
+    --theme-text-secondary: #94A3B8;
     --theme-accent-blue: #3B7DD8;
-    --theme-success-green: #4CAF82;
-    --theme-error-red: #E0735C;
-    --theme-border-card: #2A3A38;
-    --theme-surface: #1E2B29;
-    --theme-surface-hover: #263634;
-    --theme-surface-muted: #1c2a28;
+    --theme-success-green: #10B981;
+    --theme-error-red: #EF4444;
+    --theme-border-card: #1E293B;
+    --theme-surface: #111827;
+    --theme-surface-hover: #1F2937;
+    --theme-surface-muted: #1E293B;
   }
 
   body {

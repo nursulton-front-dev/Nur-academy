@@ -14,7 +14,8 @@ import {
   ArrowRight, 
   Sparkles, 
   Clock, 
-  ShieldCheck 
+  ShieldCheck,
+  GraduationCap
 } from 'lucide-react';
 
 export default function Landing() {
@@ -249,15 +250,39 @@ export default function Landing() {
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Active Course Card */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Attestatsiya Course Card (Featured & Active) */}
+            <div className="group bg-surface rounded-2xl border-2 border-accent-blue/30 overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div className="aspect-video bg-gradient-to-br from-accent-blue to-[#1d4ed8] flex items-center justify-center relative">
+                  <span className="absolute top-4 right-4 bg-[#10B981] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                    Tavsiya etilgan
+                  </span>
+                  <GraduationCap className="w-16 h-16 text-white/80 group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <div className="p-8">
+                  <h3 className="font-serif font-bold text-2xl text-text-primary mb-3 group-hover:text-accent-blue transition-colors">
+                    Informatika o'qituvchilari attestatsiyasi
+                  </h3>
+                  <p className="text-text-secondary mb-6 leading-relaxed">
+                    Informatika fani o'qituvchilarini toifa va attestatsiya imtihonlariga tayyorlovchi maxsus dastur. 8 ta asosiy modul, 50+ savol va mock testlar.
+                  </p>
+                </div>
+              </div>
+              <div className="px-8 pb-8">
+                <Link 
+                  to="/attestatsiya" 
+                  className="w-full text-center inline-block bg-accent-blue text-white hover:bg-opacity-95 font-semibold py-3 rounded-xl transition-colors duration-200 shadow-md"
+                >
+                  Kursni boshlash
+                </Link>
+              </div>
+            </div>
+
+            {/* AI/ML Course Card */}
             <div className="group bg-surface rounded-2xl border border-border-card overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col justify-between">
               <div>
                 <div className="aspect-video bg-accent-blue/10 flex items-center justify-center relative">
-                  <span className="absolute top-4 right-4 bg-success-green text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                    Yangi
-                  </span>
                   <BookOpen className="w-16 h-16 text-accent-blue opacity-40 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <div className="p-8">
@@ -274,12 +299,12 @@ export default function Landing() {
                   to="/courses" 
                   className="w-full text-center inline-block bg-accent-blue/10 hover:bg-accent-blue hover:text-white text-accent-blue font-semibold py-3 rounded-xl transition-colors duration-200"
                 >
-                  Kursni boshlash
+                  Batafsil ko'rish
                 </Link>
               </div>
             </div>
             
-            {/* Locked/Future Card 1 */}
+            {/* Locked/Future Card */}
             <div className="bg-surface/60 rounded-2xl border border-border-card overflow-hidden opacity-75 flex flex-col justify-between">
               <div>
                 <div className="aspect-video bg-surface-muted flex items-center justify-center">
@@ -293,30 +318,6 @@ export default function Landing() {
                   </h3>
                   <p className="text-text-secondary leading-relaxed">
                     React.js, TailwindCSS va TypeScript yordamida chiroyli hamda interaktiv veb-saytlar va ilovalar yaratishni o'rganing.
-                  </p>
-                </div>
-              </div>
-              <div className="px-8 pb-8">
-                <div className="w-full text-center bg-surface-muted text-text-secondary font-medium py-3 rounded-xl cursor-not-allowed">
-                  Kutilmoqda
-                </div>
-              </div>
-            </div>
-
-            {/* Locked/Future Card 2 */}
-            <div className="bg-surface/60 rounded-2xl border border-border-card overflow-hidden opacity-75 flex flex-col justify-between">
-              <div>
-                <div className="aspect-video bg-surface-muted flex items-center justify-center">
-                  <span className="text-text-secondary font-semibold px-4 py-2 bg-surface rounded-full text-sm border border-border-card">
-                    Tez kunda
-                  </span>
-                </div>
-                <div className="p-8">
-                  <h3 className="font-serif font-bold text-2xl text-text-primary mb-3">
-                    Backend Dasturlash
-                  </h3>
-                  <p className="text-text-secondary leading-relaxed">
-                    Node.js, Express va PostgreSQL yordamida tezkor, xavfsiz va kengayuvchi server hamda ma'lumotlar bazasi tizimlarini yarating.
                   </p>
                 </div>
               </div>

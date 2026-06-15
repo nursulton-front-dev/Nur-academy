@@ -18,6 +18,7 @@ import AttestatsiyaLayout from './components/AttestatsiyaLayout';
 import AttestatsiyaLanding from './pages/AttestatsiyaLanding';
 import AttestatsiyaLesson from './pages/AttestatsiyaLesson';
 import AttestatsiyaTests from './pages/AttestatsiyaTests';
+import AttestatsiyaMockExams from './pages/AttestatsiyaMockExams';
 import AttestatsiyaExam from './pages/AttestatsiyaExam';
 import AttestatsiyaExamResult from './pages/AttestatsiyaExamResult';
 
@@ -44,6 +45,7 @@ export default function App() {
                 <Route index element={<AttestatsiyaLanding />} />
                 <Route path="dars/:id" element={<AttestatsiyaLesson />} />
                 <Route path="testlar" element={<AttestatsiyaTests />} />
+                <Route path="mock-imtihonlar" element={<AttestatsiyaMockExams />} />
                 <Route path="imtihon/:id" element={<AttestatsiyaExam />} />
                 <Route path="imtihon/:id/natija" element={<AttestatsiyaExamResult />} />
               </Route>
