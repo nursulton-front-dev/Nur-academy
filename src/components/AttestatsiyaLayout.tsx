@@ -30,6 +30,7 @@ import { userProgressService, goalOptions } from '../lib/userProgress';
 import { learningEngineService } from '../lib/learningEngine';
 import { useAuth } from '../contexts/AuthContext';
 import { enrollmentService } from '../lib/enrollmentService';
+import { diagnosticService } from '../lib/diagnosticService';
 import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
 import GoalSetupModal from './GoalSetupModal';
 import TodayPlanCard from './TodayPlanCard';
@@ -76,6 +77,11 @@ export default function AttestatsiyaLayout() {
       if (!enr) return;
       setDiagnosticCompleted(enr.diagnostic_completed);
       if (enr.goal_score != null) setUserGoal(enr.goal_score);
+      if (enr.diagnostic_completed) {
+        diagnosticService.getLatestAttempt(user.id, ATTESTATSIYA_COURSE_ID).then((attempt) => {
+          if (attempt) setDiagnosticScore(attempt.total_score);
+        });
+      }
     });
   }, [user]);
 
@@ -195,8 +201,8 @@ export default function AttestatsiyaLayout() {
     <div className="flex flex-col h-full bg-surface text-text-primary transition-colors duration-250 py-5 px-4 font-sans justify-between">
       <div className="space-y-6">
 
-        {/* Diagnostic prompt banner — hidden once the diagnostic is completed */}
-        {!diagnosticCompleted && (
+        {/* Diagnostic status banner — prompt before completion, result block after */}
+        {!diagnosticCompleted ? (
           <Link
             to="/attestatsiya/diagnostika"
             onClick={() => setMobileMenuOpen(false)}
@@ -212,6 +218,29 @@ export default function AttestatsiyaLayout() {
                 </p>
                 <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-bold text-accent-blue group-hover:gap-1.5 transition-all">
                   Topshirish <ChevronRight className="w-3.5 h-3.5" />
+                </span>
+              </div>
+            </div>
+          </Link>
+        ) : (
+          <Link
+            to="/attestatsiya/diagnostika/natija"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-3.5 hover:bg-emerald-500/10 transition-colors group"
+          >
+            <div className="flex items-start gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold text-text-secondary uppercase tracking-wide leading-snug">
+                  Diagnostika natijasi
+                </p>
+                <p className="text-sm font-serif font-extrabold text-text-primary leading-tight">
+                  {diagnosticScore ?? 0}<span className="text-xs text-text-secondary font-sans font-bold"> / 100</span>
+                </p>
+                <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 group-hover:gap-1.5 transition-all">
+                  Natijani koʻrish <ChevronRight className="w-3.5 h-3.5" />
                 </span>
               </div>
             </div>
