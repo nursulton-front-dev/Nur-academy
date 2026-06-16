@@ -233,16 +233,25 @@ export interface Database {
           user_id: string
           course_id: string
           enrolled_at: string
+          goal_score: number | null
+          diagnostic_completed: boolean
+          onboarding_completed: boolean
         }
         Insert: {
           user_id: string
           course_id: string
           enrolled_at?: string
+          goal_score?: number | null
+          diagnostic_completed?: boolean
+          onboarding_completed?: boolean
         }
         Update: {
           user_id?: string
           course_id?: string
           enrolled_at?: string
+          goal_score?: number | null
+          diagnostic_completed?: boolean
+          onboarding_completed?: boolean
         }
       }
       progress: {

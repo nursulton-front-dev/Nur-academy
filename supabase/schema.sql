@@ -105,10 +105,15 @@ create table if not exists public.answer_translations (
 );
 
 -- Enrollments Table (User Course Registrations)
+-- goal_score / diagnostic_completed / onboarding_completed live at the enrollment
+-- level because one user can take several courses with different goals.
 create table if not exists public.enrollments (
   user_id uuid references public.profiles(id) on delete cascade not null,
   course_id uuid references public.courses(id) on delete cascade not null,
   enrolled_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  goal_score int default null,
+  diagnostic_completed boolean default false,
+  onboarding_completed boolean default false,
   primary key (user_id, course_id)
 );
 
@@ -272,6 +277,11 @@ create policy "Users can register their own enrollments"
   on public.enrollments for insert
   with check (auth.uid() = user_id);
 
+create policy "Users can update their own enrollments"
+  on public.enrollments for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
 -- --- PROGRESS POLICIES ---
 create policy "Users can view their own progress"
   on public.progress for select
@@ -361,3 +371,18 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+
+-- =========================================================================
+-- 6. SEED DATA
+-- =========================================================================
+
+-- Attestatsiya course row. Its UUID is referenced by the client
+-- (src/lib/courses.ts ATTESTATSIYA_COURSE_ID) to enroll users.
+insert into public.courses (id, title, description)
+values (
+  '0a7e57a7-0000-4000-8000-000000000001',
+  'Informatika oʻqituvchilari attestatsiyasi',
+  'Attestatsiyaga tayyorgarlik kursi'
+)
+on conflict (id) do nothing;

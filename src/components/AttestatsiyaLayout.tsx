@@ -28,6 +28,9 @@ import {
 import { mockModules, mockTopicTests, mockExams, resetAllProgress } from '../data/attestatsiyaMocks';
 import { userProgressService, goalOptions } from '../lib/userProgress';
 import { learningEngineService } from '../lib/learningEngine';
+import { useAuth } from '../contexts/AuthContext';
+import { enrollmentService } from '../lib/enrollmentService';
+import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
 import GoalSetupModal from './GoalSetupModal';
 import TodayPlanCard from './TodayPlanCard';
 import WeakTopicsCard from './WeakTopicsCard';
@@ -60,6 +63,21 @@ export default function AttestatsiyaLayout() {
     return r ? r.score : null;
   });
   const reviewCount = learningEngineService.getReviewQueue().length;
+
+  // Enrollment-backed onboarding state (mirrors to localStorage offline).
+  const { user } = useAuth();
+  const [diagnosticCompleted, setDiagnosticCompleted] = useState<boolean>(
+    () => userProgressService.getDiagnosticCompleted()
+  );
+
+  useEffect(() => {
+    if (!user) return;
+    enrollmentService.getEnrollment(user.id, ATTESTATSIYA_COURSE_ID).then((enr) => {
+      if (!enr) return;
+      setDiagnosticCompleted(enr.diagnostic_completed);
+      if (enr.goal_score != null) setUserGoal(enr.goal_score);
+    });
+  }, [user]);
 
   // Today's goals list state
   const [goalsList, setGoalsList] = useState<GoalItem[]>(() => {
@@ -142,6 +160,7 @@ export default function AttestatsiyaLayout() {
 
   const handleGoalSaved = (goal: number) => {
     setUserGoal(goal);
+    if (user) enrollmentService.setGoal(user.id, ATTESTATSIYA_COURSE_ID, goal);
   };
 
   const toggleGoalCompleted = (goalId: string) => {
@@ -175,6 +194,29 @@ export default function AttestatsiyaLayout() {
   const sidebarContent = (
     <div className="flex flex-col h-full bg-surface text-text-primary transition-colors duration-250 py-5 px-4 font-sans justify-between">
       <div className="space-y-6">
+
+        {/* Diagnostic prompt banner — hidden once the diagnostic is completed */}
+        {!diagnosticCompleted && (
+          <Link
+            to="/attestatsiya/diagnostika"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block rounded-2xl border border-accent-blue/25 bg-accent-blue/5 p-3.5 hover:bg-accent-blue/10 transition-colors group"
+          >
+            <div className="flex items-start gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-accent-blue/15 flex items-center justify-center shrink-0">
+                <Stethoscope className="w-4 h-4 text-accent-blue" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-text-primary leading-snug">
+                  Diagnostika hali oʻtilmagan
+                </p>
+                <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-bold text-accent-blue group-hover:gap-1.5 transition-all">
+                  Topshirish <ChevronRight className="w-3.5 h-3.5" />
+                </span>
+              </div>
+            </div>
+          </Link>
+        )}
 
         {/* Section 1: COURSE */}
         <div>
@@ -739,6 +781,7 @@ export default function AttestatsiyaLayout() {
   const isCourseMainPage = location.pathname === '/attestatsiya' || location.pathname === '/attestatsiya/';
 
   return (
+    <>
     <div className="flex min-h-[calc(100vh-64px)] bg-primary-bg transition-colors duration-250 font-sans">
 
       {/* Permanent Left Sidebar - 280px width, sticky, attached to the edge of the screen */}
@@ -792,6 +835,6 @@ export default function AttestatsiyaLayout() {
         onClose={() => setGoalModalOpen(false)}
         onSave={handleGoalSaved}
       />
-
+    </>
   );
 }

@@ -18,9 +18,13 @@ import {
 import { diagnosticQuestions, ExtendedQuestion } from '../lib/questionTypes';
 import { userProgressService, DiagnosticResult } from '../lib/userProgress';
 import { subscriptionService } from '../lib/subscription';
+import { useAuth } from '../contexts/AuthContext';
+import { enrollmentService } from '../lib/enrollmentService';
+import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
 
 export default function Diagnostic() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // State flags
   const [testState, setTestState] = useState<'intro' | 'active' | 'result'>('intro');
@@ -167,7 +171,12 @@ export default function Diagnostic() {
 
     // Save and add reward XP points
     userProgressService.setDiagnosticResult(resultObj);
+    userProgressService.setDiagnosticCompleted(true);
     userProgressService.addPoints(50);
+    // Persist completion on the enrollment so the sidebar banner clears.
+    if (user) {
+      enrollmentService.markDiagnosticCompleted(user.id, ATTESTATSIYA_COURSE_ID);
+    }
     setScoreResult(resultObj);
     setTestState('result');
   };

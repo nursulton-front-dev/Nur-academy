@@ -23,6 +23,7 @@ import AttestatsiyaExam from './pages/AttestatsiyaExam';
 import AttestatsiyaExamResult from './pages/AttestatsiyaExamResult';
 import DevStatus from './pages/DevStatus';
 import Diagnostic from './pages/Diagnostic';
+import AttestatsiyaOnboarding from './pages/AttestatsiyaOnboarding';
 import ErrorNotebook from './pages/ErrorNotebook';
 import Pricing from './pages/Pricing';
 
@@ -45,6 +46,9 @@ export default function App() {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="learn/:lessonId" element={<Lesson />} />
               </Route>
+
+              {/* Course onboarding gate — focused step, no course sidebar */}
+              <Route path="attestatsiya/onboarding" element={<AttestatsiyaOnboarding />} />
 
               {/* Attestatsiya section (Nested inside main Layout) */}
               <Route path="attestatsiya" element={<AttestatsiyaLayout />}>

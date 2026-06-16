@@ -12,6 +12,10 @@ const POINTS_KEY = 'nur_academy_user_points';
 const STREAK_KEY = 'nur_academy_user_streak';
 const DIAGNOSTIC_KEY = 'nur_academy_diagnostic_result';
 const MASTERY_KEY = 'nur_academy_topic_mastery';
+// Local mirror of enrollment-level onboarding flags (source of truth lives in the
+// Supabase `enrollments` row; these keep the legacy localStorage UI in sync offline).
+const ONBOARDING_KEY = 'nur_academy_onboarding_completed';
+const DIAGNOSTIC_DONE_KEY = 'nur_academy_diagnostic_completed';
 
 export const goalOptions = [
   { value: 55, label: "55+ — Attestatsiyadan o'tish", title: "Attestatsiyadan o'tish" },
@@ -74,11 +78,29 @@ export const userProgressService = {
     localStorage.setItem(MASTERY_KEY, JSON.stringify(mastery));
   },
 
+  getOnboardingCompleted(): boolean {
+    return localStorage.getItem(ONBOARDING_KEY) === 'true';
+  },
+
+  setOnboardingCompleted(value: boolean): void {
+    localStorage.setItem(ONBOARDING_KEY, value ? 'true' : 'false');
+  },
+
+  getDiagnosticCompleted(): boolean {
+    return localStorage.getItem(DIAGNOSTIC_DONE_KEY) === 'true';
+  },
+
+  setDiagnosticCompleted(value: boolean): void {
+    localStorage.setItem(DIAGNOSTIC_DONE_KEY, value ? 'true' : 'false');
+  },
+
   clearAllProgress(): void {
     localStorage.removeItem(GOAL_KEY);
     localStorage.removeItem(POINTS_KEY);
     localStorage.removeItem(STREAK_KEY);
     localStorage.removeItem(DIAGNOSTIC_KEY);
     localStorage.removeItem(MASTERY_KEY);
+    localStorage.removeItem(ONBOARDING_KEY);
+    localStorage.removeItem(DIAGNOSTIC_DONE_KEY);
   }
 };

@@ -1,5 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { enrollmentService } from '../lib/enrollmentService';
+import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
 import { 
   PlayCircle, 
   CheckCircle2, 
@@ -48,6 +51,45 @@ const getModuleStyle = (id: string) => {
 };
 
 export default function AttestatsiyaLanding() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [onboardingDone, setOnboardingDone] = useState(true);
+  const [entering, setEntering] = useState(false);
+
+  // Reflect enrollment state in the hero CTA label (Boshlash vs Davom etish).
+  useEffect(() => {
+    let active = true;
+    if (!user) {
+      setOnboardingDone(false);
+      return;
+    }
+    enrollmentService.getEnrollment(user.id, ATTESTATSIYA_COURSE_ID).then((enr) => {
+      if (active) setOnboardingDone(!!enr?.onboarding_completed);
+    });
+    return () => {
+      active = false;
+    };
+  }, [user]);
+
+  const handleEnterCourse = async (continueLessonId: string) => {
+    if (entering) return;
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    setEntering(true);
+    try {
+      const enrollment = await enrollmentService.ensureEnrollment(user.id, ATTESTATSIYA_COURSE_ID);
+      if (!enrollment?.onboarding_completed) {
+        navigate('/attestatsiya/onboarding');
+        return;
+      }
+      navigate(`/attestatsiya/dars/${continueLessonId}`);
+    } finally {
+      setEntering(false);
+    }
+  };
+
   // Calculate general progress
   const totalLessons = mockModules.reduce((acc, m) => acc + m.lessons.length, 0);
   const completedLessons = mockModules.reduce((acc, m) => 
@@ -137,13 +179,15 @@ export default function AttestatsiyaLanding() {
           </div>
 
           <div className="w-full md:w-auto shrink-0">
-            <Link
-              to={`/attestatsiya/dars/${continueLessonId}`}
-              className="w-full md:w-auto inline-flex items-center justify-center space-x-2.5 bg-accent-blue text-white px-8 py-4.5 rounded-[18px] font-bold text-sm hover:bg-accent-blue/95 shadow-md shadow-accent-blue/20 hover:shadow-lg hover:shadow-accent-blue/25 active:scale-98 transition-all duration-300"
+            <button
+              type="button"
+              onClick={() => handleEnterCourse(continueLessonId)}
+              disabled={entering}
+              className="w-full md:w-auto inline-flex items-center justify-center space-x-2.5 bg-accent-blue text-white px-8 py-4.5 rounded-[18px] font-bold text-sm hover:bg-accent-blue/95 shadow-md shadow-accent-blue/20 hover:shadow-lg hover:shadow-accent-blue/25 active:scale-98 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             >
-              <span>Davom etish</span>
+              <span>{entering ? 'Yuklanmoqda...' : onboardingDone ? 'Davom etish' : 'Boshlash'}</span>
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </div>
