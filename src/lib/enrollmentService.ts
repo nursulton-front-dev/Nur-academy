@@ -50,22 +50,29 @@ export const enrollmentService = {
 
     const { data, error } = await supabase
       .from('enrollments')
-      .upsert(
-        { user_id: userId, course_id: courseId, onboarding_completed: false },
-        { onConflict: 'user_id,course_id', ignoreDuplicates: true }
-      )
+      .insert({ user_id: userId, course_id: courseId, onboarding_completed: false })
       .select(COLUMNS)
       .maybeSingle();
 
     if (error) {
-      console.error('ensureEnrollment failed:', error.message);
-      // Fall back to re-reading in case the row was created concurrently.
-      return this.getEnrollment(userId, courseId);
+      // 23505 = unique_violation → row already created concurrently; re-read it.
+      if (error.code === '23505') return this.getEnrollment(userId, courseId);
+      // Log the FULL error so RLS failures (42501) and FK issues (23503) are visible.
+      console.error('ensureEnrollment INSERT failed:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        userId,
+        courseId
+      });
+      return null;
     }
     if (data) {
       mirrorToLocal(data as Enrollment);
       return data as Enrollment;
     }
+    // Insert returned no representation (RLS may hide it) — re-read.
     return this.getEnrollment(userId, courseId);
   },
 

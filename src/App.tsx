@@ -29,6 +29,7 @@ import AttestatsiyaExamResult from './pages/AttestatsiyaExamResult';
 import DevStatus from './pages/DevStatus';
 import Diagnostic from './pages/Diagnostic';
 import AttestatsiyaOnboarding from './pages/AttestatsiyaOnboarding';
+import Certificates from './pages/Certificates';
 import ErrorNotebook from './pages/ErrorNotebook';
 import Pricing from './pages/Pricing';
 
@@ -47,6 +48,7 @@ const router = createBrowserRouter(
 
       <Route element={<ProtectedRoute />}>
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="certificates" element={<Certificates />} />
         <Route path="learn/:lessonId" element={<Lesson />} />
       </Route>
 

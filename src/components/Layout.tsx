@@ -4,6 +4,7 @@ import { BookOpen, Bell, BellOff, LogOut, Award } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
+import XpIndicator from './XpIndicator';
 
 // Clear per-user app data on logout so nothing leaks to the next user on a shared
 // device. Theme ('theme') is intentionally preserved.
@@ -94,6 +95,9 @@ export function Layout() {
 
             {user ? (
               <>
+                {/* Compact XP / streak indicator */}
+                <XpIndicator />
+
                 {/* Notifications */}
                 <div className="relative">
                   <button
@@ -147,7 +151,7 @@ export function Layout() {
                       </div>
                       <div className="py-1.5">
                         <Link
-                          to="/attestatsiya"
+                          to="/certificates"
                           onClick={() => setProfileOpen(false)}
                           className="flex items-center space-x-2.5 px-4 py-2 text-xs text-text-primary hover:bg-surface-hover transition-colors"
                         >

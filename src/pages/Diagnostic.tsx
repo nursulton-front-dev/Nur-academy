@@ -84,6 +84,8 @@ export default function Diagnostic() {
     }
     setStarting(true);
     try {
+      // New attempt → un-dismiss the sidebar result banner so the fresh score shows.
+      localStorage.removeItem(`nur_diagnostic_banner_dismissed_${user.id}`);
       const [created, loadedQuestions] = await Promise.all([
         diagnosticService.createAttempt(user.id, ATTESTATSIYA_COURSE_ID),
         diagnosticService.getQuestions()

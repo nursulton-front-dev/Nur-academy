@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 import { BookOpen, Search, GraduationCap } from 'lucide-react';
+import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
 
 interface CourseWithTranslation {
   id: string;
@@ -52,9 +53,11 @@ export default function CourseCatalog() {
     fetchCourses();
   }, []);
 
-  const filteredCourses = courses.filter(course => 
-    course.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    (course.description && course.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredCourses = courses.filter(course =>
+    // The attestatsiya course is rendered as the featured card above — keep it out of the grid.
+    course.id !== ATTESTATSIYA_COURSE_ID &&
+    (course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (course.description && course.description.toLowerCase().includes(searchQuery.toLowerCase())))
   );
 
   // Check if search matches attestatsiya course

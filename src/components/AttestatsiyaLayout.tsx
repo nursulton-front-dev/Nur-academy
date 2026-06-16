@@ -10,7 +10,6 @@ import {
   Menu,
   X,
   PlayCircle,
-  RotateCcw,
   Flame,
   Trophy,
   Award,
@@ -25,7 +24,7 @@ import {
   BookMarked,
   CreditCard
 } from 'lucide-react';
-import { mockModules, mockTopicTests, mockExams, resetAllProgress } from '../data/attestatsiyaMocks';
+import { mockModules, mockTopicTests, mockExams } from '../data/attestatsiyaMocks';
 import { userProgressService, goalOptions } from '../lib/userProgress';
 import { learningEngineService } from '../lib/learningEngine';
 import { useAuth } from '../contexts/AuthContext';
@@ -71,14 +70,24 @@ export default function AttestatsiyaLayout() {
   const [diagnosticCompleted, setDiagnosticCompleted] = useState<boolean>(
     () => userProgressService.getDiagnosticCompleted()
   );
+  const [bannerDismissed, setBannerDismissed] = useState(false);
+
+  const dismissKey = (uid: string) => `nur_diagnostic_banner_dismissed_${uid}`;
+
+  const dismissDiagnosticBanner = () => {
+    if (user) localStorage.setItem(dismissKey(user.id), 'true');
+    setBannerDismissed(true);
+  };
 
   // Source of truth is the enrollments row in the DB. Always refetch fresh on mount;
   // the localStorage mirror is only the initial optimistic value.
   const refreshDiagnosticState = useCallback(async () => {
     if (!user) return;
-    const enr = await enrollmentService.getEnrollment(user.id, ATTESTATSIYA_COURSE_ID);
+    // Fallback: guarantee an enrollment row exists on any /attestatsiya* entry.
+    const enr = await enrollmentService.ensureEnrollment(user.id, ATTESTATSIYA_COURSE_ID);
     if (!enr) return;
     setDiagnosticCompleted(enr.diagnostic_completed);
+    setBannerDismissed(localStorage.getItem(dismissKey(user.id)) === 'true');
     if (enr.goal_score != null) setUserGoal(enr.goal_score);
     if (enr.diagnostic_completed) {
       const attempt = await diagnosticService.getLatestFinishedAttempt(user.id, ATTESTATSIYA_COURSE_ID);
@@ -162,20 +171,6 @@ export default function AttestatsiyaLayout() {
     }));
   };
 
-  const handleReset = () => {
-    if (confirm("Haqiqatdan ham barcha o'zlashtirilgan darslar, streak va maqsadlarni tozalamoqchimisiz?")) {
-      resetAllProgress();
-      localStorage.removeItem('nur_goals_list');
-      localStorage.removeItem('nur_streak');
-      userProgressService.clearAllProgress();
-      setGoalsList(DEFAULT_GOALS);
-      setStreak(0);
-      setUserGoal(null);
-      setDiagnosticScore(null);
-      window.location.reload();
-    }
-  };
-
   const handleGoalSaved = (goal: number) => {
     setUserGoal(goal);
     if (user) enrollmentService.setGoal(user.id, ATTESTATSIYA_COURSE_ID, goal);
@@ -234,30 +229,39 @@ export default function AttestatsiyaLayout() {
               </div>
             </div>
           </Link>
-        ) : (
-          <Link
-            to="/attestatsiya/diagnostika"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-3.5 hover:bg-emerald-500/10 transition-colors group"
-          >
-            <div className="flex items-start gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+        ) : !bannerDismissed ? (
+          <div className="relative rounded-2xl border border-emerald-500/25 bg-emerald-500/5 hover:bg-emerald-500/10 transition-colors group">
+            <button
+              onClick={dismissDiagnosticBanner}
+              aria-label="Yopish"
+              className="absolute top-2 right-2 p-1 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors cursor-pointer z-10"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+            <Link
+              to="/attestatsiya/diagnostika"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block p-3.5"
+            >
+              <div className="flex items-start gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                </div>
+                <div className="min-w-0 pr-4">
+                  <p className="text-[10px] font-bold text-text-secondary uppercase tracking-wide leading-snug">
+                    Diagnostika natijasi
+                  </p>
+                  <p className="text-sm font-serif font-extrabold text-text-primary leading-tight">
+                    {diagnosticScore ?? 0}<span className="text-xs text-text-secondary font-sans font-bold"> / 100</span>
+                  </p>
+                  <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 group-hover:gap-1.5 transition-all">
+                    Natijani koʻrish <ChevronRight className="w-3.5 h-3.5" />
+                  </span>
+                </div>
               </div>
-              <div className="min-w-0">
-                <p className="text-[10px] font-bold text-text-secondary uppercase tracking-wide leading-snug">
-                  Diagnostika natijasi
-                </p>
-                <p className="text-sm font-serif font-extrabold text-text-primary leading-tight">
-                  {diagnosticScore ?? 0}<span className="text-xs text-text-secondary font-sans font-bold"> / 100</span>
-                </p>
-                <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 group-hover:gap-1.5 transition-all">
-                  Natijani koʻrish <ChevronRight className="w-3.5 h-3.5" />
-                </span>
-              </div>
-            </div>
-          </Link>
-        )}
+            </Link>
+          </div>
+        ) : null}
 
         {/* Section 1: COURSE */}
         <div>
@@ -480,17 +484,6 @@ export default function AttestatsiyaLayout() {
           </div>
         </div>
 
-      </div>
-
-      {/* Reset progress */}
-      <div className="pt-4 border-t border-border-card/60 px-1 mt-6">
-        <button
-          onClick={handleReset}
-          className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 text-[11px] font-semibold text-rose-500 hover:text-rose-600 hover:bg-rose-500/5 rounded-xl border border-rose-500/15 transition-all cursor-pointer"
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-          <span>Progressni tozalash</span>
-        </button>
       </div>
     </div>
   );

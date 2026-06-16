@@ -190,7 +190,7 @@ export default function DiagnosticRunner({
       <button
         key={q.id}
         onClick={() => setCurrentIndex(idx)}
-        className={`rounded-lg border text-[11px] font-medium flex items-center justify-center transition-all cursor-pointer ${style}`}
+        className={`rounded-lg border text-[13px] font-medium flex items-center justify-center transition-all cursor-pointer ${style}`}
       >
         {idx + 1}
       </button>
@@ -217,7 +217,7 @@ export default function DiagnosticRunner({
 
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-3 lg:gap-4 p-3 sm:p-4 lg:p-6 overflow-hidden">
         {/* Desktop left panel */}
-        <aside className="hidden lg:flex lg:flex-col w-[240px] shrink-0 gap-4 min-h-0">
+        <aside className="hidden lg:flex lg:flex-col w-[280px] shrink-0 gap-4 min-h-0">
           {/* Progress + timer */}
           <div className="bg-surface border border-border-card rounded-[20px] p-4 shadow-sm flex items-center gap-3">
             <div className="relative flex items-center justify-center shrink-0">
@@ -256,11 +256,19 @@ export default function DiagnosticRunner({
             </div>
           </div>
 
-          {/* Navigator — 8-col grid, square cells, fits without internal scroll */}
+          {/* Navigator — 6-col grid, square cells (~36px), no internal scroll */}
           <div className="bg-surface border border-border-card rounded-[20px] p-4 shadow-sm min-h-0">
             <h4 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-3">Navigator</h4>
-            <div className="grid grid-cols-8 gap-1.5 [&>button]:aspect-square">
+            <div className="grid grid-cols-6 gap-1.5 [&>button]:aspect-square [&>button]:min-h-[36px]">
               {questions.map((q, idx) => renderNavCell(idx, q))}
+            </div>
+
+            {/* Legend */}
+            <div className="mt-3.5 pt-3 border-t border-border-card/50 grid grid-cols-1 gap-1.5 text-[11px] font-semibold text-text-secondary">
+              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-accent-blue shrink-0" />Joriy savol</span>
+              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-success-green shrink-0" />Javob berilgan</span>
+              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0" />Belgilangan</span>
+              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-border-card border border-border-card shrink-0" />Javob berilmagan</span>
             </div>
           </div>
         </aside>
@@ -297,8 +305,9 @@ export default function DiagnosticRunner({
             </button>
           </div>
 
-          {/* Scrollable question area (only this scrolls, if long) */}
-          <div className="flex-1 min-h-0 overflow-y-auto py-4 space-y-5">
+          {/* Scrollable question area (only this scrolls, if long) — centered, max 720px */}
+          <div className="flex-1 min-h-0 overflow-y-auto py-4">
+            <div className="max-w-[720px] mx-auto w-full space-y-5">
             <h2 className="text-lg sm:text-xl font-serif font-extrabold text-text-primary leading-relaxed">
               {current.text}
             </h2>
@@ -324,6 +333,7 @@ export default function DiagnosticRunner({
                   </button>
                 );
               })}
+            </div>
             </div>
           </div>
 

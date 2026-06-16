@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { enrollmentService } from '../lib/enrollmentService';
+import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
 import { 
   PlayCircle, 
   CheckCircle2, 
@@ -20,9 +23,30 @@ import {
 
 export default function Landing() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [starting, setStarting] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const toggleFaq = (index: number) => {
     setActiveFaq(activeFaq === index ? null : index);
+  };
+
+  // "Bepul boshlash": guests → signup; logged-in → ensure enrollment then course.
+  const handleStart = async () => {
+    if (starting) return;
+    if (!user) {
+      navigate('/signup');
+      return;
+    }
+    setStarting(true);
+    try {
+      await enrollmentService.ensureEnrollment(user.id, ATTESTATSIYA_COURSE_ID);
+    } catch (e) {
+      console.error('Landing handleStart ensureEnrollment failed:', e);
+    } finally {
+      setStarting(false);
+    }
+    navigate('/attestatsiya');
   };
 
   const faqs = [
@@ -115,13 +139,14 @@ export default function Landing() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/signup"
-              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-accent-blue text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-opacity-95 transition-all shadow-md hover:shadow-accent-blue/20 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 duration-200"
+            <button
+              onClick={handleStart}
+              disabled={starting}
+              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-accent-blue text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-opacity-95 transition-all shadow-md hover:shadow-accent-blue/20 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 duration-200 disabled:opacity-70 cursor-pointer"
             >
-              <span>Bepul boshlash</span>
+              <span>{starting ? 'Yuklanmoqda...' : 'Bepul boshlash'}</span>
               <PlayCircle className="w-5 h-5" />
-            </Link>
+            </button>
             <Link
               to="/courses"
               className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-surface hover:bg-surface-hover text-text-primary border border-border-card px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-95 duration-200"
@@ -428,12 +453,13 @@ export default function Landing() {
             Platformamizda bepul roʻyxatdan oʻting, mutaxassis mentorlardan ta'lim oling va sertifikatga ega bo'ling.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/signup"
-              className="w-full sm:w-auto inline-block bg-white text-accent-blue px-10 py-4 rounded-xl font-bold text-lg hover:bg-opacity-95 transition-all shadow-md active:scale-95 duration-200"
+            <button
+              onClick={handleStart}
+              disabled={starting}
+              className="w-full sm:w-auto inline-block bg-white text-accent-blue px-10 py-4 rounded-xl font-bold text-lg hover:bg-opacity-95 transition-all shadow-md active:scale-95 duration-200 disabled:opacity-70 cursor-pointer"
             >
-              Bepul boshlash
-            </Link>
+              {starting ? 'Yuklanmoqda...' : 'Bepul boshlash'}
+            </button>
             <Link
               to="/courses"
               className="w-full sm:w-auto inline-block bg-transparent text-white border border-white/30 px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all active:scale-95 duration-200"
