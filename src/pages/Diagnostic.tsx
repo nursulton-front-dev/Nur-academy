@@ -5,47 +5,74 @@ import { useAuth } from '../contexts/AuthContext';
 import { enrollmentService } from '../lib/enrollmentService';
 import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
 import { userProgressService } from '../lib/userProgress';
-import {
-  diagnosticMockQuestions,
-  DIAGNOSTIC_DOMAINS
-} from '../data/diagnosticMockQuestions';
+import { domainLabel } from '../lib/domains';
 import {
   diagnosticService,
+  DiagnosticQuestion,
   DiagnosticAttempt,
+  DomainCount,
   DomainResult,
   computeDomainResults,
   computeTotalScore,
   toResultsByDomain,
-  generateRecommendation
+  generateRecommendation,
+  attemptToDomainResults
 } from '../lib/diagnosticService';
 import DiagnosticRunner from '../components/DiagnosticRunner';
 import DiagnosticResultView from '../components/DiagnosticResultView';
 
-type DiagnosticState = 'intro' | 'test' | 'result';
+type DiagnosticState = 'loading' | 'intro' | 'test' | 'result';
 
 interface ResultData {
   totalScore: number;
   domainResults: DomainResult[];
   recommendation: string;
+  finishedAt: string | null;
 }
 
 export default function Diagnostic() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
-  const [state, setState] = useState<DiagnosticState>('intro');
+  const [state, setState] = useState<DiagnosticState>('loading');
+  const [domainCounts, setDomainCounts] = useState<DomainCount[]>([]);
+  const [questions, setQuestions] = useState<DiagnosticQuestion[]>([]);
   const [attempt, setAttempt] = useState<DiagnosticAttempt | null>(null);
   const [result, setResult] = useState<ResultData | null>(null);
   const [goalScore, setGoalScore] = useState<number | null>(() => userProgressService.getUserGoal());
   const [starting, setStarting] = useState(false);
 
-  // Pull the authoritative goal from the enrollment for the result prognosis.
+  // On entry: if a finished attempt exists and none is active, show its result. Else intro.
   useEffect(() => {
-    if (!user) return;
-    enrollmentService.getEnrollment(user.id, ATTESTATSIYA_COURSE_ID).then((enr) => {
-      if (enr?.goal_score != null) setGoalScore(enr.goal_score);
-    });
-  }, [user]);
+    if (authLoading) return;
+    let active = true;
+    async function bootstrap() {
+      const [counts, enrollment, latest] = await Promise.all([
+        diagnosticService.getDomainCounts(),
+        user ? enrollmentService.getEnrollment(user.id, ATTESTATSIYA_COURSE_ID) : Promise.resolve(null),
+        user ? diagnosticService.getLatestFinishedAttempt(user.id, ATTESTATSIYA_COURSE_ID) : Promise.resolve(null)
+      ]);
+      if (!active) return;
+      setDomainCounts(counts);
+      if (enrollment?.goal_score != null) setGoalScore(enrollment.goal_score);
+
+      if (latest) {
+        setResult({
+          totalScore: latest.total_score,
+          domainResults: attemptToDomainResults(latest),
+          recommendation: latest.recommendations ?? '',
+          finishedAt: latest.finished_at
+        });
+        setState('result');
+      } else {
+        setState('intro');
+      }
+    }
+    bootstrap();
+    return () => {
+      active = false;
+    };
+  }, [authLoading, user]);
 
   const startTest = async () => {
     if (starting) return;
@@ -55,8 +82,12 @@ export default function Diagnostic() {
     }
     setStarting(true);
     try {
-      const created = await diagnosticService.createAttempt(user.id, ATTESTATSIYA_COURSE_ID);
+      const [created, loadedQuestions] = await Promise.all([
+        diagnosticService.createAttempt(user.id, ATTESTATSIYA_COURSE_ID),
+        diagnosticService.getQuestions()
+      ]);
       setAttempt(created);
+      setQuestions(loadedQuestions);
       setResult(null);
       setState('test');
     } finally {
@@ -65,28 +96,27 @@ export default function Diagnostic() {
   };
 
   const handleFinish = async (answers: Record<string, number>) => {
-    const domainResults = computeDomainResults(answers);
-    const totalScore = computeTotalScore(answers);
+    const domainResults = computeDomainResults(answers, questions);
+    const totalScore = computeTotalScore(answers, questions);
     const recommendation = generateRecommendation(domainResults);
 
-    setResult({ totalScore, domainResults, recommendation });
+    setResult({ totalScore, domainResults, recommendation, finishedAt: new Date().toISOString() });
     setState('result');
 
     // Mirror into localStorage so legacy sidebar cards (WeakTopicsCard, etc.) keep working.
     userProgressService.setDiagnosticResult({
       score: totalScore,
-      totalQuestions: diagnosticMockQuestions.length,
+      totalQuestions: questions.length,
       date: new Date().toLocaleDateString('uz-UZ'),
-      strongTopics: domainResults.filter((d) => d.percentage >= 65).map((d) => d.name),
-      weakTopics: domainResults.filter((d) => d.percentage < 65).map((d) => d.name),
+      strongTopics: domainResults.filter((d) => d.percentage >= 65).map((d) => domainLabel(d.name)),
+      weakTopics: domainResults.filter((d) => d.percentage < 65).map((d) => domainLabel(d.name)),
       moduleScores: Object.fromEntries(
-        domainResults.map((d) => [d.name, { correct: d.correct, total: d.total }])
+        domainResults.map((d) => [domainLabel(d.name), { correct: d.correct, total: d.total }])
       )
     });
     userProgressService.setDiagnosticCompleted(true);
     userProgressService.addPoints(50);
 
-    // Persist to the attempt + flip the enrollment flag.
     if (attempt) {
       await diagnosticService.finishAttempt(attempt.id, {
         total_score: totalScore,
@@ -99,9 +129,18 @@ export default function Diagnostic() {
     }
   };
 
+  /* ───────────── LOADING ───────────── */
+  if (state === 'loading') {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue" />
+      </div>
+    );
+  }
+
   /* ───────────── STATE B: TEST ───────────── */
   if (state === 'test') {
-    return <DiagnosticRunner questions={diagnosticMockQuestions} onFinish={handleFinish} />;
+    return <DiagnosticRunner questions={questions} onFinish={handleFinish} />;
   }
 
   /* ───────────── STATE C: RESULT ───────────── */
@@ -112,7 +151,7 @@ export default function Diagnostic() {
         domainResults={result.domainResults}
         recommendation={result.recommendation}
         goalScore={goalScore}
-        finishedAt={new Date().toISOString()}
+        finishedAt={result.finishedAt}
         onRetake={startTest}
         retaking={starting}
       />
@@ -135,7 +174,7 @@ export default function Diagnostic() {
           </h1>
           <p className="text-text-secondary text-sm sm:text-base leading-relaxed max-w-2xl">
             50 ta savol, 8 ta mavzu boʻyicha, 120 daqiqa. Bu test sizning hozirgi bilim
-            darajangizni aniqlaydi va sizga tavsiyalar beradi.
+            darajangizni aniqlaydi va tavsiyalar beradi.
           </p>
         </div>
 
@@ -168,16 +207,16 @@ export default function Diagnostic() {
         <div className="space-y-2.5 relative z-10">
           <h3 className="text-xs font-bold text-text-secondary uppercase tracking-widest">Test tarkibi</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {DIAGNOSTIC_DOMAINS.map((domain, idx) => (
+            {domainCounts.map((domain, idx) => (
               <div
-                key={domain.name}
+                key={domain.domain}
                 className="flex items-center justify-between bg-primary-bg/60 border border-border-card/50 rounded-2xl px-4 py-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="w-6 h-6 rounded-lg bg-accent-blue/10 text-accent-blue text-[11px] font-bold flex items-center justify-center shrink-0">
                     {idx + 1}
                   </span>
-                  <span className="text-xs font-semibold text-text-primary truncate">{domain.name}</span>
+                  <span className="text-xs font-semibold text-text-primary truncate">{domainLabel(domain.domain)}</span>
                 </div>
                 <span className="text-[10px] font-bold text-text-secondary shrink-0 ml-2">
                   {domain.count} savol

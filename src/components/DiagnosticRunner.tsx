@@ -6,7 +6,8 @@ import {
   Clock,
   AlertTriangle
 } from 'lucide-react';
-import { DiagnosticQuestion } from '../data/diagnosticMockQuestions';
+import { DiagnosticQuestion } from '../lib/diagnosticService';
+import { domainLabel } from '../lib/domains';
 
 interface DiagnosticRunnerProps {
   questions: DiagnosticQuestion[];
@@ -297,7 +298,7 @@ export default function DiagnosticRunner({
           <div className="space-y-6 overflow-y-auto">
             <div className="flex justify-between items-center pb-4 border-b border-border-card/50">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-accent-blue uppercase tracking-widest">{current.domain}</span>
+                <span className="text-[10px] font-bold text-accent-blue uppercase tracking-widest">{domainLabel(current.domain)}</span>
                 <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
                   Savol {currentIndex + 1} / {questions.length}
                 </p>

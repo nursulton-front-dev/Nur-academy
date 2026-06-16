@@ -78,7 +78,7 @@ export default function AttestatsiyaLayout() {
       setDiagnosticCompleted(enr.diagnostic_completed);
       if (enr.goal_score != null) setUserGoal(enr.goal_score);
       if (enr.diagnostic_completed) {
-        diagnosticService.getLatestAttempt(user.id, ATTESTATSIYA_COURSE_ID).then((attempt) => {
+        diagnosticService.getLatestFinishedAttempt(user.id, ATTESTATSIYA_COURSE_ID).then((attempt) => {
           if (attempt) setDiagnosticScore(attempt.total_score);
         });
       }
@@ -224,7 +224,7 @@ export default function AttestatsiyaLayout() {
           </Link>
         ) : (
           <Link
-            to="/attestatsiya/diagnostika/natija"
+            to="/attestatsiya/diagnostika"
             onClick={() => setMobileMenuOpen(false)}
             className="block rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-3.5 hover:bg-emerald-500/10 transition-colors group"
           >

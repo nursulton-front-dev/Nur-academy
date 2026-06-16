@@ -48,7 +48,7 @@ export default function Pricing() {
     {
       id: 'start' as SubscriptionTier,
       title: 'Start',
-      price: '99,000 UZS',
+      price: '59,000 UZS',
       desc: 'Darajangizni aniqlash va xatolarni ko\'rib chiqish',
       features: [
         '2 ta Diagnostika testi',
@@ -67,7 +67,7 @@ export default function Pricing() {
     {
       id: 'pro' as SubscriptionTier,
       title: 'Pro',
-      price: '199,000 UZS',
+      price: '119,000 UZS',
       desc: 'Ko\'p sonli imtihonlar va shaxsiy roadmap',
       features: [
         'Cheksiz Diagnostika testlari',
@@ -86,7 +86,7 @@ export default function Pricing() {
     {
       id: 'oliy' as SubscriptionTier,
       title: 'Oliy',
-      price: '299,000 UZS',
+      price: '179,000 UZS',
       desc: 'Oliy toifa va maksimal natija uchun to\'liq paket',
       features: [
         'Cheksiz Diagnostika testlari',
@@ -104,7 +104,7 @@ export default function Pricing() {
     {
       id: 'vip' as SubscriptionTier,
       title: 'VIP',
-      price: '499,000 UZS',
+      price: '299,000 UZS',
       desc: 'Premium mentorlik va 100% kafolatlangan attestatsiya',
       features: [
         'Oliy tarifning barcha imkoniyatlari',

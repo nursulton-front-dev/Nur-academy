@@ -1,70 +1,60 @@
 import React, { useState } from 'react';
-import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { BookOpen, Search, Bell, LogOut, Award } from 'lucide-react';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { BookOpen, Bell, BellOff, LogOut, Award } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
+
+// Clear per-user app data on logout so nothing leaks to the next user on a shared
+// device. Theme ('theme') is intentionally preserved.
+function clearLocalUserData() {
+  const keys = Object.keys(localStorage);
+  for (const key of keys) {
+    if (key.startsWith('nur_') || key.startsWith('answers_') || key.startsWith('result_')) {
+      localStorage.removeItem(key);
+    }
+  }
+}
 
 export function Layout() {
   const { user } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    clearLocalUserData();
     navigate('/');
   };
 
-  // Mock user to ensure the premium dashboard is always displayed in full detail
-  const activeUser = user || {
-    email: 'saida.teacher@nur.uz',
-    user_metadata: {
-      full_name: 'Saida Axmedova',
-      role: 'Informatika o\'qituvchisi'
-    }
-  };
-
-  const initialLetters = activeUser.email?.slice(0, 2).toUpperCase() || 'SA';
+  const fullName = (user?.user_metadata?.full_name as string | undefined) || 'Foydalanuvchi';
+  const initialLetters = (user?.email?.slice(0, 2) || 'U').toUpperCase();
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-text-primary bg-primary-bg transition-colors duration-300">
-      
+
       {/* Minimal Modern Full-Width Top Navigation */}
       <header className="bg-surface border-b border-border-card sticky top-0 z-40 flex-shrink-0 backdrop-blur-md bg-opacity-95 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
         <div className="w-full px-6 flex justify-between items-center h-16 gap-6">
-          
+
           {/* Logo Left */}
           <Link to="/" className="flex items-center space-x-2.5 flex-shrink-0">
             <div className="w-9 h-9 bg-accent-blue rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-accent-blue/30 transition-transform hover:scale-105">N</div>
             <span className="font-serif font-extrabold text-xl tracking-tight text-text-primary">Nur Academy</span>
           </Link>
 
-          {/* Centered Search Bar */}
-          <div className="hidden md:flex items-center flex-grow max-w-md relative mx-auto">
-            <Search className="w-4 h-4 text-text-secondary absolute left-3.5 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Mavzular yoki darslarni qidirish..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-primary-bg border border-border-card rounded-full py-2 pl-10 pr-4 text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-all"
-            />
-          </div>
-
           {/* Right Actions Menu */}
           <nav className="flex items-center space-x-3 text-sm">
-            
+
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
               className={`w-[60px] h-[30px] rounded-full p-[3px] transition-all duration-500 relative flex items-center flex-shrink-0 overflow-hidden cursor-pointer ${
-                isDark 
-                  ? 'bg-gradient-to-r from-[#0f172a] to-[#1e1b4b] shadow-[inset_0_2px_6px_rgba(0,0,0,0.7)]' 
+                isDark
+                  ? 'bg-gradient-to-r from-[#0f172a] to-[#1e1b4b] shadow-[inset_0_2px_6px_rgba(0,0,0,0.7)]'
                   : 'bg-gradient-to-r from-[#38bdf8] to-[#7dd3fc] shadow-[inset_0_2px_6px_rgba(0,0,0,0.08)]'
               }`}
               aria-label="Toggle theme"
@@ -84,8 +74,8 @@ export function Layout() {
               {/* Knob */}
               <div
                 className={`w-[24px] h-[24px] rounded-full flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.68,-0.15,0.27,1.35)] ${
-                  isDark 
-                    ? 'translate-x-[29px] bg-gradient-to-br from-[#e2e8f0] to-[#cbd5e1] shadow-[0_0_10px_rgba(203,213,225,0.4),0_2px_4px_rgba(0,0,0,0.2)]' 
+                  isDark
+                    ? 'translate-x-[29px] bg-gradient-to-br from-[#e2e8f0] to-[#cbd5e1] shadow-[0_0_10px_rgba(203,213,225,0.4),0_2px_4px_rgba(0,0,0,0.2)]'
                     : 'translate-x-0 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] shadow-[0_0_10px_rgba(251,191,36,0.5),0_2px_4px_rgba(0,0,0,0.1)]'
                 }`}
               >
@@ -102,83 +92,102 @@ export function Layout() {
               </div>
             </button>
 
-            {/* Notifications */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  setNotificationsOpen(!notificationsOpen);
-                  setProfileOpen(false);
-                }}
-                className="p-2 text-text-secondary hover:text-text-primary rounded-xl hover:bg-surface-hover transition-colors relative cursor-pointer"
-                aria-label="Notifications"
-              >
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent-blue rounded-full border border-surface"></span>
-              </button>
+            {user ? (
+              <>
+                {/* Notifications */}
+                <div className="relative">
+                  <button
+                    onClick={() => {
+                      setNotificationsOpen(!notificationsOpen);
+                      setProfileOpen(false);
+                    }}
+                    className="p-2 text-text-secondary hover:text-text-primary rounded-xl hover:bg-surface-hover transition-colors cursor-pointer"
+                    aria-label="Bildirishnomalar"
+                  >
+                    <Bell className="w-5 h-5" />
+                  </button>
 
-              {notificationsOpen && (
-                <div className="absolute right-0 mt-2.5 w-80 bg-surface border border-border-card rounded-2xl shadow-xl py-3 z-50 animate-fadeIn text-left">
-                  <div className="px-4 pb-2 border-b border-border-card flex justify-between items-center">
-                    <span className="font-bold text-sm text-text-primary">Bildirishnomalar</span>
-                    <span className="text-xs text-accent-blue cursor-pointer hover:underline">Mark all read</span>
-                  </div>
-                  <div className="max-h-60 overflow-y-auto pt-2">
-                    <div className="px-4 py-2.5 hover:bg-surface-hover transition-colors cursor-pointer border-b border-border-card/50">
-                      <p className="text-xs text-text-primary font-semibold">Yangi mock imtihon qo'shildi!</p>
-                      <p className="text-[10px] text-text-secondary mt-0.5">Mock Imtihon #2 endi faol</p>
+                  {notificationsOpen && (
+                    <div className="absolute right-0 mt-2.5 w-80 bg-surface border border-border-card rounded-2xl shadow-xl overflow-hidden z-50 animate-fadeIn text-left">
+                      <div className="px-4 py-3 border-b border-border-card flex items-center gap-2">
+                        <Bell className="w-4 h-4 text-accent-blue" />
+                        <span className="font-serif font-extrabold text-sm text-text-primary">Bildirishnomalar</span>
+                      </div>
+                      {/* Empty state — notifications cleared */}
+                      <div className="flex flex-col items-center justify-center text-center px-6 py-10 gap-3">
+                        <div className="w-12 h-12 rounded-2xl bg-primary-bg border border-border-card flex items-center justify-center">
+                          <BellOff className="w-5 h-5 text-text-secondary" />
+                        </div>
+                        <div className="space-y-0.5">
+                          <p className="text-sm font-bold text-text-primary">Hozircha bildirishnomalar yoʻq</p>
+                          <p className="text-xs text-text-secondary">Yangi xabarlar shu yerda koʻrinadi</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="px-4 py-2.5 hover:bg-surface-hover transition-colors cursor-pointer">
-                      <p className="text-xs text-text-primary font-semibold">Pedagogika moduli ochildi</p>
-                      <p className="text-[10px] text-text-secondary mt-0.5">Kursda davom etishingiz mumkin</p>
+                  )}
+                </div>
+
+                {/* Profile Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => {
+                      setProfileOpen(!profileOpen);
+                      setNotificationsOpen(false);
+                    }}
+                    className="w-9 h-9 rounded-full bg-accent-blue/10 border border-accent-blue/30 flex items-center justify-center relative overflow-hidden cursor-pointer hover:border-accent-blue/80 transition-colors"
+                  >
+                    <span className="text-accent-blue font-bold text-xs">{initialLetters}</span>
+                  </button>
+
+                  {profileOpen && (
+                    <div className="absolute right-0 mt-2.5 w-64 bg-surface border border-border-card rounded-2xl shadow-xl py-3 z-50 text-left">
+                      <div className="px-4 py-3 border-b border-border-card">
+                        <p className="text-sm font-bold text-text-primary truncate">{fullName}</p>
+                        <p className="text-xs text-text-secondary truncate mt-0.5">{user.email}</p>
+                      </div>
+                      <div className="py-1.5">
+                        <Link
+                          to="/attestatsiya"
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center space-x-2.5 px-4 py-2 text-xs text-text-primary hover:bg-surface-hover transition-colors"
+                        >
+                          <Award className="w-4 h-4 text-text-secondary" />
+                          <span>Sertifikatlar</span>
+                        </Link>
+                      </div>
+                      <div className="border-t border-border-card pt-1.5 px-2">
+                        <button
+                          onClick={() => {
+                            setProfileOpen(false);
+                            handleSignOut();
+                          }}
+                          className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs text-error-red hover:bg-rose-500/5 rounded-xl transition-colors text-left font-medium cursor-pointer"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Tizimdan chiqish</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
-            </div>
-
-            {/* Profile Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  setProfileOpen(!profileOpen);
-                  setNotificationsOpen(false);
-                }}
-                className="w-9 h-9 rounded-full bg-accent-blue/10 border border-accent-blue/30 flex items-center justify-center relative overflow-hidden cursor-pointer hover:border-accent-blue/80 transition-colors"
-              >
-                <span className="text-accent-blue font-bold text-xs">{initialLetters}</span>
-              </button>
-
-              {profileOpen && (
-                <div className="absolute right-0 mt-2.5 w-64 bg-surface border border-border-card rounded-2xl shadow-xl py-3 z-50 text-left">
-                  <div className="px-4 py-3 border-b border-border-card">
-                    <p className="text-sm font-bold text-text-primary truncate">{activeUser.user_metadata?.full_name || 'Foydalanuvchi'}</p>
-                    <p className="text-xs text-text-secondary truncate mt-0.5">{activeUser.email}</p>
-                  </div>
-                  <div className="py-1.5">
-                    <Link
-                      to="/attestatsiya"
-                      onClick={() => setProfileOpen(false)}
-                      className="flex items-center space-x-2.5 px-4 py-2 text-xs text-text-primary hover:bg-surface-hover transition-colors"
-                    >
-                      <Award className="w-4 h-4 text-text-secondary" />
-                      <span>Sertifikatlar</span>
-                    </Link>
-                  </div>
-                  <div className="border-t border-border-card pt-1.5 px-2">
-                    <button
-                      onClick={() => {
-                        setProfileOpen(false);
-                        handleSignOut();
-                      }}
-                      className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs text-error-red hover:bg-rose-500/5 rounded-xl transition-colors text-left font-medium cursor-pointer"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span>Tizimdan chiqish</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+              </>
+            ) : (
+              /* Logged-out actions */
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/login"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-text-primary hover:bg-surface-hover transition-colors"
+                >
+                  Kirish
+                </Link>
+                <Link
+                  to="/signup"
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-accent-blue text-white hover:bg-accent-blue/95 shadow-sm shadow-accent-blue/20 transition-all active:scale-97"
+                >
+                  Roʻyxatdan oʻtish
+                </Link>
+              </div>
+            )}
 
           </nav>
         </div>

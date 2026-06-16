@@ -23,7 +23,6 @@ import AttestatsiyaExam from './pages/AttestatsiyaExam';
 import AttestatsiyaExamResult from './pages/AttestatsiyaExamResult';
 import DevStatus from './pages/DevStatus';
 import Diagnostic from './pages/Diagnostic';
-import DiagnosticResult from './pages/DiagnosticResult';
 import AttestatsiyaOnboarding from './pages/AttestatsiyaOnboarding';
 import ErrorNotebook from './pages/ErrorNotebook';
 import Pricing from './pages/Pricing';
@@ -60,7 +59,6 @@ export default function App() {
                 <Route path="imtihon/:id" element={<AttestatsiyaExam />} />
                 <Route path="imtihon/:id/natija" element={<AttestatsiyaExamResult />} />
                 <Route path="diagnostika" element={<Diagnostic />} />
-                <Route path="diagnostika/natija" element={<DiagnosticResult />} />
                 <Route path="xatolar" element={<ErrorNotebook />} />
                 <Route path="pricing" element={<Pricing />} />
               </Route>

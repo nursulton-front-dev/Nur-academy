@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, Target, Lightbulb, ArrowRight, RefreshCw, BookOpen } from 'lucide-react';
 import { DomainResult } from '../lib/diagnosticService';
+import { domainLabel } from '../lib/domains';
 
 interface DiagnosticResultViewProps {
   totalScore: number; // out of 100
@@ -89,10 +90,10 @@ export default function DiagnosticResultView({
         <div className="space-y-4">
           {domainResults.map((d) => (
             <div key={d.name} className="space-y-1.5">
-              <div className="flex justify-between items-center text-xs">
-                <span className="font-semibold text-text-primary">{d.name}</span>
-                <span className="font-bold text-text-secondary">
-                  {d.correct}/{d.total} <span className="text-text-primary">({d.percentage}%)</span>
+              <div className="flex justify-between items-center text-xs gap-3">
+                <span className="font-semibold text-text-primary truncate">{domainLabel(d.name)}</span>
+                <span className="font-bold text-text-secondary shrink-0">
+                  {d.correct} / {d.total} · <span className="text-text-primary">{d.percentage}%</span>
                 </span>
               </div>
               <div className="w-full h-2.5 bg-border-card/40 rounded-full overflow-hidden">
@@ -113,14 +114,13 @@ export default function DiagnosticResultView({
         </div>
       </div>
 
-      {/* Recommendation */}
-      <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm text-left space-y-3 relative overflow-hidden">
-        <div className="absolute -bottom-12 -left-12 w-36 h-36 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
-        <div className="flex items-center space-x-2 relative z-10">
-          <Lightbulb className="w-5 h-5 text-amber-500" />
+      {/* Recommendation — accent-blue tint (#EAF1FB/#C5DAF5 equivalent, theme-safe) */}
+      <div className="bg-accent-blue/[0.06] border border-accent-blue/25 rounded-[24px] p-6 shadow-sm text-left space-y-3">
+        <div className="flex items-center space-x-2">
+          <Lightbulb className="w-5 h-5 text-accent-blue" />
           <h3 className="font-serif font-bold text-base text-text-primary">Tavsiya</h3>
         </div>
-        <p className="text-sm text-text-secondary leading-relaxed relative z-10">{recommendation}</p>
+        <p className="text-sm text-text-secondary leading-relaxed">{recommendation}</p>
       </div>
 
       {/* Actions */}
