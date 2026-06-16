@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useParams, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  BookOpen, 
-  CheckCircle2, 
-  Lock, 
-  ChevronRight, 
-  ChevronDown, 
-  FileText, 
-  Menu, 
+import {
+  BookOpen,
+  CheckCircle2,
+  Lock,
+  ChevronRight,
+  ChevronDown,
+  FileText,
+  Menu,
   X,
   PlayCircle,
   RotateCcw,
@@ -19,9 +19,19 @@ import {
   Plus,
   Trash2,
   Check,
-  Edit2
+  Edit2,
+  Target,
+  Stethoscope,
+  BookMarked,
+  CreditCard
 } from 'lucide-react';
 import { mockModules, mockTopicTests, mockExams, resetAllProgress } from '../data/attestatsiyaMocks';
+import { userProgressService, goalOptions } from '../lib/userProgress';
+import { learningEngineService } from '../lib/learningEngine';
+import GoalSetupModal from './GoalSetupModal';
+import TodayPlanCard from './TodayPlanCard';
+import WeakTopicsCard from './WeakTopicsCard';
+import ReviewQueueCard from './ReviewQueueCard';
 
 interface GoalItem {
   id: string;
@@ -41,6 +51,15 @@ export default function AttestatsiyaLayout() {
   const navigate = useNavigate();
   const [expandedModules, setExpandedModules] = useState<{ [key: string]: boolean }>({});
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [goalModalOpen, setGoalModalOpen] = useState(false);
+
+  // Read live goal + diagnostic from service layer
+  const [userGoal, setUserGoal] = useState<number | null>(() => userProgressService.getUserGoal());
+  const [diagnosticScore, setDiagnosticScore] = useState<number | null>(() => {
+    const r = userProgressService.getDiagnosticResult();
+    return r ? r.score : null;
+  });
+  const reviewCount = learningEngineService.getReviewQueue().length;
 
   // Today's goals list state
   const [goalsList, setGoalsList] = useState<GoalItem[]>(() => {
@@ -68,18 +87,18 @@ export default function AttestatsiyaLayout() {
 
   // Calculate general progress
   const totalLessons = mockModules.reduce((acc, m) => acc + m.lessons.length, 0);
-  const completedLessons = mockModules.reduce((acc, m) => 
+  const completedLessons = mockModules.reduce((acc, m) =>
     acc + m.lessons.filter(l => l.status === 'completed').length, 0
   );
   const progressPercent = Math.round((completedLessons / totalLessons) * 100);
 
   // Calculate dynamic stats
   const completedTestsCount = mockTopicTests.filter(t => t.status === 'completed').length +
-                              mockExams.filter(e => e.status === 'completed').length;
-  
-  const points = (completedLessons * 10) + 
-                 mockTopicTests.filter(t => t.status === 'completed').reduce((acc, t) => acc + (t.score || 0), 0) +
-                 mockExams.filter(e => e.status === 'completed').reduce((acc, e) => acc + (e.score || 0), 0);
+    mockExams.filter(e => e.status === 'completed').length;
+
+  const points = (completedLessons * 10) +
+    mockTopicTests.filter(t => t.status === 'completed').reduce((acc, t) => acc + (t.score || 0), 0) +
+    mockExams.filter(e => e.status === 'completed').reduce((acc, e) => acc + (e.score || 0), 0);
 
   const studyHours = parseFloat(((completedLessons * 15 + completedTestsCount * 45) / 60).toFixed(1));
 
@@ -87,7 +106,7 @@ export default function AttestatsiyaLayout() {
   useEffect(() => {
     if (location.pathname.includes('/attestatsiya/dars/')) {
       const lessonId = location.pathname.split('/attestatsiya/dars/')[1];
-      const activeModule = mockModules.find(m => 
+      const activeModule = mockModules.find(m =>
         m.lessons.some(l => l.id === lessonId)
       );
       if (activeModule) {
@@ -112,10 +131,17 @@ export default function AttestatsiyaLayout() {
       resetAllProgress();
       localStorage.removeItem('nur_goals_list');
       localStorage.removeItem('nur_streak');
+      userProgressService.clearAllProgress();
       setGoalsList(DEFAULT_GOALS);
       setStreak(0);
+      setUserGoal(null);
+      setDiagnosticScore(null);
       window.location.reload();
     }
+  };
+
+  const handleGoalSaved = (goal: number) => {
+    setUserGoal(goal);
   };
 
   const toggleGoalCompleted = (goalId: string) => {
@@ -149,7 +175,7 @@ export default function AttestatsiyaLayout() {
   const sidebarContent = (
     <div className="flex flex-col h-full bg-surface text-text-primary transition-colors duration-250 py-5 px-4 font-sans justify-between">
       <div className="space-y-6">
-        
+
         {/* Section 1: COURSE */}
         <div>
           <div className="px-3 text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-2">
@@ -158,14 +184,13 @@ export default function AttestatsiyaLayout() {
           <div className="space-y-1">
             <Link
               to="/attestatsiya"
-              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                location.pathname === '/attestatsiya' && !location.hash.includes('progress')
-                  ? 'bg-accent-blue/10 text-accent-blue font-semibold shadow-sm' 
-                  : 'hover:bg-surface-hover text-text-primary'
-              }`}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${location.pathname === '/attestatsiya' && !location.hash.includes('progress')
+                ? 'bg-accent-blue/10 text-accent-blue font-semibold shadow-sm'
+                : 'hover:bg-surface-hover text-text-primary'
+                }`}
             >
               <BookOpen className="w-4 h-4" />
-              <span>Kurs sharhi</span>
+              <span>Kurs haqida</span>
             </Link>
             <a
               href="/attestatsiya#progress"
@@ -180,11 +205,10 @@ export default function AttestatsiyaLayout() {
                   }
                 }
               }}
-              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                location.hash.includes('progress')
-                  ? 'bg-accent-blue/10 text-accent-blue font-semibold' 
-                  : 'hover:bg-surface-hover text-text-primary'
-              }`}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${location.hash.includes('progress')
+                ? 'bg-accent-blue/10 text-accent-blue font-semibold'
+                : 'hover:bg-surface-hover text-text-primary'
+                }`}
             >
               <Award className="w-4 h-4 text-emerald-500" />
               <span>Mening progressim</span>
@@ -210,7 +234,7 @@ export default function AttestatsiyaLayout() {
 
               let itemClass = "hover:bg-surface-hover text-text-primary";
               let numberBadgeColor = "bg-primary-bg text-text-secondary border border-border-card";
-              
+
               if (isCurrent) {
                 itemClass = "bg-accent-blue text-white font-semibold shadow-md shadow-accent-blue/20";
                 numberBadgeColor = "bg-white/20 text-white";
@@ -269,13 +293,12 @@ export default function AttestatsiyaLayout() {
                               if (isLessonLocked) e.preventDefault();
                               else setMobileMenuOpen(false);
                             }}
-                            className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all ${
-                              isLessonCurrent 
-                                ? 'bg-accent-blue/15 text-accent-blue font-semibold' 
-                                : isLessonLocked 
-                                  ? 'opacity-40 cursor-not-allowed text-text-secondary' 
-                                  : 'hover:bg-surface-hover text-text-primary'
-                            }`}
+                            className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all ${isLessonCurrent
+                              ? 'bg-accent-blue/15 text-accent-blue font-semibold'
+                              : isLessonLocked
+                                ? 'opacity-40 cursor-not-allowed text-text-secondary'
+                                : 'hover:bg-surface-hover text-text-primary'
+                              }`}
                           >
                             <span className="shrink-0">{statusIcon}</span>
                             <span className="truncate">{les.title}</span>
@@ -302,11 +325,10 @@ export default function AttestatsiyaLayout() {
             <Link
               to="/attestatsiya/testlar"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                location.pathname === '/attestatsiya/testlar' 
-                  ? 'bg-accent-blue/10 text-accent-blue font-semibold' 
-                  : 'hover:bg-surface-hover text-text-primary'
-              }`}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${location.pathname === '/attestatsiya/testlar'
+                ? 'bg-accent-blue/10 text-accent-blue font-semibold'
+                : 'hover:bg-surface-hover text-text-primary'
+                }`}
             >
               <FileText className="w-4 h-4 text-warning-amber" />
               <span>Mavzu testlari</span>
@@ -314,14 +336,63 @@ export default function AttestatsiyaLayout() {
             <Link
               to="/attestatsiya/mock-imtihonlar"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                location.pathname.includes('/attestatsiya/mock-imtihonlar') || location.pathname.includes('/attestatsiya/imtihon')
-                  ? 'bg-accent-blue/10 text-accent-blue font-semibold' 
-                  : 'hover:bg-surface-hover text-text-primary'
-              }`}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${location.pathname.includes('/attestatsiya/mock-imtihonlar') || location.pathname.includes('/attestatsiya/imtihon')
+                ? 'bg-accent-blue/10 text-accent-blue font-semibold'
+                : 'hover:bg-surface-hover text-text-primary'
+                }`}
             >
               <Award className="w-4 h-4 text-accent-blue" />
               <span>Mock imtihon</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-border-card/65 my-4" />
+
+        {/* Section 4: O'RGANISH VOSITALARI */}
+        <div>
+          <div className="px-3 text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-2">
+            O'rganish
+          </div>
+          <div className="space-y-1">
+            <Link
+              to="/attestatsiya/diagnostika"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${location.pathname === '/attestatsiya/diagnostika'
+                ? 'bg-accent-blue/10 text-accent-blue font-semibold'
+                : 'hover:bg-surface-hover text-text-primary'
+                }`}
+            >
+              <Stethoscope className="w-4 h-4 text-purple-500" />
+              <span>Diagnostika testi</span>
+            </Link>
+            <Link
+              to="/attestatsiya/xatolar"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${location.pathname === '/attestatsiya/xatolar'
+                ? 'bg-accent-blue/10 text-accent-blue font-semibold'
+                : 'hover:bg-surface-hover text-text-primary'
+                }`}
+            >
+              <BookMarked className="w-4 h-4 text-orange-500" />
+              <div className="flex items-center justify-between flex-1">
+                <span>Xatolar daftari</span>
+                {reviewCount > 0 && (
+                  <span className="text-[9px] bg-orange-500/20 text-orange-500 px-1.5 py-0.5 rounded-full font-bold">{reviewCount}</span>
+                )}
+              </div>
+            </Link>
+            <Link
+              to="/attestatsiya/pricing"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${location.pathname === '/attestatsiya/pricing'
+                ? 'bg-accent-blue/10 text-accent-blue font-semibold'
+                : 'hover:bg-surface-hover text-text-primary'
+                }`}
+            >
+              <CreditCard className="w-4 h-4 text-emerald-500" />
+              <span>Tariflar</span>
             </Link>
           </div>
         </div>
@@ -350,13 +421,82 @@ export default function AttestatsiyaLayout() {
 
   const rightSidebarContent = (
     <div className="space-y-6 sticky top-20 max-w-[320px] w-full text-left">
-      
+
+      {/* Card 0: Attestation Goal Card */}
+      <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow text-left relative overflow-hidden">
+        <div className="absolute -top-10 -right-10 w-24 h-24 bg-accent-blue/8 rounded-full blur-2xl pointer-events-none" />
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-2">
+            <Target className="w-4.5 h-4.5 text-accent-blue" />
+            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-widest">Attestatsiya maqsadi</h3>
+          </div>
+          <button
+            onClick={() => setGoalModalOpen(true)}
+            className="p-1.5 hover:bg-surface-hover rounded-lg transition-colors text-text-secondary hover:text-accent-blue cursor-pointer"
+            title="Maqsadni o'zgartirish"
+          >
+            <Settings className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {userGoal ? (
+          <div className="space-y-3">
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-serif font-extrabold text-accent-blue">{userGoal}+</span>
+              <span className="text-xs text-text-secondary font-medium">
+                {userGoal === 55 && "Attestatsiyadan o'tish"}
+                {userGoal === 60 && "Ikkinchi toifa"}
+                {userGoal === 70 && "Birinchi toifa"}
+                {userGoal === 80 && "Oliy toifa"}
+                {userGoal === 86 && "TOP natija"}
+              </span>
+            </div>
+
+            {diagnosticScore !== null ? (
+              <div className="space-y-2">
+                <div className="flex justify-between text-[10px] font-bold">
+                  <span className="text-text-secondary">Hozirgi ball:</span>
+                  <span className="text-text-primary">{diagnosticScore} / 100</span>
+                </div>
+                <div className="w-full h-2 bg-border-card/50 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-700 bg-gradient-to-r from-accent-blue to-blue-400"
+                    style={{ width: `${Math.min(100, diagnosticScore)}%` }}
+                  />
+                </div>
+                <div className="flex justify-between text-[10px]">
+                  <span className="text-text-secondary">Maqsadgacha:</span>
+                  <span className={`font-bold ${diagnosticScore >= userGoal ? 'text-emerald-500' : 'text-rose-500'}`}>
+                    {diagnosticScore >= userGoal ? '✓ Yetildi!' : `${userGoal - diagnosticScore} ball`}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <Link
+                to="/attestatsiya/diagnostika"
+                className="block text-[10px] text-accent-blue font-bold hover:underline"
+              >
+                → Diagnostika testini topshiring
+              </Link>
+            )}
+          </div>
+        ) : (
+          <button
+            onClick={() => setGoalModalOpen(true)}
+            className="w-full bg-accent-blue/10 hover:bg-accent-blue/15 text-accent-blue py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <Target className="w-4 h-4" />
+            <span>Maqsad belgilash</span>
+          </button>
+        )}
+      </div>
+
       {/* Card 1: Circular Progress & Streak */}
       <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm flex flex-col items-center text-center relative overflow-hidden group hover:shadow-md transition-shadow">
         <div className="absolute -top-12 -right-12 w-28 h-28 bg-accent-blue/5 rounded-full blur-2xl" />
-        
+
         <h3 className="text-xs font-bold text-text-secondary uppercase tracking-widest mb-4 w-full text-left">Umumiy progress</h3>
-        
+
         <div className="relative flex items-center justify-center mb-4">
           <svg height={radius * 2} width={radius * 2} className="transform -rotate-90">
             <circle
@@ -396,7 +536,7 @@ export default function AttestatsiyaLayout() {
       <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow text-left">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xs font-bold text-text-secondary uppercase tracking-widest">Bugungi maqsad</h3>
-          <button 
+          <button
             onClick={() => setIsEditingGoals(!isEditingGoals)}
             className="p-1 text-text-secondary hover:text-accent-blue hover:bg-surface-hover rounded-lg transition-colors cursor-pointer"
             title="Maqsadlarni sozlash"
@@ -415,7 +555,7 @@ export default function AttestatsiyaLayout() {
                 goalsList.map(g => (
                   <div key={g.id} className="flex items-center justify-between bg-primary-bg p-2 rounded-xl border border-border-card/40">
                     <span className="text-xs text-text-primary truncate max-w-[180px]">{g.text}</span>
-                    <button 
+                    <button
                       onClick={() => deleteGoal(g.id)}
                       className="text-rose-500 hover:text-rose-600 hover:bg-rose-500/10 p-1.5 rounded-lg transition-colors shrink-0"
                     >
@@ -489,7 +629,7 @@ export default function AttestatsiyaLayout() {
       {/* Card 3: Dynamic Statistics */}
       <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow text-left space-y-4">
         <h3 className="text-xs font-bold text-text-secondary uppercase tracking-widest">Ko'rsatkichlar</h3>
-        
+
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-primary-bg p-3.5 rounded-2xl flex flex-col justify-between space-y-1.5 border border-border-card/30">
             <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary">Darslar</span>
@@ -528,9 +668,9 @@ export default function AttestatsiyaLayout() {
       {/* Card 4: Achievements with Real Progress Bars */}
       <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow text-left space-y-4">
         <h3 className="text-xs font-bold text-text-secondary uppercase tracking-widest">Yutuq nishonlari</h3>
-        
+
         <div className="space-y-4">
-          
+
           {/* Badge 1: Birinchi qadam */}
           {(() => {
             const hasStarted = completedLessons >= 1;
@@ -584,6 +724,15 @@ export default function AttestatsiyaLayout() {
         </div>
       </div>
 
+      {/* Card 5: Today's Study Plan */}
+      <TodayPlanCard />
+
+      {/* Card 6: Weak Topics from Diagnostic */}
+      <WeakTopicsCard />
+
+      {/* Card 7: Spaced Repetition Review Queue */}
+      <ReviewQueueCard />
+
     </div>
   );
 
@@ -591,7 +740,7 @@ export default function AttestatsiyaLayout() {
 
   return (
     <div className="flex min-h-[calc(100vh-64px)] bg-primary-bg transition-colors duration-250 font-sans">
-      
+
       {/* Permanent Left Sidebar - 280px width, sticky, attached to the edge of the screen */}
       <aside className="hidden md:block w-[280px] shrink-0 border-r border-border-card sticky top-16 h-[calc(100vh-64px)] bg-surface overflow-y-auto z-20">
         {sidebarContent}
@@ -619,7 +768,7 @@ export default function AttestatsiyaLayout() {
       {/* Flexible Center Content and Right Sidebar Area */}
       <div className="flex-grow flex flex-col min-w-0">
         <div className="flex-grow flex flex-col lg:flex-row gap-8 p-6 lg:p-8 w-full max-w-[1400px] mx-auto">
-          
+
           {/* Main Content Area */}
           <main className="flex-grow min-w-0">
             <Outlet />
@@ -636,5 +785,13 @@ export default function AttestatsiyaLayout() {
       </div>
 
     </div>
+
+      {/* Goal Setup Modal - mounted globally in layout */}
+      <GoalSetupModal
+        isOpen={goalModalOpen}
+        onClose={() => setGoalModalOpen(false)}
+        onSave={handleGoalSaved}
+      />
+
   );
 }

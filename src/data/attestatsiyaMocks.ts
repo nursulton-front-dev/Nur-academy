@@ -71,64 +71,99 @@ export const mockModules: Module[] = [
         title: "Axborot, ma'lumot va bilim",
         status: "completed",
         videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-        content: `# Axborot, ma'lumot va bilim tushunchalari
+        content: `# 📖 1.1-Dars: Axborot, ma'lumot va bilim tushunchalari
 
-## Axborot nima?
+---
 
-**Axborot** — bu atrofimizdagi dunyo, jarayonlar va hodisalar haqidagi xabarlar,
-bilimlar majmuasi. Axborot insonning bilim olishi, qaror qabul qilishi va
-muloqot qilishi uchun asosdir.
+## 🌟 Kirish
 
-## Ma'lumot va bilim — farqi nimada?
+Raqamli texnologiyalar asrida biz har soniyada ulkan hajmdagi ma'lumotlar bilan to'qnash kelamiz. Biroq, ularning barchasi ham foydali bilimga aylanaveradimi? Keling, ushbu darsda **Ma'lumot (Data)**, **Axborot (Information)** va **Bilim (Knowledge)** tushunchalari hamda ularning o'zaro bog'liqligini ko'rib chiqamiz.
 
-- **Ma'lumot (data)** — qayta ishlanmagan, xom fakt va raqamlar. Masalan: "25", "Tashkent", "14:30"
-- **Axborot (information)** — kontekstga ega, ma'noli ma'lumot. Masalan: "Bugun havo harorati 25°C"
-- **Bilim (knowledge)** — axborotni tushunish va undan amaliyotda foydalanish qobiliyati.
-  Masalan: "25°C da yengil kiyim kiyish kerak, chunki issiq"
+---
 
-**Ketma-ketlik:** Ma'lumot → Axborot → Bilim
+## 🔍 1. Ma'lumot, Axborot va Bilim: Farqi nimada?
 
-## Axborotning xossalari
+Ushbu uchta tushuncha ta'lim va texnologiyaning asosi hisoblanadi. Ular ma'lum bir zanjir orqali rivojlanib boradi:
 
-- **To'liqlik** — qaror qabul qilish uchun yetarli bo'lishi
-- **Ishonchlilik** — haqiqatga mos kelishi
-- **Aniqlik** — noaniqliklarsiz
-- **Dolzarblik** — vaqtga mos kelishi
-- **Tushunarlilik** — qabul qiluvchiga mos shaklda berilishi
+### 📥 1. Ma'lumot (Data)
+Bu qayta ishlanmagan, kontekstga ega bo'lmagan, xom faktlar, raqamlar yoki belgilar yig'indisidir. Ma'lumot o'z-o'zidan inson uchun hech qanday ma'no kasb etmaydi.
+> **Misollar:**
+> - \`25\` (shunchaki raqam)
+> - \`"Tashkent"\` (shunchaki matn)
+> - \`14:30\` (shunchaki vaqt ko'rsatkichi)
 
-## Axborotni kodlashtirish
+### 📊 2. Axborot (Information)
+Bu muayyan shaklga keltirilgan, ma'noga ega bo'lgan va ma'lum bir kontekstda taqdim etilgan ma'lumotlardir. U inson savollariga javob beradi.
+> **Misollar:**
+> - *"Bugun havo harorati 25°C."* (Endi raqam kontekstga ega)
+> - *"Toshkentdan poyezd soat 14:30 da jo'naydi."* (Endi vaqt va shahar ma'noga ega)
 
-Kompyuter axborotni faqat ikkilik (binary) ko'rinishda — 0 va 1 raqamlari orqali
-saqlaydi va qayta ishlaydi. Bu **bit** deb ataladi (binary digit).
+### 🧠 3. Bilim (Knowledge)
+Bu axborotni tushunish, tahlil qilish va undan amaliyotda, hayotiy vaziyatlarda foydalanish qobiliyatidir. Bilim insonga qaror qabul qilish va harakat qilish imkonini beradi.
+> **Misollar:**
+> - *"Bugun havo 25°C ekan, demak, yengil kiyim kiyishim kerak, aks holda issiqlab ketaman."*
+> - *"Poyezd jo'nashiga 30 daqiqa qoldi, kechikmaslik uchun hoziroq yo'lga chiqishim kerak."*
 
-- **1 bit** — 0 yoki 1
-- **1 bayt** = 8 bit
-- **1 Kbayt** = 1024 bayt
-- **1 Mbayt** = 1024 Kbayt
-- **1 Gbayt** = 1024 Mbayt
+---
 
-## Axborot hajmini hisoblash
+### ⛓️ Axborot zanjiri ko'rinishi:
+\`\`\`
+[ 📥 Ma'lumot ] ━━(Qayta ishlash & Kontekst)━━> [ 📊 Axborot ] ━━(Tushunish & Amaliyot)━━> [ 🧠 Bilim ]
+\`\`\`
 
-Matnni kodlashda har bir belgi (harf, raqam, belgi) odatda **1 bayt** egallaydi
-(ASCII kodlash uchun).
+---
 
-**Misol:** "Salom" so'zi nechta baytni egallaydi?
-"Salom" — 5 ta belgidan iborat → 5 bayt
+## ⚡ 2. Axborotning Asosiy Xossalari
 
-## Axborot uzatish tezligi
+Har qanday axborot qabul qiluvchi uchun qimmatli bo'lishi uchun quyidagi sifat ko'rsatkichlariga ega bo'lishi shart:
 
-Tezlik **bit/sekund (bps)** da o'lchanadi:
-- 1 Kbit/s = 1024 bit/s
-- 1 Mbit/s = 1024 Kbit/s
+| Xossa | Tavsif | Hayotiy Misol |
+| :--- | :--- | :--- |
+| **1. To'liqlik** | Qaror qabul qilish uchun barcha kerakli ma'lumotlarning mavjudligi. | *"Dars soat 9:00 da boshlanadi"* (Agar xona aytilmasa, to'liq bo'lmaydi). |
+| **2. Ishonchlilik** | Axborotning haqiqatga mos kelishi va xatolardan xoli bo'lishi. | Rasmiy manbalardan olingan ob-havo ma'lumoti. |
+| **3. Dolzarblik** | Axborotning ayni vaqtdagi ahamiyati va eskirib qolmaganligi. | *"Bugungi poyezdlar jadvali"* (O'tgan yilgi jadval dolzarb emas). |
+| **4. Tushunarlilik** | Axborotning qabul qiluvchi uchun qulay shaklda va tilda berilishi. | O'quvchiga uning ona tilida yozilgan darslik. |
+| **5. Aniqlik** | Axborotning noaniqliklarsiz, aniq faktlarga tayanib taqdim etilishi. | Matematik formulalar va hisob-kitoblar. |
 
-**Misol:** Internet tezligi 8 Mbit/s. 1 sekundda nechta bayt yuklab olinadi?
-8 Mbit/s ÷ 8 = 1 Mbayt/s
+---
 
-## Xulosa
+## 💻 3. Kompyuterda Axborotni Kodlashtirish
 
-Ma'lumot, axborot va bilim — bir-biriga bog'liq, lekin farqli tushunchalar.
-Kompyuterda axborot bitlar va baytlar orqali o'lchanadi, va hajm/tezlik
-hisoblashlari amaliy masalalarda muhim ahamiyatga ega.`
+Kompyuter faqat raqamli elektron signallar bilan ishlaydi. Shuning uchun har qanday axborot (matn, tasvir, tovush) **ikkilik (binary)** ko'rinishga — \`0\` va \`1\` raqamlariga o'tkaziladi.
+
+* **Bit (binary digit)** — axborotning eng kichik o'lchov birligi bo'lib, \`0\` yoki \`1\` qiymatni oladi.
+* **Bayt (Byte)** — kompyuterda bitta belgini (harf, raqam yoki belgi) saqlash uchun ishlatiladigan asosiy xotira birligi. **1 Bayt = 8 bit.**
+
+### 📈 Axborot Hajmi Birliklari:
+* **1 Bayt** = 8 bit
+* **1 Kilobayt (KB)** = 1024 Bayt
+* **1 Megabayt (MB)** = 1024 KB
+* **1 Gigabayt (GB)** = 1024 MB
+* **1 Terabayt (TB)** = 1024 GB
+
+---
+
+## 🧮 4. Amaliy Hisoblash Masalalari
+
+### 📝 Masala 1: Matn hajmini hisoblash (ASCII va Unicode)
+* **ASCII kodlash** tizimida 1 ta belgi = **1 bayt** (8 bit).
+* **Unicode (UTF-16) kodlash** tizimida 1 ta belgi = **2 bayt** (16 bit).
+
+> **Savol:** \`"Nur Academy"\` matni xotirada qancha joy egallaydi?
+> **Yechish:**
+> 1. Belgilar sonini sanaymiz: \`N-u-r-[bo'shliq]-A-c-a-d-e-m-y\` = **11 ta belgi** (bo'shliq ham belgi hisoblanadi!).
+> 2. **ASCII tizimida:** 11 belgi × 1 bayt = **11 bayt** (yoki 88 bit).
+> 3. **Unicode tizimida:** 11 belgi × 2 bayt = **22 bayt** (yoki 176 bit).
+
+### 🌐 Masala 2: Internet tezligi va yuklash vaqti
+Internet tezligi odatda **bit/sekund (bps)** yoki **Megabit/sekund (Mbit/s)** larda o'lchanadi. Fayllar hajmi esa **Megabayt (MB)** larda bo'ladi.
+
+> **Qoida:** \`Mbit/s\` ni \`MB/s\` ga o'tkazish uchun tezlikni **8** ga bo'lamiz (chunki 1 bayt = 8 bit).
+> 
+> **Savol:** Internet tezligi \`8 Mbit/s\` bo'lsa, \`20 MB\` hajmli fayl necha sekundda yuklanadi?
+> **Yechish:**
+> 1. Tezlikni baytga o'tkazamiz: 8 Mbit/s ÷ 8 = **1 MB/s**.
+> 2. Vaqtni hisoblaymiz: 20 MB ÷ 1 MB/s = **20 sekund**.`
       },
       {
         id: "l1_2",
@@ -136,45 +171,70 @@ hisoblashlari amaliy masalalarda muhim ahamiyatga ega.`
         title: "Raqamli etika va mualliflik huquqi",
         status: "completed",
         videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-        content: `# Raqamli etika va mualliflik huquqi
+        content: `# ⚖️ 1.2-Dars: Raqamli etika va mualliflik huquqi
 
-## Raqamli etika nima?
+---
 
-Raqamli etika — internetdan va texnologiyalardan foydalanishda axloqiy
-me'yorlarga rioya qilishdir: boshqalarning shaxsiy ma'lumotlariga hurmat,
-to'g'ri muloqot, va qonunlarga rioya qilish.
+## 🌟 Kirish
 
-## Mualliflik huquqi (Copyright)
+Internet faqat axborot almashish maydoni emas, balki o'z qonun-qoidalari va madaniyatiga ega bo'lgan ulkan ijtimoiy muhitdir. Raqamli dunyoda xavfsiz va samarali ishlash uchun har bir foydalanuvchi **raqamli etika** va **mualliflik huquqi** qoidalarini yaxshi bilishi lozim.
 
-**Mualliflik huquqi** — muallifning o'z asari (matn, rasm, musiqa, dasturiy
-ta'minot) ustidan qonuniy nazorat huquqi. Boshqa birovning asarini ruxsatsiz
-nusxalash, tarqatish yoki o'zgartirish — qonun buzilishi hisoblanadi.
+---
 
-## Litsenziya turlari
+## 🤝 1. Raqamli Etika (Netiquette) Nima?
 
-- **Mualliflik huquqi bilan himoyalangan** — to'liq nazorat muallifda
-- **Creative Commons** — muallif ba'zi huquqlarni beradi (masalan, ko'chirish
-  mumkin, lekin tijoriy maqsadda emas)
-- **Ochiq manba (Open Source)** — dasturiy ta'minot kodini ko'rish, o'zgartirish
-  va tarqatish ruxsat etiladi (masalan, Linux)
+**Raqamli etika** — bu internet tarmog'ida muloqot qilish, hamkorlik qilish va ma'lumot tarqatishda insoniy va axloqiy me'yorlarga rioya qilishdir.
 
-## Shaxsiy ma'lumotlarni himoya qilish
+### 📜 Netiketning Asosiy Oltin Qoidalari:
+1. **Insoniylikni unutmang:** Ekran ortida ham siz kabi his-tuyg'ularga ega inson borligini yodda tuting. Haqoratli so'zlar yoki "kiberbulling" (tarmoqdagi zo'ravonlik) dan saqlaning.
+2. **Shaxsiy chegaralarni hurmat qiling:** Boshqa foydalanuvchilarning ruxsatisiz ularning shaxsiy ma'lumotlari yoki fotosuratlarini tarqatmang.
+3. **Muloqot madaniyati:** Katta harflar bilan yozmang (internetda bu BAQIRISH deb qabul qilinadi), imlo qoidalariga rioya qiling.
+4. **Feyk ma'lumotlar tarqatmang:** Ishonchsiz va tasdiqlanmagan xabarlarni tarqatishdan saqlaning.
 
-- Parollarni hech kimga bermang
-- Ijtimoiy tarmoqlarda shaxsiy ma'lumotlarni (manzil, telefon) oshkor qilmang
-- Noma'lum havolalarni bosishdan saqlaning (fishing xavfi)
+---
 
-## Plagiat
+## 🔒 2. Mualliflik Huquqi (Copyright)
 
-**Plagiat** — boshqa muallifning matnini/g'oyasini o'ziniki sifatida
-taqdim etish. Internetdan olingan ma'lumotdan foydalanganda manbani
-ko'rsatish (sitatsiya) majburiy.
+**Mualliflik huquqi** — bu intellektual mulk egasining (matn, rasm, video, dasturiy kod, musiqa yaratuvchisining) o'z asaridan foydalanish ustidan qonuniy nazorat huquqidir.
+* Mualliflik huquqi asar yaratilgan paytdan boshlab avtomatik ravishda kuchga kiradi va maxsus ro'yxatdan o'tkazishni talab qilmydi.
+* Belgisi: **© (Copyright)**.
 
-## Xulosa
+### 🚫 Mualliflik huquqi buzilishi turlari:
+* **Piratchilik (Piracy):** Dasturlar, filmlar yoki kitoblarni noqonuniy nusxalash va tarqatish.
+* **Ruxsatsiz tijoriy foydalanish:** Birovning rasmi yoki dizaynini o'z mahsulotida sotish maqsadida ishlatish.
 
-Raqamli dunyoda ishlashda mualliflik huquqlariga rioya qilish, shaxsiy
-ma'lumotlarni himoya qilish va etik me'yorlarga amal qilish — har bir
-foydalanuvchining mas'uliyati.`
+---
+
+## 📝 3. Plagiat va Sitatsiya (Iqtibos keltirish)
+
+### 📌 Plagiat nima?
+**Plagiat** — boshqa muallifning matnini, g'oyasini yoki tadqiqot natijalarini o'zlashtirib, go'yoki o'zining shaxsiy ishi sifatida taqdim etishdir.
+
+### 💡 Plagiatning oldini olish usuli — Sitatsiya (Citation):
+Internetdagi manbalardan foydalanganingizda, har doim haqiqiy muallif va manbani (havolani) ko'rsating.
+Masalan: *"Tadqiqotchi A. Karimovning fikriga ko'ra, ..." [Manba: www.nuracademy.uz]*.
+
+---
+
+## 🏷️ 4. Litsenziya Turlari va Ochiq Manbalar
+
+Mualliflik huquqi bilan himoyalangan asarlardan foydalanish shartlari **litsenziya** shartnomasi orqali tartibga solinadi.
+
+| Litsenziya turi | Tavsif | Foydalanish shartlari | Misollar |
+| :--- | :--- | :--- | :--- |
+| **All Rights Reserved** | To'liq mualliflik huquqi. | Foydalanish uchun muallifning shaxsiy yoki yozma ruxsati shart. | Microsoft Windows, Adobe Photoshop. |
+| **Creative Commons (CC)** | Moslashuvchan litsenziya. | Muallif ma'lum shartlar asosida (tijoriy maqsadda bo'lmagan, muallifni ko'rsatish) foydalanishga ruxsat beradi. | Wikipedia matnlari, ko'plab ilmiy maqolalar. |
+| **Open Source (Ochiq kodli)** | Dasturiy ta'minot litsenziyasi. | Dasturning manba kodini erkin ko'rish, o'zgartirish va o'zgartirilgan holda tarqatish mumkin. | Linux operatsion tizimi, Python tili. |
+
+---
+
+## 🛡️ 5. Shaxsiy Ma'lumotlar Xavfsizligi va Fishing
+
+Raqamli etikaning muhim qismi bu shaxsiy xavfsizlik va boshqalarning ma'lumotlarini himoya qilishdir:
+
+* **Parollar xavfsizligi:** Hech qachon parollaringizni uchinchi shaxslarga bermang. Kamida 8-12 belgili, belgilar va raqamlardan iborat murakkab parollar ishlating.
+* **Fishing (Phishing) xavfi:** Fishing — bu firgarlarning sizning parolingiz yoki plastik karta ma'lumotlaringizni o'g'irlash uchun yaratgan soxta havolalari (masalan, Telegram yutuqlari, soxta bank saytlari). Noma'lum havolalarni aslo bosmang!
+* **Ikki bosqichli tasdiqlash (2FA):** Barcha akkauntlaringizda (Telegram, Gmail, Supabase) qo'shimcha tasdiqlash kodini yoqing.`
       }
     ]
   },

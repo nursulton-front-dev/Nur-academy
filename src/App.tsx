@@ -21,6 +21,10 @@ import AttestatsiyaTests from './pages/AttestatsiyaTests';
 import AttestatsiyaMockExams from './pages/AttestatsiyaMockExams';
 import AttestatsiyaExam from './pages/AttestatsiyaExam';
 import AttestatsiyaExamResult from './pages/AttestatsiyaExamResult';
+import DevStatus from './pages/DevStatus';
+import Diagnostic from './pages/Diagnostic';
+import ErrorNotebook from './pages/ErrorNotebook';
+import Pricing from './pages/Pricing';
 
 export default function App() {
   return (
@@ -34,6 +38,8 @@ export default function App() {
               <Route path="signup" element={<Signup />} />
               <Route path="courses" element={<CourseCatalog />} />
               <Route path="courses/:id" element={<CourseDetails />} />
+              <Route path="dev-status" element={<DevStatus />} />
+              <Route path="project-status" element={<DevStatus />} />
               
               <Route element={<ProtectedRoute />}>
                 <Route path="dashboard" element={<Dashboard />} />
@@ -48,6 +54,9 @@ export default function App() {
                 <Route path="mock-imtihonlar" element={<AttestatsiyaMockExams />} />
                 <Route path="imtihon/:id" element={<AttestatsiyaExam />} />
                 <Route path="imtihon/:id/natija" element={<AttestatsiyaExamResult />} />
+                <Route path="diagnostika" element={<Diagnostic />} />
+                <Route path="xatolar" element={<ErrorNotebook />} />
+                <Route path="pricing" element={<Pricing />} />
               </Route>
             </Route>
           </Routes>
