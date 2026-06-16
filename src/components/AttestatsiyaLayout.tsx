@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, Outlet, useParams, useLocation, useNavigate } from 'react-router-dom';
 import {
   BookOpen,
@@ -32,6 +32,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { enrollmentService } from '../lib/enrollmentService';
 import { diagnosticService } from '../lib/diagnosticService';
 import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
+import { DIAGNOSTIC_COMPLETED_EVENT } from '../lib/events';
 import GoalSetupModal from './GoalSetupModal';
 import TodayPlanCard from './TodayPlanCard';
 import WeakTopicsCard from './WeakTopicsCard';
@@ -71,19 +72,30 @@ export default function AttestatsiyaLayout() {
     () => userProgressService.getDiagnosticCompleted()
   );
 
-  useEffect(() => {
+  // Source of truth is the enrollments row in the DB. Always refetch fresh on mount;
+  // the localStorage mirror is only the initial optimistic value.
+  const refreshDiagnosticState = useCallback(async () => {
     if (!user) return;
-    enrollmentService.getEnrollment(user.id, ATTESTATSIYA_COURSE_ID).then((enr) => {
-      if (!enr) return;
-      setDiagnosticCompleted(enr.diagnostic_completed);
-      if (enr.goal_score != null) setUserGoal(enr.goal_score);
-      if (enr.diagnostic_completed) {
-        diagnosticService.getLatestFinishedAttempt(user.id, ATTESTATSIYA_COURSE_ID).then((attempt) => {
-          if (attempt) setDiagnosticScore(attempt.total_score);
-        });
-      }
-    });
+    const enr = await enrollmentService.getEnrollment(user.id, ATTESTATSIYA_COURSE_ID);
+    if (!enr) return;
+    setDiagnosticCompleted(enr.diagnostic_completed);
+    if (enr.goal_score != null) setUserGoal(enr.goal_score);
+    if (enr.diagnostic_completed) {
+      const attempt = await diagnosticService.getLatestFinishedAttempt(user.id, ATTESTATSIYA_COURSE_ID);
+      if (attempt) setDiagnosticScore(attempt.total_score);
+    }
   }, [user]);
+
+  useEffect(() => {
+    refreshDiagnosticState();
+  }, [refreshDiagnosticState]);
+
+  // Live-update the banner when the diagnostic is finished elsewhere in this layout.
+  useEffect(() => {
+    const handler = () => refreshDiagnosticState();
+    window.addEventListener(DIAGNOSTIC_COMPLETED_EVENT, handler);
+    return () => window.removeEventListener(DIAGNOSTIC_COMPLETED_EVENT, handler);
+  }, [refreshDiagnosticState]);
 
   // Today's goals list state
   const [goalsList, setGoalsList] = useState<GoalItem[]>(() => {

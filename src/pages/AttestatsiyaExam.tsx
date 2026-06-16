@@ -1,20 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate, useBlocker } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft,
   ChevronRight,
   Bookmark,
   Clock,
-  CheckCircle2,
-  Flag,
-  Circle,
   AlertTriangle,
-  LogOut,
-  Sparkles,
-  Info
+  LogOut
 } from 'lucide-react';
 import { mockExams, completeTestOrExam } from '../data/attestatsiyaMocks';
 import { attestatsiyaService, ExamQuestion } from '../lib/attestatsiyaService';
+import { useAuth } from '../contexts/AuthContext';
+import { xpService } from '../lib/xpService';
+import TestExitGuard from '../components/TestExitGuard';
 
 /* ───────────────────── Sub-components ───────────────────── */
 
@@ -129,6 +127,7 @@ function AnswerOption({
 export default function AttestatsiyaExam() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const exam = mockExams.find(e => e.id === id) || { title: "Attestatsiya Mock Imtihoni" };
 
@@ -138,29 +137,15 @@ export default function AttestatsiyaExam() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<{ [questionId: string]: number }>({});
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
-  
+
   // Track visited questions for navigator states
   const [visitedQuestions, setVisitedQuestions] = useState<Set<string>>(new Set<string>());
 
   const [timeLeft, setTimeLeft] = useState(120 * 60);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [showExitModal, setShowExitModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Navigation blocker for client-side navigation
-  const blocker = useBlocker(
-    ({ nextLocation }) => {
-      // Don't block if we are navigating to the results page
-      if (nextLocation.pathname.includes('/natija')) return false;
-      return true;
-    }
-  );
-
-  useEffect(() => {
-    if (blocker.state === 'blocked') {
-      setShowExitModal(true);
-    }
-  }, [blocker.state]);
+  // While true, TestExitGuard warns before any navigation away from the exam.
+  const [finished, setFinished] = useState(false);
 
   // Load questions
   useEffect(() => {
@@ -209,16 +194,6 @@ export default function AttestatsiyaExam() {
     }, 1000);
     return () => clearInterval(timer);
   }, [isLoading]);
-
-  // Keyboard Navigation / beforeunload warnings
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = ''; 
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, []);
 
   // Format time (HH:MM:SS)
   const formatTime = (seconds: number) => {
@@ -271,9 +246,24 @@ export default function AttestatsiyaExam() {
     try {
       setIsLoading(true);
       setShowSubmitModal(false);
+      setFinished(true); // lift the exit guard before navigating to results
       const res = await attestatsiyaService.finishExam(attemptId);
       if (res && res.score !== undefined) {
         completeTestOrExam(id || '', res.score);
+
+        // Award XP: +5 per correct answer, plus a completion bonus at >=70%.
+        if (user) {
+          const correctCount = Object.values(res.domain_scores || {}).reduce(
+            (acc, d) => acc + (d?.correct || 0),
+            0
+          );
+          const isMock = !(id || '').startsWith('t'); // 't*' = topic test, 'e*' = mock exam
+          await xpService.recordTestCompletion(user.id, {
+            correctCount,
+            isMock,
+            scorePercent: res.score
+          });
+        }
       }
       navigate(`/attestatsiya/imtihon/${id}/natija?attempt_id=${attemptId}`);
     } catch (err) {
@@ -331,36 +321,37 @@ export default function AttestatsiyaExam() {
   const isFlagged = flaggedQuestions.has(currentQuestion.id);
 
   return (
-    <div className="fixed inset-0 z-[60] h-screen w-screen bg-primary-bg overflow-hidden flex flex-col font-sans select-none">
-      
+    <div className="fixed inset-0 z-[60] h-[100dvh] w-screen bg-primary-bg overflow-hidden flex flex-col font-sans select-none">
+      <TestExitGuard when={!finished} />
+
       {/* 1. MINIMAL EXAM HEADER */}
-      <header className="h-16 shrink-0 bg-surface border-b border-border-card px-6 flex justify-between items-center z-10 shadow-[0_2px_10px_rgba(0,0,0,0.01)]">
+      <header className="h-16 shrink-0 bg-surface border-b border-border-card px-4 sm:px-6 flex justify-between items-center z-10 shadow-[0_2px_10px_rgba(0,0,0,0.01)]">
         <button
-          onClick={() => setShowExitModal(true)}
-          className="flex items-center space-x-2 bg-primary-bg hover:bg-surface-hover text-text-secondary hover:text-text-primary px-4 py-2.5 rounded-xl border border-border-card/50 text-xs font-bold transition-all cursor-pointer shrink-0"
+          onClick={() => navigate('/attestatsiya')}
+          className="flex items-center space-x-2 bg-primary-bg hover:bg-surface-hover text-text-secondary hover:text-text-primary px-3 sm:px-4 py-2.5 rounded-xl border border-border-card/50 text-xs font-bold transition-all cursor-pointer shrink-0"
         >
           <LogOut className="w-4 h-4 transform rotate-180" />
-          <span>Imtihondan chiqish</span>
+          <span className="hidden sm:inline">Imtihondan chiqish</span>
         </button>
 
-        <div className="flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-accent-blue animate-pulse" />
-          <span className="font-serif font-extrabold text-sm text-text-primary">{exam.title}</span>
+        <div className="flex items-center space-x-2 min-w-0">
+          <span className="w-2 h-2 rounded-full bg-accent-blue animate-pulse shrink-0" />
+          <span className="font-serif font-extrabold text-sm text-text-primary truncate">{exam.title}</span>
         </div>
 
         <button
           onClick={() => setShowSubmitModal(true)}
-          className="bg-accent-blue hover:bg-accent-blue/95 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/15 hover:shadow-lg transition-all active:scale-98 cursor-pointer shrink-0"
+          className="bg-accent-blue hover:bg-accent-blue/95 text-white px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/15 hover:shadow-lg transition-all active:scale-98 cursor-pointer shrink-0"
         >
-          🏁 Imtihonni yakunlash
+          🏁 <span className="hidden sm:inline">Imtihonni</span> yakunlash
         </button>
       </header>
 
       {/* 2. MAIN WORKSPACE CONTAINER */}
-      <div className="flex-1 flex gap-6 p-6 h-[calc(100vh-64px)] overflow-hidden">
-        
-        {/* LEFT PANEL (320px width, sticky vertical scroll grid) */}
-        <aside className="w-[320px] shrink-0 h-full flex flex-col gap-4 overflow-y-auto pr-1">
+      <div className="flex-1 min-h-0 flex gap-4 lg:gap-6 p-4 lg:p-6 overflow-hidden">
+
+        {/* LEFT PANEL — fixed width, no internal scroll */}
+        <aside className="hidden lg:flex w-[280px] shrink-0 flex-col gap-4 min-h-0">
           
           {/* Card 1: Question Progress Ring */}
           <div className="bg-surface border border-border-card rounded-[24px] p-5 flex items-center justify-between shadow-sm">
@@ -430,41 +421,39 @@ export default function AttestatsiyaExam() {
             </div>
           </div>
 
-          {/* Card 3: 50 Questions Navigator */}
-          <div className="bg-surface border border-border-card rounded-[24px] p-5 shadow-sm flex-grow flex flex-col overflow-hidden text-left">
+          {/* Card 3: 50 Questions Navigator — 8-col grid, square cells, no inner scroll */}
+          <div className="bg-surface border border-border-card rounded-[24px] p-5 shadow-sm flex flex-col text-left min-h-0">
             <h4 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-3">Savollar navigator</h4>
-            
-            <div className="flex-grow overflow-y-auto pr-1">
-              <div className="grid grid-cols-5 gap-2.5">
-                {questions.map((q, idx) => {
-                  const isCurrent = currentQuestionIndex === idx;
-                  const isAnswered = userAnswers[q.id] !== undefined;
-                  const isFlagged = flaggedQuestions.has(q.id);
-                  const isVisited = visitedQuestions.has(q.id);
 
-                  let btnStyle = "bg-primary-bg text-text-secondary border-border-card hover:bg-surface-hover";
-                  
-                  if (isCurrent) {
-                    btnStyle = "bg-accent-blue text-white border-accent-blue font-bold shadow-md shadow-accent-blue/10 scale-105";
-                  } else if (isFlagged) {
-                    btnStyle = "bg-orange-500/10 text-orange-600 border-orange-500/30 font-semibold";
-                  } else if (isAnswered) {
-                    btnStyle = "bg-success-green/10 text-success-green border-success-green/30 font-semibold";
-                  } else if (isVisited) {
-                    btnStyle = "bg-purple-500/10 text-purple-600 border-purple-500/20";
-                  }
+            <div className="grid grid-cols-8 gap-1.5 [&>button]:aspect-square">
+              {questions.map((q, idx) => {
+                const isCurrent = currentQuestionIndex === idx;
+                const isAnswered = userAnswers[q.id] !== undefined;
+                const isFlagged = flaggedQuestions.has(q.id);
+                const isVisited = visitedQuestions.has(q.id);
 
-                  return (
-                    <button
-                      key={q.id}
-                      onClick={() => setCurrentQuestionIndex(idx)}
-                      className={`h-9 w-full rounded-xl border text-[11px] font-medium flex items-center justify-center transition-all cursor-pointer ${btnStyle}`}
-                    >
-                      {idx + 1}
-                    </button>
-                  );
-                })}
-              </div>
+                let btnStyle = "bg-primary-bg text-text-secondary border-border-card hover:bg-surface-hover";
+
+                if (isCurrent) {
+                  btnStyle = "bg-accent-blue text-white border-accent-blue font-bold shadow-sm";
+                } else if (isFlagged) {
+                  btnStyle = "bg-orange-500/10 text-orange-600 border-orange-500/30 font-semibold";
+                } else if (isAnswered) {
+                  btnStyle = "bg-success-green/10 text-success-green border-success-green/30 font-semibold";
+                } else if (isVisited) {
+                  btnStyle = "bg-purple-500/10 text-purple-600 border-purple-500/20";
+                }
+
+                return (
+                  <button
+                    key={q.id}
+                    onClick={() => setCurrentQuestionIndex(idx)}
+                    className={`rounded-lg border text-[11px] font-medium flex items-center justify-center transition-all cursor-pointer ${btnStyle}`}
+                  >
+                    {idx + 1}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Legend indicators */}
@@ -613,29 +602,7 @@ export default function AttestatsiyaExam() {
         />
       )}
 
-      {/* 5. CUSTOM EXIT MODAL */}
-      {showExitModal && (
-        <CustomExamModal
-          title="Imtihondan chiqmoqchimisiz?"
-          description="Hozirgacha kiritilgan barcha javoblaringiz saqlab qolinadi va vaqt orqaga hisoblanishda davom etadi. Haqiqatan ham imtihon oynasidan chiqmoqchimisiz?"
-          confirmText="Ha, chiqish"
-          confirmBtnStyle="bg-rose-500 hover:bg-rose-600"
-          onCancel={() => {
-            setShowExitModal(false);
-            if (blocker.state === 'blocked') {
-              blocker.reset();
-            }
-          }}
-          onConfirm={() => {
-            setShowExitModal(false);
-            if (blocker.state === 'blocked') {
-              blocker.proceed();
-            } else {
-              navigate('/attestatsiya');
-            }
-          }}
-        />
-      )}
+      {/* Exit warning handled by <TestExitGuard> (browser back, links, tab close) */}
 
     </div>
   );

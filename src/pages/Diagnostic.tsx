@@ -6,6 +6,8 @@ import { enrollmentService } from '../lib/enrollmentService';
 import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
 import { userProgressService } from '../lib/userProgress';
 import { domainLabel } from '../lib/domains';
+import { xpService } from '../lib/xpService';
+import { emitDiagnosticCompleted } from '../lib/events';
 import {
   diagnosticService,
   DiagnosticQuestion,
@@ -126,6 +128,10 @@ export default function Diagnostic() {
     }
     if (user) {
       await enrollmentService.markDiagnosticCompleted(user.id, ATTESTATSIYA_COURSE_ID);
+      // +50 XP, first diagnostic completion only.
+      await xpService.addXp(user.id, 'diagnostic_complete', 50, { score: totalScore }, { once: true });
+      // Tell the course sidebar to refetch and drop the "diagnostic not taken" banner.
+      emitDiagnosticCompleted();
     }
   };
 
