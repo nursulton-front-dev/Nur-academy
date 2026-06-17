@@ -45,9 +45,13 @@ function parseOptions(raw: unknown): { options: string[]; correctIndex: number }
 // completion locally and upsert the lesson-level progress row when all steps are done.
 const stepKey = (lessonId: string) => `nur_lesson_steps_${lessonId}`;
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const lessonStepsService = {
   /** Loads ordered steps for a lesson (uz locale), with quiz questions resolved. */
   async getLessonSteps(lessonId: string): Promise<LessonStep[]> {
+    if (!UUID_RE.test(lessonId)) return [];
+
     const { data: steps, error } = await supabase
       .from('lesson_steps')
       .select('id, lesson_id, step_type, order_index')

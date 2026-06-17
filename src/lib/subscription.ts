@@ -36,7 +36,7 @@ const TIER_LIMITS: Record<SubscriptionTier, SubscriptionLimits> = {
     hasErrorNotebook: true,
     hasAdvancedAnalytics: true,
     hasPersonalRoadmap: true,
-    hasAiMentor: false,
+    hasAiMentor: true,
   },
   oliy: {
     diagnosticLimit: 999,

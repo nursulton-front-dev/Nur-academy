@@ -57,7 +57,25 @@ export const enrollmentService = {
     if (error) {
       // 23505 = unique_violation → row already created concurrently; re-read it.
       if (error.code === '23505') return this.getEnrollment(userId, courseId);
-      // Log the FULL error so RLS failures (42501) and FK issues (23503) are visible.
+
+      // 23503 = FK violation (profile doesn't exist yet — race with auth trigger).
+      // Retry once after a short delay so the trigger has time to create the profile.
+      if (error.code === '23503') {
+        await new Promise((r) => setTimeout(r, 1000));
+        const retry = await supabase
+          .from('enrollments')
+          .insert({ user_id: userId, course_id: courseId, onboarding_completed: false })
+          .select(COLUMNS)
+          .maybeSingle();
+        if (!retry.error && retry.data) {
+          mirrorToLocal(retry.data as Enrollment);
+          return retry.data as Enrollment;
+        }
+        // Second failure — give up silently.
+        console.warn('ensureEnrollment FK retry failed:', retry.error?.message);
+        return null;
+      }
+
       console.error('ensureEnrollment INSERT failed:', {
         code: error.code,
         message: error.message,
