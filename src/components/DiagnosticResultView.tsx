@@ -1,8 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Target, Lightbulb, ArrowRight, RefreshCw, BookOpen } from 'lucide-react';
+import { Sparkles, Target, Lightbulb, ArrowRight, RefreshCw, BookOpen, XCircle } from 'lucide-react';
 import { DomainResult } from '../lib/diagnosticService';
 import { domainLabel } from '../lib/domains';
+import { AIMentorBlock } from './AIMentorBlock';
+
+export interface WrongAnswerReview {
+  questionId: string;
+  questionText: string;
+  userAnswerIndex: number;
+}
 
 interface DiagnosticResultViewProps {
   totalScore: number; // out of 100
@@ -12,6 +19,7 @@ interface DiagnosticResultViewProps {
   finishedAt?: string | null;
   onRetake?: () => void; // when provided, renders an action button instead of a link
   retaking?: boolean;
+  wrongAnswers?: WrongAnswerReview[]; // fresh completion only — drives the AI Mentor review
 }
 
 // Domain bar color by performance band.
@@ -37,7 +45,8 @@ export default function DiagnosticResultView({
   goalScore,
   finishedAt,
   onRetake,
-  retaking = false
+  retaking = false,
+  wrongAnswers
 }: DiagnosticResultViewProps) {
   const meetsGoal = goalScore != null && totalScore >= goalScore;
   const pointsToGoal = goalScore != null ? Math.max(0, goalScore - totalScore) : 0;
@@ -122,6 +131,24 @@ export default function DiagnosticResultView({
         </div>
         <p className="text-sm text-text-secondary leading-relaxed">{recommendation}</p>
       </div>
+
+      {/* Wrong-answer review with AI Mentor (fresh completion only) */}
+      {wrongAnswers && wrongAnswers.length > 0 && (
+        <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm text-left space-y-4">
+          <div className="flex items-center space-x-2">
+            <XCircle className="w-5 h-5 text-rose-500" />
+            <h3 className="font-serif font-bold text-base text-text-primary">Xatolar ustida ishlash</h3>
+          </div>
+          <div className="space-y-5">
+            {wrongAnswers.map((w) => (
+              <div key={w.questionId} className="space-y-2.5">
+                <p className="text-sm font-semibold text-text-primary">{w.questionText}</p>
+                <AIMentorBlock questionId={w.questionId} userAnswerIndex={w.userAnswerIndex} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-2">

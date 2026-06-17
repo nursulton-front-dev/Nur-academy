@@ -25,11 +25,18 @@ import DiagnosticResultView from '../components/DiagnosticResultView';
 
 type DiagnosticState = 'loading' | 'intro' | 'test' | 'result';
 
+interface WrongAnswer {
+  questionId: string;
+  questionText: string;
+  userAnswerIndex: number;
+}
+
 interface ResultData {
   totalScore: number;
   domainResults: DomainResult[];
   recommendation: string;
   finishedAt: string | null;
+  wrongAnswers?: WrongAnswer[];
 }
 
 export default function Diagnostic() {
@@ -104,7 +111,12 @@ export default function Diagnostic() {
     const totalScore = computeTotalScore(answers, questions);
     const recommendation = generateRecommendation(domainResults);
 
-    setResult({ totalScore, domainResults, recommendation, finishedAt: new Date().toISOString() });
+    // Collect answered-but-wrong questions for the AI Mentor review.
+    const wrongAnswers: WrongAnswer[] = questions
+      .filter((q) => answers[q.id] !== undefined && answers[q.id] !== q.correctIndex)
+      .map((q) => ({ questionId: q.id, questionText: q.text, userAnswerIndex: answers[q.id] }));
+
+    setResult({ totalScore, domainResults, recommendation, finishedAt: new Date().toISOString(), wrongAnswers });
     setState('result');
 
     // Mirror into localStorage so legacy sidebar cards (WeakTopicsCard, etc.) keep working.
@@ -162,6 +174,7 @@ export default function Diagnostic() {
         finishedAt={result.finishedAt}
         onRetake={startTest}
         retaking={starting}
+        wrongAnswers={result.wrongAnswers}
       />
     );
   }

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Check, X, ArrowRight, RefreshCw, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { LessonStep } from '../../lib/lessonStepsService';
+import { AIMentorBlock } from '../AIMentorBlock';
 
 interface QuizStepProps {
   step: LessonStep;
@@ -157,15 +158,18 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
         })}
       </div>
 
-      {/* On wrong answer require explicit acknowledgement */}
+      {/* On wrong answer: AI explanation, then require explicit acknowledgement */}
       {revealed && selected !== q.correctIndex && (
-        <div className="flex justify-end">
-          <button
-            onClick={goNext}
-            className="inline-flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-97 cursor-pointer"
-          >
-            Tushundim, davom etish <ArrowRight className="w-4 h-4" />
-          </button>
+        <div className="space-y-3">
+          <AIMentorBlock questionId={q.id} userAnswerIndex={selected ?? 0} />
+          <div className="flex justify-end">
+            <button
+              onClick={goNext}
+              className="inline-flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-97 cursor-pointer"
+            >
+              Tushundim, davom etish <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
       {revealed && selected === q.correctIndex && (

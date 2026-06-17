@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { mockExams, mockQuestions, mockExamResult } from '../data/attestatsiyaMocks';
 import { attestatsiyaService } from '../lib/attestatsiyaService';
+import { AIMentorBlock } from '../components/AIMentorBlock';
 
 export default function AttestatsiyaExamResult() {
   const { id } = useParams<{ id: string }>();
@@ -237,6 +238,11 @@ export default function AttestatsiyaExamResult() {
                       <span className="font-bold text-text-primary block mb-1">Izoh (Tushuntirish):</span>
                       {q.explanation}
                     </div>
+                  )}
+
+                  {/* AI Mentor — only for wrong answers */}
+                  {!isCorrect && q.question_id && (
+                    <AIMentorBlock questionId={q.question_id} userAnswerIndex={selectedAnswer ?? 0} />
                   )}
                 </div>
               );
