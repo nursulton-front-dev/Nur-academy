@@ -6,6 +6,7 @@ import {
   PlayCircle
 } from 'lucide-react';
 import { mockExams } from '../data/attestatsiyaMocks';
+import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
 
 export default function AttestatsiyaMockExams() {
   const navigate = useNavigate();
@@ -15,17 +16,12 @@ export default function AttestatsiyaMockExams() {
   };
 
   return (
-    <div className="space-y-6 transition-colors duration-250">
-      {/* Title Header */}
-      <div className="pb-6 border-b border-border-card">
-        <h1 className="text-3xl font-serif font-extrabold text-text-primary mb-2">
-          Mock Imtihonlar
-        </h1>
-        <p className="text-text-secondary text-sm sm:text-base">
-          Attestatsiya imtihoni andozasi asosida tayyorlangan 50 talik sinov testlarini topshiring. Har bir testga 120 daqiqa vaqt ajratiladi.
-        </p>
-      </div>
-
+    <AppPage>
+      <PageHeader
+        title="Mock imtihonlar"
+        description="Attestatsiya imtihoni andozasi asosidagi 50 talik sinov testlari. Har bir testga 120 daqiqa ajratiladi."
+      />
+      <PageContent>
       {/* Mock imtihonlar Grid */}
       <div className="bg-surface rounded-xl border border-border-card divide-y divide-border-card overflow-hidden">
         {mockExams.map((exam) => {
@@ -96,6 +92,7 @@ export default function AttestatsiyaMockExams() {
           );
         })}
       </div>
-    </div>
+      </PageContent>
+    </AppPage>
   );
 }

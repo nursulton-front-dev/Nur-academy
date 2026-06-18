@@ -2,7 +2,8 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
-  Route
+  Route,
+  Navigate
 } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -20,7 +21,6 @@ import Lesson from './pages/Lesson';
 
 // Attestatsiya section components
 import AttestatsiyaLayout from './components/AttestatsiyaLayout';
-import AttestatsiyaLanding from './pages/AttestatsiyaLanding';
 import AttestatsiyaLesson from './pages/AttestatsiyaLesson';
 import AttestatsiyaTests from './pages/AttestatsiyaTests';
 import AttestatsiyaMockExams from './pages/AttestatsiyaMockExams';
@@ -32,40 +32,58 @@ import AttestatsiyaOnboarding from './pages/AttestatsiyaOnboarding';
 import Certificates from './pages/Certificates';
 import ErrorNotebook from './pages/ErrorNotebook';
 import Pricing from './pages/Pricing';
+import AdminPanel from './pages/AdminPanel';
+import AttestatsiyaResults from './pages/AttestatsiyaResults';
 
 // Data router (createBrowserRouter) is required for useBlocker — used to guard
 // against losing in-progress test answers on navigation.
+//
+// Two distinct shells:
+//  - <Layout>: PUBLIC chrome (topbar with Kirish / Roʻyxatdan oʻtish + footer).
+//    Wraps public pages, focus-mode exam screens, and a few legacy routes.
+//  - <AttestatsiyaLayout>: INTERNAL AppShell (sidebar + app topbar, never shows
+//    login/register). Wraps every internal course page, including /obuna.
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Layout />}>
-      <Route index element={<Landing />} />
-      <Route path="login" element={<Login />} />
-      <Route path="signup" element={<Signup />} />
-      <Route path="courses" element={<CourseCatalog />} />
-      <Route path="courses/:id" element={<CourseDetails />} />
-      <Route path="dev-status" element={<DevStatus />} />
-      <Route path="project-status" element={<DevStatus />} />
+    <Route>
+      {/* ───────── PUBLIC + focus-mode + legacy (public Layout) ───────── */}
+      <Route element={<Layout />}>
+        <Route path="/" element={<Landing />} />
+        <Route path="login" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
+        <Route path="courses" element={<CourseCatalog />} />
+        <Route path="courses/:id" element={<CourseDetails />} />
+        <Route path="dev-status" element={<DevStatus />} />
+        <Route path="project-status" element={<DevStatus />} />
 
-      <Route element={<ProtectedRoute />}>
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="certificates" element={<Certificates />} />
-        <Route path="learn/:lessonId" element={<Lesson />} />
+        {/* Public subscription page (kept separate from internal /attestatsiya/obuna) */}
+        <Route path="pricing" element={<Pricing />} />
+
+        {/* Legacy dashboard route → internal app home */}
+        <Route path="dashboard" element={<Navigate to="/attestatsiya" replace />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="certificates" element={<Certificates />} />
+          <Route path="learn/:lessonId" element={<Lesson />} />
+          <Route path="admin" element={<AdminPanel />} />
+        </Route>
+
+        {/* Focus-mode course screens — single-screen, no sidebar */}
+        <Route path="attestatsiya/onboarding" element={<AttestatsiyaOnboarding />} />
+        <Route path="attestatsiya/diagnostika" element={<Diagnostic />} />
+        <Route path="attestatsiya/imtihon/:id" element={<AttestatsiyaExam />} />
       </Route>
 
-      {/* Course onboarding gate — focused step, no course sidebar */}
-      <Route path="attestatsiya/onboarding" element={<AttestatsiyaOnboarding />} />
-
-      {/* Attestatsiya section (Nested inside main Layout) */}
+      {/* ───────── INTERNAL APP SHELL (sidebar + app topbar) ───────── */}
       <Route path="attestatsiya" element={<AttestatsiyaLayout />}>
-        <Route index element={<AttestatsiyaLanding />} />
+        <Route index element={<Dashboard />} />
+        <Route path="natija" element={<AttestatsiyaResults />} />
         <Route path="dars/:id" element={<AttestatsiyaLesson />} />
         <Route path="testlar" element={<AttestatsiyaTests />} />
-        <Route path="mock-imtihonlar" element={<AttestatsiyaMockExams />} />
-        <Route path="imtihon/:id" element={<AttestatsiyaExam />} />
+        <Route path="imtihon" element={<AttestatsiyaMockExams />} />
         <Route path="imtihon/:id/natija" element={<AttestatsiyaExamResult />} />
-        <Route path="diagnostika" element={<Diagnostic />} />
         <Route path="xatolar" element={<ErrorNotebook />} />
-        <Route path="pricing" element={<Pricing />} />
+        <Route path="obuna" element={<Pricing />} />
       </Route>
     </Route>
   )

@@ -11,10 +11,22 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { subscriptionService, SubscriptionTier } from '../lib/subscription';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
 
 export default function Pricing() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const currentTier = subscriptionService.getSubscriptionTier();
+
+  // Mirrors the chosen tier into profiles.subscription_tier so the AI Mentor
+  // (which gates on the DB column) actually unlocks after a mock checkout.
+  const syncTierToDb = async (tier: SubscriptionTier) => {
+    if (!user) return;
+    const { error } = await supabase.from('profiles').update({ subscription_tier: tier }).eq('id', user.id);
+    if (error) console.error('Pricing: failed to sync subscription_tier:', error.message);
+  };
 
   // Fake checkout modal states
   const [selectedPlan, setSelectedPlan] = useState<{ id: SubscriptionTier; title: string; price: string } | null>(null);
@@ -31,90 +43,36 @@ export default function Pricing() {
       price: '0 UZS',
       desc: 'Boshlang\'ich tanishuv va cheklangan imkoniyatlar',
       features: [
+        'Birinchi 2 ta modul darslari bepul',
         '1 ta Diagnostika testi',
         '2 ta Mock imtihon topshirish',
-        'Birinchi 2 ta modul darslari bepul',
-        'Cheklangan dars materiallari'
+        'Mavzu testlari'
       ],
       missing: [
-        'Xatolar daftarchasi sahifasi',
-        'Shaxsiy roadmap o\'quv tavsiyalari',
-        'Cheksiz Mock imtihonlar',
-        'AI Mentor shaxsiy yordamchisi'
+        'Barcha 8 modul darslari',
+        'AI Mentor shaxsiy yordamchisi',
+        'Xatolar daftarchasi',
+        'Kengaytirilgan analitika va sertifikat'
       ],
       btnText: 'Amaldagi tarif',
       popular: false
     },
     {
-      id: 'start' as SubscriptionTier,
-      title: 'Start',
-      price: '59,000 UZS',
-      desc: 'Darajangizni aniqlash va xatolarni ko\'rib chiqish',
-      features: [
-        '2 ta Diagnostika testi',
-        '5 ta Mock imtihon topshirish',
-        'Birinchi 4 ta modul darslari',
-        'Xatolar daftarchasi'
-      ],
-      missing: [
-        'Shaxsiy roadmap o\'quv tavsiyalari',
-        'Cheksiz Mock imtihonlar',
-        'AI Mentor shaxsiy yordamchisi'
-      ],
-      btnText: 'Faollashtirish',
-      popular: false
-    },
-    {
       id: 'pro' as SubscriptionTier,
       title: 'Pro',
-      price: '119,000 UZS',
-      desc: 'Ko\'p sonli imtihonlar va shaxsiy roadmap',
+      price: '99,000 UZS',
+      desc: 'Attestatsiyaga toʻliq tayyorgarlik uchun barcha imkoniyatlar',
       features: [
-        'Cheksiz Diagnostika testlari',
-        '15 ta Mock imtihon topshirish',
         'Barcha 8 ta modul darslari ochiq',
-        'Xatolar daftarchasi',
-        'Shaxsiy roadmap o\'quv tavsiyalari',
-        'Kengaytirilgan analytics grafiklar'
+        'Cheksiz Diagnostika va Mock imtihonlar',
+        'AI Mentor — har kunlik shaxsiy reja',
+        'Xatolar daftarchasi (spaced repetition)',
+        'Kengaytirilgan natija va tahlil',
+        'Yakuniy sertifikat'
       ],
-      missing: [
-        'AI Mentor shaxsiy yordamchisi'
-      ],
-      btnText: 'Tanlash',
+      missing: [],
+      btnText: 'Pro tarifni tanlash',
       popular: true
-    },
-    {
-      id: 'oliy' as SubscriptionTier,
-      title: 'Oliy',
-      price: '179,000 UZS',
-      desc: 'Oliy toifa va maksimal natija uchun to\'liq paket',
-      features: [
-        'Cheksiz Diagnostika testlari',
-        'Cheksiz Mock imtihon topshirish',
-        'Barcha 8 ta modul darslari ochiq',
-        'Xatolar daftarchasi',
-        'Shaxsiy roadmap o\'quv tavsiyalari',
-        'Kengaytirilgan analytics grafiklar',
-        'AI Mentor shaxsiy yordamchisi (GPT-4)'
-      ],
-      missing: [],
-      btnText: 'Faollashtirish',
-      popular: false
-    },
-    {
-      id: 'vip' as SubscriptionTier,
-      title: 'VIP',
-      price: '299,000 UZS',
-      desc: 'Premium mentorlik va 100% kafolatlangan attestatsiya',
-      features: [
-        'Oliy tarifning barcha imkoniyatlari',
-        'Shaxsiy moderator tekshiruvi',
-        'Attestatsiya topshira olmasa pulni qaytarish kafolati',
-        'Offline imtihon konsultatsiyasi'
-      ],
-      missing: [],
-      btnText: 'Faollashtirish',
-      popular: false
     }
   ];
 
@@ -122,6 +80,7 @@ export default function Pricing() {
     if (plan.id === currentTier) return;
     if (plan.id === 'free') {
       subscriptionService.setSubscriptionTier('free');
+      syncTierToDb('free');
       return;
     }
     setSelectedPlan(plan);
@@ -133,7 +92,7 @@ export default function Pricing() {
 
   const handlePay = () => {
     if (!selectedPlan) return;
-    
+
     // Simple mock card validation
     if (cardNumber.length < 16) {
       alert("Iltimos, 16 xonali karta raqamini to'liq kiriting");
@@ -141,28 +100,24 @@ export default function Pricing() {
     }
 
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    setTimeout(async () => {
       subscriptionService.setSubscriptionTier(selectedPlan.id);
+      await syncTierToDb(selectedPlan.id);
+      setIsLoading(false);
       setCheckoutStep('success');
     }, 1500);
   };
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto py-8 px-4 text-left font-sans">
-      
-      {/* Title */}
-      <div className="pb-6 border-b border-border-card text-center sm:text-left">
-        <h1 className="text-3xl font-serif font-extrabold text-text-primary mb-2">
-          Ta'rif rejalari
-        </h1>
-        <p className="text-text-secondary text-sm sm:text-base">
-          Maqsadingizga eng tez erishish imkonini beruvchi tarif rejasini tanlang. Barcha to'lovlar simulyatsiya qilinadi.
-        </p>
-      </div>
+    <AppPage className="text-left font-sans">
+      <PageHeader
+        title="Obuna"
+        description="Maqsadingizga eng tez erishish imkonini beruvchi tarif rejasini tanlang. Barcha toʻlovlar simulyatsiya qilinadi."
+      />
+      <PageContent className="space-y-8">
 
       {/* Grid containing the cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4.5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl mx-auto">
         {plans.map((plan) => {
           const isCurrent = plan.id === currentTier;
           
@@ -366,6 +321,7 @@ export default function Pricing() {
         </div>
       )}
 
-    </div>
+      </PageContent>
+    </AppPage>
   );
 }

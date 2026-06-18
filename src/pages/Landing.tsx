@@ -116,7 +116,7 @@ export default function Landing() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-primary-bg overflow-x-hidden">
+    <div className="flex flex-col bg-primary-bg overflow-x-hidden">
       {/* Hero Section */}
       <section className="relative bg-surface py-24 md:py-32 border-b border-border-card overflow-hidden">
         {/* Abstract Decorative Blobs */}

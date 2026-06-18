@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { learningEngineService, ErrorRecord } from '../lib/learningEngine';
 import { subscriptionService } from '../lib/subscription';
+import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
 
 export default function ErrorNotebook() {
   const navigate = useNavigate();
@@ -34,25 +35,27 @@ export default function ErrorNotebook() {
   // Lock Wall redirect
   if (isLocked) {
     return (
-      <div className="max-w-2xl mx-auto py-16 px-4 text-center font-sans space-y-6">
-        <div className="w-16 h-16 bg-accent-blue/10 border border-accent-blue/20 rounded-full flex items-center justify-center mx-auto text-accent-blue animate-pulse">
-          <AlertCircle className="w-8 h-8" />
+      <AppPage>
+        <div className="max-w-2xl mx-auto py-12 text-center font-sans space-y-6">
+          <div className="w-16 h-16 bg-accent-blue/10 border border-accent-blue/20 rounded-full flex items-center justify-center mx-auto text-accent-blue animate-pulse">
+            <AlertCircle className="w-8 h-8" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-serif font-extrabold text-text-primary">Premium imkoniyat</h2>
+            <p className="text-sm text-text-secondary leading-relaxed max-w-md mx-auto">
+              Xatolar daftarchasi yordamida testlarda yo'l qo'ygan xatolaringizni tizimli tahlil qiling va Spaced Repetition orqali takrorlang.
+            </p>
+          </div>
+          <div className="pt-2">
+            <Link
+              to="/attestatsiya/obuna"
+              className="inline-flex items-center space-x-2 bg-accent-blue text-white px-8 py-3.5 rounded-xl font-bold text-xs shadow-md hover:bg-accent-blue/95 transition-all"
+            >
+              <span>Tarifni yangilash</span>
+            </Link>
+          </div>
         </div>
-        <div className="space-y-2">
-          <h2 className="text-2xl font-serif font-extrabold text-text-primary">Premium imkoniyat</h2>
-          <p className="text-sm text-text-secondary leading-relaxed max-w-md mx-auto">
-            Xatolar daftarchasi yordamida testlarda yo'l qo'ygan xatolaringizni tizimli tahlil qiling va Spaced Repetition orqali takrorlang.
-          </p>
-        </div>
-        <div className="pt-2">
-          <Link
-            to="/attestatsiya/pricing"
-            className="inline-flex items-center space-x-2 bg-accent-blue text-white px-8 py-3.5 rounded-xl font-bold text-xs shadow-md hover:bg-accent-blue/95 transition-all"
-          >
-            <span>Tarifni yangilash</span>
-          </Link>
-        </div>
-      </div>
+      </AppPage>
     );
   }
 
@@ -100,24 +103,18 @@ export default function ErrorNotebook() {
   };
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto py-8 px-4 text-left font-sans">
-      
-      {/* Title */}
-      <div className="pb-6 border-b border-border-card flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-serif font-extrabold text-text-primary mb-2">
-            Xatolar daftarchasi
-          </h1>
-          <p className="text-text-secondary text-sm">
-            Kiber-kviz, mock imtihon va diagnostikadagi xatolaringizning tizimli tahlili
-          </p>
-        </div>
-        
-        <div className="bg-orange-500/10 text-orange-600 px-4 py-2 rounded-2xl border border-orange-500/15 flex items-center space-x-2 shrink-0">
-          <span className="text-lg font-serif font-extrabold">{reviewQueue.length}</span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary">Takrorlashga tayyor</span>
-        </div>
-      </div>
+    <AppPage className="text-left font-sans">
+      <PageHeader
+        title="Xatolar daftarchasi"
+        description="Kiber-kviz, mock imtihon va diagnostikadagi xatolaringizning tizimli tahlili."
+        action={
+          <div className="bg-orange-500/10 text-orange-600 px-4 py-2 rounded-2xl border border-orange-500/15 flex items-center space-x-2 shrink-0">
+            <span className="text-lg font-serif font-extrabold">{reviewQueue.length}</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary">Takrorlashga tayyor</span>
+          </div>
+        }
+      />
+      <PageContent className="space-y-8">
 
       {/* 1. TOP STATS (Eng ko'p xato qilingan mavzular) */}
       {errors.length > 0 && (
@@ -364,6 +361,7 @@ export default function ErrorNotebook() {
         )}
       </div>
 
-    </div>
+      </PageContent>
+    </AppPage>
   );
 }

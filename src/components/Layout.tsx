@@ -35,7 +35,7 @@ export function Layout() {
   const initialLetters = (user?.email?.slice(0, 2) || 'U').toUpperCase();
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-text-primary bg-primary-bg transition-colors duration-300">
+    <div className="min-h-dvh flex flex-col font-sans text-text-primary bg-primary-bg transition-colors duration-300">
 
       {/* Minimal Modern Full-Width Top Navigation */}
       <header className="bg-surface border-b border-border-card sticky top-0 z-40 flex-shrink-0 backdrop-blur-md bg-opacity-95 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
@@ -197,8 +197,8 @@ export function Layout() {
         </div>
       </header>
 
-      {/* Main Container Area */}
-      <main className="flex-grow flex flex-col">
+      {/* Main Container Area — flex-1 allows body-level scroll only */}
+      <main className="flex-1">
         <Outlet />
       </main>
 

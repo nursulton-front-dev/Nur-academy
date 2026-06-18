@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { Link } from 'react-router-dom';
-import { BookOpen, PlayCircle, Flame, ArrowRight } from 'lucide-react';
+import { Flame, Target, TrendingUp, CalendarDays, Trophy } from 'lucide-react';
 import { xpService } from '../lib/xpService';
+import { userProgressService } from '../lib/userProgress';
+import { learningEngineService } from '../lib/learningEngine';
+import { mockModules } from '../data/attestatsiyaMocks';
+
+import DashboardHero from '../components/dashboard/DashboardHero';
+import StatCard from '../components/dashboard/StatCard';
+import RightStatusPanel from '../components/dashboard/RightStatusPanel';
+import ContinueLearningCard from '../components/dashboard/ContinueLearningCard';
+import AIMentorRecommendationCard from '../components/dashboard/AIMentorRecommendationCard';
+import ModulesSection from '../components/dashboard/ModulesSection';
 
 interface EnrolledCourse {
   course_id: string;
@@ -21,41 +30,36 @@ export default function Dashboard() {
   const [streak, setStreak] = useState(0);
   const [activeToday, setActiveToday] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [diagnosticScore, setDiagnosticScore] = useState<number | null>(null);
+  const [weakTopics, setWeakTopics] = useState<string[]>([]);
+  const [reviewCount, setReviewCount] = useState(0);
+  const [recentTestScore, setRecentTestScore] = useState<number | null>(null);
+  const [xpLevel, setXpLevel] = useState(1);
+  const [nextLevelXpVal, setNextLevelXpVal] = useState(100);
+  const [xpVal, setXpVal] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
-
     async function fetchDashboard() {
-      if (!user) return;
+      // Guest / demo preview: render immediately with mock-derived defaults
+      // instead of spinning forever waiting on a session that will never arrive.
+      if (!user) {
+        if (isMounted) setLoading(false);
+        return;
+      }
       try {
-        // BUG 1 fix: read enrollments joined to courses via the FK embed, with a
-        // separate-query fallback in case PostgREST can't resolve the embed.
-        const { data: enrolls, error: enrollError } = await supabase
+        const { data: enrolls } = await supabase
           .from('enrollments')
           .select('course_id, enrolled_at, courses(id, title, description, cover_url)')
           .eq('user_id', user.id);
 
-        if (enrollError) {
-          console.error('[Dashboard] enrollments embed query failed:', enrollError);
-        }
-        console.debug('[Dashboard] enrollments rows:', enrolls);
-
         let rows: any[] = enrolls ?? [];
-
-        // Fallback: embed returned nothing but the user may still be enrolled.
         if (rows.length === 0) {
-          const { data: plain } = await supabase
-            .from('enrollments')
-            .select('course_id, enrolled_at')
-            .eq('user_id', user.id);
+          const { data: plain } = await supabase.from('enrollments').select('course_id, enrolled_at').eq('user_id', user.id);
           if (plain && plain.length > 0) {
             const ids = plain.map((e: any) => e.course_id);
             const { data: courseRows } = await supabase.from('courses').select('id, title, description, cover_url').in('id', ids);
-            rows = plain.map((e: any) => ({
-              course_id: e.course_id,
-              enrolled_at: e.enrolled_at,
-              courses: (courseRows ?? []).find((c: any) => c.id === e.course_id) || null
-            }));
+            rows = plain.map((e: any) => ({ course_id: e.course_id, enrolled_at: e.enrolled_at, courses: (courseRows ?? []).find((c: any) => c.id === e.course_id) || null }));
           }
         }
 
@@ -70,12 +74,7 @@ export default function Dashboard() {
           return {
             course_id: e.course_id,
             enrolled_at: e.enrolled_at,
-            course: {
-              id: base.id || e.course_id,
-              title: trans?.title || base.title || 'Nomaʼlum kurs',
-              description: trans?.description || base.description || '',
-              cover_url: base.cover_url || ''
-            }
+            course: { id: base.id || e.course_id, title: trans?.title || base.title || 'Nomaʼlum kurs', description: trans?.description || base.description || '', cover_url: base.cover_url || '' }
           };
         });
 
@@ -84,10 +83,26 @@ export default function Dashboard() {
           xpService.hasActivityToday(user.id)
         ]);
 
+        const diagResult = userProgressService.getDiagnosticResult();
+        const diagScore = diagResult?.score ?? null;
+        const weak = diagResult?.weakTopics ?? [];
+
+        const reviewQ = learningEngineService.getReviewQueue().length;
+
+        const lastScore = localStorage.getItem('nur_academy_last_test_score');
+        const parsedScore = lastScore ? parseInt(lastScore, 10) : null;
+
         if (isMounted) {
           setEnrollments(mapped);
           setStreak(profile?.streak_days ?? 0);
           setActiveToday(today);
+          setDiagnosticScore(diagScore);
+          setWeakTopics(weak);
+          setReviewCount(reviewQ);
+          setRecentTestScore(parsedScore);
+          setXpLevel(profile?.level ?? 1);
+          setNextLevelXpVal(profile?.next_level_xp ?? 100);
+          setXpVal(profile?.xp ?? 0);
         }
       } catch (error) {
         console.error('Error fetching dashboard:', error);
@@ -95,103 +110,139 @@ export default function Dashboard() {
         if (isMounted) setLoading(false);
       }
     }
-
     fetchDashboard();
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [user]);
+
+  const primary = enrollments[0];
+  const readinessScore = diagnosticScore ?? 0;
+
+  /* Compute module stats */
+  const moduleStats = useMemo(() => {
+    const completed = mockModules.filter(m => m.status === 'completed').length;
+    const total = mockModules.length;
+    const current = mockModules.find(m => m.status === 'current');
+    const currentLesson = current?.lessons.find(l => l.status === 'current' || l.status !== 'completed');
+    const allLessons = mockModules.reduce((acc, m) => acc + m.lessons.length, 0);
+    const completedLessons = mockModules.reduce((acc, m) => acc + m.lessons.filter(l => l.status === 'completed').length, 0);
+    return { completed, total, current, currentLesson, allLessons, completedLessons };
+  }, []);
+
+  const pointsLeft = Math.max(0, 86 - readinessScore);
+  const weakestTopic = weakTopics[0] || 'Grafika va veb-texnologiyalar';
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
       </div>
     );
   }
 
-  const primary = enrollments[0];
+  const continueUrl = primary
+    ? continueHref(primary.course.title, primary.course_id)
+    : moduleStats.currentLesson
+      ? `/attestatsiya/dars/${moduleStats.currentLesson.id}`
+      : '/attestatsiya';
+
+  const weeklyProgress = moduleStats.allLessons > 0
+    ? Math.round((moduleStats.completedLessons / moduleStats.allLessons) * 100)
+    : 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 font-sans">
-      {/* Streak-at-risk nudge */}
+    // Dark dashboard view: scrolling center column + a sticky right status panel.
+    // The page lives inside the AppShell's single scroll region (main), so the
+    // sticky panel pins without adding a second page scrollbar.
+    <div className="mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      {/* Streak nudge */}
       {streak >= 3 && !activeToday && (
-        <div
-          className="rounded-2xl border px-5 py-4 flex items-center gap-3"
-          style={{ backgroundColor: '#FFF7E5', borderColor: '#F1E0B0', color: '#8B6F1A' }}
-        >
-          <Flame className="w-6 h-6 shrink-0" style={{ color: '#D9A406' }} />
-          <p className="text-sm font-semibold">
+        <div className="rounded-2xl border border-amber-200 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/5 px-5 py-4 flex items-center gap-3 mb-6">
+          <Flame className="w-6 h-6 shrink-0 text-amber-500" />
+          <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">
             Sizning {streak} kunlik seriyangiz uzilishi mumkin! Bugun kamida bitta test ishlang.
           </p>
         </div>
       )}
 
-      <div className="mb-2">
-        <h1 className="text-3xl font-serif font-bold text-text-primary">Mening kurslarim</h1>
-        <p className="text-text-secondary mt-2">Bu yerda siz yozilgan barcha kurslar koʻrsatiladi</p>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] xl:grid-cols-[1fr_300px] gap-6 lg:gap-8">
+        {/* Center column */}
+        <div className="min-w-0 space-y-6">
+          {/* 1. Hero */}
+          <DashboardHero continueHref={continueUrl} />
 
-      {enrollments.length === 0 ? (
-        <div className="bg-surface border border-border-card rounded-xl p-12 text-center">
-          <BookOpen className="w-16 h-16 text-text-secondary mx-auto mb-4 opacity-50" />
-          <h2 className="text-xl font-medium text-text-primary mb-2">Hozircha kurslar yoʻq</h2>
-          <p className="text-text-secondary mb-6">Yangi bilimlarni kashf etish uchun kurslar katalogiga oʻting.</p>
-          <Link to="/courses" className="inline-block bg-accent-blue text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-colors">
-            Kurslarni koʻrish
-          </Link>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {enrollments.map((item) => (
-              <div key={item.course_id} className="bg-surface border border-border-card rounded-xl overflow-hidden hover:shadow-md transition-shadow group flex flex-col">
-                <div className="aspect-video bg-surface-muted relative">
-                  {item.course.cover_url ? (
-                    <img src={item.course.cover_url} alt={item.course.title} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-surface-hover text-gray-400">
-                      <BookOpen className="w-10 h-10" />
-                    </div>
-                  )}
-                </div>
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="font-serif font-bold text-xl text-text-primary mb-2 line-clamp-2 group-hover:text-accent-blue transition-colors">
-                    {item.course.title}
-                  </h3>
-                  <p className="text-sm text-text-secondary line-clamp-2 mb-4">{item.course.description}</p>
-                  <Link
-                    to={continueHref(item.course.title, item.course_id)}
-                    className="mt-auto w-full text-center flex items-center justify-center space-x-2 border border-border-card bg-surface py-2.5 rounded-lg text-text-primary font-medium hover:bg-surface-hover hover:border-accent-blue hover:text-accent-blue transition-all"
-                  >
-                    <PlayCircle className="w-5 h-5" />
-                    <span>Davom etish</span>
-                  </Link>
-                </div>
-              </div>
-            ))}
+          {/* 2. Metrics strip — 5 compact dark cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
+            <StatCard
+              icon={<Target className="w-4.5 h-4.5" />}
+              value={pointsLeft}
+              label="ball"
+              subtext="Maqsadgacha"
+              accentColor="blue"
+              to="/attestatsiya/natija"
+            />
+            <StatCard
+              icon={<TrendingUp className="w-4.5 h-4.5" />}
+              value={weakestTopic}
+              subtext="0% to'g'ri javob"
+              accentColor="red"
+            />
+            <StatCard
+              icon={<Flame className="w-4.5 h-4.5" />}
+              value={streak}
+              label="kun"
+              subtext="Davom ettiring!"
+              accentColor="orange"
+            />
+            <StatCard
+              icon={<CalendarDays className="w-4.5 h-4.5" />}
+              value={`${weeklyProgress}%`}
+              subtext={`${moduleStats.completedLessons}/${moduleStats.allLessons} dars`}
+              accentColor="green"
+            />
+            <StatCard
+              icon={<Trophy className="w-4.5 h-4.5" />}
+              value={nextLevelXpVal}
+              label="ball"
+              subtext={`Lv.${xpLevel + 1}`}
+              accentColor="purple"
+            />
           </div>
 
-          {/* Continue block (replaces the old XP block) */}
-          {primary && (
-            <div className="bg-gradient-to-r from-accent-blue/10 to-accent-blue/5 border border-accent-blue/20 rounded-[24px] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-              <div className="space-y-1">
-                <p className="text-[10px] font-bold text-accent-blue uppercase tracking-widest">Oʻrganishni davom ettiring</p>
-                <h3 className="text-xl font-serif font-extrabold text-text-primary">{primary.course.title}</h3>
-                <p className="text-sm text-text-secondary">Toʻxtagan joyingizdan davom eting.</p>
-              </div>
-              <Link
-                to={continueHref(primary.course.title, primary.course_id)}
-                className="inline-flex items-center gap-2 bg-accent-blue text-white px-7 py-4 rounded-xl font-bold text-sm hover:bg-accent-blue/95 shadow-md shadow-accent-blue/20 transition-all active:scale-97 shrink-0"
-              >
-                <PlayCircle className="w-5 h-5" />
-                <span>Davom etish</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          )}
-        </>
-      )}
+          {/* 3. Continue Learning + AI Mentor */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <ContinueLearningCard
+              moduleTitle={moduleStats.current?.title || '3. Mantiq va sanoq sistemalari'}
+              lessonTitle={moduleStats.currentLesson?.title || 'Sanoq sistemalari: Ikkilik, Sakkizlik va O\'n oltlik'}
+              category={moduleStats.current?.description || 'Mantiq va sanoq sistemalari'}
+              progress={moduleStats.currentLesson?.status === 'completed' ? 100 : 0}
+              href={continueUrl}
+            />
+            <AIMentorRecommendationCard
+              currentLesson={moduleStats.currentLesson?.id}
+            />
+          </div>
+
+          {/* 4. Modules */}
+          <ModulesSection modules={mockModules} />
+        </div>
+
+        {/* Right status panel — sticky, own scroll, hidden until lg */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-6 max-h-[calc(100dvh-7rem)] overflow-y-auto pr-1">
+            <RightStatusPanel
+              goalScore={86}
+              currentScore={readinessScore}
+              streak={streak}
+              weeklyLessons={moduleStats.completedLessons}
+              weeklyTotal={moduleStats.allLessons}
+              thisWeekLessons={Math.min(4, moduleStats.completedLessons)}
+              thisWeekTotal={5}
+              nextLevelXp={nextLevelXpVal}
+              level={xpLevel}
+            />
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }

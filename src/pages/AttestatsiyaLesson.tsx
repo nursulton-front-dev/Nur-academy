@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   Play,
@@ -9,13 +9,15 @@ import {
   HelpCircle,
   Check,
   X,
-  Lock
+  Lock,
+  RefreshCw
 } from 'lucide-react';
 import { mockModules, Lesson, completeLessonAndUnlockNext } from '../data/attestatsiyaMocks';
 import { renderMarkdown } from '../lib/markdown';
 import { supabase } from '../lib/supabase';
 import { lessonStepsService, LessonStep } from '../lib/lessonStepsService';
 import StepLesson from '../components/lessonsteps/StepLesson';
+import { AIMentorBlock } from '../components/AIMentorBlock';
 
 interface DbLessonMeta {
   title: string;
@@ -150,12 +152,18 @@ function LegacyLesson() {
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Quiz states
+  // Quiz states — smart 2-attempt scaffolding
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [isOptionCorrect, setIsOptionCorrect] = useState<boolean | null>(null);
-  const [showExplanation, setShowExplanation] = useState(false);
+  const [quizPhase, setQuizPhase] = useState<'answering' | 'hint' | 'explanation' | 'correct'>('answering');
+  const [attemptCount, setAttemptCount] = useState(0);
+  const [wrongPicks, setWrongPicks] = useState<number[]>([]);
   const [isQuizPassed, setIsQuizPassed] = useState(false);
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+  }, []);
 
   // Flattened list of all lessons for navigation purposes
   const allLessons: Lesson[] = [];
@@ -178,12 +186,13 @@ function LegacyLesson() {
         return;
       }
       setLesson(current);
-      setIsPlaying(false); // Reset video state on lesson change
+      setIsPlaying(false);
       setIsQuizPassed(current.status === 'completed');
       setCurrentQuizIndex(0);
       setSelectedOption(null);
-      setIsOptionCorrect(null);
-      setShowExplanation(false);
+      setQuizPhase('answering');
+      setAttemptCount(0);
+      setWrongPicks([]);
     } else {
       // If lesson not found, redirect to landing
       navigate('/attestatsiya');
@@ -197,32 +206,52 @@ function LegacyLesson() {
   const quizQuestions = LESSON_QUIZZES[lesson.id] || DEFAULT_QUIZ;
 
   const handleOptionSelect = (optionIdx: number) => {
-    if (showExplanation) return;
-    setSelectedOption(optionIdx);
+    if (quizPhase !== 'answering' || wrongPicks.includes(optionIdx)) return;
+
     const correct = optionIdx === quizQuestions[currentQuizIndex].correctAnswer;
-    setIsOptionCorrect(correct);
-    setShowExplanation(true);
-  };
+    setSelectedOption(optionIdx);
 
-  const handleNextQuiz = () => {
-    setSelectedOption(null);
-    setIsOptionCorrect(null);
-    setShowExplanation(false);
+    if (correct) {
+      setQuizPhase('correct');
+      advanceTimer.current = setTimeout(() => {
+        handleNextQuiz();
+      }, attemptCount >= 1 ? 1300 : 1000);
+      return;
+    }
 
-    if (currentQuizIndex + 1 < quizQuestions.length) {
-      setCurrentQuizIndex(prev => prev + 1);
+    // Wrong answer
+    const nextAttempt = attemptCount + 1;
+    setAttemptCount(nextAttempt);
+    setWrongPicks(prev => [...prev, optionIdx]);
+
+    if (nextAttempt >= 2) {
+      // 2nd wrong → show full explanation
+      setQuizPhase('explanation');
     } else {
-      // Complete quiz and unlock next lesson
-      completeLessonAndUnlockNext(lesson.id);
-      setIsQuizPassed(true);
-      window.location.reload();
+      // 1st wrong → hint only
+      setQuizPhase('hint');
     }
   };
 
   const handleRetryQuestion = () => {
     setSelectedOption(null);
-    setIsOptionCorrect(null);
-    setShowExplanation(false);
+    setQuizPhase('answering');
+  };
+
+  const handleNextQuiz = () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    setSelectedOption(null);
+    setQuizPhase('answering');
+    setAttemptCount(0);
+    setWrongPicks([]);
+
+    if (currentQuizIndex + 1 < quizQuestions.length) {
+      setCurrentQuizIndex(prev => prev + 1);
+    } else {
+      completeLessonAndUnlockNext(lesson.id);
+      setIsQuizPassed(true);
+      window.location.reload();
+    }
   };
 
   // Get module title for display
@@ -343,33 +372,36 @@ function LegacyLesson() {
               {quizQuestions[currentQuizIndex].options.map((option, optIdx) => {
                 const isSelected = selectedOption === optIdx;
                 const isCorrectOpt = optIdx === quizQuestions[currentQuizIndex].correctAnswer;
-                
+                const isWrongPick = wrongPicks.includes(optIdx);
+                const revealCorrect = quizPhase === 'explanation' || quizPhase === 'correct';
+                const locked = quizPhase !== 'answering';
+
                 let optionStyle = "border-border-card hover:bg-primary-bg/30 text-text-secondary bg-surface";
-                
-                if (showExplanation) {
-                  if (isCorrectOpt) {
-                    optionStyle = "border-green-500 bg-green-500/10 text-green-700 dark:text-green-400 font-semibold shadow-sm";
-                  } else if (isSelected) {
-                    optionStyle = "border-red-500 bg-red-500/10 text-red-700 dark:text-red-400 font-semibold shadow-sm";
-                  } else {
-                    optionStyle = "border-border-card opacity-50 text-text-secondary bg-surface";
-                  }
+
+                if (revealCorrect && isCorrectOpt) {
+                  optionStyle = "border-green-500 bg-green-500/10 text-green-700 dark:text-green-400 font-semibold shadow-sm";
+                } else if (isWrongPick) {
+                  optionStyle = "border-red-500 bg-red-500/10 text-red-700 dark:text-red-400 font-semibold shadow-sm";
+                } else if (locked) {
+                  optionStyle = "border-border-card opacity-50 text-text-secondary bg-surface";
                 } else if (isSelected) {
                   optionStyle = "border-[#3B7DD8] bg-[#eff6ff] dark:bg-[#1e293b] text-[#3B7DD8] font-semibold";
                 }
 
+                const disabled = locked || isWrongPick;
+
                 return (
                   <button
                     key={optIdx}
-                    disabled={showExplanation}
+                    disabled={disabled}
                     onClick={() => handleOptionSelect(optIdx)}
-                    className={`w-full text-left p-4 rounded-xl border text-sm sm:text-base transition-all duration-200 active:scale-[0.99] flex items-center justify-between ${optionStyle}`}
+                    className={`w-full text-left p-4 rounded-xl border text-sm sm:text-base transition-all duration-200 active:scale-[0.99] flex items-center justify-between ${optionStyle} ${disabled ? '' : 'cursor-pointer'}`}
                   >
                     <span>{option}</span>
-                    {showExplanation && isCorrectOpt && (
+                    {revealCorrect && isCorrectOpt && (
                       <span className="w-5 h-5 bg-green-500 text-white rounded-full flex items-center justify-center text-xs shadow-sm"><Check className="w-3.5 h-3.5 stroke-[3]" /></span>
                     )}
-                    {showExplanation && isSelected && !isCorrectOpt && (
+                    {isWrongPick && (
                       <span className="w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow-sm"><X className="w-3.5 h-3.5 stroke-[3]" /></span>
                     )}
                   </button>
@@ -377,45 +409,43 @@ function LegacyLesson() {
               })}
             </div>
 
-            {/* Explanation / Feedback */}
-            {showExplanation && (
-              <div className={`p-4 rounded-2xl border transition-all text-left ${isOptionCorrect ? 'bg-green-500/5 border-green-500/10' : 'bg-red-500/5 border-red-500/10'}`}>
-                <div className="flex items-start space-x-2.5">
-                  <div className={`p-1.5 rounded-lg mt-0.5 ${isOptionCorrect ? 'bg-green-500/20 text-green-600' : 'bg-red-500/20 text-red-600'}`}>
-                    {isOptionCorrect ? <Check className="w-4 h-4 stroke-[3]" /> : <X className="w-4 h-4 stroke-[3]" />}
-                  </div>
-                  <div>
-                    <h4 className={`text-sm font-bold ${isOptionCorrect ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
-                      {isOptionCorrect ? "To'g'ri javob!" : "Noto'g'ri javob, qayta urining!"}
-                    </h4>
-                    <p className="text-xs sm:text-sm text-text-secondary mt-1">
-                      {quizQuestions[currentQuizIndex].explanation}
-                    </p>
-                  </div>
+            {/* 1st wrong → hint + AIMentorBlock */}
+            {quizPhase === 'hint' && (
+              <div className="space-y-3">
+                <AIMentorBlock questionId={quizQuestions[currentQuizIndex].question} userAnswerIndex={selectedOption ?? 0} mode="hint" />
+                <div className="flex justify-end">
+                  <button
+                    onClick={handleRetryQuestion}
+                    className="inline-flex items-center space-x-2 bg-amber-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-amber-600 shadow-sm active:scale-95 transition-all cursor-pointer"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    <span>Qayta urinish</span>
+                  </button>
                 </div>
               </div>
             )}
 
-            {/* Controls */}
-            {showExplanation && (
-              <div className="flex justify-end pt-2">
-                {isOptionCorrect ? (
+            {/* 2nd wrong → full explanation + AIMentorBlock */}
+            {quizPhase === 'explanation' && (
+              <div className="space-y-3">
+                <AIMentorBlock questionId={quizQuestions[currentQuizIndex].question} userAnswerIndex={selectedOption ?? 0} mode="explanation" />
+                <div className="flex justify-end">
                   <button
                     onClick={handleNextQuiz}
-                    className="inline-flex items-center space-x-2 bg-[#3B7DD8] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all"
+                    className="inline-flex items-center space-x-2 bg-[#3B7DD8] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all cursor-pointer"
                   >
-                    <span>{currentQuizIndex + 1 === quizQuestions.length ? "Darsni yakunlash" : "Keyingi savol"}</span>
+                    <span>Tushundim, davom etish</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
-                ) : (
-                  <button
-                    onClick={handleRetryQuestion}
-                    className="inline-flex items-center space-x-2 bg-red-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all"
-                  >
-                    <span>Qayta urinish</span>
-                  </button>
-                )}
+                </div>
               </div>
+            )}
+
+            {/* Correct → auto advance */}
+            {quizPhase === 'correct' && (
+              <p className="text-xs text-green-600 font-semibold text-right">
+                {attemptCount >= 1 ? "Toʻgʻri! (ikkinchi urinishda) Keyingi savolga oʻtilmoqda…" : "Toʻgʻri! Keyingi savolga oʻtilmoqda…"}
+              </p>
             )}
           </div>
         )}

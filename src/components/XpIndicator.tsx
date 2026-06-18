@@ -122,7 +122,7 @@ export default function XpIndicator() {
             </div>
 
             <Link
-              to="/dashboard"
+              to="/attestatsiya/natija"
               onClick={() => setOpen(false)}
               className="mt-3 flex items-center justify-center gap-1 text-xs font-bold text-accent-blue hover:gap-1.5 transition-all"
             >

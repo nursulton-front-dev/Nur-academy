@@ -176,7 +176,7 @@ export default function Lesson() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-primary-bg">
+      <div className="flex justify-center items-center h-64 bg-primary-bg">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue"></div>
       </div>
     );
@@ -189,7 +189,7 @@ export default function Lesson() {
   const ytId = extractYoutubeId(lesson.video_url);
 
   return (
-    <div className="bg-primary-bg min-h-screen pb-20">
+    <div className="bg-primary-bg pb-20">
       <div className="bg-surface border-b border-border-card sticky top-16 z-10 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center space-x-4">
           <Link to={`/courses/${lesson.course_id}`} className="text-text-secondary hover:text-text-primary p-2 border border-border-card rounded-lg hover:bg-surface-hover transition-colors">

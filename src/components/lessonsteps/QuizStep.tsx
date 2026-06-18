@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Check, X, ArrowRight, RefreshCw, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { LessonStep } from '../../lib/lessonStepsService';
+import { lessonQuizService } from '../../lib/lessonQuizService';
+import { useAuth } from '../../contexts/AuthContext';
 import { AIMentorBlock } from '../AIMentorBlock';
 
 interface QuizStepProps {
@@ -10,12 +12,20 @@ interface QuizStepProps {
 
 const PASS_THRESHOLD = 70;
 
+/** Phase of the current question's scaffolding flow. */
+type QuizPhase = 'answering' | 'hint' | 'explanation' | 'correct';
+
 export default function QuizStep({ step, onComplete }: QuizStepProps) {
+  const { user } = useAuth();
   const questions = step.questions;
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
-  const [revealed, setRevealed] = useState(false);
+  const [phase, setPhase] = useState<QuizPhase>('answering');
+  const [attemptCount, setAttemptCount] = useState(0);
+  const [wrongPicks, setWrongPicks] = useState<number[]>([]);
   const [correctMap, setCorrectMap] = useState<Record<string, boolean>>({});
+  // Questions answered correctly only on the 2nd attempt (partial credit).
+  const [secondTryMap, setSecondTryMap] = useState<Record<string, boolean>>({});
   const [showSummary, setShowSummary] = useState(false);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -38,9 +48,13 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
   const scorePercent = Math.round((correctCount / questions.length) * 100);
   const passed = scorePercent >= PASS_THRESHOLD;
 
+  // Move to the next question, resetting the per-question scaffolding state.
   const goNext = () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
     setSelected(null);
-    setRevealed(false);
+    setPhase('answering');
+    setAttemptCount(0);
+    setWrongPicks([]);
     if (index + 1 < questions.length) {
       setIndex((i) => i + 1);
     } else {
@@ -48,22 +62,71 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
     }
   };
 
+  // Persist the terminal outcome of a question (fire-and-forget) for AI analysis.
+  const persistAnswer = (selectedIdx: number, isCorrect: boolean, attempts: number) => {
+    if (!user) return;
+    lessonQuizService.recordAnswer({
+      userId: user.id,
+      lessonId: step.lesson_id,
+      stepId: step.id,
+      questionId: q.id,
+      selectedIndex: selectedIdx,
+      isCorrect,
+      attemptCount: attempts,
+    });
+  };
+
   const handleSelect = (optIdx: number) => {
-    if (revealed) return;
+    // Only selectable while answering, and never the same wrong option twice.
+    if (phase !== 'answering' || wrongPicks.includes(optIdx)) return;
+
     const isCorrect = optIdx === q.correctIndex;
     setSelected(optIdx);
-    setRevealed(true);
-    setCorrectMap((prev) => ({ ...prev, [q.id]: isCorrect }));
+
     if (isCorrect) {
-      advanceTimer.current = setTimeout(goNext, 1000); // auto-advance on correct
+      const onSecondTry = attemptCount >= 1;
+      setCorrectMap((prev) => ({ ...prev, [q.id]: true }));
+      if (onSecondTry) {
+        setSecondTryMap((prev) => ({ ...prev, [q.id]: true }));
+      }
+      // Terminal: solved. attemptCount counts prior wrong tries, so tries = +1.
+      persistAnswer(optIdx, true, attemptCount + 1);
+      setPhase('correct');
+      // No AI Mentor on correct; auto-advance (slightly longer if it was a recovery).
+      advanceTimer.current = setTimeout(goNext, onSecondTry ? 1300 : 1000);
+      return;
+    }
+
+    // Wrong answer.
+    const nextAttempt = attemptCount + 1;
+    setAttemptCount(nextAttempt);
+    setWrongPicks((prev) => [...prev, optIdx]);
+    if (nextAttempt >= 2) {
+      // 2nd (or later) wrong → terminal miss: record it and show the full explanation.
+      setCorrectMap((prev) => ({ ...prev, [q.id]: false }));
+      persistAnswer(optIdx, false, nextAttempt);
+      setPhase('explanation');
+    } else {
+      // 1st wrong → hint only, let them try a different option.
+      setPhase('hint');
     }
   };
 
+  // After a hint: return to answering so a different option can be chosen.
+  const retryQuestion = () => {
+    setSelected(null);
+    setPhase('answering');
+  };
+
+  // Full quiz restart from the summary screen.
   const retry = () => {
     setIndex(0);
     setSelected(null);
-    setRevealed(false);
+    setPhase('answering');
+    setAttemptCount(0);
+    setWrongPicks([]);
     setCorrectMap({});
+    setSecondTryMap({});
     setShowSummary(false);
   };
 
@@ -135,33 +198,59 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
         {q.options.map((option, optIdx) => {
           const isSelected = selected === optIdx;
           const isCorrectOpt = optIdx === q.correctIndex;
+          const isWrongPick = wrongPicks.includes(optIdx);
+          // The correct option only turns green once we've shown the full explanation
+          // (2nd wrong) or the user got it right — never during a hint.
+          const revealCorrect = phase === 'explanation' || phase === 'correct';
+          const locked = phase !== 'answering';
+
           let style = 'border-border-card hover:bg-surface-hover text-text-secondary bg-surface';
-          if (revealed) {
-            if (isCorrectOpt) style = 'border-emerald-500 bg-emerald-500/10 text-emerald-700 font-semibold';
-            else if (isSelected) style = 'border-rose-500 bg-rose-500/10 text-rose-700 font-semibold';
-            else style = 'border-border-card opacity-50 text-text-secondary bg-surface';
+          if (revealCorrect && isCorrectOpt) {
+            style = 'border-emerald-500 bg-emerald-500/10 text-emerald-700 font-semibold';
+          } else if (isWrongPick) {
+            style = 'border-rose-500 bg-rose-500/10 text-rose-700 font-semibold';
+          } else if (locked) {
+            style = 'border-border-card opacity-50 text-text-secondary bg-surface';
           } else if (isSelected) {
             style = 'border-accent-blue bg-accent-blue/10 text-accent-blue font-semibold';
           }
+
+          // Disabled while locked, or for an already-tried wrong option during answering.
+          const disabled = locked || isWrongPick;
           return (
             <button
               key={optIdx}
-              disabled={revealed}
+              disabled={disabled}
               onClick={() => handleSelect(optIdx)}
-              className={`w-full text-left p-4 rounded-xl border text-sm transition-all flex items-center justify-between gap-3 ${style} ${revealed ? '' : 'cursor-pointer active:scale-[0.99]'}`}
+              className={`w-full text-left p-4 rounded-xl border text-sm transition-all flex items-center justify-between gap-3 ${style} ${disabled ? '' : 'cursor-pointer active:scale-[0.99]'}`}
             >
               <span>{option}</span>
-              {revealed && isCorrectOpt && <Check className="w-4 h-4 text-emerald-600 shrink-0" />}
-              {revealed && isSelected && !isCorrectOpt && <X className="w-4 h-4 text-rose-600 shrink-0" />}
+              {revealCorrect && isCorrectOpt && <Check className="w-4 h-4 text-emerald-600 shrink-0" />}
+              {isWrongPick && <X className="w-4 h-4 text-rose-600 shrink-0" />}
             </button>
           );
         })}
       </div>
 
-      {/* On wrong answer: AI explanation, then require explicit acknowledgement */}
-      {revealed && selected !== q.correctIndex && (
+      {/* 1st wrong attempt → hint without the answer, retry with a different option */}
+      {phase === 'hint' && (
         <div className="space-y-3">
-          <AIMentorBlock questionId={q.id} userAnswerIndex={selected ?? 0} />
+          <AIMentorBlock questionId={q.id} userAnswerIndex={selected ?? 0} mode="hint" />
+          <div className="flex justify-end">
+            <button
+              onClick={retryQuestion}
+              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-97 cursor-pointer"
+            >
+              <RefreshCw className="w-4 h-4" /> Qayta urinish
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 2nd wrong attempt → full explanation with the answer, then continue (counts as a miss) */}
+      {phase === 'explanation' && (
+        <div className="space-y-3">
+          <AIMentorBlock questionId={q.id} userAnswerIndex={selected ?? 0} mode="explanation" />
           <div className="flex justify-end">
             <button
               onClick={goNext}
@@ -172,8 +261,11 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
           </div>
         </div>
       )}
-      {revealed && selected === q.correctIndex && (
-        <p className="text-xs text-emerald-600 font-semibold text-right">Toʻgʻri! Keyingi savolga oʻtilmoqda…</p>
+
+      {phase === 'correct' && (
+        <p className="text-xs text-emerald-600 font-semibold text-right">
+          {secondTryMap[q.id] ? 'Toʻgʻri! (ikkinchi urinishda) Keyingi savolga oʻtilmoqda…' : 'Toʻgʻri! Keyingi savolga oʻtilmoqda…'}
+        </p>
       )}
     </div>
   );

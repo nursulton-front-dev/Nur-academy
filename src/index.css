@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* Drive Tailwind's `dark:` variant from the `.dark` class toggled by
+   ThemeContext, instead of the default prefers-color-scheme media query.
+   Without this, `dark:` utilities ignore the in-app theme toggle and follow the
+   OS setting, desyncing component styling from the app chrome. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --theme-primary-bg: #F8FAFC;

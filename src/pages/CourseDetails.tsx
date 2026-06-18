@@ -163,7 +163,7 @@ export default function CourseDetails() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue"></div>
       </div>
     );
@@ -195,7 +195,7 @@ export default function CourseDetails() {
   }
 
   return (
-    <div className="bg-primary-bg min-h-screen">
+    <div className="bg-primary-bg">
       {/* Course Header */}
       <div className="bg-surface border-b border-border-card py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

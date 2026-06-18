@@ -7,6 +7,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { mockTopicTests, mockModules } from '../data/attestatsiyaMocks';
+import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
 
 export default function AttestatsiyaTests() {
   const navigate = useNavigate();
@@ -16,17 +17,12 @@ export default function AttestatsiyaTests() {
   };
 
   return (
-    <div className="space-y-10 transition-colors duration-250">
-      {/* Title Header */}
-      <div className="pb-6 border-b border-border-card">
-        <h1 className="text-3xl font-serif font-extrabold text-text-primary mb-2">
-          Mavzu testlari
-        </h1>
-        <p className="text-text-secondary text-sm sm:text-base">
-          Har bir modul bo'yicha bilimlaringizni sinab ko'ring va o'zlashtirish darajangizni baholang.
-        </p>
-      </div>
-
+    <AppPage>
+      <PageHeader
+        title="Mavzu testlari"
+        description="Har bir modul boʻyicha bilimlaringizni sinab koʻring va oʻzlashtirish darajangizni baholang."
+      />
+      <PageContent>
       {/* Mavzu bo'yicha testlar (Topic Tests) */}
       <div className="space-y-4">
         <div className="flex items-center space-x-2">
@@ -94,6 +90,7 @@ export default function AttestatsiyaTests() {
           })}
         </div>
       </div>
-    </div>
+      </PageContent>
+    </AppPage>
   );
 }

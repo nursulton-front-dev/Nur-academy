@@ -1,4 +1,5 @@
-export type SubscriptionTier = 'free' | 'start' | 'pro' | 'oliy' | 'vip';
+// Two tiers only: Free and Pro. (More can be added later if needed.)
+export type SubscriptionTier = 'free' | 'pro';
 
 export interface SubscriptionLimits {
   diagnosticLimit: number;
@@ -20,42 +21,15 @@ const TIER_LIMITS: Record<SubscriptionTier, SubscriptionLimits> = {
     hasPersonalRoadmap: false,
     hasAiMentor: false,
   },
-  start: {
-    diagnosticLimit: 2,
-    mockExamLimit: 5,
-    lessonsLimit: 4, // m1 - m4 free
-    hasErrorNotebook: true,
-    hasAdvancedAnalytics: false,
-    hasPersonalRoadmap: false,
-    hasAiMentor: false,
-  },
   pro: {
     diagnosticLimit: 999,
-    mockExamLimit: 15,
-    lessonsLimit: 8, // All modules
+    mockExamLimit: 999,
+    lessonsLimit: 8, // all modules
     hasErrorNotebook: true,
     hasAdvancedAnalytics: true,
     hasPersonalRoadmap: true,
     hasAiMentor: true,
   },
-  oliy: {
-    diagnosticLimit: 999,
-    mockExamLimit: 999,
-    lessonsLimit: 8,
-    hasErrorNotebook: true,
-    hasAdvancedAnalytics: true,
-    hasPersonalRoadmap: true,
-    hasAiMentor: true,
-  },
-  vip: {
-    diagnosticLimit: 999,
-    mockExamLimit: 999,
-    lessonsLimit: 8,
-    hasErrorNotebook: true,
-    hasAdvancedAnalytics: true,
-    hasPersonalRoadmap: true,
-    hasAiMentor: true,
-  }
 };
 
 const TIER_KEY = 'nur_academy_subscription_tier';
