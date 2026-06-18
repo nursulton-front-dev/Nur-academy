@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { BookOpen, Bell, BellOff, LogOut, Award } from 'lucide-react';
+import { Bell, BellOff, LogOut, Award } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
@@ -201,19 +201,6 @@ export function Layout() {
       <main className="flex-1">
         <Outlet />
       </main>
-
-      {/* Footer */}
-      <footer className="bg-surface border-t border-border-card py-8 mt-auto flex-shrink-0">
-        <div className="w-full px-6 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center space-x-2 text-text-primary mb-4 md:mb-0">
-            <BookOpen className="w-6 h-6 text-accent-blue" />
-            <span className="font-serif font-bold text-lg">Nur Academy</span>
-          </div>
-          <p className="text-text-secondary text-sm">
-            © {new Date().getFullYear()} Nur Academy. Barcha huquqlar himoyalangan.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

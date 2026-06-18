@@ -15,8 +15,8 @@ import {
   CreditCard,
   BarChart3,
 } from 'lucide-react';
-import { mockModules } from '../data/attestatsiyaMocks';
 import { learningEngineService } from '../lib/learningEngine';
+import { useAttestatsiyaCourse } from '../lib/attestatsiyaCourse';
 import AppTopbar from './app/AppTopbar';
 
 // Width of the fixed course sidebar. Kept ~240px so nav labels never truncate.
@@ -58,6 +58,10 @@ export default function AttestatsiyaLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedModules, setExpandedModules] = useState<{ [key: string]: boolean }>({});
 
+  // Course structure (modules + lessons) now comes from Supabase.
+  const { modules, loading: modulesLoading, error: modulesError } = useAttestatsiyaCourse();
+  const courseModules = modules ?? [];
+
   const reviewCount = learningEngineService.getReviewQueue().length;
   const pathname = location.pathname;
   const isActive = (path: string) => pathname === path;
@@ -66,15 +70,15 @@ export default function AttestatsiyaLayout() {
   useEffect(() => {
     if (pathname.includes('/attestatsiya/dars/')) {
       const lessonId = pathname.split('/attestatsiya/dars/')[1];
-      const activeModule = mockModules.find((m) => m.lessons.some((l) => l.id === lessonId));
+      const activeModule = courseModules.find((m) => m.lessons.some((l) => l.id === lessonId));
       if (activeModule) setExpandedModules((prev) => ({ ...prev, [activeModule.id]: true }));
     }
-  }, [pathname]);
+  }, [pathname, modules]);
 
   const activeModuleId = (() => {
     if (pathname.includes('/attestatsiya/dars/')) {
       const lessonId = pathname.split('/attestatsiya/dars/')[1];
-      return mockModules.find((m) => m.lessons.some((l) => l.id === lessonId))?.id ?? '';
+      return courseModules.find((m) => m.lessons.some((l) => l.id === lessonId))?.id ?? '';
     }
     return '';
   })();
@@ -116,11 +120,29 @@ export default function AttestatsiyaLayout() {
         <p className="px-3 text-[9px] font-bold text-text-secondary uppercase tracking-widest mb-1.5 flex justify-between items-center">
           <span>Modullar</span>
           <span className="text-[8px] bg-accent-blue/10 text-accent-blue px-1.5 py-0.5 rounded-full">
-            {mockModules.length}
+            {modulesLoading ? '…' : courseModules.length}
           </span>
         </p>
+
+        {/* Loading skeleton */}
+        {modulesLoading && (
+          <div className="space-y-1.5 px-1 py-1" aria-hidden>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-8 rounded-lg bg-surface-hover animate-pulse" />
+            ))}
+          </div>
+        )}
+
+        {/* Error */}
+        {!modulesLoading && modulesError && (
+          <p className="px-3 py-2 text-[11px] font-medium text-error-red leading-snug">
+            {modulesError}
+          </p>
+        )}
+
+        {!modulesLoading && !modulesError && (
         <div className="space-y-0.5">
-          {mockModules.map((mod, index) => {
+          {courseModules.map((mod, index) => {
             const isExpanded = !!expandedModules[mod.id];
             const isCompleted = mod.status === 'completed';
             const isCurrent = mod.status === 'current' || activeModuleId === mod.id;
@@ -208,6 +230,7 @@ export default function AttestatsiyaLayout() {
             );
           })}
         </div>
+        )}
       </div>
 
       <div className="border-t border-border-card/50" />

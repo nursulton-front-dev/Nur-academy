@@ -5,7 +5,7 @@ import { Flame, Target, TrendingUp, CalendarDays, CalendarCheck, Trophy } from '
 import { xpService } from '../lib/xpService';
 import { userProgressService } from '../lib/userProgress';
 import { learningEngineService } from '../lib/learningEngine';
-import { mockModules } from '../data/attestatsiyaMocks';
+import { useAttestatsiyaCourse } from '../lib/attestatsiyaCourse';
 
 import DashboardHero from '../components/dashboard/DashboardHero';
 import StatCard from '../components/dashboard/StatCard';
@@ -113,27 +113,46 @@ export default function Dashboard() {
     return () => { isMounted = false; };
   }, [user]);
 
+  // Course structure (modules + lessons) now comes from Supabase.
+  const { modules, error: courseError } = useAttestatsiyaCourse();
+
   const primary = enrollments[0];
   const readinessScore = diagnosticScore ?? 0;
 
-  /* Compute module stats */
+  /* Compute module stats from the DB-backed structure */
   const moduleStats = useMemo(() => {
-    const completed = mockModules.filter(m => m.status === 'completed').length;
-    const total = mockModules.length;
-    const current = mockModules.find(m => m.status === 'current');
+    const list = modules ?? [];
+    const completed = list.filter(m => m.status === 'completed').length;
+    const total = list.length;
+    const current = list.find(m => m.status === 'current');
     const currentLesson = current?.lessons.find(l => l.status === 'current' || l.status !== 'completed');
-    const allLessons = mockModules.reduce((acc, m) => acc + m.lessons.length, 0);
-    const completedLessons = mockModules.reduce((acc, m) => acc + m.lessons.filter(l => l.status === 'completed').length, 0);
+    const allLessons = list.reduce((acc, m) => acc + m.lessons.length, 0);
+    const completedLessons = list.reduce((acc, m) => acc + m.lessons.filter(l => l.status === 'completed').length, 0);
     return { completed, total, current, currentLesson, allLessons, completedLessons };
-  }, []);
+  }, [modules]);
 
   const pointsLeft = Math.max(0, 86 - readinessScore);
   const weakestTopic = weakTopics[0] || 'Grafika va veb-texnologiyalar';
 
-  if (loading) {
+  if (loading || (!modules && !courseError)) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
+
+  if (courseError) {
+    return (
+      <div className="mx-auto w-full max-w-md px-4 py-16 text-center space-y-3">
+        <p className="text-base font-serif font-bold text-text-primary">Kursni yuklab boʻlmadi</p>
+        <p className="text-sm text-text-secondary">{courseError}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-accent-blue/95 transition-colors"
+        >
+          Qayta urinish
+        </button>
       </div>
     );
   }
@@ -227,7 +246,7 @@ export default function Dashboard() {
         </div>
 
         {/* 4. Modules */}
-        <ModulesSection modules={mockModules} />
+        <ModulesSection modules={modules ?? []} />
       </div>
     </div>
   );

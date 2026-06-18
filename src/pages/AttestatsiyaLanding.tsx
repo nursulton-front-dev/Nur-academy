@@ -19,7 +19,8 @@ import {
   Hexagon,
   ShieldCheck,
 } from 'lucide-react';
-import { mockModules, mockTopicTests } from '../data/attestatsiyaMocks';
+import { mockTopicTests } from '../data/attestatsiyaMocks';
+import { useAttestatsiyaCourse } from '../lib/attestatsiyaCourse';
 import { AIMentorRecommendation } from '../components/AIMentorRecommendation';
 
 const MODULE_ICONS: Record<string, string> = {
@@ -41,6 +42,9 @@ interface RailStat {
 export default function AttestatsiyaLanding() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  // Course structure (modules + lessons) now comes from Supabase.
+  const { modules, loading: courseLoading, error: courseError } = useAttestatsiyaCourse();
+  const courseModules = modules ?? [];
   const [onboardingDone, setOnboardingDone] = useState(true);
   const [entering, setEntering] = useState(false);
   const [stat, setStat] = useState<RailStat>({
@@ -52,18 +56,18 @@ export default function AttestatsiyaLanding() {
     completedLessons: 0,
   });
 
-  const completedLessons = mockModules.reduce(
+  const completedLessons = courseModules.reduce(
     (acc, m) => acc + m.lessons.filter((l) => l.status === 'completed').length,
     0,
   );
   const hasProgress = completedLessons > 0;
 
-  let continueLessonId = mockModules[0]?.lessons[0]?.id ?? 'l1_1';
+  let continueLessonId = courseModules[0]?.lessons[0]?.id ?? 'l1_1';
   let continueLessonTitle = '';
   let continueModuleTitle = '';
-  let activeModuleId = mockModules[0]?.id ?? 'm1';
+  let activeModuleId = courseModules[0]?.id ?? 'm1';
   (() => {
-    for (const mod of mockModules) {
+    for (const mod of courseModules) {
       const current = mod.lessons.find((l) => l.status === 'current');
       if (current) {
         continueLessonId = current.id;
@@ -73,7 +77,7 @@ export default function AttestatsiyaLanding() {
         return;
       }
     }
-    for (const mod of mockModules) {
+    for (const mod of courseModules) {
       const uncompleted = mod.lessons.find((l) => l.status !== 'completed');
       if (uncompleted) {
         continueLessonId = uncompleted.id;
@@ -85,9 +89,12 @@ export default function AttestatsiyaLanding() {
     }
   })();
 
-  const activeModule = mockModules.find((m) => m.id === activeModuleId) || mockModules[0];
-  const activeCompleted = activeModule.lessons.filter((l) => l.status === 'completed').length;
-  const activePercent = Math.round((activeCompleted / activeModule.lessons.length) * 100);
+  const activeModule = courseModules.find((m) => m.id === activeModuleId) || courseModules[0];
+  const activeCompleted = activeModule ? activeModule.lessons.filter((l) => l.status === 'completed').length : 0;
+  const activePercent =
+    activeModule && activeModule.lessons.length > 0
+      ? Math.round((activeCompleted / activeModule.lessons.length) * 100)
+      : 0;
 
   useEffect(() => {
     let active = true;
@@ -153,6 +160,29 @@ export default function AttestatsiyaLanding() {
   const remaining = stat.score != null ? Math.max(0, stat.goal - stat.score) : null;
   const goalPercent = stat.score != null ? Math.min(100, Math.round((stat.score / stat.goal) * 100)) : 0;
   const weekDone = Math.min(stat.completedLessons, WEEKLY_TARGET);
+
+  if (courseLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
+
+  if (courseError) {
+    return (
+      <div className="mx-auto w-full max-w-md px-4 py-16 text-center space-y-3">
+        <p className="text-base font-bold text-slate-900 dark:text-white">Kursni yuklab boʻlmadi</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{courseError}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-colors"
+        >
+          Qayta urinish
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-none px-6 py-5 sm:py-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_340px] 2xl:grid-cols-[minmax(0,1fr)_380px] gap-6 xl:gap-8 min-h-screen">
@@ -289,7 +319,7 @@ export default function AttestatsiyaLanding() {
               <div className="space-y-2 mt-auto mb-5">
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-slate-600 dark:text-slate-400 truncate pr-2">
-                    {activeModule.title.split('. ')[1] || activeModule.title}
+                    {activeModule ? activeModule.title.split('. ')[1] || activeModule.title : ''}
                   </span>
                   <span className="font-bold text-slate-900 dark:text-white shrink-0">{activePercent}%</span>
                 </div>
@@ -318,7 +348,7 @@ export default function AttestatsiyaLanding() {
         <section className="space-y-4 mt-6">
           <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide px-1">Modullar</h3>
           <div className="space-y-3">
-            {mockModules.map((mod) => {
+            {courseModules.map((mod) => {
               const isCompleted = mod.status === 'completed';
               const isCurrent = mod.status === 'current' || mod.id === activeModuleId;
               const isLocked = mod.status === 'locked' && !isCurrent;
