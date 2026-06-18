@@ -45,6 +45,19 @@ function parseOptions(raw: unknown): { options: string[]; correctIndex: number }
 // completion locally and upsert the lesson-level progress row when all steps are done.
 const stepKey = (lessonId: string) => `nur_lesson_steps_${lessonId}`;
 
+// Lesson-level completion set, mirrored locally so the course view (sidebar /
+// dashboard) can reflect progress even without an authenticated session.
+const COMPLETED_LESSONS_KEY = 'nur_completed_lessons';
+
+export function getCompletedLessonIds(): string[] {
+  try {
+    const raw = localStorage.getItem(COMPLETED_LESSONS_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const lessonStepsService = {
@@ -113,26 +126,47 @@ export const lessonStepsService = {
     }
   },
 
-  /** Marks a step complete locally; upserts lesson-level progress when all are done. */
+  /**
+   * Marks a step complete locally; when every step is done it records the lesson
+   * as completed (locally + best-effort server upsert) and reports whether this
+   * call was the one that completed the lesson, so the caller can award XP once.
+   */
   async markStepComplete(params: {
     userId: string | null;
     lessonId: string;
     stepId: string;
     allStepIds: string[];
-  }): Promise<void> {
+  }): Promise<{ lessonCompleted: boolean }> {
     const { userId, lessonId, stepId, allStepIds } = params;
     const done = new Set(this.getCompletedStepIds(lessonId));
     done.add(stepId);
     localStorage.setItem(stepKey(lessonId), JSON.stringify([...done]));
 
-    const allDone = allStepIds.every((id) => done.has(id));
-    if (allDone && userId) {
-      await supabase
-        .from('progress')
-        .upsert(
-          { user_id: userId, lesson_id: lessonId, step_id: stepId, completed: true, completed_at: new Date().toISOString() },
-          { onConflict: 'user_id,lesson_id' }
-        );
+    const allDone = allStepIds.length > 0 && allStepIds.every((id) => done.has(id));
+    let lessonCompleted = false;
+
+    if (allDone) {
+      // Local lesson-completion marker (drives sidebar/dashboard status, even for guests).
+      const lessons = new Set(getCompletedLessonIds());
+      if (!lessons.has(lessonId)) {
+        lessons.add(lessonId);
+        localStorage.setItem(COMPLETED_LESSONS_KEY, JSON.stringify([...lessons]));
+        lessonCompleted = true;
+      }
+
+      // Best-effort server write; a failure here must never block lesson navigation.
+      if (userId) {
+        const { error } = await supabase
+          .from('progress')
+          .upsert(
+            { user_id: userId, lesson_id: lessonId, step_id: stepId, completed: true, completed_at: new Date().toISOString() },
+            { onConflict: 'user_id,lesson_id' }
+          );
+        if (error) console.error('[lesson] progress upsert failed:', error.message);
+      }
     }
+
+    console.log('[lesson] step complete:', { lessonId, stepId, allDone, lessonCompleted });
+    return { lessonCompleted };
   }
 };

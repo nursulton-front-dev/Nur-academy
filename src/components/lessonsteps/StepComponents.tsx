@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, CheckCircle2, AlertTriangle, BookOpen, PlayCircle } from 'lucide-react';
+import { ArrowRight, AlertTriangle, BookOpen, PlayCircle, Target } from 'lucide-react';
 import { LessonStep } from '../../lib/lessonStepsService';
 import { renderMarkdown } from '../../lib/markdown';
 
@@ -13,28 +13,31 @@ interface StepProps {
 function ContinueButton({ label, onClick, tone = 'blue' }: { label: string; onClick: () => void; tone?: 'blue' | 'green' | 'red' }) {
   const cls =
     tone === 'green'
-      ? 'bg-emerald-500 hover:bg-emerald-600'
+      ? 'bg-[#4CAF82] hover:bg-[#429a72]'
       : tone === 'red'
-      ? 'bg-rose-500 hover:bg-rose-600'
-      : 'bg-accent-blue hover:bg-accent-blue/95';
+      ? 'bg-[#E0735C] hover:bg-[#cf6450]'
+      : 'bg-[#3B7DD8] hover:bg-[#3570c4]';
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center justify-center gap-2 ${cls} text-white px-6 py-3.5 rounded-xl text-sm font-bold shadow-md transition-all active:scale-97 cursor-pointer`}
+      className={`inline-flex items-center justify-center gap-2 ${cls} text-white px-6 py-3.5 rounded-xl text-sm font-bold shadow-md transition-all active:scale-[0.97] cursor-pointer`}
     >
       {label} <ArrowRight className="w-4 h-4" />
     </button>
   );
 }
 
+// Plain reading step — the markdown renderer carries the premium styling.
 export function TextStep({ step, onComplete }: StepProps) {
   return (
-    <div className="max-w-[760px] mx-auto w-full space-y-6">
-      {step.title && <h2 className="text-2xl font-serif font-extrabold text-text-primary">{step.title}</h2>}
-      <div className="prose max-w-none text-text-primary text-sm sm:text-base leading-relaxed">
-        {renderMarkdown(step.content || '')}
-      </div>
-      <div className="pt-2">
+    <div className="max-w-[760px] mx-auto w-full">
+      {step.title && (
+        <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-text-primary mb-6 leading-tight">
+          {step.title}
+        </h2>
+      )}
+      <div className="text-text-primary">{renderMarkdown(step.content || '')}</div>
+      <div className="pt-8">
         <ContinueButton label="Tushundim" onClick={() => onComplete(true)} />
       </div>
     </div>
@@ -43,18 +46,19 @@ export function TextStep({ step, onComplete }: StepProps) {
 
 export function CommonMistakesStep({ step, onComplete }: StepProps) {
   return (
-    <div className="max-w-[760px] mx-auto w-full space-y-6">
-      <div className="flex items-center gap-2.5">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#FDD8C8', color: '#C0432B' }}>
-          <AlertTriangle className="w-5 h-5" />
+    <div className="max-w-[760px] mx-auto w-full">
+      <div className="rounded-3xl border p-6 sm:p-8 bg-rose-50/60 dark:bg-[#E0735C]/[0.07] border-rose-200 dark:border-[#E0735C]/25">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 bg-rose-100 dark:bg-[#E0735C]/15 text-[#E0735C]">
+            <AlertTriangle className="w-5 h-5" />
+          </div>
+          <h2 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary">
+            {step.title || 'Koʻp uchraydigan xatolar'}
+          </h2>
         </div>
-        <h2 className="text-2xl font-serif font-extrabold text-text-primary">{step.title || 'Tez-tez uchraydigan xatolar'}</h2>
+        <div className="text-text-primary">{renderMarkdown(step.content || '')}</div>
       </div>
-      {/* Reddish-tinted container for the mistake content */}
-      <div className="rounded-2xl border p-5 sm:p-6 prose max-w-none text-sm sm:text-base leading-relaxed" style={{ backgroundColor: '#FEF2EE', borderColor: '#FDD8C8' }}>
-        {renderMarkdown(step.content || '')}
-      </div>
-      <div className="pt-2">
+      <div className="pt-6">
         <ContinueButton label="Eslab qoldim" onClick={() => onComplete(true)} tone="red" />
       </div>
     </div>
@@ -63,18 +67,22 @@ export function CommonMistakesStep({ step, onComplete }: StepProps) {
 
 export function SummaryStep({ step, onComplete, isLastLesson }: StepProps) {
   return (
-    <div className="max-w-[760px] mx-auto w-full space-y-6">
-      <div className="flex items-center gap-2.5">
-        <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-600">
-          <CheckCircle2 className="w-5 h-5" />
+    <div className="max-w-[760px] mx-auto w-full">
+      <div className="rounded-3xl border p-6 sm:p-8 bg-emerald-50/60 dark:bg-[#4CAF82]/[0.07] border-emerald-200 dark:border-[#4CAF82]/25">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 bg-emerald-100 dark:bg-[#4CAF82]/15 text-[#4CAF82]">
+            <Target className="w-5 h-5" />
+          </div>
+          <h2 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary">{step.title || 'Xulosa'}</h2>
         </div>
-        <h2 className="text-2xl font-serif font-extrabold text-text-primary">{step.title || 'Xulosa'}</h2>
+        <div className="text-text-primary">{renderMarkdown(step.content || '')}</div>
       </div>
-      <div className="rounded-2xl border p-5 sm:p-6 prose max-w-none text-sm sm:text-base leading-relaxed" style={{ backgroundColor: '#EAF6F0', borderColor: '#BFE6D4' }}>
-        {renderMarkdown(step.content || '')}
-      </div>
-      <div className="pt-2">
-        <ContinueButton label={isLastLesson ? 'Modulni yakunlash' : 'Keyingi darsga oʻtish'} onClick={() => onComplete(true)} tone="green" />
+      <div className="pt-6">
+        <ContinueButton
+          label={isLastLesson ? 'Modulni yakunlash' : 'Keyingi darsga oʻtish'}
+          onClick={() => onComplete(true)}
+          tone="green"
+        />
       </div>
     </div>
   );
@@ -91,15 +99,21 @@ export function VideoStep({ step, onComplete, videoUrl }: StepProps) {
   const embed = url ? youtubeEmbed(url) : null;
   return (
     <div className="max-w-[820px] mx-auto w-full space-y-6">
-      <div className="flex items-center gap-2.5">
-        <div className="w-10 h-10 rounded-xl bg-accent-blue/10 flex items-center justify-center text-accent-blue">
+      <div className="flex items-center gap-3">
+        <div className="w-11 h-11 rounded-2xl bg-[#3B7DD8]/10 flex items-center justify-center text-[#3B7DD8] shrink-0">
           <PlayCircle className="w-5 h-5" />
         </div>
-        <h2 className="text-2xl font-serif font-extrabold text-text-primary">{step.title || 'Videodars'}</h2>
+        <h2 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary">{step.title || 'Videodars'}</h2>
       </div>
       <div className="aspect-video rounded-2xl overflow-hidden border border-border-card bg-black">
         {embed ? (
-          <iframe className="w-full h-full" src={embed} title={step.title || 'video'} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+          <iframe
+            className="w-full h-full"
+            src={embed}
+            title={step.title || 'video'}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center text-white/70 gap-2">
             <BookOpen className="w-8 h-8" />
@@ -107,9 +121,7 @@ export function VideoStep({ step, onComplete, videoUrl }: StepProps) {
           </div>
         )}
       </div>
-      {step.content && (
-        <div className="prose max-w-none text-sm sm:text-base leading-relaxed">{renderMarkdown(step.content)}</div>
-      )}
+      {step.content && <div className="text-text-primary">{renderMarkdown(step.content)}</div>}
       <div className="pt-2">
         <ContinueButton label="Koʻrdim" onClick={() => onComplete(true)} />
       </div>

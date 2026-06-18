@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from './supabase';
 import { ATTESTATSIYA_COURSE_ID } from './courses';
+import { getCompletedLessonIds } from './lessonStepsService';
 import type { Module, Lesson } from '../data/attestatsiyaMocks';
 
 /**
@@ -66,38 +67,68 @@ export async function fetchAttestatsiyaCourse(): Promise<Module[]> {
   if (error) throw error;
 
   const rows = (data ?? []) as unknown as DbModule[];
+  const completedLessons = new Set(getCompletedLessonIds());
 
-  return rows.map((mod, moduleIdx): Module => {
+  // Pass 1 — shape modules/lessons from the DB and tag which lessons are done.
+  const built = rows.map((mod, moduleIdx) => {
     const order = mod.order_index ?? moduleIdx + 1;
-    const isFirstModule = moduleIdx === 0;
-
     const lessonsSorted = [...(mod.lessons ?? [])].sort(
       (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0)
     );
-
-    const lessons: Lesson[] = lessonsSorted.map((les, lessonIdx): Lesson => {
-      // Temporary status rule (see file header) until progress integration.
-      let status: Lesson['status'] = 'locked';
-      if (isFirstModule) status = lessonIdx === 0 ? 'current' : 'locked';
-
+    const lessons = lessonsSorted.map((les) => {
+      const id = routeId(les.content, les.id);
       return {
-        id: routeId(les.content, les.id),
+        id,
         moduleId: `m${order}`,
         title: uzTitle(les.lesson_translations, 'Dars'),
         content: les.content ?? '',
-        status,
         videoUrl: les.video_url ?? undefined,
+        completed: completedLessons.has(id),
       };
     });
+    // Mock-style id (`m1`..`m8`) keeps topic-test lookups and module icons working.
+    return { id: `m${order}`, order, title: `${order}. ${uzTitle(mod.module_translations, 'Modul')}`, lessons };
+  });
+
+  // Pass 2 — derive statuses by progression from the completion set. The first
+  // module that isn't fully done is `current` (with its first unfinished lesson
+  // `current`); earlier modules are `completed`, later ones `locked`. This never
+  // hard-locks the whole UI — with zero progress, module 1 / lesson 1 is current.
+  let currentModuleAssigned = false;
+
+  return built.map((mod): Module => {
+    const allComplete = mod.lessons.length > 0 && mod.lessons.every((l) => l.completed);
+
+    if (allComplete) {
+      return {
+        id: mod.id,
+        title: mod.title,
+        description: '',
+        status: 'completed',
+        lessons: mod.lessons.map((l): Lesson => ({ ...l, status: 'completed' })),
+      };
+    }
+
+    if (!currentModuleAssigned) {
+      currentModuleAssigned = true;
+      let currentLessonAssigned = false;
+      const lessons = mod.lessons.map((l): Lesson => {
+        if (l.completed) return { ...l, status: 'completed' };
+        if (!currentLessonAssigned) {
+          currentLessonAssigned = true;
+          return { ...l, status: 'current' };
+        }
+        return { ...l, status: 'locked' };
+      });
+      return { id: mod.id, title: mod.title, description: '', status: 'current', lessons };
+    }
 
     return {
-      // Mock-style id (`m1`..`m8`) keeps topic-test lookups and module icons
-      // working while the structure itself now comes from Supabase.
-      id: `m${order}`,
-      title: `${order}. ${uzTitle(mod.module_translations, 'Modul')}`,
+      id: mod.id,
+      title: mod.title,
       description: '',
-      status: isFirstModule ? 'current' : 'locked',
-      lessons,
+      status: 'locked',
+      lessons: mod.lessons.map((l): Lesson => ({ ...l, status: 'locked' })),
     };
   });
 }

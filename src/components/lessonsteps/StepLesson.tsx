@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { Check, Lock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, Lock, ChevronLeft } from 'lucide-react';
 import { LessonStep, StepType, lessonStepsService } from '../../lib/lessonStepsService';
+import { xpService } from '../../lib/xpService';
 import { useAuth } from '../../contexts/AuthContext';
 import QuizStep from './QuizStep';
 import { TextStep, CommonMistakesStep, SummaryStep, VideoStep } from './StepComponents';
@@ -78,7 +79,29 @@ export default function StepLesson({
       const nextSet = new Set(completed);
       nextSet.add(current.id);
       setCompleted(nextSet);
-      await lessonStepsService.markStepComplete({ userId: user?.id ?? null, lessonId, stepId: current.id, allStepIds });
+
+      let lessonCompleted = false;
+      try {
+        const res = await lessonStepsService.markStepComplete({
+          userId: user?.id ?? null,
+          lessonId,
+          stepId: current.id,
+          allStepIds,
+        });
+        lessonCompleted = res.lessonCompleted;
+      } catch (e) {
+        console.error('[lesson] markStepComplete failed:', e);
+      }
+
+      // Award XP once, the first time the lesson is fully completed.
+      if (lessonCompleted && user) {
+        try {
+          await xpService.addXp(user.id, 'quiz_complete', 50, { lesson_id: lessonId });
+          console.log('[lesson] XP awarded for completing lesson:', lessonId);
+        } catch (e) {
+          console.error('[lesson] XP award failed:', e);
+        }
+      }
     }
     // Advance to next step, or to the next lesson when finishing the last step.
     if (currentIndex + 1 < steps.length) {
@@ -142,7 +165,7 @@ export default function StepLesson({
                   isCurrent
                     ? 'text-white border-double'
                     : isDone
-                    ? 'border-transparent'
+                    ? 'border-transparent cursor-pointer'
                     : locked
                     ? 'bg-surface text-text-secondary border-border-card opacity-60 cursor-not-allowed'
                     : 'bg-surface text-text-primary border-border-card hover:border-accent-blue/50 cursor-pointer'
@@ -177,7 +200,8 @@ export default function StepLesson({
         {renderStep()}
       </div>
 
-      {/* Footer nav */}
+      {/* Footer nav — back only; forward is the single in-step button (Tushundim /
+          Keyingi qadam after answering / Modulni yakunlash). */}
       <div className="shrink-0 flex items-center justify-between pt-4">
         <button
           onClick={() => goToStep(currentIndex - 1)}
@@ -190,14 +214,6 @@ export default function StepLesson({
         <Link to="/attestatsiya" className="text-xs font-bold text-text-secondary hover:text-text-primary transition-colors">
           Kursga qaytish
         </Link>
-
-        <button
-          onClick={() => goToStep(currentIndex + 1)}
-          disabled={currentIndex >= steps.length - 1 || !completed.has(current?.id ?? '')}
-          className="inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-blue/95 text-white px-5 py-3 rounded-xl text-xs font-bold disabled:opacity-35 disabled:cursor-not-allowed transition-all cursor-pointer"
-        >
-          Keyingi qadam <ChevronRight className="w-4 h-4" />
-        </button>
       </div>
     </div>
   );
