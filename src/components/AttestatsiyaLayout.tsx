@@ -154,7 +154,7 @@ export default function AttestatsiyaLayout() {
               itemClass = 'bg-accent-blue text-white font-semibold shadow-sm';
               badgeClass = 'bg-white/20 text-white';
             } else if (isLocked) {
-              itemClass = 'opacity-45 cursor-not-allowed text-text-secondary';
+              itemClass = 'opacity-60 cursor-not-allowed text-text-secondary';
             }
 
             return (
@@ -215,7 +215,7 @@ export default function AttestatsiyaLayout() {
                             lessonActive
                               ? 'bg-accent-blue/15 text-accent-blue font-semibold'
                               : lessonLocked
-                                ? 'opacity-40 cursor-not-allowed text-text-secondary'
+                                ? 'opacity-60 cursor-not-allowed text-text-secondary'
                                 : 'hover:bg-surface-hover text-text-primary'
                           }`}
                         >

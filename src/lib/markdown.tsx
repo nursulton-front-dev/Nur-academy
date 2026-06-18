@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lightbulb, CheckCircle2, AlertTriangle, XCircle, Quote, type LucideIcon } from 'lucide-react';
+import { Lightbulb, CheckCircle2, AlertTriangle, XCircle, Quote, ChevronDown, type LucideIcon } from 'lucide-react';
 
 // Lightweight markdown renderer shared by lesson views (legacy + step-based).
 // Premium EdTech styling is derived ENTIRELY from the markdown — no per-lesson
@@ -8,30 +8,35 @@ import { Lightbulb, CheckCircle2, AlertTriangle, XCircle, Quote, type LucideIcon
 
 type CalloutVariant = 'info' | 'success' | 'warning' | 'danger' | 'neutral';
 
-const CALLOUTS: Record<CalloutVariant, { wrap: string; icon: string; Icon: LucideIcon }> = {
+const CALLOUTS: Record<CalloutVariant, { wrap: string; iconBg: string; icon: string; Icon: LucideIcon }> = {
   // Misol / 💡 → blue · ✅ → green · Eslatma / ⚠️ → amber · ❌ → red · else gray
   info: {
     wrap: 'bg-blue-50/70 dark:bg-[#3B7DD8]/10 border-[#3B7DD8]',
+    iconBg: 'bg-[#3B7DD8]/15',
     icon: 'text-[#3B7DD8]',
     Icon: Lightbulb,
   },
   success: {
     wrap: 'bg-emerald-50/70 dark:bg-[#4CAF82]/10 border-[#4CAF82]',
+    iconBg: 'bg-[#4CAF82]/15',
     icon: 'text-[#4CAF82]',
     Icon: CheckCircle2,
   },
   warning: {
     wrap: 'bg-amber-50/70 dark:bg-amber-500/10 border-amber-400',
+    iconBg: 'bg-amber-500/15',
     icon: 'text-amber-500',
     Icon: AlertTriangle,
   },
   danger: {
     wrap: 'bg-rose-50/70 dark:bg-[#E0735C]/10 border-[#E0735C]',
+    iconBg: 'bg-[#E0735C]/15',
     icon: 'text-[#E0735C]',
     Icon: XCircle,
   },
   neutral: {
     wrap: 'bg-surface-muted/40 dark:bg-white/5 border-border-card',
+    iconBg: 'bg-text-secondary/10',
     icon: 'text-text-secondary',
     Icon: Quote,
   },
@@ -165,9 +170,11 @@ export function renderMarkdown(content: string) {
     const bodyLines = [firstCleaned, ...currentQuote.slice(1)];
     currentQuote = [];
     return (
-      <div key={key} className={`my-5 flex gap-3 rounded-2xl border-l-4 p-4 sm:p-5 shadow-sm ${cfg.wrap}`}>
-        <Icon className={`w-5 h-5 shrink-0 mt-0.5 ${cfg.icon}`} />
-        <div className="min-w-0 space-y-1.5 text-sm sm:text-[15px] leading-relaxed text-text-primary">
+      <div key={key} className={`my-5 flex gap-3.5 rounded-2xl border-l-4 p-4 sm:p-5 shadow-sm ${cfg.wrap}`}>
+        <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${cfg.iconBg} ${cfg.icon}`}>
+          <Icon className="w-5 h-5" />
+        </div>
+        <div className="min-w-0 self-center space-y-1.5 text-sm sm:text-[15px] leading-relaxed text-text-primary">
           {bodyLines.map((line, idx) => (
             <p key={idx}>{renderInline(line)}</p>
           ))}
@@ -299,6 +306,41 @@ export function renderMarkdown(content: string) {
     }
 
     flushBlocks(i);
+
+    // Arrow-flow paragraphs ("A → B → C → D") become a process-flow card.
+    const flowSegments = line.includes('→')
+      ? line.split('→').map((s) => s.trim()).filter(Boolean)
+      : [];
+    if (flowSegments.length >= 3) {
+      elements.push(
+        <div
+          key={`pf_${i}`}
+          className="my-6 rounded-2xl border border-[#3B7DD8]/20 bg-[#3B7DD8]/[0.04] dark:bg-[#3B7DD8]/[0.08] p-4 sm:p-5"
+        >
+          {flowSegments.map((seg, idx) => (
+            <React.Fragment key={idx}>
+              <div className="flex items-center gap-3">
+                <span className="w-8 h-8 rounded-full bg-[#3B7DD8] text-white text-sm font-bold flex items-center justify-center shrink-0 shadow-sm shadow-[#3B7DD8]/25">
+                  {idx + 1}
+                </span>
+                <span className="text-sm sm:text-[15px] font-semibold text-text-primary min-w-0">
+                  {renderInline(seg)}
+                </span>
+              </div>
+              {idx < flowSegments.length - 1 && (
+                <div className="flex flex-col items-center w-8 my-1 text-[#3B7DD8]">
+                  <span className="w-0.5 h-2.5 bg-[#3B7DD8]/30" />
+                  <ChevronDown className="w-4 h-4 -my-0.5" />
+                  <span className="w-0.5 h-2.5 bg-[#3B7DD8]/30" />
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      );
+      continue;
+    }
+
     elements.push(
       <p key={`p_${i}`} className="text-text-secondary leading-[1.75] text-sm sm:text-[15px] my-3.5">
         {renderInline(line)}

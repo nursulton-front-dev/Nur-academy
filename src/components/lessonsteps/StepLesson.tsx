@@ -196,22 +196,30 @@ export default function StepLesson({
       </div>
 
       {/* Content (scrolls inside) */}
-      <div className="flex-1 min-h-0 overflow-y-auto bg-surface border border-border-card rounded-[20px] p-5 sm:p-8">
+      <div className="flex-1 min-h-0 overflow-y-auto bg-surface border border-border-card rounded-3xl shadow-sm p-5 sm:p-8 md:p-10">
         {renderStep()}
       </div>
 
-      {/* Footer nav — back only; forward is the single in-step button (Tushundim /
-          Keyingi qadam after answering / Modulni yakunlash). */}
-      <div className="shrink-0 flex items-center justify-between pt-4">
+      {/* Sticky bottom action bar — card surface. Back lives here; forward is the
+          single contextual in-step button (Tushundim / Keyingi qadam / Modulni
+          yakunlash) so there is never a duplicate "forward" control. */}
+      <div className="shrink-0 mt-4 flex items-center justify-between gap-3 bg-surface/90 backdrop-blur-sm border border-border-card rounded-2xl shadow-sm px-3 sm:px-4 py-3">
         <button
           onClick={() => goToStep(currentIndex - 1)}
           disabled={currentIndex === 0}
-          className="inline-flex items-center gap-2 border border-border-card hover:bg-surface-hover text-text-secondary hover:text-text-primary px-5 py-3 rounded-xl text-xs font-bold disabled:opacity-35 disabled:cursor-not-allowed transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 border border-border-card hover:bg-surface-hover text-text-secondary hover:text-text-primary px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold disabled:opacity-35 disabled:cursor-not-allowed transition-all cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4" /> Oldingi
         </button>
 
-        <Link to="/attestatsiya" className="text-xs font-bold text-text-secondary hover:text-text-primary transition-colors">
+        <span className="text-[11px] font-bold text-text-secondary hidden sm:block">
+          {completedCount} / {steps.length} qadam
+        </span>
+
+        <Link
+          to="/attestatsiya"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-text-secondary hover:text-text-primary hover:bg-surface-hover px-4 py-2.5 rounded-xl transition-colors"
+        >
           Kursga qaytish
         </Link>
       </div>
