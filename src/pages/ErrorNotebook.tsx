@@ -6,15 +6,19 @@ import {
   ChevronUp, 
   CheckCircle2, 
   XCircle, 
-  RefreshCw, 
-  HelpCircle,
+  RefreshCw,
   TrendingUp,
   AlertCircle,
-  Smile
+  ClipboardCheck,
+  Target,
+  Repeat,
+  FileText,
+  ArrowRight,
 } from 'lucide-react';
 import { learningEngineService, ErrorRecord } from '../lib/learningEngine';
 import { subscriptionService } from '../lib/subscription';
 import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
+import { EmptyState } from '../components/app/ui';
 
 export default function ErrorNotebook() {
   const navigate = useNavigate();
@@ -345,19 +349,51 @@ export default function ErrorNotebook() {
 
         {/* Empty state */}
         {filteredErrors.length === 0 && (
-          <div className="text-center py-16 bg-surface border border-border-card rounded-[32px] space-y-4">
-            <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/25 rounded-full flex items-center justify-center mx-auto text-emerald-500">
-              <Smile className="w-8 h-8" />
+          <EmptyState
+            accent="green"
+            icon={<ClipboardCheck className="w-8 h-8" />}
+            title="Sizda xatolar mavjud emas"
+            description={
+              activeTab === 'queue'
+                ? "Ajoyib! Bugungi kun uchun takrorlanishi kerak boʻlgan savollar navbati boʻsh. Davom eting va bilimlaringizni yanada mustahkamlang."
+                : "Siz hali biron marta xato javob bermadingiz yoki barcha xatolarni toʻliq oʻzlashtirdingiz!"
+            }
+          >
+            <div className="flex flex-col items-center gap-5">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  to="/attestatsiya/testlar"
+                  className="inline-flex items-center justify-center gap-1.5 bg-accent-blue hover:bg-accent-blue/95 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95"
+                >
+                  <FileText className="w-4 h-4" />
+                  Mavzu testlariga oʻtish
+                </Link>
+                <Link
+                  to="/attestatsiya/imtihon"
+                  className="inline-flex items-center justify-center gap-1.5 bg-surface border border-border-card hover:bg-surface-hover text-text-primary px-5 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-95"
+                >
+                  Mock imtihonni boshlash
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-2xl pt-2">
+                {[
+                  { icon: <Target className="w-4 h-4" />, label: "Maʼlumotni mustahkamlang" },
+                  { icon: <TrendingUp className="w-4 h-4" />, label: "Oʻsishni kuzatib boring" },
+                  { icon: <Repeat className="w-4 h-4" />, label: "Doimiy mashq qiling" },
+                ].map((tip, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2 bg-surface-muted/60 border border-border-card rounded-xl px-3 py-2.5 text-left"
+                  >
+                    <span className="text-accent-blue shrink-0">{tip.icon}</span>
+                    <span className="text-[11px] font-semibold text-text-secondary">{tip.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="space-y-1">
-              <h3 className="font-serif font-extrabold text-base text-text-primary">Sizda xatolar mavjud emas</h3>
-              <p className="text-xs text-text-secondary max-w-xs mx-auto leading-relaxed">
-                {activeTab === 'queue' 
-                  ? 'Bugungi kun uchun takrorlanishi kerak bo\'lgan savollar navbati bo\'sh.' 
-                  : 'Siz hali biron marta xato javob bermadingiz yoki barcha xatolarni to\'liq o\'zlashtirdingiz!'}
-              </p>
-            </div>
-          </div>
+          </EmptyState>
         )}
       </div>
 

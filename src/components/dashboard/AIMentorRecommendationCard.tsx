@@ -17,7 +17,7 @@ function MentorShell({ badge, children }: { badge: React.ReactNode; children: Re
   // surface #F5F3FF / #1A1730, text #1A2E2E / #EAEAFF.
   return (
     <div className="rounded-2xl border overflow-hidden bg-[#F5F3FF] dark:bg-[#1A1730] border-[#DDD6FE] dark:border-[#2D2750] flex flex-col">
-      <div className="p-5 sm:p-6 space-y-4 flex-1">
+      <div className="p-5 sm:p-6 flex flex-col gap-4 flex-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-gradient-to-br from-indigo-500 to-purple-500 shadow-sm shadow-purple-500/20">
@@ -111,7 +111,7 @@ export default function AIMentorRecommendationCard({ currentLesson }: AIMentorRe
         </div>
         <Link
           to="/attestatsiya/obuna"
-          className="w-full inline-flex items-center justify-center gap-1.5 bg-indigo-500 hover:bg-indigo-400 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-colors shadow-sm shadow-indigo-500/20"
+          className="mt-auto w-full inline-flex items-center justify-center gap-1.5 bg-indigo-500 hover:bg-indigo-400 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-colors shadow-sm shadow-indigo-500/20"
         >
           Pro tarifga o'tish
           <ArrowRight className="w-3.5 h-3.5" />
@@ -159,11 +159,11 @@ export default function AIMentorRecommendationCard({ currentLesson }: AIMentorRe
   /* PRO: live recommendation */
   return (
     <MentorShell badge={<Badge label="BUGUN" />}>
-      <p className="text-[13px] leading-[1.65] text-[#1A2E2E] dark:text-[#EAEAFF] whitespace-pre-line">
+      <p className="text-[15px] leading-[1.7] text-[#1A2E2E] dark:text-[#EAEAFF] whitespace-pre-line">
         {recommendation}
       </p>
       {links.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-3">
+        <div className="flex flex-wrap gap-2 mt-auto pt-1">
           {links.map((link, i) => (
             <Link
               key={i}

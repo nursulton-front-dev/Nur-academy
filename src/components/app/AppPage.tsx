@@ -15,7 +15,7 @@ interface AppPageProps {
 export function AppPage({ children, wide = false, className = '' }: AppPageProps) {
   return (
     <div
-      className={`mx-auto w-full ${wide ? 'max-w-[1360px]' : 'max-w-[1100px]'} px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${className}`}
+      className={`mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${className}`}
     >
       {children}
     </div>

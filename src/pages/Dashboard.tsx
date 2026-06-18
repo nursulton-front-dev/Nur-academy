@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { Flame, Target, TrendingUp, CalendarDays, Trophy } from 'lucide-react';
+import { Flame, Target, TrendingUp, CalendarDays, CalendarCheck, Trophy } from 'lucide-react';
 import { xpService } from '../lib/xpService';
 import { userProgressService } from '../lib/userProgress';
 import { learningEngineService } from '../lib/learningEngine';
@@ -9,7 +9,6 @@ import { mockModules } from '../data/attestatsiyaMocks';
 
 import DashboardHero from '../components/dashboard/DashboardHero';
 import StatCard from '../components/dashboard/StatCard';
-import RightStatusPanel from '../components/dashboard/RightStatusPanel';
 import ContinueLearningCard from '../components/dashboard/ContinueLearningCard';
 import AIMentorRecommendationCard from '../components/dashboard/AIMentorRecommendationCard';
 import ModulesSection from '../components/dashboard/ModulesSection';
@@ -153,7 +152,7 @@ export default function Dashboard() {
     // Dark dashboard view: scrolling center column + a sticky right status panel.
     // The page lives inside the AppShell's single scroll region (main), so the
     // sticky panel pins without adding a second page scrollbar.
-    <div className="mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       {/* Streak nudge */}
       {streak >= 3 && !activeToday && (
         <div className="rounded-2xl border border-amber-200 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/5 px-5 py-4 flex items-center gap-3 mb-6">
@@ -164,84 +163,71 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] xl:grid-cols-[1fr_300px] gap-6 lg:gap-8">
-        {/* Center column */}
-        <div className="min-w-0 space-y-6">
-          {/* 1. Hero */}
-          <DashboardHero continueHref={continueUrl} />
+      <div className="space-y-6">
+        {/* 1. Hero */}
+        <DashboardHero continueHref={continueUrl} />
 
-          {/* 2. Metrics strip — 5 compact dark cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
-            <StatCard
-              icon={<Target className="w-4.5 h-4.5" />}
-              value={pointsLeft}
-              label="ball"
-              subtext="Maqsadgacha"
-              accentColor="blue"
-              to="/attestatsiya/natija"
-            />
-            <StatCard
-              icon={<TrendingUp className="w-4.5 h-4.5" />}
-              value={weakestTopic}
-              subtext="0% to'g'ri javob"
-              accentColor="red"
-            />
-            <StatCard
-              icon={<Flame className="w-4.5 h-4.5" />}
-              value={streak}
-              label="kun"
-              subtext="Davom ettiring!"
-              accentColor="orange"
-            />
-            <StatCard
-              icon={<CalendarDays className="w-4.5 h-4.5" />}
-              value={`${weeklyProgress}%`}
-              subtext={`${moduleStats.completedLessons}/${moduleStats.allLessons} dars`}
-              accentColor="green"
-            />
-            <StatCard
-              icon={<Trophy className="w-4.5 h-4.5" />}
-              value={nextLevelXpVal}
-              label="ball"
-              subtext={`Lv.${xpLevel + 1}`}
-              accentColor="purple"
-            />
-          </div>
-
-          {/* 3. Continue Learning + AI Mentor */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            <ContinueLearningCard
-              moduleTitle={moduleStats.current?.title || '3. Mantiq va sanoq sistemalari'}
-              lessonTitle={moduleStats.currentLesson?.title || 'Sanoq sistemalari: Ikkilik, Sakkizlik va O\'n oltlik'}
-              category={moduleStats.current?.description || 'Mantiq va sanoq sistemalari'}
-              progress={moduleStats.currentLesson?.status === 'completed' ? 100 : 0}
-              href={continueUrl}
-            />
-            <AIMentorRecommendationCard
-              currentLesson={moduleStats.currentLesson?.id}
-            />
-          </div>
-
-          {/* 4. Modules */}
-          <ModulesSection modules={mockModules} />
+        {/* 2. Metrics strip — 6 compact cards (merged from the former right panel) */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
+          <StatCard
+            icon={<Target className="w-4.5 h-4.5" />}
+            value={pointsLeft}
+            label="ball"
+            subtext="Maqsadgacha"
+            accentColor="blue"
+            to="/attestatsiya/natija"
+          />
+          <StatCard
+            icon={<TrendingUp className="w-4.5 h-4.5" />}
+            value={weakestTopic}
+            subtext="0% to'g'ri javob"
+            accentColor="red"
+          />
+          <StatCard
+            icon={<Flame className="w-4.5 h-4.5" />}
+            value={streak}
+            label="kun"
+            subtext="Kunlik seriya"
+            accentColor="orange"
+          />
+          <StatCard
+            icon={<CalendarDays className="w-4.5 h-4.5" />}
+            value={`${weeklyProgress}%`}
+            subtext={`Haftalik · ${moduleStats.completedLessons}/${moduleStats.allLessons}`}
+            accentColor="green"
+          />
+          <StatCard
+            icon={<Trophy className="w-4.5 h-4.5" />}
+            value={nextLevelXpVal}
+            label="ball"
+            subtext={`Keyingi yutuq · Lv.${xpLevel + 1}`}
+            accentColor="purple"
+          />
+          <StatCard
+            icon={<CalendarCheck className="w-4.5 h-4.5" />}
+            value={`${Math.min(4, moduleStats.completedLessons)}/5`}
+            label="dars"
+            subtext="Bu hafta"
+            accentColor="amber"
+          />
         </div>
 
-        {/* Right status panel — sticky, own scroll, hidden until lg */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-6 max-h-[calc(100dvh-7rem)] overflow-y-auto pr-1">
-            <RightStatusPanel
-              goalScore={86}
-              currentScore={readinessScore}
-              streak={streak}
-              weeklyLessons={moduleStats.completedLessons}
-              weeklyTotal={moduleStats.allLessons}
-              thisWeekLessons={Math.min(4, moduleStats.completedLessons)}
-              thisWeekTotal={5}
-              nextLevelXp={nextLevelXpVal}
-              level={xpLevel}
-            />
-          </div>
-        </aside>
+        {/* 3. Continue Learning + AI Mentor */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          <ContinueLearningCard
+            moduleTitle={moduleStats.current?.title || '3. Mantiq va sanoq sistemalari'}
+            lessonTitle={moduleStats.currentLesson?.title || 'Sanoq sistemalari: Ikkilik, Sakkizlik va O\'n oltlik'}
+            category={moduleStats.current?.description || 'Mantiq va sanoq sistemalari'}
+            progress={moduleStats.currentLesson?.status === 'completed' ? 100 : 0}
+            href={continueUrl}
+          />
+          <AIMentorRecommendationCard
+            currentLesson={moduleStats.currentLesson?.id}
+          />
+        </div>
+
+        {/* 4. Modules */}
+        <ModulesSection modules={mockModules} />
       </div>
     </div>
   );
