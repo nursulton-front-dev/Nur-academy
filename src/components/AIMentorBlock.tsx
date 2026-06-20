@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Sparkles, Check, ArrowRight, RefreshCw, Lightbulb, AlertCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Sparkles, ArrowRight, RefreshCw, Lightbulb, AlertCircle, Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 type MentorMode = 'hint' | 'explanation';
 
@@ -10,7 +12,7 @@ interface AIMentorBlockProps {
   mode?: MentorMode;
 }
 
-type FetchState = 'loading' | 'ready' | 'error' | 'hidden';
+type FetchState = 'loading' | 'ready' | 'error' | 'hidden' | 'locked';
 
 function AvatarCircle({ hint }: { hint?: boolean }) {
   const Icon = hint ? Lightbulb : Sparkles;
@@ -60,6 +62,7 @@ function ErrorFallback({ onRetry }: { onRetry: () => void }) {
 
 export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation' }: AIMentorBlockProps) {
   const isHint = mode === 'hint';
+  const { user } = useAuth();
   const [state, setState] = useState<FetchState>('loading');
   const [explanation, setExplanation] = useState('');
   const [displayed, setDisplayed] = useState('');
@@ -100,6 +103,24 @@ export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation
       setDisplayed('');
       setIsTyping(false);
 
+      // AI Mentor is a Pro-only feature. Free or signed-out users never trigger
+      // the explanation — they get an upgrade teaser instead.
+      if (!user) {
+        if (!cancelled) setState('locked');
+        return;
+      }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('subscription_tier')
+        .eq('id', user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      const isPro = ((profile?.subscription_tier as string | undefined) ?? 'free') === 'pro';
+      if (!isPro) {
+        setState('locked');
+        return;
+      }
+
       for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
         try {
           const { data, error } = await supabase.functions.invoke('explain-mistake', {
@@ -136,9 +157,47 @@ export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation
     return () => {
       cancelled = true;
     };
-  }, [questionId, userAnswerIndex, mode, reloadKey]);
+  }, [questionId, userAnswerIndex, mode, reloadKey, user]);
 
   if (state === 'hidden') return null;
+
+  if (state === 'locked') {
+    return (
+      <div className="rounded-xl border p-4 bg-[#1A1730] border-[#2D2750] text-slate-100">
+        <div className="flex items-start gap-3">
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+            style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}
+          >
+            <Lock className="w-4 h-4 text-white" />
+          </div>
+          <div className="flex-1 space-y-2.5">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold text-white">AI Mentor tushuntirishi</span>
+              <span
+                className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
+                style={{ backgroundColor: '#EEF2FF', color: '#6366F1' }}
+              >
+                PRO
+              </span>
+            </div>
+            <p className="text-[13px] leading-[1.6] text-slate-300">
+              {isHint
+                ? 'Shaxsiy maslahat va xatolaringiz tahlili Pro tarifda ochiladi.'
+                : 'Xatongizni AI Mentor batafsil tushuntirib beradi — Pro tarifda.'}
+            </p>
+            <Link
+              to="/attestatsiya/obuna"
+              className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors"
+            >
+              Pro tarifga oʻtish
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-xl border p-3.5 bg-[#1A1730] border-[#2D2750] text-slate-100" style={{ color: '#F1F5F9' }}>
