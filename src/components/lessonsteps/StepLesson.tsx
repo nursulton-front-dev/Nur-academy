@@ -127,6 +127,14 @@ export default function StepLesson({
   const completedCount = steps.filter((s) => completed.has(s.id)).length;
   const progressPct = Math.round((completedCount / steps.length) * 100);
 
+  const TYPE_COLORS: Record<StepType, { text: string; bg: string }> = {
+    text: { text: 'text-[#3B7DD8]', bg: 'bg-[#3B7DD8]/10' },
+    quiz: { text: 'text-[#E8B43C] dark:text-[#f3c251]', bg: 'bg-[#E8B43C]/10 dark:bg-[#E8B43C]/15' },
+    common_mistakes: { text: 'text-[#E0735C]', bg: 'bg-[#E0735C]/10' },
+    summary: { text: 'text-[#4CAF82]', bg: 'bg-[#4CAF82]/10' },
+    video: { text: 'text-[#3B7DD8]', bg: 'bg-[#3B7DD8]/10' }
+  };
+
   const renderStep = () => {
     if (!current) return null;
     switch (current.step_type) {
@@ -139,30 +147,37 @@ export default function StepLesson({
       case 'video':
         return <VideoStep step={current} onComplete={handleStepComplete} videoUrl={lessonVideoUrl} />;
       default:
-        return <TextStep step={current} onComplete={handleStepComplete} />;
+        return <TextStep step={current} onComplete={handleStepComplete} isFirstStep={currentIndex === 0} />;
     }
   };
 
+  const activeBadge = current ? TYPE_COLORS[current.step_type] : { text: 'text-text-secondary', bg: 'bg-surface-muted' };
+
   return (
-    <div className="flex flex-col h-[calc(100dvh-150px)] min-h-[520px] overflow-hidden">
+    <div className="w-full max-w-[900px] mx-auto flex flex-col h-[calc(100dvh-150px)] min-h-[520px] overflow-hidden px-4 sm:px-0">
       {/* Step navigator */}
-      <div className="shrink-0 bg-surface border border-border-card rounded-[20px] p-4 sm:p-5 mb-4">
-        <div className="flex items-center justify-between mb-3 gap-3">
+      <div className="shrink-0 bg-surface border border-border-card rounded-2xl p-4 sm:p-5 mb-4 shadow-sm">
+        <div className="flex items-center justify-between mb-3.5 gap-3">
           <div className="min-w-0">
             <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest truncate">
               {moduleTitle ? `${moduleTitle} · ` : ''}{lessonTitle}
             </p>
-            <h2 className="text-base font-serif font-extrabold text-text-primary truncate">
+            <h2 className="text-base font-serif font-extrabold text-text-primary truncate mt-0.5">
               {current?.title || lessonTitle}
             </h2>
           </div>
-          <span className="text-[11px] font-bold text-text-secondary shrink-0">
-            Qadam {currentIndex + 1} / {steps.length} · {current ? TYPE_LABEL[current.step_type] : ''}
-          </span>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${activeBadge.bg} ${activeBadge.text}`}>
+              {current ? TYPE_LABEL[current.step_type] : ''}
+            </span>
+            <span className="text-[11px] font-bold text-text-secondary hidden sm:inline-block">
+              Qadam {currentIndex + 1} / {steps.length}
+            </span>
+          </div>
         </div>
 
         {/* Squares */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
           {steps.map((s, idx) => {
             const isDone = completed.has(s.id);
             const isCurrent = idx === currentIndex;
@@ -173,24 +188,24 @@ export default function StepLesson({
                 onClick={() => goToStep(idx)}
                 disabled={locked}
                 title={TYPE_LABEL[s.step_type]}
-                className={`relative w-10 h-10 shrink-0 rounded-xl border-2 flex items-center justify-center text-[13px] font-bold transition-all overflow-hidden ${
+                className={`relative w-11 h-11 shrink-0 rounded-xl border flex items-center justify-center text-[13px] font-bold transition-all overflow-hidden ${
                   isCurrent
-                    ? 'text-white border-double ring-2 ring-accent-blue/35 ring-offset-2 ring-offset-surface scale-105'
+                    ? 'text-white border-transparent ring-2 ring-[#3B7DD8] ring-offset-2 dark:ring-offset-[#090D16] scale-105 shadow-md shadow-[#3B7DD8]/10'
                     : isDone
-                    ? 'border-transparent cursor-pointer'
+                    ? 'border-transparent text-[#4CAF82] bg-[#4CAF82]/10 hover:bg-[#4CAF82]/20 cursor-pointer'
                     : locked
-                    ? 'bg-surface text-text-secondary border-border-card opacity-60 cursor-not-allowed'
-                    : 'bg-surface text-text-primary border-border-card hover:border-accent-blue/50 cursor-pointer'
+                    ? 'bg-surface text-text-secondary/40 border-border-card/80 opacity-55 cursor-not-allowed'
+                    : 'bg-surface text-text-secondary border-border-card hover:border-[#3B7DD8]/45 hover:text-text-primary cursor-pointer'
                 }`}
-                style={
-                  isCurrent
-                    ? { backgroundColor: '#3B7DD8', borderColor: '#1d4ed8' }
-                    : isDone
-                    ? { backgroundColor: '#EAF6F0', color: '#2F9E6E' }
-                    : undefined
-                }
+                style={isCurrent ? { backgroundColor: '#3B7DD8' } : undefined}
               >
-                {isDone && !isCurrent ? <Check className="w-4 h-4" /> : locked ? <Lock className="w-3.5 h-3.5" /> : idx + 1}
+                {isDone && !isCurrent ? (
+                  <Check className="w-4.5 h-4.5 stroke-[2.5]" />
+                ) : locked ? (
+                  <Lock className="w-3.5 h-3.5" />
+                ) : (
+                  idx + 1
+                )}
                 {/* type color strip */}
                 <span className="absolute bottom-0 left-0 right-0 h-1" style={{ backgroundColor: TYPE_STRIP[s.step_type] }} />
               </button>
@@ -199,18 +214,18 @@ export default function StepLesson({
         </div>
 
         {/* Thin progress bar */}
-        <div className="mt-3 flex items-center gap-2">
+        <div className="mt-2.5 flex items-center gap-3">
           <div className="flex-1 h-1.5 bg-border-card/50 rounded-full overflow-hidden">
-            <div className="h-full rounded-full bg-accent-blue transition-all duration-500" style={{ width: `${progressPct}%` }} />
+            <div className="h-full rounded-full bg-gradient-to-r from-[#3B7DD8] to-[#4CAF82] transition-all duration-500" style={{ width: `${progressPct}%` }} />
           </div>
           <span className="text-[10px] font-bold text-text-secondary shrink-0 tabular-nums">
-            {completedCount} / {steps.length} · {progressPct}%
+            {completedCount} / {steps.length} qadam · {progressPct}%
           </span>
         </div>
       </div>
 
       {/* Content (scrolls inside) */}
-      <div className="flex-1 min-h-0 overflow-y-auto bg-surface border border-border-card rounded-3xl shadow-sm p-5 sm:p-8 md:p-10">
+      <div className="flex-1 min-h-0 overflow-y-auto bg-surface border border-border-card rounded-3xl shadow-sm p-6 sm:p-8 md:p-10 premium-shadow">
         {renderStep()}
         {/* End-of-lesson konspekt — appears on the final step regardless of its type. */}
         {currentIndex === steps.length - 1 && (
@@ -227,7 +242,7 @@ export default function StepLesson({
         <button
           onClick={() => goToStep(currentIndex - 1)}
           disabled={currentIndex === 0}
-          className="inline-flex items-center gap-2 border border-border-card hover:bg-surface-hover text-text-secondary hover:text-text-primary px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold disabled:opacity-35 disabled:cursor-not-allowed transition-all cursor-pointer"
+          className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 border border-border-card hover:bg-surface-hover text-text-secondary hover:text-text-primary px-4 sm:px-5 py-3 rounded-xl text-xs font-bold disabled:opacity-35 disabled:cursor-not-allowed transition-all cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4" /> Oldingi
         </button>
@@ -238,7 +253,7 @@ export default function StepLesson({
 
         <Link
           to="/attestatsiya"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-text-secondary hover:text-text-primary hover:bg-surface-hover px-4 py-2.5 rounded-xl transition-colors"
+          className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-bold text-text-secondary hover:text-text-primary hover:bg-surface-hover px-4 py-3 rounded-xl transition-colors border border-transparent hover:border-border-card/30"
         >
           Kursga qaytish
         </Link>

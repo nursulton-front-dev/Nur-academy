@@ -11,32 +11,32 @@ type CalloutVariant = 'info' | 'success' | 'warning' | 'danger' | 'neutral';
 const CALLOUTS: Record<CalloutVariant, { wrap: string; iconBg: string; icon: string; Icon: LucideIcon }> = {
   // Misol / 💡 → blue · ✅ → green · Eslatma / ⚠️ → amber · ❌ → red · else gray
   info: {
-    wrap: 'bg-blue-50/70 dark:bg-[#3B7DD8]/10 border-[#3B7DD8]',
-    iconBg: 'bg-[#3B7DD8]/15',
-    icon: 'text-[#3B7DD8]',
+    wrap: 'bg-[#3B7DD8]/[0.03] dark:bg-[#3B7DD8]/10 border-[#3B7DD8]',
+    iconBg: 'bg-[#3B7DD8]',
+    icon: 'text-white shadow-sm shadow-[#3B7DD8]/20',
     Icon: Lightbulb,
   },
   success: {
-    wrap: 'bg-emerald-50/70 dark:bg-[#4CAF82]/10 border-[#4CAF82]',
-    iconBg: 'bg-[#4CAF82]/15',
-    icon: 'text-[#4CAF82]',
+    wrap: 'bg-[#4CAF82]/[0.03] dark:bg-[#4CAF82]/10 border-[#4CAF82]',
+    iconBg: 'bg-[#4CAF82]',
+    icon: 'text-white shadow-sm shadow-[#4CAF82]/20',
     Icon: CheckCircle2,
   },
   warning: {
-    wrap: 'bg-amber-50/70 dark:bg-amber-500/10 border-amber-400',
-    iconBg: 'bg-amber-500/15',
-    icon: 'text-amber-500',
+    wrap: 'bg-[#F59E0B]/[0.03] dark:bg-[#F59E0B]/10 border-[#F59E0B]',
+    iconBg: 'bg-[#F59E0B]',
+    icon: 'text-white shadow-sm shadow-[#F59E0B]/20',
     Icon: AlertTriangle,
   },
   danger: {
-    wrap: 'bg-rose-50/70 dark:bg-[#E0735C]/10 border-[#E0735C]',
-    iconBg: 'bg-[#E0735C]/15',
-    icon: 'text-[#E0735C]',
+    wrap: 'bg-[#E0735C]/[0.03] dark:bg-[#E0735C]/10 border-[#E0735C]',
+    iconBg: 'bg-[#E0735C]',
+    icon: 'text-white shadow-sm shadow-[#E0735C]/20',
     Icon: XCircle,
   },
   neutral: {
-    wrap: 'bg-surface-muted/40 dark:bg-white/5 border-border-card',
-    iconBg: 'bg-text-secondary/10',
+    wrap: 'bg-surface-muted/20 dark:bg-white/5 border-border-card',
+    iconBg: 'bg-text-secondary/15',
     icon: 'text-text-secondary',
     Icon: Quote,
   },
@@ -100,10 +100,10 @@ export function renderMarkdown(content: string) {
     currentList = null;
     if (type === 'ul') {
       return (
-        <ul key={key} className="my-4 space-y-2.5">
+        <ul key={key} className="my-4 space-y-3">
           {items.map((item, idx) => (
-            <li key={idx} className="flex gap-3 text-text-secondary leading-relaxed">
-              <span className="mt-[0.55em] w-1.5 h-1.5 rounded-full bg-[#3B7DD8] shrink-0" />
+            <li key={idx} className="flex gap-3.5 text-text-secondary leading-relaxed text-[15px]">
+              <span className="mt-[0.6em] w-2 h-2 rounded bg-[#3B7DD8] shrink-0 transform rotate-45 shadow-sm" />
               <span className="min-w-0">{renderInline(item)}</span>
             </li>
           ))}
@@ -111,10 +111,10 @@ export function renderMarkdown(content: string) {
       );
     }
     return (
-      <ol key={key} className="my-4 space-y-2.5">
+      <ol key={key} className="my-4 space-y-3">
         {items.map((item, idx) => (
-          <li key={idx} className="flex gap-3 text-text-secondary leading-relaxed">
-            <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-[#3B7DD8]/10 text-[#3B7DD8] text-[11px] font-bold flex items-center justify-center">
+          <li key={idx} className="flex gap-3.5 text-text-secondary leading-relaxed text-[15px]">
+            <span className="shrink-0 mt-0.5 w-6 h-6 rounded-lg bg-[#3B7DD8]/10 text-[#3B7DD8] text-xs font-extrabold flex items-center justify-center">
               {idx + 1}
             </span>
             <span className="min-w-0">{renderInline(item)}</span>
@@ -129,14 +129,14 @@ export function renderMarkdown(content: string) {
     const { headers, rows } = currentTable;
     currentTable = null;
     return (
-      <div key={key} className="overflow-x-auto my-6 border border-border-card rounded-2xl shadow-sm">
+      <div key={key} className="overflow-x-auto my-6 border border-border-card rounded-2xl shadow-sm overflow-hidden">
         <table className="min-w-full text-sm border-collapse">
           <thead>
-            <tr className="bg-[#3B7DD8]/[0.07] dark:bg-[#3B7DD8]/10">
+            <tr className="bg-[#3B7DD8]/[0.06] dark:bg-[#3B7DD8]/10">
               {headers.map((h, idx) => (
                 <th
                   key={idx}
-                  className="px-4 py-3 text-left font-serif font-bold text-text-primary text-[13px] uppercase tracking-wide border-b border-border-card"
+                  className="px-5 py-3.5 text-left font-serif font-bold text-text-primary text-[13px] uppercase tracking-wide border-b border-border-card"
                 >
                   {renderInline(h)}
                 </th>
@@ -147,10 +147,10 @@ export function renderMarkdown(content: string) {
             {rows.map((row, rIdx) => (
               <tr
                 key={rIdx}
-                className={`${rIdx % 2 === 1 ? 'bg-surface-muted/30 dark:bg-white/[0.02]' : 'bg-surface'} hover:bg-[#3B7DD8]/[0.04] transition-colors`}
+                className={`${rIdx % 2 === 1 ? 'bg-surface-muted/20 dark:bg-white/[0.01]' : 'bg-surface'} hover:bg-[#3B7DD8]/[0.03] transition-colors`}
               >
                 {row.map((cell, cIdx) => (
-                  <td key={cIdx} className="px-4 py-3 text-text-secondary align-top border-b border-border-card/60">
+                  <td key={cIdx} className="px-5 py-4 text-text-secondary align-top border-b border-border-card/50">
                     {renderInline(cell)}
                   </td>
                 ))}
@@ -170,11 +170,11 @@ export function renderMarkdown(content: string) {
     const bodyLines = [firstCleaned, ...currentQuote.slice(1)];
     currentQuote = [];
     return (
-      <div key={key} className={`my-5 flex gap-3.5 rounded-2xl border-l-4 p-4 sm:p-5 shadow-sm ${cfg.wrap}`}>
-        <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${cfg.iconBg} ${cfg.icon}`}>
+      <div key={key} className={`my-5 flex gap-4 rounded-2xl border-l-4 p-5 shadow-sm ${cfg.wrap}`}>
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${cfg.iconBg} ${cfg.icon}`}>
           <Icon className="w-5 h-5" />
         </div>
-        <div className="min-w-0 self-center space-y-1.5 text-sm sm:text-[15px] leading-relaxed text-text-primary">
+        <div className="min-w-0 self-center space-y-2 text-sm sm:text-[15px] leading-relaxed text-text-primary">
           {bodyLines.map((line, idx) => (
             <p key={idx}>{renderInline(line)}</p>
           ))}
@@ -315,26 +315,25 @@ export function renderMarkdown(content: string) {
       elements.push(
         <div
           key={`pf_${i}`}
-          className="my-6 rounded-2xl border border-[#3B7DD8]/20 bg-[#3B7DD8]/[0.04] dark:bg-[#3B7DD8]/[0.08] p-4 sm:p-5"
+          className="my-6 rounded-2xl border border-border-card bg-[#3B7DD8]/[0.02] dark:bg-[#3B7DD8]/[0.05] p-6 space-y-4 shadow-sm animate-fade-in"
         >
           {flowSegments.map((seg, idx) => (
-            <React.Fragment key={idx}>
-              <div className="flex items-center gap-3">
-                <span className="w-8 h-8 rounded-full bg-[#3B7DD8] text-white text-sm font-bold flex items-center justify-center shrink-0 shadow-sm shadow-[#3B7DD8]/25">
-                  {idx + 1}
-                </span>
-                <span className="text-sm sm:text-[15px] font-semibold text-text-primary min-w-0">
+            <div key={idx} className="relative flex gap-4">
+              {/* Connecting line */}
+              {idx < flowSegments.length - 1 && (
+                <span className="absolute left-4.5 top-9 bottom-[-20px] w-0.5 bg-gradient-to-b from-[#3B7DD8] to-border-card/50" />
+              )}
+              {/* Step number badge */}
+              <div className="w-9 h-9 rounded-xl bg-[#3B7DD8] text-white text-sm font-bold flex items-center justify-center shrink-0 shadow-md shadow-[#3B7DD8]/20 relative z-10">
+                {idx + 1}
+              </div>
+              {/* Step content */}
+              <div className="flex-1 bg-surface border border-border-card/60 rounded-2xl p-4 shadow-sm min-w-0">
+                <span className="text-sm sm:text-[15px] font-semibold text-text-primary">
                   {renderInline(seg)}
                 </span>
               </div>
-              {idx < flowSegments.length - 1 && (
-                <div className="flex flex-col items-center w-8 my-1 text-[#3B7DD8]">
-                  <span className="w-0.5 h-2.5 bg-[#3B7DD8]/30" />
-                  <ChevronDown className="w-4 h-4 -my-0.5" />
-                  <span className="w-0.5 h-2.5 bg-[#3B7DD8]/30" />
-                </div>
-              )}
-            </React.Fragment>
+            </div>
           ))}
         </div>
       );
@@ -342,7 +341,7 @@ export function renderMarkdown(content: string) {
     }
 
     elements.push(
-      <p key={`p_${i}`} className="text-text-secondary leading-[1.75] text-sm sm:text-[15px] my-3.5">
+      <p key={`p_${i}`} className="text-text-secondary leading-[1.75] text-[15px] my-3.5">
         {renderInline(line)}
       </p>
     );

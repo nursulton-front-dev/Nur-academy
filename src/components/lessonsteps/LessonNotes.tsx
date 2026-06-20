@@ -49,56 +49,63 @@ export default function LessonNotes({ lessonId }: LessonNotesProps) {
   const hasContent = FACT_KEYS.some((k) => facts[k].trim().length > 0);
 
   return (
-    <div className="rounded-3xl border p-6 sm:p-8 bg-amber-50/70 dark:bg-amber-400/[0.06] border-amber-200 dark:border-amber-400/25">
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 bg-amber-100 dark:bg-amber-400/15 text-amber-600">
+    <div className="rounded-3xl border-2 p-6 sm:p-8 bg-[#F59E0B]/[0.03] dark:bg-[#F59E0B]/[0.08] border-[#F59E0B]/20 shadow-sm relative overflow-hidden">
+      {/* Decorative amber blur */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-[#F59E0B]/10 rounded-full blur-3xl pointer-events-none" />
+      
+      <div className="flex items-center gap-4 mb-4 relative z-10">
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-[#F59E0B] text-white shadow-md shadow-[#F59E0B]/20">
           <NotebookPen className="w-5 h-5" />
         </div>
         <div>
           <h2 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary">
-            📝 Konspekt: 3 ta fakt
+            Dars konspekti: 3 ta muhim fakt
           </h2>
           <p className="text-xs text-text-secondary mt-0.5">
-            Shu darsdan eslab qolgan 3 ta muhim faktni yozing — keyin takrorlash uchun saqlanadi.
+            Darsdan eslab qolgan 3 ta eng muhim g'oya yoki faktni yozing — keyin takrorlash uchun saqlanadi.
           </p>
         </div>
       </div>
 
       {loading ? (
-        <div className="flex items-center gap-2 text-sm text-text-secondary py-8">
-          <Loader2 className="w-4 h-4 animate-spin" /> Yuklanmoqda…
+        <div className="flex items-center justify-center gap-3 text-sm text-text-secondary py-12">
+          <Loader2 className="w-5 h-5 animate-spin text-[#F59E0B]" /> Yuklanmoqda…
         </div>
       ) : (
-        <div className="space-y-3 mt-5">
+        <div className="space-y-4 mt-6 relative z-10">
           {FACT_KEYS.map((key, i) => (
-            <div key={key} className="flex gap-3 items-start">
-              <span className="mt-2.5 w-7 h-7 shrink-0 rounded-full bg-amber-500 text-white text-sm font-bold flex items-center justify-center">
+            <div key={key} className="flex gap-4 items-start">
+              <span className="mt-2 w-8 h-8 shrink-0 rounded-xl bg-[#F59E0B] text-white text-sm font-bold flex items-center justify-center shadow-sm shadow-[#F59E0B]/25">
                 {i + 1}
               </span>
               <textarea
                 value={facts[key]}
                 onChange={updateFact(key)}
                 rows={2}
-                placeholder={`${i + 1}-fakt…`}
-                className="flex-1 p-3 rounded-xl border border-amber-200 dark:border-amber-400/25 bg-surface text-sm text-text-primary outline-none focus:border-amber-500 transition-all resize-y"
+                placeholder={`${i + 1}-faktni shu yerga yozing…`}
+                className="flex-1 p-3.5 rounded-2xl border border-[#F59E0B]/20 dark:border-[#F59E0B]/30 bg-surface text-sm text-text-primary outline-none focus:border-[#F59E0B] focus:ring-2 focus:ring-[#F59E0B]/20 transition-all resize-y shadow-inner"
               />
             </div>
           ))}
 
-          <div className="flex items-center gap-3 pt-2">
+          <div className="flex items-center gap-3 pt-3">
             <button
               onClick={handleSave}
               disabled={saving || !hasContent}
-              className="inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl text-sm font-bold transition-all active:scale-97 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-40 disabled:cursor-not-allowed text-white px-7 py-3.5 rounded-xl text-sm font-bold shadow-md shadow-[#F59E0B]/20 transition-all active:scale-[0.98] cursor-pointer"
             >
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-              Saqlash
+              {saving ? <Loader2 className="w-4.5 h-4.5 animate-spin" /> : <Check className="w-4.5 h-4.5 stroke-[2.5]" />}
+              Konspektni saqlash
             </button>
             {justSaved && !saving && (
-              <span className="text-xs font-semibold text-emerald-600">Saqlandi ✓</span>
+              <span className="text-xs font-semibold text-[#4CAF82] flex items-center gap-1">
+                ✓ Muvaffaqiyatli saqlandi
+              </span>
             )}
             {error && !saving && (
-              <span className="text-xs font-semibold text-rose-600">Saqlab boʻlmadi, qayta urinib koʻring.</span>
+              <span className="text-xs font-semibold text-[#E0735C]">
+                Saqlashda xatolik yuz berdi. Qayta urinib ko'ring.
+              </span>
             )}
           </div>
         </div>
