@@ -2,11 +2,15 @@ import { supabase } from './supabase';
 
 export type StepType = 'text' | 'quiz' | 'common_mistakes' | 'summary' | 'video';
 
+// 'multiple_choice' → pick an option; 'input' → type the answer (number or short text).
+export type QuizQuestionType = 'multiple_choice' | 'input';
+
 export interface StepQuestion {
   id: string;
   text: string;
   options: string[];
   correctIndex: number;
+  questionType: QuizQuestionType;
 }
 
 export interface LessonStep {
@@ -81,9 +85,17 @@ export const lessonStepsService = {
     ]);
 
     const questionIds = (links ?? []).map((l: any) => l.question_id);
-    const { data: qTrans } = questionIds.length
-      ? await supabase.from('question_bank_translations').select('question_id, question_text, options').eq('locale', 'uz').in('question_id', questionIds)
-      : { data: [] as any[] };
+    const [{ data: qTrans }, { data: qMeta }] = questionIds.length
+      ? await Promise.all([
+          supabase.from('question_bank_translations').select('question_id, question_text, options').eq('locale', 'uz').in('question_id', questionIds),
+          supabase.from('question_bank').select('id, question_type').in('id', questionIds),
+        ])
+      : [{ data: [] as any[] }, { data: [] as any[] }];
+
+    const typeById = new Map<string, QuizQuestionType>();
+    for (const m of (qMeta ?? []) as any[]) {
+      typeById.set(m.id, m.question_type === 'input' ? 'input' : 'multiple_choice');
+    }
 
     const transByStep = new Map<string, { title: string | null; content: string | null }>();
     for (const t of (trans ?? []) as any[]) transByStep.set(t.step_id, { title: t.title, content: t.content });
@@ -99,7 +111,13 @@ export const lessonStepsService = {
       const q = qById.get(link.question_id);
       if (!q) continue;
       const list = questionsByStep.get(link.step_id) ?? [];
-      list.push({ id: link.question_id, text: q.text, options: q.options, correctIndex: q.correctIndex });
+      list.push({
+        id: link.question_id,
+        text: q.text,
+        options: q.options,
+        correctIndex: q.correctIndex,
+        questionType: typeById.get(link.question_id) ?? 'multiple_choice',
+      });
       questionsByStep.set(link.step_id, list);
     }
 

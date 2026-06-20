@@ -15,11 +15,27 @@ const PASS_THRESHOLD = 70;
 /** Phase of the current question's scaffolding flow. */
 type QuizPhase = 'answering' | 'hint' | 'explanation' | 'correct';
 
+const collapseSpaces = (s: string) => s.trim().replace(/\s+/g, ' ');
+
+// Compares a typed answer against the expected one. Numbers compare numerically
+// (spaces ignored, comma treated as decimal point); text compares trimmed and
+// case-insensitively.
+function inputMatches(userRaw: string, correctRaw: string): boolean {
+  const u = collapseSpaces(userRaw);
+  const c = collapseSpaces(correctRaw);
+  if (!u || !c) return false;
+  const uNum = Number(u.replace(/\s/g, '').replace(',', '.'));
+  const cNum = Number(c.replace(/\s/g, '').replace(',', '.'));
+  if (!Number.isNaN(uNum) && !Number.isNaN(cNum)) return uNum === cNum;
+  return u.toLowerCase() === c.toLowerCase();
+}
+
 export default function QuizStep({ step, onComplete }: QuizStepProps) {
   const { user } = useAuth();
   const questions = step.questions;
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
+  const [inputValue, setInputValue] = useState('');
   const [phase, setPhase] = useState<QuizPhase>('answering');
   const [attemptCount, setAttemptCount] = useState(0);
   const [wrongPicks, setWrongPicks] = useState<number[]>([]);
@@ -43,6 +59,12 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
   }
 
   const q = questions[index];
+  const isInput = q.questionType === 'input';
+  // For input questions the single correct option's text is the expected answer.
+  const correctText = q.options[q.correctIndex] ?? q.options[0] ?? '';
+  let inputFieldStyle = 'border-border-card focus:border-accent-blue';
+  if (isInput && phase === 'correct') inputFieldStyle = 'border-emerald-500 bg-emerald-500/10 text-emerald-700 font-semibold';
+  else if (isInput && (phase === 'hint' || phase === 'explanation')) inputFieldStyle = 'border-rose-500 bg-rose-500/10 text-rose-700 font-semibold';
   const correctCount = Object.values(correctMap).filter(Boolean).length;
   const answeredCount = Object.keys(correctMap).length;
   const scorePercent = Math.round((correctCount / questions.length) * 100);
@@ -52,6 +74,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
   const goNext = () => {
     if (advanceTimer.current) clearTimeout(advanceTimer.current);
     setSelected(null);
+    setInputValue('');
     setPhase('answering');
     setAttemptCount(0);
     setWrongPicks([]);
@@ -112,9 +135,37 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
     }
   };
 
+  // Input questions: check the typed answer against the expected one. Reuses the
+  // same scaffolding (hint → explanation) as multiple-choice, just keyed off text.
+  const handleCheckInput = () => {
+    if (phase !== 'answering' || !inputValue.trim()) return;
+    const isCorrect = inputMatches(inputValue, correctText);
+
+    if (isCorrect) {
+      const onSecondTry = attemptCount >= 1;
+      setCorrectMap((prev) => ({ ...prev, [q.id]: true }));
+      if (onSecondTry) setSecondTryMap((prev) => ({ ...prev, [q.id]: true }));
+      persistAnswer(q.correctIndex, true, attemptCount + 1);
+      setPhase('correct');
+      advanceTimer.current = setTimeout(goNext, onSecondTry ? 1300 : 1000);
+      return;
+    }
+
+    const nextAttempt = attemptCount + 1;
+    setAttemptCount(nextAttempt);
+    if (nextAttempt >= 2) {
+      setCorrectMap((prev) => ({ ...prev, [q.id]: false }));
+      persistAnswer(-1, false, nextAttempt);
+      setPhase('explanation');
+    } else {
+      setPhase('hint');
+    }
+  };
+
   // After a hint: return to answering so a different option can be chosen.
   const retryQuestion = () => {
     setSelected(null);
+    setInputValue('');
     setPhase('answering');
   };
 
@@ -122,6 +173,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
   const retry = () => {
     setIndex(0);
     setSelected(null);
+    setInputValue('');
     setPhase('answering');
     setAttemptCount(0);
     setWrongPicks([]);
@@ -194,48 +246,77 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
 
       <h3 className="text-lg sm:text-xl font-serif font-extrabold text-text-primary leading-relaxed">{q.text}</h3>
 
-      <div className="space-y-2.5">
-        {q.options.map((option, optIdx) => {
-          const isSelected = selected === optIdx;
-          const isCorrectOpt = optIdx === q.correctIndex;
-          const isWrongPick = wrongPicks.includes(optIdx);
-          // The correct option only turns green once we've shown the full explanation
-          // (2nd wrong) or the user got it right — never during a hint.
-          const revealCorrect = phase === 'explanation' || phase === 'correct';
-          const locked = phase !== 'answering';
-
-          let style = 'border-border-card hover:bg-surface-hover text-text-secondary bg-surface';
-          if (revealCorrect && isCorrectOpt) {
-            style = 'border-emerald-500 bg-emerald-500/10 text-emerald-700 font-semibold';
-          } else if (isWrongPick) {
-            style = 'border-rose-500 bg-rose-500/10 text-rose-700 font-semibold';
-          } else if (locked) {
-            style = 'border-border-card opacity-50 text-text-secondary bg-surface';
-          } else if (isSelected) {
-            style = 'border-accent-blue bg-accent-blue/10 text-accent-blue font-semibold';
-          }
-
-          // Disabled while locked, or for an already-tried wrong option during answering.
-          const disabled = locked || isWrongPick;
-          return (
+      {isInput ? (
+        <div className="space-y-3">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleCheckInput(); }}
+            disabled={phase !== 'answering'}
+            placeholder="Javobni shu yerga yozing…"
+            autoComplete="off"
+            className={`w-full p-4 rounded-xl border text-sm bg-surface text-text-primary outline-none transition-all ${inputFieldStyle} ${phase !== 'answering' ? 'cursor-default' : ''}`}
+          />
+          {phase === 'answering' && (
             <button
-              key={optIdx}
-              disabled={disabled}
-              onClick={() => handleSelect(optIdx)}
-              className={`w-full text-left p-4 rounded-xl border text-sm transition-all flex items-center justify-between gap-3 ${style} ${disabled ? '' : 'cursor-pointer active:scale-[0.99]'}`}
+              onClick={handleCheckInput}
+              disabled={!inputValue.trim()}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent-blue hover:bg-accent-blue/95 disabled:opacity-40 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl text-sm font-bold transition-all active:scale-97 cursor-pointer"
             >
-              <span>{option}</span>
-              {revealCorrect && isCorrectOpt && <Check className="w-4 h-4 text-emerald-600 shrink-0" />}
-              {isWrongPick && <X className="w-4 h-4 text-rose-600 shrink-0" />}
+              <Check className="w-4 h-4" /> Tekshirish
             </button>
-          );
-        })}
-      </div>
+          )}
+          {phase === 'explanation' && (
+            <p className="text-xs font-semibold text-emerald-600">
+              Toʻgʻri javob: <span className="font-bold">{correctText}</span>
+            </p>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-2.5">
+          {q.options.map((option, optIdx) => {
+            const isSelected = selected === optIdx;
+            const isCorrectOpt = optIdx === q.correctIndex;
+            const isWrongPick = wrongPicks.includes(optIdx);
+            // The correct option only turns green once we've shown the full explanation
+            // (2nd wrong) or the user got it right — never during a hint.
+            const revealCorrect = phase === 'explanation' || phase === 'correct';
+            const locked = phase !== 'answering';
+
+            let style = 'border-border-card hover:bg-surface-hover text-text-secondary bg-surface';
+            if (revealCorrect && isCorrectOpt) {
+              style = 'border-emerald-500 bg-emerald-500/10 text-emerald-700 font-semibold';
+            } else if (isWrongPick) {
+              style = 'border-rose-500 bg-rose-500/10 text-rose-700 font-semibold';
+            } else if (locked) {
+              style = 'border-border-card opacity-50 text-text-secondary bg-surface';
+            } else if (isSelected) {
+              style = 'border-accent-blue bg-accent-blue/10 text-accent-blue font-semibold';
+            }
+
+            // Disabled while locked, or for an already-tried wrong option during answering.
+            const disabled = locked || isWrongPick;
+            return (
+              <button
+                key={optIdx}
+                disabled={disabled}
+                onClick={() => handleSelect(optIdx)}
+                className={`w-full text-left p-4 rounded-xl border text-sm transition-all flex items-center justify-between gap-3 ${style} ${disabled ? '' : 'cursor-pointer active:scale-[0.99]'}`}
+              >
+                <span>{option}</span>
+                {revealCorrect && isCorrectOpt && <Check className="w-4 h-4 text-emerald-600 shrink-0" />}
+                {isWrongPick && <X className="w-4 h-4 text-rose-600 shrink-0" />}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* 1st wrong attempt → hint without the answer, retry with a different option */}
       {phase === 'hint' && (
         <div className="space-y-3">
-          <AIMentorBlock questionId={q.id} userAnswerIndex={selected ?? 0} mode="hint" />
+          <AIMentorBlock questionId={q.id} userAnswerIndex={isInput ? -1 : (selected ?? 0)} mode="hint" />
           <div className="flex justify-end">
             <button
               onClick={retryQuestion}
@@ -250,7 +331,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
       {/* 2nd wrong attempt → full explanation with the answer, then continue (counts as a miss) */}
       {phase === 'explanation' && (
         <div className="space-y-3">
-          <AIMentorBlock questionId={q.id} userAnswerIndex={selected ?? 0} mode="explanation" />
+          <AIMentorBlock questionId={q.id} userAnswerIndex={isInput ? -1 : (selected ?? 0)} mode="explanation" />
           <div className="flex justify-end">
             <button
               onClick={goNext}

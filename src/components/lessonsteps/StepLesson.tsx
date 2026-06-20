@@ -5,6 +5,7 @@ import { LessonStep, StepType, lessonStepsService } from '../../lib/lessonStepsS
 import { xpService } from '../../lib/xpService';
 import { useAuth } from '../../contexts/AuthContext';
 import QuizStep from './QuizStep';
+import LessonNotes from './LessonNotes';
 import { TextStep, CommonMistakesStep, SummaryStep, VideoStep } from './StepComponents';
 
 interface StepLessonProps {
@@ -198,6 +199,12 @@ export default function StepLesson({
       {/* Content (scrolls inside) */}
       <div className="flex-1 min-h-0 overflow-y-auto bg-surface border border-border-card rounded-3xl shadow-sm p-5 sm:p-8 md:p-10">
         {renderStep()}
+        {/* End-of-lesson konspekt — appears on the final step regardless of its type. */}
+        {currentIndex === steps.length - 1 && (
+          <div className="max-w-[760px] mx-auto w-full mt-10 pt-8 border-t border-border-card">
+            <LessonNotes lessonId={lessonId} />
+          </div>
+        )}
       </div>
 
       {/* Sticky bottom action bar — card surface. Back lives here; forward is the
