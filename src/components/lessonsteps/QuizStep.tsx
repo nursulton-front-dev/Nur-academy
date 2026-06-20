@@ -227,10 +227,15 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
 
   /* ── Active question ── */
   return (
-    <div className="max-w-[640px] mx-auto w-full space-y-5">
+    <div className="max-w-[680px] mx-auto w-full space-y-6">
       {/* Mini progress */}
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-bold text-text-secondary">Savol {index + 1} / {questions.length}</span>
+      <div className="flex items-center justify-between gap-3">
+        <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#E8B43C]">
+          <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-[#E8B43C]/15">
+            <CheckCircle2 className="w-4 h-4" />
+          </span>
+          Savol {index + 1} / {questions.length}
+        </span>
         <div className="flex gap-1.5">
           {questions.map((qq, i) => {
             const done = correctMap[qq.id];
@@ -244,7 +249,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
         </div>
       </div>
 
-      <h3 className="text-lg sm:text-xl font-serif font-extrabold text-text-primary leading-relaxed">{q.text}</h3>
+      <h3 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary leading-snug">{q.text}</h3>
 
       {isInput ? (
         <div className="space-y-3">
@@ -274,7 +279,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
           )}
         </div>
       ) : (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {q.options.map((option, optIdx) => {
             const isSelected = selected === optIdx;
             const isCorrectOpt = optIdx === q.correctIndex;
@@ -302,11 +307,14 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
                 key={optIdx}
                 disabled={disabled}
                 onClick={() => handleSelect(optIdx)}
-                className={`w-full text-left p-4 rounded-xl border text-sm transition-all flex items-center justify-between gap-3 ${style} ${disabled ? '' : 'cursor-pointer active:scale-[0.99]'}`}
+                className={`w-full text-left p-5 rounded-2xl border-2 text-base transition-all flex items-center gap-3.5 ${style} ${disabled ? '' : 'cursor-pointer active:scale-[0.99]'}`}
               >
-                <span>{option}</span>
-                {revealCorrect && isCorrectOpt && <Check className="w-4 h-4 text-emerald-600 shrink-0" />}
-                {isWrongPick && <X className="w-4 h-4 text-rose-600 shrink-0" />}
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-current text-xs font-bold shrink-0 opacity-60">
+                  {String.fromCharCode(65 + optIdx)}
+                </span>
+                <span className="flex-1">{option}</span>
+                {revealCorrect && isCorrectOpt && <Check className="w-5 h-5 text-emerald-600 shrink-0" />}
+                {isWrongPick && <X className="w-5 h-5 text-rose-600 shrink-0" />}
               </button>
             );
           })}

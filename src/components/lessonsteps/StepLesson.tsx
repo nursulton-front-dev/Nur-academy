@@ -67,49 +67,60 @@ export default function StepLesson({
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const current = steps[currentIndex];
 
-  const goToStep = (index: number) => {
-    if (!isUnlocked(index)) return;
+  // Guard-free navigation core. Used for auto-advance after completing a step,
+  // where the just-completed step has not yet propagated into `completed`/
+  // `firstIncompleteIndex` (stale closure), so the unlock guard would wrongly
+  // block the move. Stepper clicks go through `goToStep`, which keeps the guard.
+  const navigateToStep = (index: number) => {
+    if (index < 0 || index >= steps.length) return;
     setCurrentIndex(index);
     const next = new URLSearchParams(params);
     next.set('step', String(index + 1));
     setParams(next, { replace: true });
   };
 
-  const handleStepComplete = async (didComplete: boolean) => {
+  const goToStep = (index: number) => {
+    if (!isUnlocked(index)) return;
+    navigateToStep(index);
+  };
+
+  const handleStepComplete = (didComplete: boolean) => {
+    // Advance immediately so a single click always moves forward. Persistence
+    // and XP run in the background; markStepComplete reads localStorage (not
+    // React state), so the once-only XP award survives even if we navigate away.
     if (didComplete && current) {
-      const nextSet = new Set(completed);
-      nextSet.add(current.id);
-      setCompleted(nextSet);
-
-      let lessonCompleted = false;
-      try {
-        const res = await lessonStepsService.markStepComplete({
-          userId: user?.id ?? null,
-          lessonId,
-          stepId: current.id,
-          allStepIds,
-        });
-        lessonCompleted = res.lessonCompleted;
-      } catch (e) {
-        console.error('[lesson] markStepComplete failed:', e);
-      }
-
-      // Award XP once, the first time the lesson is fully completed.
-      if (lessonCompleted && user) {
-        try {
-          await xpService.addXp(user.id, 'quiz_complete', 50, { lesson_id: lessonId });
-          console.log('[lesson] XP awarded for completing lesson:', lessonId);
-        } catch (e) {
-          console.error('[lesson] XP award failed:', e);
-        }
-      }
+      setCompleted((prev) => new Set(prev).add(current.id));
+      persistCompletion(current.id);
     }
-    // Advance to next step, or to the next lesson when finishing the last step.
+
     if (currentIndex + 1 < steps.length) {
-      goToStep(currentIndex + 1);
+      navigateToStep(currentIndex + 1);
     } else if (didComplete) {
       if (nextLessonHref) navigate(nextLessonHref);
       else navigate('/attestatsiya');
+    }
+  };
+
+  const persistCompletion = async (stepId: string) => {
+    let lessonCompleted = false;
+    try {
+      const res = await lessonStepsService.markStepComplete({
+        userId: user?.id ?? null,
+        lessonId,
+        stepId,
+        allStepIds,
+      });
+      lessonCompleted = res.lessonCompleted;
+    } catch (e) {
+      console.error('[lesson] markStepComplete failed:', e);
+    }
+    // Award XP once, the first time the lesson is fully completed.
+    if (lessonCompleted && user) {
+      try {
+        await xpService.addXp(user.id, 'quiz_complete', 50, { lesson_id: lessonId });
+      } catch (e) {
+        console.error('[lesson] XP award failed:', e);
+      }
     }
   };
 
@@ -164,7 +175,7 @@ export default function StepLesson({
                 title={TYPE_LABEL[s.step_type]}
                 className={`relative w-10 h-10 shrink-0 rounded-xl border-2 flex items-center justify-center text-[13px] font-bold transition-all overflow-hidden ${
                   isCurrent
-                    ? 'text-white border-double'
+                    ? 'text-white border-double ring-2 ring-accent-blue/35 ring-offset-2 ring-offset-surface scale-105'
                     : isDone
                     ? 'border-transparent cursor-pointer'
                     : locked
@@ -192,7 +203,9 @@ export default function StepLesson({
           <div className="flex-1 h-1.5 bg-border-card/50 rounded-full overflow-hidden">
             <div className="h-full rounded-full bg-accent-blue transition-all duration-500" style={{ width: `${progressPct}%` }} />
           </div>
-          <span className="text-[10px] font-bold text-text-secondary shrink-0">{completedCount} / {steps.length}</span>
+          <span className="text-[10px] font-bold text-text-secondary shrink-0 tabular-nums">
+            {completedCount} / {steps.length} · {progressPct}%
+          </span>
         </div>
       </div>
 
@@ -201,7 +214,7 @@ export default function StepLesson({
         {renderStep()}
         {/* End-of-lesson konspekt — appears on the final step regardless of its type. */}
         {currentIndex === steps.length - 1 && (
-          <div className="max-w-[760px] mx-auto w-full mt-10 pt-8 border-t border-border-card">
+          <div className="max-w-[900px] mx-auto w-full mt-10 pt-8 border-t border-border-card">
             <LessonNotes lessonId={lessonId} />
           </div>
         )}
