@@ -49,20 +49,20 @@ export default function LessonNotes({ lessonId }: LessonNotesProps) {
   const hasContent = FACT_KEYS.some((k) => facts[k].trim().length > 0);
 
   return (
-    <div className="rounded-3xl border-2 p-6 sm:p-8 bg-[#F59E0B]/[0.03] dark:bg-[#F59E0B]/[0.08] border-[#F59E0B]/20 shadow-sm relative overflow-hidden">
+    <div className="w-full rounded-3xl border-2 p-8 sm:p-10 bg-[#F59E0B]/[0.03] dark:bg-[#F59E0B]/[0.08] border-[#F59E0B]/20 shadow-sm relative overflow-hidden">
       {/* Decorative amber blur */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-[#F59E0B]/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-64 h-64 bg-[#F59E0B]/10 rounded-full blur-3xl pointer-events-none" />
       
-      <div className="flex items-center gap-4 mb-4 relative z-10">
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-[#F59E0B] text-white shadow-md shadow-[#F59E0B]/20">
-          <NotebookPen className="w-5 h-5" />
+      <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-6 relative z-10">
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-[#F59E0B] text-white shadow-md shadow-[#F59E0B]/20">
+          <NotebookPen className="w-6 h-6" />
         </div>
         <div>
-          <h2 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary">
-            Dars konspekti: 3 ta muhim fakt
+          <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-text-primary">
+            Darsdan 3 ta faktni yozing
           </h2>
-          <p className="text-xs text-text-secondary mt-0.5">
-            Darsdan eslab qolgan 3 ta eng muhim g'oya yoki faktni yozing — keyin takrorlash uchun saqlanadi.
+          <p className="text-sm text-text-secondary mt-1">
+            Darsdan eslab qolgan eng muhim g'oyalarni yozing — keyin takrorlash uchun saqlanadi.
           </p>
         </div>
       </div>
@@ -88,25 +88,27 @@ export default function LessonNotes({ lessonId }: LessonNotesProps) {
             </div>
           ))}
 
-          <div className="flex items-center gap-3 pt-3">
+          <div className="flex items-center justify-between gap-3 pt-4">
             <button
               onClick={handleSave}
               disabled={saving || !hasContent}
-              className="inline-flex items-center justify-center gap-2 bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-40 disabled:cursor-not-allowed text-white px-7 py-3.5 rounded-xl text-sm font-bold shadow-md shadow-[#F59E0B]/20 transition-all active:scale-[0.98] cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-40 disabled:cursor-not-allowed text-white px-8 py-4 rounded-xl text-sm font-bold shadow-md shadow-[#F59E0B]/20 transition-all active:scale-[0.98] cursor-pointer"
             >
               {saving ? <Loader2 className="w-4.5 h-4.5 animate-spin" /> : <Check className="w-4.5 h-4.5 stroke-[2.5]" />}
-              Konspektni saqlash
+              Saqlash
             </button>
-            {justSaved && !saving && (
-              <span className="text-xs font-semibold text-[#4CAF82] flex items-center gap-1">
-                ✓ Muvaffaqiyatli saqlandi
-              </span>
-            )}
-            {error && !saving && (
-              <span className="text-xs font-semibold text-[#E0735C]">
-                Saqlashda xatolik yuz berdi. Qayta urinib ko'ring.
-              </span>
-            )}
+            <div className="flex items-center text-right">
+              {justSaved && !saving && (
+                <span className="text-sm font-bold text-[#4CAF82] flex items-center gap-1.5 bg-[#4CAF82]/10 px-4 py-2 rounded-lg">
+                  <Check className="w-4 h-4 stroke-[3]" /> Saqlandi
+                </span>
+              )}
+              {error && !saving && (
+                <span className="text-sm font-bold text-[#E0735C] bg-[#E0735C]/10 px-4 py-2 rounded-lg">
+                  Xatolik yuz berdi.
+                </span>
+              )}
+            </div>
           </div>
         </div>
       )}

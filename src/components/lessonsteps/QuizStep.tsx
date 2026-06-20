@@ -244,7 +244,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
 
   /* ── Active question ── */
   return (
-    <div className="max-w-[680px] mx-auto w-full space-y-6">
+    <div className="w-full space-y-8">
       {/* Mini progress */}
       <div className="flex items-center justify-between gap-3">
         <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#E8B43C]">
@@ -271,7 +271,9 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
         </div>
       </div>
 
-      <h3 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary leading-snug">{q.text}</h3>
+      <h3 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-extrabold text-text-primary leading-snug text-center max-w-4xl mx-auto py-4">
+        {q.text}
+      </h3>
 
       {isInput ? (
         <div className="space-y-4">
@@ -307,7 +309,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
           )}
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {q.options.map((option, optIdx) => {
             const isSelected = selected === optIdx;
             const isCorrectOpt = optIdx === q.correctIndex;
@@ -338,14 +340,14 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
                 key={optIdx}
                 disabled={disabled}
                 onClick={() => handleSelect(optIdx)}
-                className={`w-full text-left p-5 rounded-2xl border-2 text-base transition-all flex items-center gap-3.5 ${style} ${disabled ? '' : 'cursor-pointer hover:scale-[1.005] active:scale-[0.995]'}`}
+                className={`w-full text-left p-5 min-h-[72px] sm:min-h-[88px] rounded-2xl border-2 text-base transition-all flex items-center gap-4 ${style} ${disabled ? '' : 'cursor-pointer hover:scale-[1.005] active:scale-[0.995]'}`}
               >
-                <span className={`inline-flex items-center justify-center w-7 h-7 rounded-lg border text-xs font-bold shrink-0 transition-colors ${badgeStyle}`}>
+                <span className={`inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl border text-sm font-bold shrink-0 transition-colors ${badgeStyle}`}>
                   {String.fromCharCode(65 + optIdx)}
                 </span>
-                <span className="flex-1 text-sm sm:text-base">{option}</span>
-                {revealCorrect && isCorrectOpt && <Check className="w-5 h-5 text-[#4CAF82] shrink-0 stroke-[2.5]" />}
-                {isWrongPick && <X className="w-5 h-5 text-[#E0735C] shrink-0 stroke-[2.5]" />}
+                <span className="flex-1 text-sm sm:text-base font-medium">{option}</span>
+                {revealCorrect && isCorrectOpt && <Check className="w-6 h-6 text-[#4CAF82] shrink-0 stroke-[3]" />}
+                {isWrongPick && <X className="w-6 h-6 text-[#E0735C] shrink-0 stroke-[3]" />}
               </button>
             );
           })}

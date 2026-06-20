@@ -154,7 +154,7 @@ export default function StepLesson({
   const activeBadge = current ? TYPE_COLORS[current.step_type] : { text: 'text-text-secondary', bg: 'bg-surface-muted' };
 
   return (
-    <div className="w-full max-w-[900px] mx-auto flex flex-col h-[calc(100dvh-150px)] min-h-[520px] overflow-hidden px-4 sm:px-0">
+    <div className="w-full max-w-[1080px] mx-auto flex flex-col h-[calc(100dvh-150px)] min-h-[520px] overflow-hidden px-4 sm:px-0">
       {/* Step navigator */}
       <div className="shrink-0 bg-surface border border-border-card rounded-2xl p-4 sm:p-5 mb-4 shadow-sm">
         <div className="flex items-center justify-between mb-3.5 gap-3">
@@ -225,11 +225,11 @@ export default function StepLesson({
       </div>
 
       {/* Content (scrolls inside) */}
-      <div className="flex-1 min-h-0 overflow-y-auto bg-surface border border-border-card rounded-3xl shadow-sm p-6 sm:p-8 md:p-10 premium-shadow">
+      <div className="flex-1 min-h-0 overflow-y-auto bg-surface border border-border-card rounded-3xl shadow-sm px-5 py-8 sm:p-8 lg:px-14 lg:py-12 premium-shadow">
         {renderStep()}
         {/* End-of-lesson konspekt — appears on the final step regardless of its type. */}
         {currentIndex === steps.length - 1 && (
-          <div className="max-w-[900px] mx-auto w-full mt-10 pt-8 border-t border-border-card">
+          <div className="w-full mt-10 pt-10 border-t border-border-card">
             <LessonNotes lessonId={lessonId} />
           </div>
         )}
