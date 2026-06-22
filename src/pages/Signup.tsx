@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { BookOpen } from 'lucide-react';
+
+// Only allow internal relative paths as a post-signup redirect (no open redirects).
+function safeNext(raw: string | null): string {
+  if (raw && raw.startsWith('/') && !raw.startsWith('//')) return raw;
+  return '/dashboard';
+}
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -11,6 +17,8 @@ export default function Signup() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const next = safeNext(params.get('next'));
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +43,7 @@ export default function Signup() {
     } else {
       if (data.session) {
         // Automatically logged in
-        navigate('/dashboard');
+        navigate(next);
       } else {
         setSuccess('Roʻyxatdan muvaffaqiyatli oʻtdingiz. Emailingizni tasdiqlang!');
         setLoading(false);
@@ -47,7 +55,7 @@ export default function Signup() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${import.meta.env.APP_URL || window.location.origin}/dashboard`
+        redirectTo: `${import.meta.env.APP_URL || window.location.origin}${next}`
       }
     });
     if (error) setError(error.message);
@@ -152,7 +160,10 @@ export default function Signup() {
 
         <p className="mt-8 text-center text-sm text-text-secondary">
           Akkauntingiz bormi?{' '}
-          <Link to="/login" className="text-accent-blue font-medium hover:underline">
+          <Link
+            to={next !== '/dashboard' ? `/login?next=${encodeURIComponent(next)}` : '/login'}
+            className="text-accent-blue font-medium hover:underline"
+          >
             Tizimga kiring
           </Link>
         </p>

@@ -1,491 +1,395 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { enrollmentService } from '../lib/enrollmentService';
-import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
-import { 
-  PlayCircle, 
-  CheckCircle2, 
-  TrendingUp, 
-  Globe, 
-  Users, 
-  BookOpen, 
-  Award, 
-  ChevronDown, 
-  ChevronUp, 
-  Star, 
-  ArrowRight, 
-  Sparkles, 
-  Clock, 
-  ShieldCheck,
-  GraduationCap
+import { fetchPublishedCourses, type CourseMeta } from '../lib/courses';
+import CourseStartButton from '../components/CourseStartButton';
+import {
+  Sparkles,
+  ArrowRight,
+  GraduationCap,
+  ClipboardList,
+  BookOpenCheck,
+  Bot,
+  NotebookPen,
+  Stethoscope,
+  PlayCircle,
+  FileText,
+  Trophy,
+  Check,
+  Loader2,
 } from 'lucide-react';
 
+/* ───────────────────── Static content ───────────────────── */
+
+const METHODOLOGY = [
+  {
+    icon: ClipboardList,
+    title: 'Aniq dasturga asoslangan',
+    text: 'Darslar real attestatsiya dasturi va imtihon talablariga moslab tuzilgan — ortiqcha emas, kerakli bilim.',
+  },
+  {
+    icon: BookOpenCheck,
+    title: 'Nazariya + amaliyot',
+    text: 'Har bir mavzu darrov amaliy test va misollar bilan mustahkamlanadi — oʻqib, shu zahoti qoʻllaysiz.',
+  },
+  {
+    icon: Bot,
+    title: 'AI Mentor',
+    text: 'Xato qilganda AI yordamchi nima uchun notoʻgʻri ekanini tushuntiradi va toʻgʻri yoʻnaltiradi.',
+  },
+  {
+    icon: NotebookPen,
+    title: 'Konspekt tizimi',
+    text: 'Har darsdan eng muhim 3 ta faktni yozib borasiz — imtihon oldidan takrorlash uchun bir joyda.',
+  },
+  {
+    icon: Stethoscope,
+    title: 'Diagnostika',
+    text: 'Boshida diagnostika testi kuchli va zaif tomonlaringizni aniqlaydi — vaqtni kerakli mavzularga sarflaysiz.',
+  },
+];
+
+const STEPS = [
+  { icon: Stethoscope, title: 'Diagnostika', text: 'Bilim darajangizni aniqlab, zaif mavzularni belgilang.' },
+  { icon: PlayCircle, title: 'Darslar', text: 'Mavzularni qadam-baqadam, oʻz tezligingizda oʻrganing.' },
+  { icon: FileText, title: 'Testlar', text: 'Mavzu testlari va xatolar daftari bilan mustahkamlang.' },
+  { icon: Trophy, title: 'Imtihonga tayyor', text: 'Mock imtihonlar bilan oʻzingizni real formatda sinab koʻring.' },
+];
+
+const FREE_FEATURES = ['Diagnostika testi', 'Barcha darslar', 'Mavzu testlari', 'Konspekt tizimi'];
+const PRO_FEATURES = ['Free dagi hammasi', 'AI Mentor tushuntirishlari', 'Toʻliq mock imtihonlar', 'Batafsil tahlil'];
+
+function priceLabel(price: number): string {
+  return price > 0 ? `${price.toLocaleString('uz-UZ')} soʻm` : 'Bepul';
+}
+
+/* ───────────────────── Page ───────────────────── */
+
 export default function Landing() {
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
-  const [starting, setStarting] = useState(false);
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const [courses, setCourses] = useState<CourseMeta[]>([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
 
-  const toggleFaq = (index: number) => {
-    setActiveFaq(activeFaq === index ? null : index);
-  };
+  useEffect(() => {
+    let active = true;
+    fetchPublishedCourses().then((list) => {
+      if (!active) return;
+      setCourses(list);
+      setCoursesLoading(false);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
-  // "Bepul boshlash": guests → signup; logged-in → ensure enrollment then course.
-  const handleStart = async () => {
-    if (starting) return;
-    if (!user) {
-      navigate('/signup');
-      return;
-    }
-    setStarting(true);
-    try {
-      await enrollmentService.ensureEnrollment(user.id, ATTESTATSIYA_COURSE_ID);
-    } catch (e) {
-      console.error('Landing handleStart ensureEnrollment failed:', e);
-    } finally {
-      setStarting(false);
-    }
-    navigate('/attestatsiya');
-  };
+  // Logged-in visitors have already seen the pitch → send them to their cabinet.
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
-  const faqs = [
-    {
-      question: "Kurslar haqiqatan ham bepulmi?",
-      answer: "Ha! Bizning platformadagi barcha boshlang'ich va asosiy kurslar mutlaqo bepul taqdim etiladi. Maqsadimiz – sifatli ta'limni hamma uchun oson va qulay qilish."
-    },
-    {
-      question: "Darslarni qaysi vaqtda ko'rishim mumkin?",
-      answer: "Siz darslarni istalgan vaqtda va istalgan joyda, o'zingizga qulay tezlikda ko'rishingiz mumkin. Barcha darslar video formatda yozib olingan va platformaga yuklangan."
-    },
-    {
-      question: "Platformani tamomlagandan so'ng sertifikat beriladimi?",
-      answer: "Ha! Har bir kursni muvaffaqiyatli yakunlab, barcha amaliy topshiriq va testlardan o'tganingizdan so'ng, sizga maxsus raqamli sertifikat taqdim etiladi."
-    },
-    {
-      question: "Darslarni o'rganishda yordam beruvchi hamjamiyat bormi?",
-      answer: "Albatta. Platformada ro'yxatdan o'tganingizdan so'ng, siz boshqa o'quvchilar va mentorlar bilan muloqot qilishingiz, savollaringizga javob olishingiz uchun maxsus Telegram hamjamiyatiga kirish imkoniga ega bo'lasiz."
-    }
-  ];
-
-  const steps = [
-    {
-      num: "01",
-      title: "Ro'yxatdan o'tish",
-      description: "Bor-yo'g'i 30 soniyada bepul hisob yarating va platformaga a'zo bo'ling."
-    },
-    {
-      num: "02",
-      title: "Kursni tanlash",
-      description: "Keng katalogimizdan o'zingiz qiziqqan yo'nalishdagi sifatli kursni tanlang."
-    },
-    {
-      num: "03",
-      title: "Amaliyot va Testlar",
-      description: "Har bir mavzuni mustahkamlash uchun interaktiv testlar va topshiriqlarni bajaring."
-    },
-    {
-      num: "04",
-      title: "Sertifikat olish",
-      description: "Yakuniy imtihondan o'tib, bilimingizni tasdiqlovchi sertifikatga ega bo'ling."
-    }
-  ];
-
-  const testimonials = [
-    {
-      name: "Sardor Rahimov",
-      role: "Backend Dasturchi",
-      text: "AI kursi juda foydali bo'ldi. Mashinali o'qitish tushunchalarini o'zbek tilida bunchalik sodda va tushunarli tushuntirib berishini kutmagan edim. Katta rahmat!",
-      stars: 5,
-      avatar: "SR"
-    },
-    {
-      name: "Madina Aliyeva",
-      role: "Frontend Talabasi",
-      text: "Darslarning sifati va interaktiv testlar menga juda yoqdi. O'zlashtirish darajamni har bir darsdan so'ng tekshirib borish ajoyib imkoniyat ekan.",
-      stars: 5,
-      avatar: "MA"
-    },
-    {
-      name: "Jasur Toshpo'latov",
-      role: "UI/UX Dizayner",
-      text: "Kurslar bepul ekanligiga ishonish qiyin bo'ldi. Platforma juda qulay, dizayni zamonaviy va darslar juda ham yuqori saviyada tayyorlangan.",
-      stars: 5,
-      avatar: "JT"
-    }
-  ];
+  // Avoid flashing the marketing page to a returning user while the session resolves.
+  if (authLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <Loader2 className="w-10 h-10 animate-spin text-accent-blue" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col bg-primary-bg overflow-x-hidden">
-      {/* Hero Section */}
-      <section className="relative bg-surface py-24 md:py-32 border-b border-border-card overflow-hidden">
-        {/* Abstract Decorative Blobs */}
-        <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-accent-blue/5 rounded-full filter blur-3xl -z-10 animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-success-green/5 rounded-full filter blur-3xl -z-10 animate-pulse delay-700"></div>
+      {/* ───────── HERO ───────── */}
+      <section className="relative bg-surface py-20 md:py-28 border-b border-border-card overflow-hidden">
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-accent-blue/5 rounded-full blur-3xl -z-10" />
+        <div className="absolute bottom-0 -right-20 w-96 h-96 bg-success-green/5 rounded-full blur-3xl -z-10" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          {/* Tagline Badge */}
-          <div className="inline-flex items-center space-x-2 bg-accent-blue/10 border border-accent-blue/20 text-accent-blue rounded-full px-4 py-1.5 mb-6 text-sm font-semibold tracking-wide">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <div className="inline-flex items-center gap-2 bg-accent-blue/10 border border-accent-blue/20 text-accent-blue rounded-full px-4 py-1.5 mb-6 text-sm font-semibold">
             <Sparkles className="w-4 h-4" />
-            <span>Yangi davr ta'lim platformasi</span>
+            <span>Oʻqituvchilar uchun tayyorgarlik platformasi</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-extrabold text-text-primary mb-6 leading-tight max-w-5xl mx-auto">
-            Oʻzbek tilida sifatli <br className="hidden md:block"/> onlayn ta'lim
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-extrabold text-text-primary mb-6 leading-[1.1] tracking-tight">
+            Attestatsiyaga ishonch bilan tayyorlaning
           </h1>
-          
-          <p className="text-lg md:text-xl lg:text-2xl text-text-secondary mb-12 max-w-3xl mx-auto leading-relaxed">
-            Zamonaviy kasblarni o'zbek tilida o'rganing. Video darslar, interaktiv testlar va shaxsiy progressingizni kuzatib borish imkoniyati – barchasi bir joyda.
+
+          <p className="text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto leading-relaxed">
+            Nur Academy — informatika oʻqituvchilari uchun tuzilgan onlayn tayyorgarlik platformasi.
+            Diagnostika, darslar, testlar va mock imtihonlar — barchasi bir tizimda, oʻzbek tilida.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={handleStart}
-              disabled={starting}
-              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-accent-blue text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-opacity-95 transition-all shadow-md hover:shadow-accent-blue/20 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 duration-200 disabled:opacity-70 cursor-pointer"
-            >
-              <span>{starting ? 'Yuklanmoqda...' : 'Bepul boshlash'}</span>
-              <PlayCircle className="w-5 h-5" />
-            </button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/courses"
-              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-surface hover:bg-surface-hover text-text-primary border border-border-card px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-95 duration-200"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-7 py-3.5 rounded-xl font-bold text-base hover:bg-accent-blue/95 transition-all shadow-md shadow-accent-blue/20 hover:-translate-y-0.5 active:scale-[0.98]"
             >
-              <span>Kurslar bilan tanishish</span>
-              <ArrowRight className="w-5 h-5 text-text-secondary" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-12 bg-primary-bg -mt-8 relative z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-surface rounded-2xl border border-border-card shadow-lg p-8 md:p-12 grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
-            <div className="text-center">
-              <div className="inline-flex p-3 bg-accent-blue/10 rounded-xl mb-3">
-                <Users className="w-6 h-6 text-accent-blue" />
-              </div>
-              <div className="text-3xl md:text-4xl font-bold font-serif text-text-primary mb-1">5,000+</div>
-              <div className="text-sm md:text-base text-text-secondary font-medium">Faol O'quvchilar</div>
-            </div>
-            <div className="text-center">
-              <div className="inline-flex p-3 bg-success-green/10 rounded-xl mb-3">
-                <BookOpen className="w-6 h-6 text-success-green" />
-              </div>
-              <div className="text-3xl md:text-4xl font-bold font-serif text-text-primary mb-1">15+</div>
-              <div className="text-sm md:text-base text-text-secondary font-medium">Amaliy Kurslar</div>
-            </div>
-            <div className="text-center">
-              <div className="inline-flex p-3 bg-accent-blue/10 rounded-xl mb-3">
-                <Clock className="w-6 h-6 text-accent-blue" />
-              </div>
-              <div className="text-3xl md:text-4xl font-bold font-serif text-text-primary mb-1">120+</div>
-              <div className="text-sm md:text-base text-text-secondary font-medium">Video Darslar</div>
-            </div>
-            <div className="text-center">
-              <div className="inline-flex p-3 bg-success-green/10 rounded-xl mb-3">
-                <Award className="w-6 h-6 text-success-green" />
-              </div>
-              <div className="text-3xl md:text-4xl font-bold font-serif text-text-primary mb-1">98%</div>
-              <div className="text-sm md:text-base text-text-secondary font-medium">Sertifikat Egalari</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-24 bg-primary-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-text-primary mb-4">
-              Biz sizga nimalarni taklif qilamiz?
-            </h2>
-            <p className="text-lg text-text-secondary">
-              Platformamiz yordamida bilim olish jarayonini yanada samarali va qiziqarli qiling.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <FeatureCard 
-              icon={<PlayCircle className="w-8 h-8 text-accent-blue" />}
-              title="Sifatli video darslar"
-              description="Sohaning mutaxassislari tomonidan yozib olingan professional video darslar."
-            />
-            <FeatureCard 
-              icon={<CheckCircle2 className="w-8 h-8 text-success-green" />}
-              title="Amaliy testlar"
-              description="Mavzularni mustahkamlash uchun har bir dars oxirida beriladigan testlar."
-            />
-            <FeatureCard 
-              icon={<TrendingUp className="w-8 h-8 text-accent-blue" />}
-              title="Progress monitoring"
-              description="Shaxsiy kabinetingizda o'quv natijalari va yutuqlaringizni kuzatib boring."
-            />
-            <FeatureCard 
-              icon={<Globe className="w-8 h-8 text-accent-blue" />}
-              title="Doimiy yangilanish"
-              description="Eng so'nggi texnologiyalar bo'yicha yangi kurslar doimiy ravishda qo'shib boriladi."
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* How it Works Section */}
-      <section className="py-24 bg-surface border-y border-border-card relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-text-primary mb-4">
-              Qanday ishlaydi?
-            </h2>
-            <p className="text-lg text-text-secondary">
-              Kurslarni muvaffaqiyatli yakunlash va natijaga erishish yo'li bor-yo'g'i to'rtta oddiy qadamdan iborat.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-            {steps.map((step, idx) => (
-              <div key={idx} className="relative p-6 bg-primary-bg rounded-xl border border-border-card shadow-sm hover:shadow-md transition-shadow">
-                <div className="absolute -top-6 left-6 w-12 h-12 bg-accent-blue text-white rounded-xl flex items-center justify-center font-bold text-lg shadow-md">
-                  {step.num}
-                </div>
-                <div className="pt-6">
-                  <h3 className="text-xl font-serif font-bold text-text-primary mb-3">{step.title}</h3>
-                  <p className="text-text-secondary text-sm leading-relaxed">{step.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Courses Preview */}
-      <section className="py-24 bg-primary-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-16 gap-4">
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-serif font-bold text-text-primary mb-2">
-                Mashhur kurslarimiz
-              </h2>
-              <p className="text-text-secondary text-lg">
-                Hozir o'rganishingiz mumkin bo'lgan dasturlash va texnologiya kurslari
-              </p>
-            </div>
-            <Link to="/courses" className="inline-flex items-center space-x-2 text-accent-blue font-semibold hover:underline">
-              <span>Barcha kurslarni ko'rish</span>
+              Kurslarni koʻrish
               <ArrowRight className="w-5 h-5" />
             </Link>
+            <Link
+              to="/signup"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-surface border border-border-card text-text-primary px-7 py-3.5 rounded-xl font-bold text-base hover:bg-surface-hover transition-all hover:-translate-y-0.5 active:scale-[0.98]"
+            >
+              <PlayCircle className="w-5 h-5 text-accent-blue" />
+              Bepul boshlash
+            </Link>
           </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Attestatsiya Course Card (Featured & Active) */}
-            <div className="group bg-surface rounded-2xl border-2 border-accent-blue/30 overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col justify-between">
-              <div>
-                <div className="aspect-video bg-gradient-to-br from-accent-blue to-[#1d4ed8] flex items-center justify-center relative">
-                  <span className="absolute top-4 right-4 bg-[#10B981] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                    Tavsiya etilgan
-                  </span>
-                  <GraduationCap className="w-16 h-16 text-white/80 group-hover:scale-110 transition-transform duration-300" />
-                </div>
-                <div className="p-8">
-                  <h3 className="font-serif font-bold text-2xl text-text-primary mb-3 group-hover:text-accent-blue transition-colors">
-                    Informatika o'qituvchilari attestatsiyasi
-                  </h3>
-                  <p className="text-text-secondary mb-6 leading-relaxed">
-                    Informatika fani o'qituvchilarini toifa va attestatsiya imtihonlariga tayyorlovchi maxsus dastur. 8 ta asosiy modul, 50+ savol va mock testlar.
-                  </p>
-                </div>
-              </div>
-              <div className="px-8 pb-8">
-                <Link 
-                  to="/attestatsiya" 
-                  className="w-full text-center inline-block bg-accent-blue text-white hover:bg-opacity-95 font-semibold py-3 rounded-xl transition-colors duration-200 shadow-md"
-                >
-                  Kursni boshlash
-                </Link>
-              </div>
-            </div>
 
-            {/* AI/ML Course Card */}
-            <div className="group bg-surface rounded-2xl border border-border-card overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col justify-between">
-              <div>
-                <div className="aspect-video bg-accent-blue/10 flex items-center justify-center relative">
-                  <BookOpen className="w-16 h-16 text-accent-blue opacity-40 group-hover:scale-110 transition-transform duration-300" />
-                </div>
-                <div className="p-8">
-                  <h3 className="font-serif font-bold text-2xl text-text-primary mb-3 group-hover:text-accent-blue transition-colors">
-                    AI va Mashinali oʻqitish asoslari
-                  </h3>
-                  <p className="text-text-secondary mb-6 leading-relaxed">
-                    Sun'iy intellekt sohasi boʻyicha amaliy darslar va real loyihalar. Python, ma'lumotlar tahlili va neyron tarmoqlarini noldan boshlab oʻrganing.
-                  </p>
-                </div>
-              </div>
-              <div className="px-8 pb-8">
-                <Link 
-                  to="/courses" 
-                  className="w-full text-center inline-block bg-accent-blue/10 hover:bg-accent-blue hover:text-white text-accent-blue font-semibold py-3 rounded-xl transition-colors duration-200"
-                >
-                  Batafsil ko'rish
-                </Link>
-              </div>
-            </div>
-            
-            {/* Locked/Future Card */}
-            <div className="bg-surface/60 rounded-2xl border border-border-card overflow-hidden opacity-75 flex flex-col justify-between">
-              <div>
-                <div className="aspect-video bg-surface-muted flex items-center justify-center">
-                  <span className="text-text-secondary font-semibold px-4 py-2 bg-surface rounded-full text-sm border border-border-card">
-                    Tez kunda
-                  </span>
-                </div>
-                <div className="p-8">
-                  <h3 className="font-serif font-bold text-2xl text-text-primary mb-3">
-                    Frontend Dasturlash
-                  </h3>
-                  <p className="text-text-secondary leading-relaxed">
-                    React.js, TailwindCSS va TypeScript yordamida chiroyli hamda interaktiv veb-saytlar va ilovalar yaratishni o'rganing.
-                  </p>
-                </div>
-              </div>
-              <div className="px-8 pb-8">
-                <div className="w-full text-center bg-surface-muted text-text-secondary font-medium py-3 rounded-xl cursor-not-allowed">
-                  Kutilmoqda
-                </div>
-              </div>
-            </div>
-          </div>
+          <p className="mt-5 text-xs text-text-secondary">
+            Roʻyxatdan oʻtish bepul · Asosiy darslar va testlar hamma uchun ochiq
+          </p>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-24 bg-surface border-t border-border-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-text-primary mb-4">
-              O'quvchilarimizdan kelgan fikrlar
+      {/* ───────── METHODOLOGY ───────── */}
+      <section className="py-20 sm:py-24 bg-primary-bg">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary mb-3">
+              Nega Nur Academy?
             </h2>
-            <p className="text-lg text-text-secondary">
-              Platformamiz orqali bilim olgan va hayotini o'zgartirgan insonlar fikri.
+            <p className="text-base sm:text-lg text-text-secondary">
+              Yodlash emas — tushunish. Metodikamiz natijaga emas, real tayyorgarlikka qaratilgan.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t, idx) => (
-              <div key={idx} className="bg-primary-bg p-8 rounded-2xl border border-border-card flex flex-col justify-between hover:shadow-lg transition-shadow">
-                <div>
-                  <div className="flex items-center space-x-1 mb-4">
-                    {[...Array(t.stars)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-amber-500 fill-amber-500" />
-                    ))}
-                  </div>
-                  <p className="text-text-primary italic leading-relaxed mb-6">
-                    "{t.text}"
-                  </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {METHODOLOGY.map(({ icon: Icon, title, text }) => (
+              <div
+                key={title}
+                className="group bg-surface rounded-3xl border border-border-card p-6 hover:border-accent-blue/40 hover:shadow-lg transition-all"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                  <Icon className="w-6 h-6" />
                 </div>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-accent-blue text-white flex items-center justify-center font-bold">
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <h4 className="font-serif font-bold text-text-primary">{t.name}</h4>
-                    <p className="text-xs text-text-secondary font-medium">{t.role}</p>
-                  </div>
-                </div>
+                <h3 className="font-serif font-bold text-lg text-text-primary mb-2">{title}</h3>
+                <p className="text-sm text-text-secondary leading-relaxed">{text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-24 bg-primary-bg">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-text-primary mb-4">
-              Ko'p beriladigan savollar
+      {/* ───────── COURSES (from DB) ───────── */}
+      <section className="py-20 sm:py-24 bg-surface border-y border-border-card">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 mb-12">
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary mb-2">
+                Kurslarimiz
+              </h2>
+              <p className="text-text-secondary text-base sm:text-lg">
+                Hozir oʻrganishingiz mumkin boʻlgan dasturlar.
+              </p>
+            </div>
+            <Link to="/courses" className="inline-flex items-center gap-2 text-accent-blue font-bold hover:underline">
+              Barcha kurslar
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {coursesLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="rounded-3xl border border-border-card bg-primary-bg overflow-hidden" aria-hidden>
+                  <div className="aspect-video bg-surface-hover animate-pulse" />
+                  <div className="p-6 space-y-3">
+                    <div className="h-5 w-2/3 bg-surface-hover rounded animate-pulse" />
+                    <div className="h-3 w-full bg-surface-hover rounded animate-pulse" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : courses.length === 0 ? (
+            <div className="text-center py-12 text-text-secondary text-sm">
+              Kurslar tez orada qoʻshiladi.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {courses.map((course) => (
+                <div
+                  key={course.id}
+                  className="group flex flex-col rounded-3xl border border-border-card bg-primary-bg overflow-hidden hover:border-accent-blue/50 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-accent-blue/15 to-emerald-500/10">
+                    {course.cover_url ? (
+                      <img
+                        src={course.cover_url}
+                        alt={course.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-accent-blue/40">
+                        <GraduationCap className="w-14 h-14 group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                    )}
+                    <span
+                      className={`absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full backdrop-blur-md text-white ${
+                        course.price > 0 ? 'bg-amber-500/90' : 'bg-emerald-500/90'
+                      }`}
+                    >
+                      {priceLabel(course.price)}
+                    </span>
+                  </div>
+                  <div className="p-6 flex flex-col flex-grow">
+                    <h3 className="font-serif font-extrabold text-lg text-text-primary mb-2 leading-snug group-hover:text-accent-blue transition-colors">
+                      {course.title}
+                    </h3>
+                    <p className="text-text-secondary text-sm line-clamp-3 mb-5 flex-grow leading-relaxed">
+                      {course.description}
+                    </p>
+                    {/* Landing is only shown to guests → CTA routes to login. */}
+                    <CourseStartButton
+                      course={course}
+                      enrolled={false}
+                      className="mt-auto w-full inline-flex items-center justify-center gap-2 bg-accent-blue/10 hover:bg-accent-blue hover:text-white text-accent-blue font-bold text-sm px-4 py-2.5 rounded-xl transition-all disabled:opacity-60"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ───────── HOW IT WORKS ───────── */}
+      <section className="py-20 sm:py-24 bg-primary-bg">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary mb-3">
+              Qanday ishlaydi?
             </h2>
-            <p className="text-lg text-text-secondary">
-              Savollaringiz bormi? Quyidagi javoblar orqali kerakli ma'lumotni oling.
+            <p className="text-base sm:text-lg text-text-secondary">
+              Tayyorgarlik yoʻli — toʻrtta aniq bosqich.
             </p>
           </div>
 
-          <div className="space-y-4">
-            {faqs.map((faq, index) => {
-              const isOpen = activeFaq === index;
-              return (
-                <div 
-                  key={index}
-                  className="bg-surface rounded-xl border border-border-card overflow-hidden transition-all duration-300"
-                >
-                  <button
-                    onClick={() => toggleFaq(index)}
-                    className="w-full flex justify-between items-center p-6 text-left focus:outline-none group"
-                  >
-                    <span className="font-serif font-bold text-lg text-text-primary group-hover:text-accent-blue transition-colors">
-                      {faq.question}
-                    </span>
-                    {isOpen ? (
-                      <ChevronUp className="w-5 h-5 text-accent-blue transition-transform" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-text-secondary transition-transform" />
-                    )}
-                  </button>
-                  
-                  {isOpen && (
-                    <div className="px-6 pb-6 text-text-secondary leading-relaxed border-t border-border-card/50 pt-4 animate-fadeIn">
-                      {faq.answer}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {STEPS.map(({ icon: Icon, title, text }, idx) => (
+              <div key={title} className="relative bg-surface rounded-3xl border border-border-card p-6 pt-8">
+                <span className="absolute -top-4 left-6 w-9 h-9 rounded-xl bg-accent-blue text-white font-bold text-sm flex items-center justify-center shadow-md">
+                  {idx + 1}
+                </span>
+                <Icon className="w-7 h-7 text-accent-blue mb-3" />
+                <h3 className="font-serif font-bold text-lg text-text-primary mb-2">{title}</h3>
+                <p className="text-sm text-text-secondary leading-relaxed">{text}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-28 bg-accent-blue text-white text-center relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-accent-blue to-accent-blue/90 -z-10"></div>
-        <div className="max-w-4xl mx-auto px-4 relative z-10">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-extrabold mb-6 leading-tight">
-            Oʻz kelajagingizga bugunoq sarmoya kiriting
+      {/* ───────── PRICING ───────── */}
+      <section className="py-20 sm:py-24 bg-surface border-y border-border-card">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary mb-3">Tariflar</h2>
+            <p className="text-base sm:text-lg text-text-secondary">
+              Asosiy tayyorgarlik bepul. Chuqurroq imkoniyatlar uchun Pro.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Free */}
+            <div className="rounded-3xl border border-border-card bg-primary-bg p-7 flex flex-col">
+              <p className="text-sm font-bold uppercase tracking-wider text-text-secondary">Free</p>
+              <p className="mt-2 text-3xl font-serif font-extrabold text-text-primary">Bepul</p>
+              <ul className="mt-6 space-y-2.5 flex-grow">
+                {FREE_FEATURES.map((f) => (
+                  <li key={f} className="flex items-center gap-2.5 text-sm text-text-primary">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/signup"
+                className="mt-6 inline-flex items-center justify-center bg-surface border border-border-card text-text-primary px-5 py-3 rounded-xl text-sm font-bold hover:bg-surface-hover transition-all"
+              >
+                Bepul boshlash
+              </Link>
+            </div>
+
+            {/* Pro */}
+            <div className="rounded-3xl border-2 border-accent-blue bg-accent-blue/[0.04] p-7 flex flex-col relative">
+              <span className="absolute -top-3 right-6 bg-accent-blue text-white text-[11px] font-bold px-3 py-1 rounded-full">
+                Tavsiya etiladi
+              </span>
+              <p className="text-sm font-bold uppercase tracking-wider text-accent-blue">Pro</p>
+              <p className="mt-2 text-3xl font-serif font-extrabold text-text-primary">
+                AI Mentor + mock
+              </p>
+              <ul className="mt-6 space-y-2.5 flex-grow">
+                {PRO_FEATURES.map((f) => (
+                  <li key={f} className="flex items-center gap-2.5 text-sm text-text-primary">
+                    <Check className="w-4 h-4 text-accent-blue shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/pricing"
+                className="mt-6 inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-5 py-3 rounded-xl text-sm font-bold hover:bg-accent-blue/95 transition-all shadow-md shadow-accent-blue/20"
+              >
+                Batafsil koʻrish
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────── FINAL CTA ───────── */}
+      <section className="py-24 bg-accent-blue text-white text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-accent-blue to-accent-blue/90 -z-10" />
+        <div className="max-w-3xl mx-auto px-4 relative z-10">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-extrabold mb-5 leading-tight">
+            Bugun tayyorgarlikni boshlang
           </h2>
-          <p className="text-lg md:text-xl text-blue-100 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Platformamizda bepul roʻyxatdan oʻting, mutaxassis mentorlardan ta'lim oling va sertifikatga ega bo'ling.
+          <p className="text-lg text-blue-100 mb-10 max-w-xl mx-auto leading-relaxed">
+            Bepul roʻyxatdan oʻting, diagnostikadan oʻting va oʻz rejangiz boʻyicha oʻrganishni boshlang.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={handleStart}
-              disabled={starting}
-              className="w-full sm:w-auto inline-block bg-white text-accent-blue px-10 py-4 rounded-xl font-bold text-lg hover:bg-opacity-95 transition-all shadow-md active:scale-95 duration-200 disabled:opacity-70 cursor-pointer"
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              to="/signup"
+              className="w-full sm:w-auto inline-flex items-center justify-center bg-white text-accent-blue px-9 py-3.5 rounded-xl font-bold text-base hover:bg-white/95 transition-all shadow-md active:scale-[0.98]"
             >
-              {starting ? 'Yuklanmoqda...' : 'Bepul boshlash'}
-            </button>
+              Bepul boshlash
+            </Link>
             <Link
               to="/courses"
-              className="w-full sm:w-auto inline-block bg-transparent text-white border border-white/30 px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all active:scale-95 duration-200"
+              className="w-full sm:w-auto inline-flex items-center justify-center bg-transparent text-white border border-white/40 px-9 py-3.5 rounded-xl font-bold text-base hover:bg-white/10 transition-all active:scale-[0.98]"
             >
-              Bizning kurslar
+              Kurslarni koʻrish
             </Link>
           </div>
         </div>
       </section>
+
+      {/* ───────── FOOTER ───────── */}
+      <footer className="bg-surface border-t border-border-card">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 bg-accent-blue rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                N
+              </div>
+              <span className="font-serif font-extrabold text-xl text-text-primary">Nur Academy</span>
+            </div>
+            <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-semibold text-text-secondary">
+              <Link to="/courses" className="hover:text-text-primary transition-colors">Kurslar</Link>
+              <Link to="/pricing" className="hover:text-text-primary transition-colors">Tariflar</Link>
+              <Link to="/login" className="hover:text-text-primary transition-colors">Kirish</Link>
+              <Link to="/signup" className="hover:text-text-primary transition-colors">Roʻyxatdan oʻtish</Link>
+            </nav>
+          </div>
+          <div className="mt-8 pt-6 border-t border-border-card/60 text-center md:text-left">
+            <p className="text-xs text-text-secondary">
+              © {new Date().getFullYear()} Nur Academy. Informatika oʻqituvchilari uchun tayyorgarlik platformasi.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
-
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
-  return (
-    <div className="bg-surface p-8 rounded-xl border border-border-card hover:border-accent-blue hover:shadow-xl transition-all duration-300 cursor-pointer group flex flex-col items-start">
-      <div className="mb-6 bg-primary-bg w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm border border-border-card/50">
-        {icon}
-      </div>
-      <h3 className="text-xl font-serif font-bold text-text-primary mb-3">
-        {title}
-      </h3>
-      <p className="text-text-secondary leading-relaxed text-sm">
-        {description}
-      </p>
-    </div>
-  );
-}
-

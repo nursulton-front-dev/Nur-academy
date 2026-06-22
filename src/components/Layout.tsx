@@ -41,11 +41,29 @@ export function Layout() {
       <header className="bg-surface border-b border-border-card sticky top-0 z-40 flex-shrink-0 backdrop-blur-md bg-opacity-95 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
         <div className="w-full px-6 flex justify-between items-center h-16 gap-6">
 
-          {/* Logo Left */}
-          <Link to="/" className="flex items-center space-x-2.5 flex-shrink-0">
-            <div className="w-9 h-9 bg-accent-blue rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-accent-blue/30 transition-transform hover:scale-105">N</div>
-            <span className="font-serif font-extrabold text-xl tracking-tight text-text-primary">Nur Academy</span>
-          </Link>
+          {/* Logo + primary nav (left) */}
+          <div className="flex items-center gap-2 min-w-0">
+            <Link to="/" className="flex items-center space-x-2.5 flex-shrink-0">
+              <div className="w-9 h-9 bg-accent-blue rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-accent-blue/30 transition-transform hover:scale-105">N</div>
+              <span className="font-serif font-extrabold text-xl tracking-tight text-text-primary hidden sm:inline">Nur Academy</span>
+            </Link>
+            <nav className="flex items-center gap-0.5 ml-1 sm:ml-3">
+              <Link
+                to="/courses"
+                className="px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+              >
+                Kurslar
+              </Link>
+              {user && (
+                <Link
+                  to="/dashboard"
+                  className="px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                >
+                  Mening kurslarim
+                </Link>
+              )}
+            </nav>
+          </div>
 
           {/* Right Actions Menu */}
           <nav className="flex items-center space-x-3 text-sm">

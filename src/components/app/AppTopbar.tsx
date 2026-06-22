@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, BellOff, LogOut, Award, Zap, Flame, LogIn, Menu, Search } from 'lucide-react';
+import { Bell, BellOff, LogOut, Award, Zap, Flame, LogIn, Menu, Search, GraduationCap, Compass } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAppUser } from '../../hooks/useAppUser';
 import { useAuth } from '../../contexts/AuthContext';
@@ -160,6 +160,22 @@ export default function AppTopbar({ onMenuClick, homeHref = '/attestatsiya' }: A
                   {appUser.isAuthenticated ? (
                     <>
                       <div className="py-1.5">
+                        <Link
+                          to="/dashboard"
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center space-x-2.5 px-4 py-2 text-xs text-text-primary hover:bg-surface-hover transition-colors"
+                        >
+                          <GraduationCap className="w-4 h-4 text-text-secondary" />
+                          <span>Mening kurslarim</span>
+                        </Link>
+                        <Link
+                          to="/courses"
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center space-x-2.5 px-4 py-2 text-xs text-text-primary hover:bg-surface-hover transition-colors"
+                        >
+                          <Compass className="w-4 h-4 text-text-secondary" />
+                          <span>Kurslar katalogi</span>
+                        </Link>
                         <Link
                           to="/certificates"
                           onClick={() => setProfileOpen(false)}

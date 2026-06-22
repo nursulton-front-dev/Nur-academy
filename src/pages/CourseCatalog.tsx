@@ -1,159 +1,168 @@
-import React, { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
-import { Link } from 'react-router-dom';
-import { BookOpen, Search, GraduationCap } from 'lucide-react';
-import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
+import React, { useEffect, useMemo, useState } from 'react';
+import { BookOpen, Search, Sparkles, GraduationCap } from 'lucide-react';
+import { fetchPublishedCourses, type CourseMeta } from '../lib/courses';
+import { useAuth } from '../contexts/AuthContext';
+import { enrollmentService } from '../lib/enrollmentService';
+import CourseStartButton from '../components/CourseStartButton';
 
-interface CourseWithTranslation {
-  id: string;
-  title: string;
-  description: string | null;
-  cover_url: string | null;
+function priceLabel(price: number): string {
+  return price > 0 ? `${price.toLocaleString('uz-UZ')} soʻm` : 'Bepul';
 }
 
 export default function CourseCatalog() {
-  const [courses, setCourses] = useState<CourseWithTranslation[]>([]);
+  const { user } = useAuth();
+  const [courses, setCourses] = useState<CourseMeta[]>([]);
+  const [enrolledIds, setEnrolledIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    async function fetchCourses() {
-      try {
-        const { data: coursesData, error: coursesError } = await supabase
-          .from('courses')
-          .select('*');
-
-        if (coursesError) throw coursesError;
-
-        const { data: transData, error: transError } = await supabase
-          .from('course_translations')
-          .select('*')
-          .eq('locale', 'uz');
-
-        if (transError) throw transError;
-
-        const mergedCourses = (coursesData || []).map(course => {
-          const trans = transData?.find(t => t.course_id === course.id);
-          return {
-            id: course.id,
-            title: trans?.title || course.title,
-            description: trans?.description || course.description,
-            cover_url: course.cover_url
-          };
-        });
-
-        setCourses(mergedCourses);
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchCourses();
+    let active = true;
+    fetchPublishedCourses().then((list) => {
+      if (!active) return;
+      setCourses(list);
+      setLoading(false);
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
-  const filteredCourses = courses.filter(course =>
-    // The attestatsiya course is rendered as the featured card above — keep it out of the grid.
-    course.id !== ATTESTATSIYA_COURSE_ID &&
-    (course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (course.description && course.description.toLowerCase().includes(searchQuery.toLowerCase())))
-  );
+  // Track which courses the user is already enrolled in, to label CTAs.
+  useEffect(() => {
+    if (!user) {
+      setEnrolledIds(new Set());
+      return;
+    }
+    let active = true;
+    enrollmentService.listEnrolledCourseIds(user.id).then((ids) => {
+      if (active) setEnrolledIds(new Set(ids));
+    });
+    return () => {
+      active = false;
+    };
+  }, [user]);
 
-  // Check if search matches attestatsiya course
-  const attestatsiyaTitle = "Informatika o'qituvchilari attestatsiyasi";
-  const attestatsiyaDesc = "Informatika fani o'qituvchilarini toifa va attestatsiya imtihonlariga tayyorlovchi maxsus dastur. 8 ta asosiy modul, 50+ savol, mock imtihonlar.";
-  const showAttestatsiya = !searchQuery || 
-    attestatsiyaTitle.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    attestatsiyaDesc.toLowerCase().includes(searchQuery.toLowerCase());
+  const markEnrolled = (courseId: string) =>
+    setEnrolledIds((prev) => new Set(prev).add(courseId));
+
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return courses;
+    return courses.filter(
+      (c) =>
+        c.title.toLowerCase().includes(q) ||
+        (c.description ?? '').toLowerCase().includes(q)
+    );
+  }, [courses, searchQuery]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-serif font-bold text-text-primary">Kurslar katalogi</h1>
-          <p className="text-text-secondary mt-2">Barcha mavjud oʻquv dasturlari va kurslar roʻyxati</p>
+        <div className="space-y-2">
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider bg-accent-blue/10 text-accent-blue px-3 py-1 rounded-full">
+            <Sparkles className="w-3.5 h-3.5" />
+            Katalog
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary tracking-tight">
+            Kurslar katalogi
+          </h1>
+          <p className="text-text-secondary text-sm sm:text-base">
+            Barcha mavjud oʻquv dasturlari — oʻzingizga mosini tanlang va boshlang.
+          </p>
         </div>
-        
+
         <div className="relative max-w-sm w-full">
-          <input 
-            type="text" 
-            placeholder="Kurslarni izlash..." 
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Kurslarni izlash..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-surface border border-border-card rounded-lg focus:ring-2 focus:ring-accent-blue focus:border-accent-blue outline-none transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border-card rounded-xl text-sm focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue outline-none transition-all"
           />
-          <Search className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
         </div>
       </div>
 
-      {/* Featured: Attestatsiya course (always visible) */}
-      {showAttestatsiya && (
-        <div className="mb-10">
-          <Link 
-            to="/attestatsiya" 
-            className="block group bg-gradient-to-r from-accent-blue/5 to-success-green/5 rounded-2xl border-2 border-accent-blue/20 hover:border-accent-blue/40 overflow-hidden hover:shadow-xl transition-all duration-300"
-          >
-            <div className="flex flex-col md:flex-row items-stretch">
-              <div className="md:w-1/3 bg-gradient-to-br from-accent-blue to-[#1d4ed8] flex items-center justify-center p-10 min-h-[180px]">
-                <GraduationCap className="w-20 h-20 text-white/80 group-hover:scale-110 transition-transform duration-300" />
-              </div>
-              <div className="flex-1 p-8">
-                <span className="inline-flex items-center gap-1.5 bg-accent-blue/10 text-accent-blue px-3 py-1 rounded-full text-xs font-semibold mb-3">
-                  ⭐ Tavsiya etilgan
-                </span>
-                <h3 className="font-serif font-bold text-2xl text-text-primary mb-3 group-hover:text-accent-blue transition-colors">
-                  {attestatsiyaTitle}
-                </h3>
-                <p className="text-text-secondary mb-4 leading-relaxed">
-                  {attestatsiyaDesc}
-                </p>
-                <div className="flex items-center gap-4 text-sm text-text-secondary">
-                  <span className="flex items-center gap-1"><BookOpen className="w-4 h-4" /> 8 modul</span>
-                  <span className="flex items-center gap-1">📝 50+ savol</span>
-                  <span className="flex items-center gap-1">🎯 Mock imtihonlar</span>
-                </div>
+      {/* Loading */}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="rounded-3xl border border-border-card bg-surface overflow-hidden" aria-hidden>
+              <div className="aspect-video bg-surface-hover animate-pulse" />
+              <div className="p-6 space-y-3">
+                <div className="h-5 w-2/3 bg-surface-hover rounded animate-pulse" />
+                <div className="h-3 w-full bg-surface-hover rounded animate-pulse" />
+                <div className="h-3 w-4/5 bg-surface-hover rounded animate-pulse" />
               </div>
             </div>
-          </Link>
+          ))}
         </div>
-      )}
-
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue"></div>
-        </div>
-      ) : filteredCourses.length === 0 && !showAttestatsiya ? (
-        <div className="bg-surface border border-border-card rounded-xl p-12 text-center">
-          <BookOpen className="w-16 h-16 text-text-secondary mx-auto mb-4 opacity-50" />
-          <h2 className="text-xl font-medium text-text-primary mb-2">Kurslar topilmadi</h2>
-          <p className="text-text-secondary">Biz tez orada yangi kurslarni qoʻshamiz. Iltimos, keyinroq qayta tekshiring.</p>
+      ) : filtered.length === 0 ? (
+        /* Empty state */
+        <div className="bg-surface border border-dashed border-border-card rounded-3xl p-12 sm:p-16 text-center">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center mb-5">
+            <BookOpen className="w-8 h-8" />
+          </div>
+          <h2 className="text-xl font-serif font-extrabold text-text-primary mb-2">
+            {searchQuery ? 'Hech narsa topilmadi' : 'Hozircha kurslar yoʻq'}
+          </h2>
+          <p className="text-text-secondary text-sm max-w-md mx-auto">
+            {searchQuery
+              ? 'Boshqa kalit soʻz bilan qidirib koʻring.'
+              : 'Biz tez orada yangi kurslarni qoʻshamiz. Iltimos, keyinroq qayta tekshiring.'}
+          </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredCourses.map((course) => (
-            <Link key={course.id} to={`/courses/${course.id}`} className="group bg-surface rounded-xl border border-border-card overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col">
-              <div className="aspect-video bg-surface-muted relative">
+        /* Course grid */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((course) => (
+            <div
+              key={course.id}
+              className="group flex flex-col rounded-3xl border border-border-card bg-surface overflow-hidden hover:border-accent-blue/50 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+            >
+              {/* Cover */}
+              <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-accent-blue/15 to-emerald-500/10">
                 {course.cover_url ? (
-                  <img src={course.cover_url} alt={course.title} className="w-full h-full object-cover" />
+                  <img
+                    src={course.cover_url}
+                    alt={course.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-surface-hover text-gray-400">
-                    <BookOpen className="w-10 h-10" />
+                  <div className="w-full h-full flex items-center justify-center text-accent-blue/40">
+                    <GraduationCap className="w-14 h-14 group-hover:scale-110 transition-transform duration-300" />
                   </div>
                 )}
+                {/* Price chip */}
+                <span
+                  className={`absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full backdrop-blur-md ${
+                    course.price > 0
+                      ? 'bg-amber-500/90 text-white'
+                      : 'bg-emerald-500/90 text-white'
+                  }`}
+                >
+                  {priceLabel(course.price)}
+                </span>
               </div>
+
+              {/* Body */}
               <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-serif font-bold text-xl text-text-primary mb-2 group-hover:text-accent-blue transition-colors">
+                <h3 className="font-serif font-extrabold text-lg text-text-primary mb-2 leading-snug group-hover:text-accent-blue transition-colors">
                   {course.title}
                 </h3>
-                <p className="text-text-secondary mb-4 line-clamp-3 text-sm flex-grow">
+                <p className="text-text-secondary text-sm line-clamp-3 mb-5 flex-grow leading-relaxed">
                   {course.description}
                 </p>
-                <div className="mt-auto text-accent-blue font-medium hover:underline inline-flex items-center">
-                  Batafsil <span className="ml-1">→</span>
-                </div>
+                <CourseStartButton
+                  course={course}
+                  enrolled={enrolledIds.has(course.id)}
+                  onEnrolled={markEnrolled}
+                  className="mt-auto w-full inline-flex items-center justify-center gap-2 bg-accent-blue/10 hover:bg-accent-blue hover:text-white text-accent-blue font-bold text-sm px-4 py-2.5 rounded-xl transition-all disabled:opacity-60"
+                />
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       )}

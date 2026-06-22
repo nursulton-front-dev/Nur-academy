@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { BookOpen } from 'lucide-react';
+
+// Only allow internal relative paths as a post-login redirect (no open redirects).
+function safeNext(raw: string | null): string {
+  if (raw && raw.startsWith('/') && !raw.startsWith('//')) return raw;
+  return '/dashboard';
+}
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -9,6 +15,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const next = safeNext(params.get('next'));
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +32,7 @@ export default function Login() {
       setError(error.message);
       setLoading(false);
     } else {
-      navigate('/dashboard');
+      navigate(next);
     }
   };
 
@@ -32,7 +40,7 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${import.meta.env.APP_URL || window.location.origin}/dashboard`
+        redirectTo: `${import.meta.env.APP_URL || window.location.origin}${next}`
       }
     });
     if (error) setError(error.message);
@@ -119,7 +127,10 @@ export default function Login() {
 
         <p className="mt-8 text-center text-sm text-text-secondary">
           Akkauntingiz yoʻqmi?{' '}
-          <Link to="/signup" className="text-accent-blue font-medium hover:underline">
+          <Link
+            to={next !== '/dashboard' ? `/signup?next=${encodeURIComponent(next)}` : '/signup'}
+            className="text-accent-blue font-medium hover:underline"
+          >
             Roʻyxatdan oʻting
           </Link>
         </p>

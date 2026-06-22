@@ -139,6 +139,30 @@ export async function fetchAttestatsiyaCourse(): Promise<Module[]> {
   return fetchCourseStructure(ATTESTATSIYA_COURSE_ID);
 }
 
+export interface CourseProgress {
+  completed: number;
+  total: number;
+  percent: number;
+}
+
+/**
+ * Computes lesson completion for a course from the same source the sidebar uses
+ * (lesson completion set). Returns 0/0/0 when the course has no lessons.
+ */
+export async function fetchCourseProgress(courseId: string): Promise<CourseProgress> {
+  const modules = await fetchCourseStructure(courseId);
+  let total = 0;
+  let completed = 0;
+  for (const mod of modules) {
+    for (const lesson of mod.lessons) {
+      total += 1;
+      if (lesson.status === 'completed') completed += 1;
+    }
+  }
+  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+  return { completed, total, percent };
+}
+
 interface UseAttestatsiyaCourse {
   modules: Module[] | null;
   loading: boolean;

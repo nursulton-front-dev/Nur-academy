@@ -22,6 +22,20 @@ export interface CourseMeta {
 
 const COURSE_COLUMNS = 'id, slug, title, description, cover_url, price, is_published';
 
+/** Lists every published course, ordered for the catalog by order_index. */
+export async function fetchPublishedCourses(): Promise<CourseMeta[]> {
+  const { data, error } = await supabase
+    .from('courses')
+    .select(COURSE_COLUMNS)
+    .eq('is_published', true)
+    .order('order_index', { ascending: true });
+  if (error) {
+    console.error('fetchPublishedCourses failed:', error.message);
+    return [];
+  }
+  return (data as CourseMeta[]) ?? [];
+}
+
 /** Looks up a course by its URL slug. Returns null if not found or on error. */
 export async function fetchCourseBySlug(slug: string): Promise<CourseMeta | null> {
   const { data, error } = await supabase

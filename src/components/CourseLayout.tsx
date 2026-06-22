@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, Outlet, useLocation, useParams, Navigate } from 'react-router-dom';
 import {
   BookOpen,
@@ -19,6 +19,8 @@ import {
 import { learningEngineService } from '../lib/learningEngine';
 import { useCourse } from '../lib/attestatsiyaCourse';
 import { coursePath } from '../lib/courses';
+import { enrollmentService } from '../lib/enrollmentService';
+import { useAuth } from '../contexts/AuthContext';
 import { CourseProvider } from '../contexts/CourseContext';
 import AppTopbar from './app/AppTopbar';
 
@@ -58,6 +60,7 @@ function NavItem({ to, icon, label, active, badge, onNavigate }: NavItemProps) {
 
 export default function CourseLayout() {
   const { slug } = useParams<{ slug: string }>();
+  const { user } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedModules, setExpandedModules] = useState<{ [key: string]: boolean }>({});
@@ -66,6 +69,19 @@ export default function CourseLayout() {
   const { courseId, title, modules, loading: modulesLoading, error: modulesError, notFound } =
     useCourse(slug);
   const courseModules = modules ?? [];
+
+  // Auto-enroll: a signed-in user who opens a course they aren't enrolled in is
+  // silently enrolled (free), so the course always shows up in /dashboard.
+  // Idempotent and guarded so it runs at most once per resolved course.
+  const autoEnrolledFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (!user || !courseId) return;
+    if (autoEnrolledFor.current === courseId) return;
+    autoEnrolledFor.current = courseId;
+    enrollmentService.enroll(user.id, courseId, 'free').catch((err) => {
+      console.error('CourseLayout auto-enroll failed:', err);
+    });
+  }, [user, courseId]);
 
   const reviewCount = learningEngineService.getReviewQueue().length;
   const pathname = location.pathname;

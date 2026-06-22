@@ -18,6 +18,7 @@ import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import CourseCatalog from './pages/CourseCatalog';
 import CourseDetails from './pages/CourseDetails';
+import MyLearning from './pages/MyLearning';
 import Lesson from './pages/Lesson';
 
 // Course section components
@@ -69,8 +70,8 @@ const router = createBrowserRouter(
         {/* Public subscription page (kept separate from internal /kurs/:slug/obuna) */}
         <Route path="pricing" element={<Pricing />} />
 
-        {/* Legacy dashboard route → internal app home */}
-        <Route path="dashboard" element={<Navigate to="/kurs/attestatsiya" replace />} />
+        {/* Student dashboard: real platform cabinet ("Mening kurslarim") */}
+        <Route path="dashboard" element={<MyLearning />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="certificates" element={<Certificates />} />
