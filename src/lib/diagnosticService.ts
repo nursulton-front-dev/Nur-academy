@@ -1,5 +1,13 @@
 import { supabase } from './supabase';
 import { DOMAIN_ORDER, domainLabel } from './domains';
+import {
+  DIAGNOSTIC_BLUEPRINT,
+  loadByBlueprint,
+  isBankAnswerCorrect,
+  orderBlueprint,
+  shuffle,
+  type BankQuestionType
+} from './questionBankService';
 
 // Question shape consumed by the runner. `domain` is the raw question_bank code.
 export interface DiagnosticQuestion {
@@ -8,7 +16,12 @@ export interface DiagnosticQuestion {
   text: string;
   options: string[];
   correctIndex: number; // -1 when no option is flagged correct
+  questionType?: BankQuestionType; // 'input' renders a text field; default multiple_choice
+  correctText?: string; // expected answer for input questions
 }
+
+// A runner answer is an option index (MC) or a typed string (input).
+export type DiagnosticAnswer = number | string;
 
 export interface DomainResult {
   name: string; // domain code
@@ -43,50 +56,17 @@ const ATTEMPT_COLUMNS =
 // Total score is out of 100 → each of the 50 questions is worth 2 points.
 const POINTS_PER_QUESTION = 2;
 
-/* ───────────────────── Question loading ───────────────────── */
-
-interface RawOption {
-  text?: string;
-  is_correct?: boolean;
-}
-
-function parseOptions(raw: unknown): { options: string[]; correctIndex: number } {
-  const arr = Array.isArray(raw) ? raw : [];
-  const options: string[] = [];
-  let correctIndex = -1;
-  arr.forEach((item, i) => {
-    if (item && typeof item === 'object') {
-      const opt = item as RawOption;
-      options.push(String(opt.text ?? ''));
-      if (opt.is_correct === true) correctIndex = i;
-    } else {
-      options.push(String(item));
-    }
-  });
-  return { options, correctIndex };
-}
-
-// In-place Fisher-Yates shuffle so each user gets a different question order.
-function shuffle<T>(input: T[]): T[] {
-  const arr = [...input];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
 /* ───────────────────── Pure scoring helpers ───────────────────── */
 
 export function computeDomainResults(
-  answers: Record<string, number>,
+  answers: Record<string, DiagnosticAnswer>,
   questions: DiagnosticQuestion[]
 ): DomainResult[] {
   const byDomain = new Map<string, { correct: number; total: number }>();
   for (const q of questions) {
     const entry = byDomain.get(q.domain) ?? { correct: 0, total: 0 };
     entry.total += 1;
-    if (answers[q.id] === q.correctIndex) entry.correct += 1;
+    if (isBankAnswerCorrect(q, answers[q.id])) entry.correct += 1;
     byDomain.set(q.domain, entry);
   }
 
@@ -103,14 +83,14 @@ export function computeDomainResults(
 }
 
 export function computeTotalCorrect(
-  answers: Record<string, number>,
+  answers: Record<string, DiagnosticAnswer>,
   questions: DiagnosticQuestion[]
 ): number {
-  return questions.reduce((acc, q) => acc + (answers[q.id] === q.correctIndex ? 1 : 0), 0);
+  return questions.reduce((acc, q) => acc + (isBankAnswerCorrect(q, answers[q.id]) ? 1 : 0), 0);
 }
 
 export function computeTotalScore(
-  answers: Record<string, number>,
+  answers: Record<string, DiagnosticAnswer>,
   questions: DiagnosticQuestion[]
 ): number {
   return computeTotalCorrect(answers, questions) * POINTS_PER_QUESTION;
@@ -157,50 +137,30 @@ export function generateRecommendation(domainResults: DomainResult[]): string {
 /* ───────────────────── Supabase access ───────────────────── */
 
 export const diagnosticService = {
-  /** Per-domain question counts for the intro screen. */
+  /**
+   * Per-domain counts shown on the "Test tarkibi" intro screen.
+   * Reflects how many questions the diagnostic actually draws from each domain
+   * (the blueprint), NOT the total size of the bank per domain.
+   */
   async getDomainCounts(): Promise<DomainCount[]> {
-    const { data, error } = await supabase.from('question_bank').select('domain');
-    if (error) {
-      console.error('getDomainCounts failed:', error.message);
-      return [];
-    }
-    const counts = new Map<string, number>();
-    for (const row of (data ?? []) as { domain: string }[]) {
-      counts.set(row.domain, (counts.get(row.domain) ?? 0) + 1);
-    }
-    const orderedCodes = [
-      ...DOMAIN_ORDER.filter((c) => counts.has(c)),
-      ...Array.from(counts.keys()).filter((c) => !DOMAIN_ORDER.includes(c))
-    ];
-    return orderedCodes.map((domain) => ({ domain, count: counts.get(domain)! }));
+    return orderBlueprint(DIAGNOSTIC_BLUEPRINT).map((b) => ({ domain: b.domain, count: b.count }));
   },
 
-  /** Loads all 50 questions (uz locale), parsed and shuffled. */
+  /**
+   * Loads the 50 diagnostic questions from the bank using DIAGNOSTIC_BLUEPRINT.
+   * Each call is a fresh random sample. Returns [] on failure for graceful fallback.
+   */
   async getQuestions(): Promise<DiagnosticQuestion[]> {
-    const [{ data: bank, error: bankErr }, { data: trans, error: transErr }] = await Promise.all([
-      supabase.from('question_bank').select('id, domain'),
-      supabase.from('question_bank_translations').select('question_id, question_text, options').eq('locale', 'uz')
-    ]);
-
-    if (bankErr || transErr) {
-      console.error('getQuestions failed:', bankErr?.message || transErr?.message);
-      return [];
-    }
-
-    const transByQid = new Map<string, { question_text: string; options: unknown }>();
-    for (const t of (trans ?? []) as { question_id: string; question_text: string; options: unknown }[]) {
-      transByQid.set(t.question_id, { question_text: t.question_text, options: t.options });
-    }
-
-    const questions: DiagnosticQuestion[] = [];
-    for (const q of (bank ?? []) as { id: string; domain: string }[]) {
-      const t = transByQid.get(q.id);
-      if (!t) continue;
-      const { options, correctIndex } = parseOptions(t.options);
-      questions.push({ id: q.id, domain: q.domain, text: t.question_text, options, correctIndex });
-    }
-
-    return shuffle(questions);
+    const bankQuestions = await loadByBlueprint(DIAGNOSTIC_BLUEPRINT);
+    return shuffle(bankQuestions).map((q) => ({
+      id: q.id,
+      domain: q.domain,
+      text: q.text,
+      options: q.options,
+      correctIndex: q.correctIndex,
+      questionType: q.questionType,
+      correctText: q.correctText
+    }));
   },
 
   /** Starts a new attempt. enrollment_id stays null (enrollments has a composite PK, no id). */

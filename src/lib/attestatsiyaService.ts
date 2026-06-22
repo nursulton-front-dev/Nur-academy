@@ -1,11 +1,20 @@
-import { supabase } from './supabase';
-import { mockQuestions, mockExams, mockExamResult, mockModules, mockTopicTests } from '../data/attestatsiyaMocks';
+import { mockQuestions, mockTopicTests } from '../data/attestatsiyaMocks';
+import { domainLabel } from './domains';
+import {
+  loadByBlueprint,
+  loadQuestionsFromBank,
+  isBankAnswerCorrect,
+  DIAGNOSTIC_BLUEPRINT,
+  MODULE_DOMAIN_MAP,
+  TOPIC_TEST_COUNT,
+  type BankQuestion
+} from './questionBankService';
 
 export interface ExamQuestion {
   id: string;
   domain: string;
   subdomain?: string;
-  question_type: string;
+  question_type: string; // 'multiple_choice' | 'input'
   text: string;
   options: string[];
   order_index: number;
@@ -20,6 +29,19 @@ export interface SubmitAnswerResponse {
   status: string;
 }
 
+export interface AnswerReview {
+  question_id: string;
+  text: string;
+  options: string[];
+  user_answer: number; // option index, or -1 for input questions
+  correct_answer: number; // option index, or -1 for input questions
+  is_correct: boolean;
+  explanation: string;
+  question_type: string;
+  user_answer_text?: string; // input questions: what the user typed
+  correct_answer_text?: string; // input questions: the expected answer
+}
+
 export interface FinishExamResponse {
   attempt_id: string;
   score: number;
@@ -30,188 +52,156 @@ export interface FinishExamResponse {
       total: number;
     };
   };
-  answers_review: Array<{
-    question_id: string;
-    text: string;
-    options: string[];
-    user_answer: number;
-    correct_answer: number;
-    is_correct: boolean;
-    explanation: string;
-  }>;
+  answers_review: AnswerReview[];
 }
 
-// Key for local storage mock attempts
-const LOCAL_ATTEMPTS_KEY = 'nur_academy_mock_attempts';
+// A stored runner answer is an option index (MC) or a typed string (input).
+type ExamAnswer = number | string;
+
+// localStorage namespaces. All swept on logout by Layout.handleSignOut
+// (keys prefixed with nur_ / answers_ / result_).
+const DEF_PREFIX = 'nur_exam_def_'; // full question set incl. correct answers
+const ANSWERS_PREFIX = 'answers_'; // user answers keyed by question id
+const RESULT_PREFIX = 'result_'; // graded result for the result screen
+const ATTEMPT_MAP_KEY = 'nur_exam_attempt_map'; // attempt_id -> exam id
+
+function readJson<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function mapAttempt(attemptId: string, examId: string): void {
+  const map = readJson<Record<string, string>>(ATTEMPT_MAP_KEY, {});
+  map[attemptId] = examId;
+  localStorage.setItem(ATTEMPT_MAP_KEY, JSON.stringify(map));
+}
+
+/* ───────────────────── Fallback (bank unavailable) ───────────────────── */
+
+// Adapts the legacy hardcoded mockQuestions into the BankQuestion shape so the
+// runner still works if the question bank is unreachable.
+function mockFallback(examId: string): BankQuestion[] {
+  let pool = mockQuestions;
+  if (examId.startsWith('t')) {
+    const topic = mockTopicTests.find((t) => t.id === examId);
+    if (topic) pool = mockQuestions.filter((q) => q.moduleId === topic.moduleId);
+  } else {
+    pool = mockQuestions.slice(0, 50);
+  }
+  return pool.map((q) => ({
+    id: q.id,
+    domain: q.moduleId,
+    questionType: 'multiple_choice' as const,
+    text: q.text,
+    options: q.options,
+    correctIndex: q.correctOptionIndex,
+    correctText: q.options[q.correctOptionIndex] ?? ''
+  }));
+}
+
+/* ───────────────────── Question selection ───────────────────── */
+
+// Builds a fresh random question set for the given test/exam id.
+async function selectQuestions(examId: string): Promise<BankQuestion[]> {
+  if (examId.startsWith('t')) {
+    // Topic test → N random questions from the mapped domain.
+    const topic = mockTopicTests.find((t) => t.id === examId);
+    const domain = topic ? MODULE_DOMAIN_MAP[topic.moduleId] : undefined;
+    if (domain) {
+      const limit = topic?.questionsCount ?? TOPIC_TEST_COUNT;
+      const bank = await loadQuestionsFromBank({ domain, limit });
+      if (bank.length > 0) return bank;
+    }
+  } else {
+    // Mock exam → full 50-question diagnostic blueprint, fresh each run.
+    const bank = await loadByBlueprint(DIAGNOSTIC_BLUEPRINT);
+    if (bank.length > 0) return bank;
+  }
+  return mockFallback(examId);
+}
 
 export const attestatsiyaService = {
   /**
-   * Fetches questions for a mock exam without revealing correct answers.
-   * Starts a new exam attempt or resumes an unfinished one.
+   * Starts a fresh exam attempt: draws a new random question set from the bank
+   * (so repeated mock exams differ), stores the answer key locally for grading,
+   * and returns the questions without revealing the correct answers.
    */
-  async getExamQuestions(mockExamId: string): Promise<ExamAttemptResponse> {
-    try {
-      // 1. Attempt calling the real Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('get-exam-questions', {
-        body: { mock_exam_id: mockExamId }
-      });
+  async getExamQuestions(examId: string): Promise<ExamAttemptResponse> {
+    const questions = await selectQuestions(examId);
+    const attemptId = 'att_' + Math.random().toString(36).substring(2, 11);
 
-      if (!error && data) {
-        return data as ExamAttemptResponse;
-      }
-      console.warn("Using offline fallback for getExamQuestions:", error?.message);
-    } catch (e) {
-      console.warn("Using offline fallback for getExamQuestions:", e);
-    }
+    localStorage.setItem(DEF_PREFIX + attemptId, JSON.stringify(questions));
+    localStorage.setItem(ANSWERS_PREFIX + attemptId, JSON.stringify({}));
+    mapAttempt(attemptId, examId);
 
-    // 2. Offline Mock Simulation
-    // Check if we have an active attempt in localStorage
-    const attemptsStr = localStorage.getItem(LOCAL_ATTEMPTS_KEY);
-    const attempts = attemptsStr ? JSON.parse(attemptsStr) : {};
-    
-    let attemptId = attempts[mockExamId];
-    if (!attemptId) {
-      attemptId = 'att_' + Math.random().toString(36).substring(2, 9);
-      attempts[mockExamId] = attemptId;
-      localStorage.setItem(LOCAL_ATTEMPTS_KEY, JSON.stringify(attempts));
-    }
-
-    // Initialize mock selected answers in localStorage for this attempt if not exists
-    const answersKey = `answers_${attemptId}`;
-    if (!localStorage.getItem(answersKey)) {
-      localStorage.setItem(answersKey, JSON.stringify({}));
-    }
-
-    // Filter questions based on whether it is a topic test (t1, t2...) or exam (e1, e2...)
-    let filteredQuestions = [...mockQuestions];
-    if (mockExamId.startsWith('t')) {
-      const topicTest = mockTopicTests.find(t => t.id === mockExamId);
-      if (topicTest) {
-        filteredQuestions = mockQuestions.filter(q => q.moduleId === topicTest.moduleId);
-      }
-    } else {
-      // Mock exams are limited to 50 questions
-      filteredQuestions = mockQuestions.slice(0, 50);
-    }
-
-    // Sanitize questions by stripping out correctOptionIndex and explanation
-    const sanitizedQuestions: ExamQuestion[] = filteredQuestions.map((q: any, idx) => ({
+    const sanitized: ExamQuestion[] = questions.map((q, idx) => ({
       id: q.id,
-      domain: q.domain || q.moduleId || 'Metodika',
-      subdomain: q.subdomain || '',
-      question_type: q.question_type || 'single_choice',
+      domain: q.domain,
+      subdomain: '',
+      question_type: q.questionType,
       text: q.text,
       options: q.options,
       order_index: idx + 1
     }));
 
-    return {
-      attempt_id: attemptId,
-      questions: sanitizedQuestions
-    };
+    return { attempt_id: attemptId, questions: sanitized };
   },
 
-  /**
-   * Saves a user answer to a specific question during an active attempt.
-   */
-  async submitExamAnswer(attemptId: string, questionId: string, userAnswer: number): Promise<SubmitAnswerResponse> {
-    try {
-      // 1. Attempt calling the real Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('submit-exam-answer', {
-        body: { attempt_id: attemptId, question_id: questionId, user_answer: userAnswer }
-      });
-
-      if (!error && data) {
-        return data as SubmitAnswerResponse;
-      }
-    } catch (e) {
-      // ignore and fallback
-    }
-
-    // 2. Offline Mock Simulation
-    const answersKey = `answers_${attemptId}`;
-    const answers = JSON.parse(localStorage.getItem(answersKey) || '{}');
+  /** Saves a single answer (option index for MC, typed string for input). */
+  async submitExamAnswer(
+    attemptId: string,
+    questionId: string,
+    userAnswer: ExamAnswer
+  ): Promise<SubmitAnswerResponse> {
+    const key = ANSWERS_PREFIX + attemptId;
+    const answers = readJson<Record<string, ExamAnswer>>(key, {});
     answers[questionId] = userAnswer;
-    localStorage.setItem(answersKey, JSON.stringify(answers));
-
+    localStorage.setItem(key, JSON.stringify(answers));
     return { status: 'saved' };
   },
 
-  /**
-   * Grades the active attempt, saves the result, and returns scores/answers review.
-   */
+  /** Grades the attempt against the locally stored answer key. */
   async finishExam(attemptId: string): Promise<FinishExamResponse> {
-    try {
-      // 1. Attempt calling the real Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('finish-exam', {
-        body: { attempt_id: attemptId }
-      });
-
-      if (!error && data) {
-        // Save result locally to load in the results screen
-        localStorage.setItem(`result_${attemptId}`, JSON.stringify(data));
-        return data as FinishExamResponse;
-      }
-      console.warn("Using offline fallback for finishExam:", error?.message);
-    } catch (e) {
-      console.warn("Using offline fallback for finishExam:", e);
-    }
-
-    // 2. Offline Mock Simulation
-    const attemptsStr = localStorage.getItem(LOCAL_ATTEMPTS_KEY) || '{}';
-    const attempts = JSON.parse(attemptsStr);
-    const examId = Object.keys(attempts).find(k => attempts[k] === attemptId) || 'e1';
-
-    let filteredQuestions = [...mockQuestions];
-    if (examId.startsWith('t')) {
-      const topicTest = mockTopicTests.find(t => t.id === examId);
-      if (topicTest) {
-        filteredQuestions = mockQuestions.filter(q => q.moduleId === topicTest.moduleId);
-      }
-    } else {
-      filteredQuestions = mockQuestions.slice(0, 50);
-    }
-
-    const answersKey = `answers_${attemptId}`;
-    const userAnswers = JSON.parse(localStorage.getItem(answersKey) || '{}');
+    const questions = readJson<BankQuestion[]>(DEF_PREFIX + attemptId, []);
+    const answers = readJson<Record<string, ExamAnswer>>(ANSWERS_PREFIX + attemptId, {});
 
     let correctCount = 0;
-    const totalCount = filteredQuestions.length;
-    const domainScores: { [domain: string]: { correct: number, total: number } } = {};
-    const answersReview: any[] = [];
+    const domainScores: { [domain: string]: { correct: number; total: number } } = {};
+    const answersReview: AnswerReview[] = [];
 
-    filteredQuestions.forEach(q => {
-      const selectedIdx = userAnswers[q.id] !== undefined ? Number(userAnswers[q.id]) : -1;
-      const isCorrect = selectedIdx === q.correctOptionIndex;
+    for (const q of questions) {
+      const userAnswer = answers[q.id];
+      const isCorrect = isBankAnswerCorrect(q, userAnswer);
+      if (isCorrect) correctCount++;
 
-      if (isCorrect) {
-        correctCount++;
-      }
+      const domainKey = domainLabel(q.domain);
+      if (!domainScores[domainKey]) domainScores[domainKey] = { correct: 0, total: 0 };
+      domainScores[domainKey].total += 1;
+      if (isCorrect) domainScores[domainKey].correct += 1;
 
-      // Track domain scores
-      const domain = (q as any).domain || q.moduleId || 'Metodika';
-      if (!domainScores[domain]) {
-        domainScores[domain] = { correct: 0, total: 0 };
-      }
-      domainScores[domain].total += 1;
-      if (isCorrect) {
-        domainScores[domain].correct += 1;
-      }
-
+      const isInput = q.questionType === 'input';
       answersReview.push({
         question_id: q.id,
         text: q.text,
         options: q.options,
-        user_answer: selectedIdx,
-        correct_answer: q.correctOptionIndex,
+        user_answer: isInput ? -1 : userAnswer !== undefined ? Number(userAnswer) : -1,
+        correct_answer: q.correctIndex,
         is_correct: isCorrect,
-        explanation: q.explanation || ''
+        explanation: '',
+        question_type: q.questionType,
+        user_answer_text: isInput ? String(userAnswer ?? '') : undefined,
+        correct_answer_text: isInput ? q.correctText : undefined
       });
-    });
+    }
 
-    const finalScore = Math.round((correctCount / totalCount) * 100);
+    const total = questions.length || 1;
+    const finalScore = Math.round((correctCount / total) * 100);
 
-    const mockResponse: FinishExamResponse = {
+    const result: FinishExamResponse = {
       attempt_id: attemptId,
       score: finalScore,
       finished_at: new Date().toISOString(),
@@ -219,53 +209,15 @@ export const attestatsiyaService = {
       answers_review: answersReview
     };
 
-    // Store the finished result in localStorage so the results page can retrieve it
-    localStorage.setItem(`result_${attemptId}`, JSON.stringify(mockResponse));
+    localStorage.setItem(RESULT_PREFIX + attemptId, JSON.stringify(result));
+    // Question key is no longer needed once graded.
+    localStorage.removeItem(DEF_PREFIX + attemptId);
 
-    // Clear active attempt pointer
-    if (examId) {
-      delete attempts[examId];
-      localStorage.setItem(LOCAL_ATTEMPTS_KEY, JSON.stringify(attempts));
-    }
-
-    return mockResponse;
+    return result;
   },
 
-  /**
-   * Retrieves results for a finished attempt.
-   */
+  /** Retrieves a previously graded result, or null if none is stored. */
   getSavedResult(attemptId: string): FinishExamResponse | null {
-    const resultStr = localStorage.getItem(`result_${attemptId}`);
-    if (resultStr) {
-      return JSON.parse(resultStr) as FinishExamResponse;
-    }
-    
-    // Default fallback to mock results if none exists in localStorage
-    // map mockModules domains to mockResult
-    const domainScores: { [domain: string]: { correct: number, total: number } } = {};
-    mockModules.forEach(m => {
-      domainScores[m.title] = {
-        correct: mockExamResult.moduleScores[m.id]?.correct || 4,
-        total: mockExamResult.moduleScores[m.id]?.total || 6
-      };
-    });
-
-    const reviews = mockQuestions.map(q => ({
-      question_id: q.id,
-      text: q.text,
-      options: q.options,
-      user_answer: q.correctOptionIndex, // Simulating correct selection
-      correct_answer: q.correctOptionIndex,
-      is_correct: true,
-      explanation: q.explanation
-    }));
-
-    return {
-      attempt_id: attemptId,
-      score: 78,
-      finished_at: new Date().toISOString(),
-      domain_scores: domainScores,
-      answers_review: reviews
-    };
+    return readJson<FinishExamResponse | null>(RESULT_PREFIX + attemptId, null);
   }
 };

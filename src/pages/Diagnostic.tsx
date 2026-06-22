@@ -11,6 +11,7 @@ import { emitDiagnosticCompleted } from '../lib/events';
 import {
   diagnosticService,
   DiagnosticQuestion,
+  DiagnosticAnswer,
   DiagnosticAttempt,
   DomainCount,
   DomainResult,
@@ -20,6 +21,7 @@ import {
   generateRecommendation,
   attemptToDomainResults
 } from '../lib/diagnosticService';
+import { isBankAnswerCorrect } from '../lib/questionBankService';
 import DiagnosticRunner from '../components/DiagnosticRunner';
 import DiagnosticResultView from '../components/DiagnosticResultView';
 
@@ -106,15 +108,20 @@ export default function Diagnostic() {
     }
   };
 
-  const handleFinish = async (answers: Record<string, number>) => {
+  const handleFinish = async (answers: Record<string, DiagnosticAnswer>) => {
     const domainResults = computeDomainResults(answers, questions);
     const totalScore = computeTotalScore(answers, questions);
     const recommendation = generateRecommendation(domainResults);
 
     // Collect answered-but-wrong questions for the AI Mentor review.
+    // Input questions use -1 (AI Mentor's convention for free-text answers).
     const wrongAnswers: WrongAnswer[] = questions
-      .filter((q) => answers[q.id] !== undefined && answers[q.id] !== q.correctIndex)
-      .map((q) => ({ questionId: q.id, questionText: q.text, userAnswerIndex: answers[q.id] }));
+      .filter((q) => answers[q.id] !== undefined && answers[q.id] !== '' && !isBankAnswerCorrect(q, answers[q.id]))
+      .map((q) => ({
+        questionId: q.id,
+        questionText: q.text,
+        userAnswerIndex: q.questionType === 'input' ? -1 : Number(answers[q.id])
+      }));
 
     setResult({ totalScore, domainResults, recommendation, finishedAt: new Date().toISOString(), wrongAnswers });
     setState('result');

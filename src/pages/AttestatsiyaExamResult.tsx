@@ -48,7 +48,10 @@ export default function AttestatsiyaExamResult() {
         user_answer: mockExamResult.userAnswers[q.id],
         correct_answer: q.correctOptionIndex,
         is_correct: mockExamResult.userAnswers[q.id] === q.correctOptionIndex,
-        explanation: q.explanation
+        explanation: q.explanation,
+        question_type: 'multiple_choice' as const,
+        user_answer_text: undefined as string | undefined,
+        correct_answer_text: undefined as string | undefined
       }));
 
   // Function to get color class based on score percentage
@@ -205,7 +208,26 @@ export default function AttestatsiyaExamResult() {
                     {q.text}
                   </h4>
 
-                  {/* Options */}
+                  {/* Input answer review */}
+                  {q.question_type === 'input' ? (
+                    <div className="space-y-2 text-sm">
+                      <div className={`flex items-center gap-2 p-3 rounded-lg border ${
+                        isCorrect ? 'border-[#4CAF82] text-[#4CAF82] bg-[#4CAF82]/10' : 'border-[#E0735C] text-[#E0735C] bg-[#E0735C]/10'
+                      }`}>
+                        <span className="font-bold">Sizning javobingiz:</span>
+                        <span className="flex-grow">{q.user_answer_text || '—'}</span>
+                        {isCorrect ? <Check className="w-4 h-4 flex-shrink-0" /> : <X className="w-4 h-4 flex-shrink-0" />}
+                      </div>
+                      {!isCorrect && (
+                        <div className="flex items-center gap-2 p-3 rounded-lg border border-[#4CAF82] text-[#4CAF82] bg-[#4CAF82]/10">
+                          <span className="font-bold">To'g'ri javob:</span>
+                          <span className="flex-grow">{q.correct_answer_text}</span>
+                          <Check className="w-4 h-4 flex-shrink-0" />
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                  /* Options */
                   <div className="space-y-2">
                     {q.options.map((opt, optIdx) => {
                       const wasSelected = selectedAnswer === optIdx;
@@ -231,6 +253,7 @@ export default function AttestatsiyaExamResult() {
                       );
                     })}
                   </div>
+                  )}
 
                   {/* Explanation */}
                   {q.explanation && (

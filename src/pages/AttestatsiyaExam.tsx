@@ -84,7 +84,7 @@ export default function AttestatsiyaExam() {
   const [questions, setQuestions] = useState<ExamQuestion[]>([]);
   const [attemptId, setAttemptId] = useState<string>('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<{ [questionId: string]: number }>({});
+  const [userAnswers, setUserAnswers] = useState<{ [questionId: string]: number | string }>({});
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [visitedQuestions, setVisitedQuestions] = useState<Set<string>>(new Set<string>());
   const [timeLeft, setTimeLeft] = useState(120 * 60);
@@ -141,16 +141,27 @@ export default function AttestatsiyaExam() {
   };
 
   const currentQuestion = questions[currentQuestionIndex];
-  const selectedOption = currentQuestion ? userAnswers[currentQuestion.id] : undefined;
+  const isInputQuestion = currentQuestion?.question_type === 'input';
+  const currentAnswer = currentQuestion ? userAnswers[currentQuestion.id] : undefined;
+  const selectedOption = typeof currentAnswer === 'number' ? currentAnswer : undefined;
 
-  const handleSelectOption = async (optionIndex: number) => {
+  const persistAnswer = async (value: number | string) => {
     if (!currentQuestion || !attemptId) return;
-    setUserAnswers(prev => ({ ...prev, [currentQuestion.id]: optionIndex }));
+    setUserAnswers(prev => ({ ...prev, [currentQuestion.id]: value }));
     try {
-      await attestatsiyaService.submitExamAnswer(attemptId, currentQuestion.id, optionIndex);
+      await attestatsiyaService.submitExamAnswer(attemptId, currentQuestion.id, value);
     } catch (err) {
       console.error("Failed to submit answer", err);
     }
+  };
+
+  const handleSelectOption = (optionIndex: number) => {
+    if (isInputQuestion) return;
+    persistAnswer(optionIndex);
+  };
+
+  const handleInputAnswer = (value: string) => {
+    persistAnswer(value);
   };
 
   const handleNext = useCallback(() => {
@@ -215,7 +226,8 @@ export default function AttestatsiyaExam() {
     return () => window.removeEventListener('keydown', handler);
   }, [handleNext, handlePrev, currentQuestion, attemptId]);
 
-  const answeredCount = Object.keys(userAnswers).length;
+  const isAnswerGiven = (v: number | string | undefined) => v !== undefined && v !== '';
+  const answeredCount = questions.reduce((acc, q) => acc + (isAnswerGiven(userAnswers[q.id]) ? 1 : 0), 0);
   const flaggedCount = flaggedQuestions.size;
   const remainingCount = questions.length - answeredCount;
   const isTimeCritical = timeLeft < 600;
@@ -298,7 +310,7 @@ export default function AttestatsiyaExam() {
             <div className="grid grid-cols-8 gap-1.5 [&>button]:aspect-square">
               {questions.map((q, idx) => {
                 const isCurrent = currentQuestionIndex === idx;
-                const isAnswered = userAnswers[q.id] !== undefined;
+                const isAnswered = isAnswerGiven(userAnswers[q.id]);
                 const isFl = flaggedQuestions.has(q.id);
                 const isVis = visitedQuestions.has(q.id);
                 let btnStyle = "bg-primary-bg text-text-secondary border-border-card hover:bg-surface-hover";
@@ -341,6 +353,22 @@ export default function AttestatsiyaExam() {
 
               <h2 className="text-lg sm:text-xl font-serif font-extrabold text-text-primary leading-relaxed">{currentQuestion.text}</h2>
 
+              {isInputQuestion ? (
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold text-text-secondary uppercase tracking-widest">
+                    Javobingizni kiriting
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="text"
+                    autoComplete="off"
+                    value={typeof currentAnswer === 'string' ? currentAnswer : ''}
+                    onChange={(e) => handleInputAnswer(e.target.value)}
+                    placeholder="Javob..."
+                    className="w-full px-5 py-4 rounded-xl border border-border-card bg-surface text-text-primary text-base focus:outline-none focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20 transition-all"
+                  />
+                </div>
+              ) : (
               <div className="space-y-3">
                 {currentQuestion.options.map((option, idx) => {
                   const isSelected = selectedOption === idx;
@@ -358,6 +386,7 @@ export default function AttestatsiyaExam() {
                   );
                 })}
               </div>
+              )}
             </div>
           </div>
 

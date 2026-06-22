@@ -1,13 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Bookmark, Clock, AlertTriangle } from 'lucide-react';
-import { DiagnosticQuestion } from '../lib/diagnosticService';
+import { DiagnosticQuestion, DiagnosticAnswer } from '../lib/diagnosticService';
 import { domainLabel } from '../lib/domains';
 import TestExitGuard from './TestExitGuard';
 
 interface DiagnosticRunnerProps {
   questions: DiagnosticQuestion[];
   durationSeconds?: number;
-  onFinish: (answers: Record<string, number>) => void;
+  onFinish: (answers: Record<string, DiagnosticAnswer>) => void;
+}
+
+// An answer counts as given when it is a chosen option or a non-empty input.
+function isAnswered(value: DiagnosticAnswer | undefined): boolean {
+  return value !== undefined && value !== '';
 }
 
 function ConfirmModal({
@@ -79,7 +84,7 @@ export default function DiagnosticRunner({
   onFinish
 }: DiagnosticRunnerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [answers, setAnswers] = useState<Record<string, DiagnosticAnswer>>({});
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
   const [visited, setVisited] = useState<Set<string>>(new Set());
   const [timeLeft, setTimeLeft] = useState(durationSeconds);
@@ -122,8 +127,16 @@ export default function DiagnosticRunner({
 
   const selectOption = useCallback(
     (optionIndex: number) => {
-      if (!current) return;
+      if (!current || current.questionType === 'input') return;
       setAnswers((prev) => ({ ...prev, [current.id]: optionIndex }));
+    },
+    [current]
+  );
+
+  const setInputAnswer = useCallback(
+    (value: string) => {
+      if (!current) return;
+      setAnswers((prev) => ({ ...prev, [current.id]: value }));
     },
     [current]
   );
@@ -163,7 +176,7 @@ export default function DiagnosticRunner({
 
   if (!current) return null;
 
-  const answeredCount = Object.keys(answers).length;
+  const answeredCount = questions.reduce((acc, q) => acc + (isAnswered(answers[q.id]) ? 1 : 0), 0);
   const remainingCount = questions.length - answeredCount;
   const answeredPercent = Math.round((answeredCount / questions.length) * 100);
   const isTimeCritical = timeLeft < 600;
@@ -178,13 +191,13 @@ export default function DiagnosticRunner({
 
   const renderNavCell = (idx: number, q: DiagnosticQuestion) => {
     const isCurrent = currentIndex === idx;
-    const isAnswered = answers[q.id] !== undefined;
+    const answered = isAnswered(answers[q.id]);
     const isFlag = flagged.has(q.id);
     const isVisited = visited.has(q.id);
     let style = 'bg-primary-bg text-text-secondary border-border-card hover:bg-surface-hover';
     if (isCurrent) style = 'bg-accent-blue text-white border-accent-blue font-bold shadow-sm';
     else if (isFlag) style = 'bg-orange-500/10 text-orange-600 border-orange-500/30 font-semibold';
-    else if (isAnswered) style = 'bg-success-green/10 text-success-green border-success-green/30 font-semibold';
+    else if (answered) style = 'bg-success-green/10 text-success-green border-success-green/30 font-semibold';
     else if (isVisited) style = 'bg-purple-500/10 text-purple-600 border-purple-500/20';
     return (
       <button
@@ -311,6 +324,22 @@ export default function DiagnosticRunner({
             <h2 className="text-lg sm:text-xl font-serif font-extrabold text-text-primary leading-relaxed">
               {current.text}
             </h2>
+            {current.questionType === 'input' ? (
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold text-text-secondary uppercase tracking-widest">
+                  Javobingizni kiriting
+                </label>
+                <input
+                  type="text"
+                  inputMode="text"
+                  autoComplete="off"
+                  value={typeof selected === 'string' ? selected : ''}
+                  onChange={(e) => setInputAnswer(e.target.value)}
+                  placeholder="Javob..."
+                  className="w-full px-5 py-4 rounded-xl border border-border-card bg-surface text-text-primary text-base focus:outline-none focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20 transition-all"
+                />
+              </div>
+            ) : (
             <div className="space-y-3">
               {current.options.map((option, idx) => {
                 const isSelected = selected === idx;
@@ -334,6 +363,7 @@ export default function DiagnosticRunner({
                 );
               })}
             </div>
+            )}
             </div>
           </div>
 
