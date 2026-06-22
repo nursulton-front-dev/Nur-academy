@@ -13,6 +13,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { mockModules, Lesson, completeLessonAndUnlockNext } from '../data/attestatsiyaMocks';
+import { coursePath, ATTESTATSIYA_SLUG } from '../lib/courses';
 import { renderMarkdown } from '../lib/markdown';
 import { supabase } from '../lib/supabase';
 import { lessonStepsService, LessonStep } from '../lib/lessonStepsService';
@@ -147,7 +148,7 @@ const DEFAULT_QUIZ: QuizQuestion[] = [
 ];
 
 function LegacyLesson() {
-  const { id } = useParams<{ id: string }>();
+  const { id, slug = ATTESTATSIYA_SLUG } = useParams<{ id: string; slug: string }>();
   const navigate = useNavigate();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -182,7 +183,7 @@ function LegacyLesson() {
     if (current) {
       if (current.status === 'locked') {
         alert("Bu dars hali qulflangan! Iltimos, oldingi darslarni va kiber-kvizlarni yakunlang.");
-        navigate('/attestatsiya');
+        navigate(coursePath(slug));
         return;
       }
       setLesson(current);
@@ -195,7 +196,7 @@ function LegacyLesson() {
       setWrongPicks([]);
     } else {
       // If lesson not found, redirect to landing
-      navigate('/attestatsiya');
+      navigate(coursePath(slug));
     }
   }, [id, navigate]);
 
@@ -261,7 +262,7 @@ function LegacyLesson() {
     <div className="space-y-6 transition-colors duration-250">
       {/* Breadcrumbs / Parent Info */}
       <div className="flex items-center space-x-2 text-xs text-text-secondary pb-2 border-b border-border-card/50">
-        <Link to="/attestatsiya" className="hover:underline text-text-secondary">Attestatsiya</Link>
+        <Link to={coursePath(slug)} className="hover:underline text-text-secondary">Attestatsiya</Link>
         <span>/</span>
         <span className="truncate text-text-secondary">{parentModule?.title}</span>
       </div>
@@ -455,7 +456,7 @@ function LegacyLesson() {
       <div className="flex justify-between items-center pt-6 border-t border-border-card">
         {prevLesson ? (
           <Link
-            to={`/attestatsiya/dars/${prevLesson.id}`}
+            to={coursePath(slug, `dars/${prevLesson.id}`)}
             className="inline-flex items-center space-x-2 text-sm font-semibold text-[#3B7DD8] hover:underline"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -468,7 +469,7 @@ function LegacyLesson() {
         {nextLesson ? (
           isQuizPassed ? (
             <Link
-              to={`/attestatsiya/dars/${nextLesson.id}`}
+              to={coursePath(slug, `dars/${nextLesson.id}`)}
               className="inline-flex items-center space-x-2 bg-[#3B7DD8] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all"
             >
               <span>Keyingi dars</span>
@@ -486,7 +487,7 @@ function LegacyLesson() {
         ) : (
           isQuizPassed ? (
             <Link
-              to="/attestatsiya/testlar"
+              to={coursePath(slug, 'testlar')}
               className="inline-flex items-center space-x-2 bg-[#4CAF82] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all"
             >
               <CheckCircle2 className="w-4 h-4" />

@@ -6,6 +6,8 @@ import { xpService } from '../lib/xpService';
 import { userProgressService } from '../lib/userProgress';
 import { learningEngineService } from '../lib/learningEngine';
 import { useAttestatsiyaCourse } from '../lib/attestatsiyaCourse';
+import { useParams } from 'react-router-dom';
+import { coursePath, ATTESTATSIYA_SLUG } from '../lib/courses';
 
 import DashboardHero from '../components/dashboard/DashboardHero';
 import StatCard from '../components/dashboard/StatCard';
@@ -20,11 +22,12 @@ interface EnrolledCourse {
 }
 
 function continueHref(title: string, courseId: string): string {
-  return title.toLowerCase().includes('attestat') ? '/attestatsiya' : `/courses/${courseId}`;
+  return title.toLowerCase().includes('attestat') ? coursePath(ATTESTATSIYA_SLUG) : `/courses/${courseId}`;
 }
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { slug = ATTESTATSIYA_SLUG } = useParams<{ slug: string }>();
   const [enrollments, setEnrollments] = useState<EnrolledCourse[]>([]);
   const [streak, setStreak] = useState(0);
   const [activeToday, setActiveToday] = useState(true);
@@ -160,8 +163,8 @@ export default function Dashboard() {
   const continueUrl = primary
     ? continueHref(primary.course.title, primary.course_id)
     : moduleStats.currentLesson
-      ? `/attestatsiya/dars/${moduleStats.currentLesson.id}`
-      : '/attestatsiya';
+      ? coursePath(slug, `dars/${moduleStats.currentLesson.id}`)
+      : coursePath(slug);
 
   const weeklyProgress = moduleStats.allLessons > 0
     ? Math.round((moduleStats.completedLessons / moduleStats.allLessons) * 100)
@@ -194,7 +197,7 @@ export default function Dashboard() {
             label="ball"
             subtext="Maqsadgacha"
             accentColor="blue"
-            to="/attestatsiya/natija"
+            to={coursePath(slug, 'natija')}
           />
           <StatCard
             icon={<TrendingUp className="w-4.5 h-4.5" />}

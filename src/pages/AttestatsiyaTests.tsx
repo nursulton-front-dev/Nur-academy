@@ -1,5 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { coursePath } from '../lib/courses';
 import {
   Lock,
   CheckCircle2,
@@ -15,9 +16,10 @@ import { MetricCard, StatusBadge } from '../components/app/ui';
 
 export default function AttestatsiyaTests() {
   const navigate = useNavigate();
+  const { slug = 'attestatsiya' } = useParams<{ slug: string }>();
 
   const handleStartExam = (examId: string) => {
-    navigate(`/attestatsiya/imtihon/${examId}`);
+    navigate(coursePath(slug, `imtihon/${examId}`));
   };
 
   const total = mockTopicTests.length;

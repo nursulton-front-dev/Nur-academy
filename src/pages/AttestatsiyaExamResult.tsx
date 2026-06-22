@@ -12,10 +12,11 @@ import {
 } from 'lucide-react';
 import { mockExams, mockQuestions, mockExamResult } from '../data/attestatsiyaMocks';
 import { attestatsiyaService } from '../lib/attestatsiyaService';
+import { coursePath } from '../lib/courses';
 import { AIMentorBlock } from '../components/AIMentorBlock';
 
 export default function AttestatsiyaExamResult() {
-  const { id } = useParams<{ id: string }>();
+  const { id, slug = 'attestatsiya' } = useParams<{ id: string; slug: string }>();
   const [showReview, setShowReview] = useState(false);
 
   // Retrieve attempt_id from query params if available
@@ -135,14 +136,14 @@ export default function AttestatsiyaExamResult() {
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
         <div className="flex gap-3 w-full sm:w-auto">
           <Link
-            to="/attestatsiya"
+            to={coursePath(slug)}
             className="flex-1 sm:flex-none inline-flex items-center justify-center space-x-1.5 border border-border-card hover:bg-primary-bg text-text-primary px-5 py-3 rounded-xl text-sm font-semibold transition-colors"
           >
             <Home className="w-4 h-4" />
             <span>Asosiy sahifa</span>
           </Link>
           <Link
-            to={`/attestatsiya/imtihon/${id}`}
+            to={coursePath(slug, `imtihon/${id}`)}
             className="flex-1 sm:flex-none inline-flex items-center justify-center space-x-1.5 border border-border-card hover:bg-primary-bg text-text-primary px-5 py-3 rounded-xl text-sm font-semibold transition-colors"
           >
             <RefreshCw className="w-4 h-4" />

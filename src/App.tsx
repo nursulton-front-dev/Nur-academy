@@ -3,7 +3,8 @@ import {
   createRoutesFromElements,
   RouterProvider,
   Route,
-  Navigate
+  Navigate,
+  useLocation
 } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -19,8 +20,8 @@ import CourseCatalog from './pages/CourseCatalog';
 import CourseDetails from './pages/CourseDetails';
 import Lesson from './pages/Lesson';
 
-// Attestatsiya section components
-import AttestatsiyaLayout from './components/AttestatsiyaLayout';
+// Course section components
+import CourseLayout from './components/CourseLayout';
 import AttestatsiyaLesson from './pages/AttestatsiyaLesson';
 import AttestatsiyaTests from './pages/AttestatsiyaTests';
 import AttestatsiyaMockExams from './pages/AttestatsiyaMockExams';
@@ -36,18 +37,26 @@ import Pricing from './pages/Pricing';
 import AdminPanel from './pages/AdminPanel';
 import AttestatsiyaResults from './pages/AttestatsiyaResults';
 
+// Generic legacy redirect: /attestatsiya/<rest> → /kurs/attestatsiya/<rest>,
+// preserving the subpath + query so old links and bookmarks keep working.
+function LegacyAttestatsiyaRedirect() {
+  const { pathname, search } = useLocation();
+  const target = pathname.replace(/^\/attestatsiya/, '/kurs/attestatsiya') + search;
+  return <Navigate to={target} replace />;
+}
+
 // Data router (createBrowserRouter) is required for useBlocker — used to guard
 // against losing in-progress test answers on navigation.
 //
 // Two distinct shells:
 //  - <Layout>: PUBLIC chrome (topbar with Kirish / Roʻyxatdan oʻtish + footer).
-//    Wraps public pages, focus-mode exam screens, and a few legacy routes.
-//  - <AttestatsiyaLayout>: INTERNAL AppShell (sidebar + app topbar, never shows
-//    login/register). Wraps every internal course page, including /obuna.
+//    Wraps public pages and focus-mode exam screens.
+//  - <CourseLayout>: INTERNAL AppShell (sidebar + app topbar). Slug-driven —
+//    works for ANY course under /kurs/:slug, including /obuna.
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      {/* ───────── PUBLIC + focus-mode + legacy (public Layout) ───────── */}
+      {/* ───────── PUBLIC + focus-mode (public Layout) ───────── */}
       <Route element={<Layout />}>
         <Route path="/" element={<Landing />} />
         <Route path="login" element={<Login />} />
@@ -57,11 +66,11 @@ const router = createBrowserRouter(
         <Route path="dev-status" element={<DevStatus />} />
         <Route path="project-status" element={<DevStatus />} />
 
-        {/* Public subscription page (kept separate from internal /attestatsiya/obuna) */}
+        {/* Public subscription page (kept separate from internal /kurs/:slug/obuna) */}
         <Route path="pricing" element={<Pricing />} />
 
         {/* Legacy dashboard route → internal app home */}
-        <Route path="dashboard" element={<Navigate to="/attestatsiya" replace />} />
+        <Route path="dashboard" element={<Navigate to="/kurs/attestatsiya" replace />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="certificates" element={<Certificates />} />
@@ -70,13 +79,13 @@ const router = createBrowserRouter(
         </Route>
 
         {/* Focus-mode course screens — single-screen, no sidebar */}
-        <Route path="attestatsiya/onboarding" element={<AttestatsiyaOnboarding />} />
-        <Route path="attestatsiya/diagnostika" element={<Diagnostic />} />
-        <Route path="attestatsiya/imtihon/:id" element={<AttestatsiyaExam />} />
+        <Route path="kurs/:slug/onboarding" element={<AttestatsiyaOnboarding />} />
+        <Route path="kurs/:slug/diagnostika" element={<Diagnostic />} />
+        <Route path="kurs/:slug/imtihon/:id" element={<AttestatsiyaExam />} />
       </Route>
 
-      {/* ───────── INTERNAL APP SHELL (sidebar + app topbar) ───────── */}
-      <Route path="attestatsiya" element={<AttestatsiyaLayout />}>
+      {/* ───────── INTERNAL APP SHELL (slug-driven sidebar + app topbar) ───────── */}
+      <Route path="kurs/:slug" element={<CourseLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="natija" element={<AttestatsiyaResults />} />
         <Route path="dars/:id" element={<AttestatsiyaLesson />} />
@@ -87,6 +96,10 @@ const router = createBrowserRouter(
         <Route path="xatolar" element={<ErrorNotebook />} />
         <Route path="obuna" element={<Pricing />} />
       </Route>
+
+      {/* ───────── LEGACY redirects: /attestatsiya/* → /kurs/attestatsiya/* ───────── */}
+      <Route path="attestatsiya" element={<Navigate to="/kurs/attestatsiya" replace />} />
+      <Route path="attestatsiya/*" element={<LegacyAttestatsiyaRedirect />} />
     </Route>
   )
 );

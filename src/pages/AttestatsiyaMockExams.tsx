@@ -1,5 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { coursePath } from '../lib/courses';
 import {
   Lock,
   Award,
@@ -25,9 +26,10 @@ function difficultyFor(index: number): { label: string; variant: 'open' | 'mid' 
 
 export default function AttestatsiyaMockExams() {
   const navigate = useNavigate();
+  const { slug = 'attestatsiya' } = useParams<{ slug: string }>();
 
   const handleStartExam = (examId: string) => {
-    navigate(`/attestatsiya/imtihon/${examId}`);
+    navigate(coursePath(slug, `imtihon/${examId}`));
   };
 
   const available = mockExams.filter((e) => e.status !== 'locked').length;
@@ -117,7 +119,7 @@ export default function AttestatsiyaMockExams() {
                   ) : isCompleted ? (
                     <div className="flex gap-2 w-full sm:w-auto">
                       <button
-                        onClick={() => navigate(`/attestatsiya/imtihon/${exam.id}/natija`)}
+                        onClick={() => navigate(coursePath(slug, `imtihon/${exam.id}/natija`))}
                         className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 bg-surface border border-border-card hover:bg-surface-hover text-text-primary px-4 py-2.5 rounded-xl text-xs font-semibold transition-colors"
                       >
                         <FileCheck2 className="w-3.5 h-3.5" />

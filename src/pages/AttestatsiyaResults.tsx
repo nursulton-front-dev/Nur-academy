@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
   diagnosticService,
@@ -10,7 +10,7 @@ import { enrollmentService } from '../lib/enrollmentService';
 import { xpService } from '../lib/xpService';
 import { learningEngineService } from '../lib/learningEngine';
 import { domainLabel } from '../lib/domains';
-import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
+import { ATTESTATSIYA_COURSE_ID, ATTESTATSIYA_SLUG, coursePath } from '../lib/courses';
 import { mockModules, mockTopicTests } from '../data/attestatsiyaMocks';
 import {
   Target, AlertTriangle, Flame, BookOpen, ArrowRight, Brain,
@@ -56,6 +56,7 @@ function ScoreRing({ score, size = 140, stroke = 9 }: { score: number; size?: nu
 
 export default function AttestatsiyaResults() {
   const { user, loading: authLoading } = useAuth();
+  const { slug = ATTESTATSIYA_SLUG } = useParams<{ slug: string }>();
   const [status, setStatus] = useState<ResultsStatus>('loading');
   const [demoMode, setDemoMode] = useState(false);
   const [score, setScore] = useState<number | null>(null);
@@ -226,10 +227,10 @@ export default function AttestatsiyaResults() {
               </p>
             </div>
             <div className="flex flex-wrap gap-2 shrink-0">
-              <Link to="/attestatsiya/diagnostika" className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-accent-blue/95 transition-all">
+              <Link to={coursePath(slug, 'diagnostika')} className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-accent-blue/95 transition-all">
                 Diagnostikani boshlash <ArrowRight className="w-3.5 h-3.5" />
               </Link>
-              <Link to="/attestatsiya/testlar" className="inline-flex items-center gap-1.5 bg-surface border border-border-card text-text-primary px-4 py-2 rounded-xl text-xs font-bold hover:bg-surface-hover transition-all">
+              <Link to={coursePath(slug, 'testlar')} className="inline-flex items-center gap-1.5 bg-surface border border-border-card text-text-primary px-4 py-2 rounded-xl text-xs font-bold hover:bg-surface-hover transition-all">
                 Mavzu testlari
               </Link>
             </div>
@@ -261,7 +262,7 @@ export default function AttestatsiyaResults() {
           ) : (
             <div className="py-6 space-y-2">
               <p className="text-xs text-text-secondary">Diagnostika topshirilmagan</p>
-              <Link to="/attestatsiya/diagnostika" className="text-xs font-bold text-accent-blue hover:underline">
+              <Link to={coursePath(slug, 'diagnostika')} className="text-xs font-bold text-accent-blue hover:underline">
                 Topshirish →
               </Link>
             </div>
@@ -332,7 +333,7 @@ export default function AttestatsiyaResults() {
                   {weakDomains.map((d) => (
                     <Link
                       key={d.name}
-                      to="/attestatsiya/testlar"
+                      to={coursePath(slug, 'testlar')}
                       className="inline-flex items-center gap-1.5 text-xs bg-error-red/8 text-error-red border border-error-red/15 px-3 py-1.5 rounded-lg font-medium hover:bg-error-red/12 transition-colors"
                     >
                       {domainLabel(d.name)} · {d.percentage}%
@@ -388,13 +389,13 @@ export default function AttestatsiyaResults() {
 
       {/* Quick actions */}
       <div className="flex flex-wrap gap-3">
-        <Link to="/attestatsiya/imtihon" className="inline-flex items-center gap-2 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-accent-blue/95 shadow-md transition-all">
+        <Link to={coursePath(slug, 'imtihon')} className="inline-flex items-center gap-2 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-accent-blue/95 shadow-md transition-all">
           <Target className="w-4 h-4" /> Mock imtihon
         </Link>
-        <Link to="/attestatsiya/xatolar" className="inline-flex items-center gap-2 bg-surface border border-border-card px-5 py-2.5 rounded-xl text-xs font-bold text-text-primary hover:bg-surface-hover transition-all">
+        <Link to={coursePath(slug, 'xatolar')} className="inline-flex items-center gap-2 bg-surface border border-border-card px-5 py-2.5 rounded-xl text-xs font-bold text-text-primary hover:bg-surface-hover transition-all">
           <Brain className="w-4 h-4" /> Xatolar daftari {reviewCount > 0 && `(${reviewCount})`}
         </Link>
-        <Link to="/attestatsiya" className="inline-flex items-center gap-2 bg-surface border border-border-card px-5 py-2.5 rounded-xl text-xs font-bold text-text-primary hover:bg-surface-hover transition-all">
+        <Link to={coursePath(slug)} className="inline-flex items-center gap-2 bg-surface border border-border-card px-5 py-2.5 rounded-xl text-xs font-bold text-text-primary hover:bg-surface-hover transition-all">
           <ArrowRight className="w-4 h-4 rotate-180" /> Bosh sahifa
         </Link>
       </div>

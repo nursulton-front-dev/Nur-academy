@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from './supabase';
-import { ATTESTATSIYA_COURSE_ID } from './courses';
+import { ATTESTATSIYA_COURSE_ID, fetchCourseBySlug, type CourseMeta } from './courses';
 import { getCompletedLessonIds } from './lessonStepsService';
 import type { Module, Lesson } from '../data/attestatsiyaMocks';
 
@@ -55,13 +55,14 @@ function routeId(content: string | null, dbId: string): string {
   return dbId;
 }
 
-export async function fetchAttestatsiyaCourse(): Promise<Module[]> {
+/** Loads modules + lessons (uz titles) for ANY course id, shaped as Module[]. */
+export async function fetchCourseStructure(courseId: string): Promise<Module[]> {
   const { data, error } = await supabase
     .from('modules')
     .select(
       'id, order_index, module_translations(locale, title), lessons(id, order_index, content, video_url, lesson_translations(locale, title))'
     )
-    .eq('course_id', ATTESTATSIYA_COURSE_ID)
+    .eq('course_id', courseId)
     .order('order_index', { ascending: true });
 
   if (error) throw error;
@@ -133,6 +134,11 @@ export async function fetchAttestatsiyaCourse(): Promise<Module[]> {
   });
 }
 
+/** Back-compat wrapper: the attestatsiya course structure by its fixed id. */
+export async function fetchAttestatsiyaCourse(): Promise<Module[]> {
+  return fetchCourseStructure(ATTESTATSIYA_COURSE_ID);
+}
+
 interface UseAttestatsiyaCourse {
   modules: Module[] | null;
   loading: boolean;
@@ -149,8 +155,6 @@ export function useAttestatsiyaCourse(): UseAttestatsiyaCourse {
     setModules(null);
     try {
       const data = await fetchAttestatsiyaCourse();
-      // Temporary migration check: confirm the structure is coming from the DB.
-      console.log('[attestatsiya] modules loaded from Supabase:', data.length);
       setModules(data);
     } catch (err) {
       console.error('[attestatsiya] course load failed:', err);
@@ -163,4 +167,70 @@ export function useAttestatsiyaCourse(): UseAttestatsiyaCourse {
   }, [load]);
 
   return { modules, loading: modules === null && !error, error, reload: load };
+}
+
+interface UseCourse {
+  course: CourseMeta | null;
+  courseId: string | null;
+  title: string;
+  modules: Module[] | null;
+  loading: boolean;
+  error: string | null;
+  notFound: boolean; // slug resolved to no published course
+  reload: () => void;
+}
+
+/**
+ * Loads a course (and its module/lesson structure) by URL slug. This is the
+ * slug-driven replacement for useAttestatsiyaCourse — the layout/hook no longer
+ * hardcode the course id.
+ */
+export function useCourse(slug: string | undefined): UseCourse {
+  const [course, setCourse] = useState<CourseMeta | null>(null);
+  const [modules, setModules] = useState<Module[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
+
+  const load = useCallback(async () => {
+    setError(null);
+    setNotFound(false);
+    setCourse(null);
+    setModules(null);
+
+    if (!slug) {
+      setNotFound(true);
+      return;
+    }
+
+    try {
+      const meta = await fetchCourseBySlug(slug);
+      if (!meta) {
+        setNotFound(true);
+        return;
+      }
+      setCourse(meta);
+      const data = await fetchCourseStructure(meta.id);
+      setModules(data);
+    } catch (err) {
+      console.error('[course] load failed:', err);
+      setError('Kurs maʼlumotlarini yuklab boʻlmadi');
+    }
+  }, [slug]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const loading = !notFound && !error && (course === null || modules === null);
+
+  return {
+    course,
+    courseId: course?.id ?? null,
+    title: course?.title ?? '',
+    modules,
+    loading,
+    error,
+    notFound,
+    reload: load,
+  };
 }

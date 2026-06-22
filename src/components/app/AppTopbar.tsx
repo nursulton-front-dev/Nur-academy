@@ -19,6 +19,8 @@ function clearLocalUserData() {
 
 interface AppTopbarProps {
   onMenuClick?: () => void;
+  /** Where the logo links to. Defaults to the legacy attestatsiya home. */
+  homeHref?: string;
 }
 
 /**
@@ -27,7 +29,7 @@ interface AppTopbarProps {
  * that is reserved for the public Layout. When no real session exists it falls
  * back to a demo identity so the app stays previewable.
  */
-export default function AppTopbar({ onMenuClick }: AppTopbarProps) {
+export default function AppTopbar({ onMenuClick, homeHref = '/attestatsiya' }: AppTopbarProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const appUser = useAppUser();
@@ -54,7 +56,7 @@ export default function AppTopbar({ onMenuClick }: AppTopbarProps) {
               <Menu className="w-5 h-5" />
             </button>
           )}
-          <Link to="/attestatsiya" className="flex items-center space-x-2.5 flex-shrink-0">
+          <Link to={homeHref} className="flex items-center space-x-2.5 flex-shrink-0">
             <div className="w-9 h-9 bg-accent-blue rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-accent-blue/30 transition-transform hover:scale-105">N</div>
             <span className="font-serif font-extrabold text-xl tracking-tight text-text-primary hidden sm:inline">Nur Academy</span>
           </Link>

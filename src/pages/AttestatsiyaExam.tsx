@@ -9,6 +9,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { mockExams, completeTestOrExam } from '../data/attestatsiyaMocks';
+import { coursePath } from '../lib/courses';
 import { attestatsiyaService, ExamQuestion } from '../lib/attestatsiyaService';
 import { useAuth } from '../contexts/AuthContext';
 import { xpService } from '../lib/xpService';
@@ -75,7 +76,7 @@ function CustomExamModal({
 /* ───────────────────── Main Component ───────────────────── */
 
 export default function AttestatsiyaExam() {
-  const { id } = useParams<{ id: string }>();
+  const { id, slug = 'attestatsiya' } = useParams<{ id: string; slug: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -203,7 +204,7 @@ export default function AttestatsiyaExam() {
           await xpService.recordTestCompletion(user.id, { correctCount, isMock, scorePercent: res.score });
         }
       }
-      navigate(`/attestatsiya/imtihon/${id}/natija?attempt_id=${attemptId}`);
+      navigate(coursePath(slug, `imtihon/${id}/natija?attempt_id=${attemptId}`));
     } catch (err) {
       console.error("Failed to finish exam", err);
       setIsLoading(false);

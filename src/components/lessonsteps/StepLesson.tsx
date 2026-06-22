@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams, useParams, Link } from 'react-router-dom';
 import { Check, Lock, ChevronLeft } from 'lucide-react';
+import { coursePath, ATTESTATSIYA_SLUG } from '../../lib/courses';
 import { LessonStep, StepType, lessonStepsService } from '../../lib/lessonStepsService';
 import { xpService } from '../../lib/xpService';
 import { useAuth } from '../../contexts/AuthContext';
@@ -45,6 +46,7 @@ export default function StepLesson({
 }: StepLessonProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { slug = ATTESTATSIYA_SLUG } = useParams<{ slug: string }>();
   const [params, setParams] = useSearchParams();
 
   const allStepIds = useMemo(() => steps.map((s) => s.id), [steps]);
@@ -97,7 +99,7 @@ export default function StepLesson({
       navigateToStep(currentIndex + 1);
     } else if (didComplete) {
       if (nextLessonHref) navigate(nextLessonHref);
-      else navigate('/attestatsiya');
+      else navigate(coursePath(slug));
     }
   };
 
@@ -252,7 +254,7 @@ export default function StepLesson({
         </span>
 
         <Link
-          to="/attestatsiya"
+          to={coursePath(slug)}
           className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-bold text-text-secondary hover:text-text-primary hover:bg-surface-hover px-4 py-3 rounded-xl transition-colors border border-transparent hover:border-border-card/30"
         >
           Kursga qaytish

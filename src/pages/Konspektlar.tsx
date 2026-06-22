@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   NotebookPen,
   Pencil,
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchAttestatsiyaCourse } from '../lib/attestatsiyaCourse';
+import { coursePath } from '../lib/courses';
 import { lessonNotesService, LessonNotes, StoredLessonNotes } from '../lib/lessonNotesService';
 import type { Module } from '../data/attestatsiyaMocks';
 import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
@@ -47,6 +48,7 @@ interface ModuleGroup {
 export default function Konspektlar() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { slug = 'attestatsiya' } = useParams<{ slug: string }>();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -189,7 +191,7 @@ export default function Konspektlar() {
 
             <div className="relative z-10 mt-6 flex flex-wrap items-center justify-center gap-3">
               <Link
-                to="/attestatsiya"
+                to={coursePath(slug)}
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold text-white shadow-md transition-all active:scale-[0.98]"
                 style={{ backgroundColor: AMBER }}
               >
@@ -344,7 +346,7 @@ export default function Konspektlar() {
                             Tahrirlash
                           </button>
                           <Link
-                            to={`/attestatsiya/dars/${lessonId}`}
+                            to={coursePath(slug, `dars/${lessonId}`)}
                             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold border border-border-card text-text-primary hover:bg-surface-hover transition-all ml-auto"
                           >
                             Darsga oʻtish
