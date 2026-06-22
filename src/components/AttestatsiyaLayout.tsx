@@ -12,6 +12,7 @@ import {
   Award,
   Stethoscope,
   BookMarked,
+  NotebookPen,
   CreditCard,
   BarChart3,
 } from 'lucide-react';
@@ -264,6 +265,13 @@ export default function AttestatsiyaLayout() {
           label="Xatolar daftari"
           active={isActive('/attestatsiya/xatolar')}
           badge={reviewCount}
+          onNavigate={closeMobile}
+        />
+        <NavItem
+          to="/attestatsiya/konspektlar"
+          icon={<NotebookPen className="w-4 h-4 text-[#F59E0B]" />}
+          label="Mening konspektlarim"
+          active={isActive('/attestatsiya/konspektlar')}
           onNavigate={closeMobile}
         />
         <NavItem

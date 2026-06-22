@@ -6,10 +6,16 @@ export interface LessonNotes {
   fact_3: string;
 }
 
+export interface StoredLessonNotes extends LessonNotes {
+  updated_at?: string;
+}
+
+const GUEST_PREFIX = 'nur_lesson_notes_';
+
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // Guest notes live in localStorage under the nur_ prefix (swept on logout).
-const guestKey = (lessonId: string) => `nur_lesson_notes_${lessonId}`;
+const guestKey = (lessonId: string) => `${GUEST_PREFIX}${lessonId}`;
 
 const empty = (): LessonNotes => ({ fact_1: '', fact_2: '', fact_3: '' });
 
@@ -44,6 +50,55 @@ export const lessonNotesService = {
       }
     }
     return readGuest(lessonId);
+  },
+
+  /**
+   * Loads every saved note for the user, keyed by lesson id, for the
+   * "Mening konspektlarim" review page. Auth → DB (RLS scopes to the user);
+   * guests → all localStorage note entries.
+   */
+  async getAllNotes(userId: string | null): Promise<Record<string, StoredLessonNotes>> {
+    if (userId) {
+      try {
+        const { data, error } = await supabase
+          .from('lesson_notes')
+          .select('lesson_id, fact_1, fact_2, fact_3, updated_at')
+          .eq('user_id', userId);
+        if (error) throw error;
+        const map: Record<string, StoredLessonNotes> = {};
+        for (const row of data ?? []) {
+          map[row.lesson_id] = {
+            fact_1: row.fact_1 ?? '',
+            fact_2: row.fact_2 ?? '',
+            fact_3: row.fact_3 ?? '',
+            updated_at: row.updated_at ?? undefined,
+          };
+        }
+        return map;
+      } catch (err) {
+        console.error('lessonNotesService.getAllNotes failed:', err);
+        return {};
+      }
+    }
+
+    // Guest: collect every locally stored note.
+    const map: Record<string, StoredLessonNotes> = {};
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith(GUEST_PREFIX)) continue;
+        const lessonId = key.slice(GUEST_PREFIX.length);
+        const parsed = JSON.parse(localStorage.getItem(key) || '{}') as Partial<LessonNotes>;
+        map[lessonId] = {
+          fact_1: parsed.fact_1 ?? '',
+          fact_2: parsed.fact_2 ?? '',
+          fact_3: parsed.fact_3 ?? '',
+        };
+      }
+    } catch (err) {
+      console.error('lessonNotesService.getAllNotes (guest) failed:', err);
+    }
+    return map;
   },
 
   /** Upserts notes (one row per user+lesson). Guests persist to localStorage. */

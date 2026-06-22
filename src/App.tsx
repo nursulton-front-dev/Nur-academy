@@ -31,6 +31,7 @@ import Diagnostic from './pages/Diagnostic';
 import AttestatsiyaOnboarding from './pages/AttestatsiyaOnboarding';
 import Certificates from './pages/Certificates';
 import ErrorNotebook from './pages/ErrorNotebook';
+import Konspektlar from './pages/Konspektlar';
 import Pricing from './pages/Pricing';
 import AdminPanel from './pages/AdminPanel';
 import AttestatsiyaResults from './pages/AttestatsiyaResults';
@@ -80,6 +81,7 @@ const router = createBrowserRouter(
         <Route path="natija" element={<AttestatsiyaResults />} />
         <Route path="dars/:id" element={<AttestatsiyaLesson />} />
         <Route path="testlar" element={<AttestatsiyaTests />} />
+        <Route path="konspektlar" element={<Konspektlar />} />
         <Route path="imtihon" element={<AttestatsiyaMockExams />} />
         <Route path="imtihon/:id/natija" element={<AttestatsiyaExamResult />} />
         <Route path="xatolar" element={<ErrorNotebook />} />
