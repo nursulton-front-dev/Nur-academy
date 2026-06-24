@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase';
 import {
   Users, BookOpen, HelpCircle, BarChart3, AlertTriangle,
   Plus, TrendingUp, Award, ClipboardList, CheckSquare, Star,
-  ShieldCheck
+  ShieldCheck, Crown, Trash2, Loader2, X
 } from 'lucide-react';
 
 type AdminTab = 'overview' | 'questions' | 'modules' | 'users' | 'analytics';
@@ -101,9 +101,72 @@ export default function AdminPanel() {
     ],
   });
 
+  // User-management action state
+  const [actionUserId, setActionUserId] = useState<string | null>(null); // row with an in-flight tier change
+  const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null); // user pending delete confirmation
+  const [deleting, setDeleting] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
   useEffect(() => {
     if (!loading && isAdmin) loadAdminData();
   }, [isAdmin, loading]);
+
+  // Give / remove Pro. Updates the authoritative profiles.subscription_tier
+  // (the gate the whole app reads) AND keeps enrollments.tier in sync so the
+  // MyLearning per-course badge matches. DB RLS also enforces admin-only.
+  async function handleSetTier(target: UserRow, tier: 'free' | 'pro') {
+    if (target.id === user?.id) return; // never touch own account here
+    setActionUserId(target.id);
+    setActionError(null);
+
+    const { error: pErr } = await supabase
+      .from('profiles')
+      .update({ subscription_tier: tier })
+      .eq('id', target.id);
+
+    if (pErr) {
+      setActionError(`Pro o'zgartirishda xato: ${pErr.message}`);
+      setActionUserId(null);
+      return;
+    }
+
+    // Sync every enrollment the user has (badge consistency). Non-fatal.
+    await supabase.from('enrollments').update({ tier }).eq('user_id', target.id);
+
+    setUsers(prev => prev.map(u => u.id === target.id ? { ...u, subscription_tier: tier } : u));
+    setActionUserId(null);
+  }
+
+  // Delete a participant: remove all their data, then their profile.
+  // Order respects FKs (children first). The auth.users record itself needs
+  // the service role and is removed via the Supabase Dashboard.
+  async function handleDeleteUser(target: UserRow) {
+    if (target.id === user?.id) return; // self-protection
+    setDeleting(true);
+    setActionError(null);
+
+    const childTables = ['lesson_notes', 'progress', 'diagnostic_attempts', 'exam_attempts', 'xp_events', 'enrollments'];
+    for (const t of childTables) {
+      const { error } = await supabase.from(t).delete().eq('user_id', target.id);
+      if (error) {
+        setActionError(`${t} tozalashda xato: ${error.message}`);
+        setDeleting(false);
+        return;
+      }
+    }
+
+    const { error: pErr } = await supabase.from('profiles').delete().eq('id', target.id);
+    if (pErr) {
+      setActionError(`Profilni o'chirishda xato: ${pErr.message}`);
+      setDeleting(false);
+      return;
+    }
+
+    setUsers(prev => prev.filter(u => u.id !== target.id));
+    setDeleting(false);
+    setDeleteTarget(null);
+    loadAdminData();
+  }
 
   async function loadAdminData() {
     const [
@@ -167,9 +230,9 @@ export default function AdminPanel() {
       .not('finished_at', 'is', null)
       .order('finished_at', { ascending: false })
       .limit(20);
-    if (examRows) setRecentExams(examRows as ExamAttemptRow[]);
+    if (examRows) setRecentExams(examRows as unknown as ExamAttemptRow[]);
 
-    if (recentDiagData) setRecentDiagnostics(recentDiagData as DiagnosticRow[]);
+    if (recentDiagData) setRecentDiagnostics(recentDiagData as unknown as DiagnosticRow[]);
 
     // Tier breakdown
     if (tierData) {
@@ -428,45 +491,136 @@ export default function AdminPanel() {
 
       {/* ─── USERS ─── */}
       {activeTab === 'users' && (
-        <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border-card bg-primary-bg">
-                  <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Ism</th>
-                  <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Obuna</th>
-                  <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">XP</th>
-                  <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Huquq</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map(u => (
-                  <tr key={u.id} className="border-b border-border-card/40 hover:bg-surface-hover">
-                    <td className="py-3 px-4">
-                      <div className="font-medium text-text-primary">{u.full_name || 'Noma\'lum'}</div>
-                      <div className="text-[10px] text-text-secondary font-mono">{u.id.slice(0, 12)}...</div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
-                        u.subscription_tier === 'pro' ? 'bg-purple-500/10 text-purple-500' : 'bg-primary-bg text-text-secondary'
-                      }`}>{u.subscription_tier || 'free'}</span>
-                    </td>
-                    <td className="py-3 px-4 text-text-secondary font-mono text-xs">{u.xp ?? 0}</td>
-                    <td className="py-3 px-4">
-                      {u.is_admin ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-accent-blue/10 text-accent-blue">
-                          <ShieldCheck className="w-3 h-3" /> Admin
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-primary-bg text-text-secondary">
-                          {u.role || 'user'}
-                        </span>
-                      )}
-                    </td>
+        <div className="space-y-4">
+          {actionError && (
+            <div className="flex items-start gap-2 bg-error-red/10 border border-error-red/30 text-error-red rounded-xl px-4 py-3 text-sm">
+              <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>{actionError}</span>
+            </div>
+          )}
+          <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border-card bg-primary-bg">
+                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Ism</th>
+                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Obuna</th>
+                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">XP</th>
+                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Huquq</th>
+                    <th className="text-right py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Amallar</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {users.map(u => {
+                    const isSelf = u.id === user?.id;
+                    const isPro = u.subscription_tier === 'pro';
+                    const busy = actionUserId === u.id;
+                    return (
+                      <tr key={u.id} className="border-b border-border-card/40 hover:bg-surface-hover">
+                        <td className="py-3 px-4">
+                          <div className="font-medium text-text-primary">{u.full_name || 'Noma\'lum'}</div>
+                          <div className="text-[10px] text-text-secondary font-mono">{u.id.slice(0, 12)}...</div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
+                            isPro ? 'bg-purple-500/10 text-purple-500' : 'bg-primary-bg text-text-secondary'
+                          }`}>{u.subscription_tier || 'free'}</span>
+                        </td>
+                        <td className="py-3 px-4 text-text-secondary font-mono text-xs">{u.xp ?? 0}</td>
+                        <td className="py-3 px-4">
+                          {u.is_admin ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-accent-blue/10 text-accent-blue">
+                              <ShieldCheck className="w-3 h-3" /> Admin
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-primary-bg text-text-secondary">
+                              {u.role || 'user'}
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">
+                          {isSelf ? (
+                            <span className="block text-right text-[10px] text-text-secondary italic">Siz</span>
+                          ) : (
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleSetTier(u, isPro ? 'free' : 'pro')}
+                                disabled={busy}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                                  isPro
+                                    ? 'border border-border-card text-text-secondary hover:bg-surface-hover'
+                                    : 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20'
+                                }`}
+                              >
+                                {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Crown className="w-3.5 h-3.5" />}
+                                {isPro ? 'Pro olib tashlash' : 'Pro berish'}
+                              </button>
+                              <button
+                                onClick={() => { setActionError(null); setDeleteTarget(u); }}
+                                disabled={busy}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-error-red hover:bg-error-red/10 transition-all cursor-pointer disabled:opacity-50"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" /> O'chirish
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── DELETE CONFIRMATION MODAL ─── */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="bg-surface border border-border-card rounded-[24px] p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-error-red/10 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-error-red" />
+                </div>
+                <h3 className="text-lg font-serif font-extrabold text-text-primary">Aniqmisiz?</h3>
+              </div>
+              <button onClick={() => setDeleteTarget(null)} disabled={deleting} className="text-text-secondary hover:text-text-primary cursor-pointer disabled:opacity-50">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-sm text-text-secondary">
+              <span className="font-bold text-text-primary">{deleteTarget.full_name || 'Bu foydalanuvchi'}</span> va uning barcha
+              ma'lumotlari (progress, konspektlar, diagnostika, imtihonlar, XP, ro'yxatlar) butunlay o'chiriladi.
+              Bu amalni qaytarib bo'lmaydi.
+            </p>
+            <p className="text-[11px] text-text-secondary bg-primary-bg rounded-lg px-3 py-2">
+              Eslatma: foydalanuvchining login (auth) akkaunti Supabase Dashboard orqali alohida o'chiriladi.
+            </p>
+            {actionError && (
+              <div className="flex items-start gap-2 bg-error-red/10 border border-error-red/30 text-error-red rounded-xl px-3 py-2 text-xs">
+                <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+                <span>{actionError}</span>
+              </div>
+            )}
+            <div className="flex gap-3 justify-end pt-2">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+                className="px-4 py-2.5 rounded-xl border border-border-card text-xs font-bold text-text-secondary hover:bg-surface-hover cursor-pointer disabled:opacity-50"
+              >
+                Bekor qilish
+              </button>
+              <button
+                onClick={() => handleDeleteUser(deleteTarget)}
+                disabled={deleting}
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-error-red text-white text-xs font-bold shadow-md hover:bg-error-red/90 cursor-pointer disabled:opacity-50"
+              >
+                {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                O'chirish
+              </button>
+            </div>
           </div>
         </div>
       )}
