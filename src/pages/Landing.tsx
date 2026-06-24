@@ -18,6 +18,7 @@ import {
   Trophy,
   Check,
   Loader2,
+  Clock,
 } from 'lucide-react';
 
 /* ───────────────────── Static content ───────────────────── */
@@ -26,7 +27,7 @@ const METHODOLOGY = [
   {
     icon: ClipboardList,
     title: 'Aniq dasturga asoslangan',
-    text: 'Darslar real attestatsiya dasturi va imtihon talablariga moslab tuzilgan — ortiqcha emas, kerakli bilim.',
+    text: 'Har bir kurs real imtihon dasturiga moslab tuzilgan — ortiqcha emas, kerakli bilim.',
   },
   {
     icon: BookOpenCheck,
@@ -57,6 +58,21 @@ const STEPS = [
   { icon: Trophy, title: 'Imtihonga tayyor', text: 'Mock imtihonlar bilan oʻzingizni real formatda sinab koʻring.' },
 ];
 
+// "Coming soon" stubs — clearly marked, non-clickable, not misleading.
+// Add or remove items here when plans change.
+const COMING_SOON_COURSES = [
+  {
+    id: 'soon-1',
+    label: 'Matematika attestatsiyasi',
+    description: 'Matematika fani oʻqituvchilari uchun attestatsiyaga tayyorgarlik kursi — tez orada.',
+  },
+  {
+    id: 'soon-2',
+    label: 'Boshqa fanlar',
+    description: 'Ona tili, tarix va boshqa fanlar boʻyicha attestatsiya kurslari ishlanmoqda.',
+  },
+];
+
 const FREE_FEATURES = ['Diagnostika testi', 'Barcha darslar', 'Mavzu testlari', 'Konspekt tizimi'];
 const PRO_FEATURES = ['Free dagi hammasi', 'AI Mentor tushuntirishlari', 'Toʻliq mock imtihonlar', 'Batafsil tahlil'];
 
@@ -78,17 +94,13 @@ export default function Landing() {
       setCourses(list);
       setCoursesLoading(false);
     });
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, []);
 
-  // Logged-in visitors have already seen the pitch → send them to their cabinet.
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  // Logged-in visitors → send them to their cabinet.
+  if (user) return <Navigate to="/dashboard" replace />;
 
-  // Avoid flashing the marketing page to a returning user while the session resolves.
+  // Avoid flashing the marketing page while the session resolves.
   if (authLoading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
@@ -101,10 +113,11 @@ export default function Landing() {
     <div className="flex flex-col bg-primary-bg overflow-x-hidden">
       <Seo
         rawTitle
-        title="Nur Academy — Informatika oʻqituvchilari attestatsiyaga tayyorgarlik"
-        description="Informatika fani oʻqituvchilari uchun attestatsiyaga tayyorgarlik kursi: video darslar, testlar, mock imtihonlar va AI mentor. Oʻzbekiston pedagoglari uchun."
+        title="Nur Academy — Oʻqituvchilar uchun onlayn tayyorgarlik platformasi"
+        description="Nur Academy — oʻqituvchilar uchun zamonaviy onlayn tayyorgarlik platformasi. Birinchi kurs: informatika attestatsiyasi. Video darslar, testlar, AI mentor."
         canonicalPath="/"
       />
+
       {/* ───────── HERO ───────── */}
       <section className="relative bg-surface py-20 md:py-28 border-b border-border-card overflow-hidden">
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-accent-blue/5 rounded-full blur-3xl -z-10" />
@@ -113,15 +126,21 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="inline-flex items-center gap-2 bg-accent-blue/10 border border-accent-blue/20 text-accent-blue rounded-full px-4 py-1.5 mb-6 text-sm font-semibold">
             <Sparkles className="w-4 h-4" />
-            <span>Oʻqituvchilar uchun tayyorgarlik platformasi</span>
+            <span>Oʻqituvchilar uchun — oʻqituvchilar bilan</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-extrabold text-text-primary mb-6 leading-[1.1] tracking-tight">
-            Attestatsiyaga ishonch bilan tayyorlaning
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-extrabold text-text-primary mb-5 leading-[1.1] tracking-tight">
+            Zamonaviy onlayn<br className="hidden sm:block" /> tayyorgarlik platformasi
           </h1>
 
-          <p className="text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto leading-relaxed">
-            Nur Academy — informatika oʻqituvchilari uchun tuzilgan onlayn tayyorgarlik platformasi.
+          <p className="text-lg md:text-xl text-text-secondary mb-4 max-w-2xl mx-auto leading-relaxed">
+            Nur Academy — oʻqituvchilar uchun tuzilgan onlayn tayyorgarlik platformasi.
+            Hozirda birinchi kurs mavjud:{' '}
+            <span className="text-text-primary font-semibold">informatika attestatsiyasi</span>.
+            Yangi yo'nalishlar qo'shib borilmoqda.
+          </p>
+
+          <p className="text-sm text-text-secondary/70 italic mb-10 max-w-xl mx-auto">
             Diagnostika, darslar, testlar va mock imtihonlar — barchasi bir tizimda, oʻzbek tilida.
           </p>
 
@@ -156,7 +175,7 @@ export default function Landing() {
               Nega Nur Academy?
             </h2>
             <p className="text-base sm:text-lg text-text-secondary">
-              Yodlash emas — tushunish. Metodikamiz natijaga emas, real tayyorgarlikka qaratilgan.
+              Yodlash emas — tushunish. Metodikamiz real tayyorgarlikka, natijaga qaratilgan.
             </p>
           </div>
 
@@ -177,23 +196,31 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ───────── COURSES (from DB) ───────── */}
+      {/* ───────── COURSES (DB + coming-soon stubs) ───────── */}
       <section className="py-20 sm:py-24 bg-surface border-y border-border-card">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 mb-12">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 mb-4">
             <div>
               <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary mb-2">
-                Kurslarimiz
+                Kurslar
               </h2>
               <p className="text-text-secondary text-base sm:text-lg">
                 Hozir oʻrganishingiz mumkin boʻlgan dasturlar.
               </p>
             </div>
             <Link to="/courses" className="inline-flex items-center gap-2 text-accent-blue font-bold hover:underline">
-              Barcha kurslar
-              <ArrowRight className="w-4 h-4" />
+              Barcha kurslar <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
+
+          {!coursesLoading && courses.length > 0 && (
+            <p className="text-xs text-text-secondary mb-8">
+              <span className="inline-block bg-accent-blue/10 text-accent-blue font-bold px-2 py-0.5 rounded-md mr-1">
+                Flagman
+              </span>
+              Birinchi va hozirda asosiy kurs — informatika oʻqituvchilari attestatsiyasi.
+            </p>
+          )}
 
           {coursesLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -207,12 +234,9 @@ export default function Landing() {
                 </div>
               ))}
             </div>
-          ) : courses.length === 0 ? (
-            <div className="text-center py-12 text-text-secondary text-sm">
-              Kurslar tez orada qoʻshiladi.
-            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Real published courses from DB */}
               {courses.map((course) => (
                 <div
                   key={course.id}
@@ -222,7 +246,7 @@ export default function Landing() {
                     {course.cover_url ? (
                       <img
                         src={course.cover_url}
-                        alt={course.title}
+                        alt={`${course.title} kursi muqovasi`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
@@ -245,12 +269,41 @@ export default function Landing() {
                     <p className="text-text-secondary text-sm line-clamp-3 mb-5 flex-grow leading-relaxed">
                       {course.description}
                     </p>
-                    {/* Landing is only shown to guests → CTA routes to login. */}
                     <CourseStartButton
                       course={course}
                       enrolled={false}
                       className="mt-auto w-full inline-flex items-center justify-center gap-2 bg-accent-blue/10 hover:bg-accent-blue hover:text-white text-accent-blue font-bold text-sm px-4 py-2.5 rounded-xl transition-all disabled:opacity-60"
                     />
+                  </div>
+                </div>
+              ))}
+
+              {/* Coming-soon stubs — non-actionable, clearly labelled */}
+              {COMING_SOON_COURSES.map((stub) => (
+                <div
+                  key={stub.id}
+                  className="flex flex-col rounded-3xl border border-dashed border-border-card bg-primary-bg/50 overflow-hidden opacity-70"
+                  aria-label={`${stub.label} — tez orada`}
+                >
+                  <div className="aspect-video overflow-hidden bg-gradient-to-br from-surface to-surface-hover flex items-center justify-center">
+                    <Clock className="w-10 h-10 text-text-secondary/40" />
+                    <span className="sr-only">Tez orada</span>
+                  </div>
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider bg-text-secondary/15 text-text-secondary px-2 py-0.5 rounded-full">
+                        Tez orada
+                      </span>
+                    </div>
+                    <h3 className="font-serif font-extrabold text-lg text-text-primary/60 mb-2 leading-snug">
+                      {stub.label}
+                    </h3>
+                    <p className="text-text-secondary/70 text-sm line-clamp-3 mb-5 flex-grow leading-relaxed">
+                      {stub.description}
+                    </p>
+                    <div className="mt-auto w-full inline-flex items-center justify-center gap-2 bg-surface border border-border-card text-text-secondary text-sm px-4 py-2.5 rounded-xl cursor-not-allowed select-none">
+                      <Clock className="w-4 h-4" /> Tez orada
+                    </div>
                   </div>
                 </div>
               ))}
@@ -297,15 +350,13 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Free */}
             <div className="rounded-3xl border border-border-card bg-primary-bg p-7 flex flex-col">
               <p className="text-sm font-bold uppercase tracking-wider text-text-secondary">Free</p>
               <p className="mt-2 text-3xl font-serif font-extrabold text-text-primary">Bepul</p>
               <ul className="mt-6 space-y-2.5 flex-grow">
                 {FREE_FEATURES.map((f) => (
                   <li key={f} className="flex items-center gap-2.5 text-sm text-text-primary">
-                    <Check className="w-4 h-4 text-emerald-500 shrink-0" />
-                    {f}
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0" /> {f}
                   </li>
                 ))}
               </ul>
@@ -317,20 +368,16 @@ export default function Landing() {
               </Link>
             </div>
 
-            {/* Pro */}
             <div className="rounded-3xl border-2 border-accent-blue bg-accent-blue/[0.04] p-7 flex flex-col relative">
               <span className="absolute -top-3 right-6 bg-accent-blue text-white text-[11px] font-bold px-3 py-1 rounded-full">
                 Tavsiya etiladi
               </span>
               <p className="text-sm font-bold uppercase tracking-wider text-accent-blue">Pro</p>
-              <p className="mt-2 text-3xl font-serif font-extrabold text-text-primary">
-                AI Mentor + mock
-              </p>
+              <p className="mt-2 text-3xl font-serif font-extrabold text-text-primary">AI Mentor + mock</p>
               <ul className="mt-6 space-y-2.5 flex-grow">
                 {PRO_FEATURES.map((f) => (
                   <li key={f} className="flex items-center gap-2.5 text-sm text-text-primary">
-                    <Check className="w-4 h-4 text-accent-blue shrink-0" />
-                    {f}
+                    <Check className="w-4 h-4 text-accent-blue shrink-0" /> {f}
                   </li>
                 ))}
               </ul>
@@ -338,8 +385,7 @@ export default function Landing() {
                 to="/pricing"
                 className="mt-6 inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-5 py-3 rounded-xl text-sm font-bold hover:bg-accent-blue/95 transition-all shadow-md shadow-accent-blue/20"
               >
-                Batafsil koʻrish
-                <ArrowRight className="w-4 h-4" />
+                Batafsil koʻrish <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
@@ -392,7 +438,7 @@ export default function Landing() {
           </div>
           <div className="mt-8 pt-6 border-t border-border-card/60 text-center md:text-left">
             <p className="text-xs text-text-secondary">
-              © {new Date().getFullYear()} Nur Academy. Informatika oʻqituvchilari uchun tayyorgarlik platformasi.
+              © {new Date().getFullYear()} Nur Academy. Oʻqituvchilar uchun onlayn tayyorgarlik platformasi.
             </p>
           </div>
         </div>
