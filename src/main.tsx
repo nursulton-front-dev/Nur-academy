@@ -3,10 +3,10 @@ import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import { loadAnalytics } from './lib/analytics';
+import { inject } from '@vercel/analytics';
 
-// Load GA4 + Yandex Metrica as early as possible.
-// Scripts are skipped gracefully when env vars are absent.
 loadAnalytics();
+inject(); // Vercel Analytics
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

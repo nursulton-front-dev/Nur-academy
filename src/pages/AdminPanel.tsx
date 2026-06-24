@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase';
 import {
   Users, BookOpen, HelpCircle, BarChart3, AlertTriangle,
   Plus, TrendingUp, Award, ClipboardList, CheckSquare, Star,
-  ShieldCheck, Crown, Trash2, Loader2, X
+  ShieldCheck, Crown, Trash2, Loader2, X, Search
 } from 'lucide-react';
 
 type AdminTab = 'overview' | 'questions' | 'modules' | 'users' | 'analytics';
@@ -106,6 +106,10 @@ export default function AdminPanel() {
   const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null); // user pending delete confirmation
   const [deleting, setDeleting] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+
+  // User search / filter (client-side on loaded list)
+  const [userSearch, setUserSearch] = useState('');
+  const [tierFilter, setTierFilter] = useState<'all' | 'free' | 'pro'>('all');
 
   useEffect(() => {
     if (!loading && isAdmin) loadAdminData();
@@ -490,7 +494,14 @@ export default function AdminPanel() {
       )}
 
       {/* ─── USERS ─── */}
-      {activeTab === 'users' && (
+      {activeTab === 'users' && (() => {
+        const q = userSearch.trim().toLowerCase();
+        const filteredUsers = users.filter(u => {
+          const matchName = !q || (u.full_name ?? '').toLowerCase().includes(q);
+          const matchTier = tierFilter === 'all' || (u.subscription_tier ?? 'free') === tierFilter;
+          return matchName && matchTier;
+        });
+        return (
         <div className="space-y-4">
           {actionError && (
             <div className="flex items-start gap-2 bg-error-red/10 border border-error-red/30 text-error-red rounded-xl px-4 py-3 text-sm">
@@ -498,6 +509,31 @@ export default function AdminPanel() {
               <span>{actionError}</span>
             </div>
           )}
+
+          {/* Search + filter bar */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Ism bo'yicha qidirish..."
+                value={userSearch}
+                onChange={e => setUserSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2.5 bg-surface border border-border-card rounded-xl text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-blue transition-colors"
+              />
+            </div>
+            <select
+              value={tierFilter}
+              onChange={e => setTierFilter(e.target.value as 'all' | 'free' | 'pro')}
+              className="px-3 py-2.5 bg-surface border border-border-card rounded-xl text-sm text-text-primary focus:outline-none focus:border-accent-blue transition-colors cursor-pointer"
+            >
+              <option value="all">Barcha obunalar</option>
+              <option value="free">Free</option>
+              <option value="pro">Pro</option>
+            </select>
+          </div>
+          <p className="text-[11px] text-text-secondary">{filteredUsers.length} / {users.length} foydalanuvchi</p>
+
           <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -511,7 +547,7 @@ export default function AdminPanel() {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map(u => {
+                  {filteredUsers.map(u => {
                     const isSelf = u.id === user?.id;
                     const isPro = u.subscription_tier === 'pro';
                     const busy = actionUserId === u.id;
@@ -573,7 +609,8 @@ export default function AdminPanel() {
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* ─── DELETE CONFIRMATION MODAL ─── */}
       {deleteTarget && (
