@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchPublishedCourses, type CourseMeta } from '../lib/courses';
+import { Seo } from '../components/Seo';
 import CourseStartButton from '../components/CourseStartButton';
 import {
   Sparkles,
@@ -98,6 +99,12 @@ export default function Landing() {
 
   return (
     <div className="flex flex-col bg-primary-bg overflow-x-hidden">
+      <Seo
+        rawTitle
+        title="Nur Academy — Informatika oʻqituvchilari attestatsiyaga tayyorgarlik"
+        description="Informatika fani oʻqituvchilari uchun attestatsiyaga tayyorgarlik kursi: video darslar, testlar, mock imtihonlar va AI mentor. Oʻzbekiston pedagoglari uchun."
+        canonicalPath="/"
+      />
       {/* ───────── HERO ───────── */}
       <section className="relative bg-surface py-20 md:py-28 border-b border-border-card overflow-hidden">
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-accent-blue/5 rounded-full blur-3xl -z-10" />

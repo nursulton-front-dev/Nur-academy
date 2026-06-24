@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Do not index internal/authenticated app pages
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /kurs/
+Disallow: /learn/
+Disallow: /certificates
+Disallow: /login
+Disallow: /signup
+
+Sitemap: https://nuracademy.uz/sitemap.xml

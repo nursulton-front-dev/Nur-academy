@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Search, Sparkles, GraduationCap } from 'lucide-react';
+import { Seo } from '../components/Seo';
 import { fetchPublishedCourses, type CourseMeta } from '../lib/courses';
 import { useAuth } from '../contexts/AuthContext';
 import { enrollmentService } from '../lib/enrollmentService';
@@ -58,6 +59,11 @@ export default function CourseCatalog() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+      <Seo
+        title="Kurslar katalogi — attestatsiyaga tayyorgarlik"
+        description="Nur Academy kurslar katalogi: informatika oʻqituvchilari attestatsiyasi uchun barcha kurslar, darslar va test materiallari."
+        canonicalPath="/courses"
+      />
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div className="space-y-2">
