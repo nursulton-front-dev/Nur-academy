@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useIsAdmin } from '../hooks/useIsAdmin';
 import { supabase } from '../lib/supabase';
 import { analyticsService } from '../lib/analyticsService';
 import {
@@ -40,9 +41,8 @@ function StatCard({ icon: Icon, label, value, color }: { icon: any; label: strin
 
 export default function AdminPanel() {
   const { user } = useAuth();
+  const { isAdmin, loading } = useIsAdmin();
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   // Data states
   const [questions, setQuestions] = useState<QuestionRow[]>([]);
@@ -69,15 +69,8 @@ export default function AdminPanel() {
   });
 
   useEffect(() => {
-    if (!user) return;
-    // Check if user is admin
-    supabase.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle()
-      .then(({ data }) => {
-        setIsAdmin(!!data);
-        if (data) loadAdminData();
-        setLoading(false);
-      });
-  }, [user]);
+    if (!loading && isAdmin) loadAdminData();
+  }, [isAdmin, loading]);
 
   async function loadAdminData() {
     // Stats

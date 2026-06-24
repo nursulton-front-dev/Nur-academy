@@ -10,6 +10,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { Layout } from './components/Layout';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { AdminRoute } from './components/AdminRoute';
 
 // Existing routes
 import Landing from './pages/Landing';
@@ -76,6 +77,10 @@ const router = createBrowserRouter(
         <Route element={<ProtectedRoute />}>
           <Route path="certificates" element={<Certificates />} />
           <Route path="learn/:lessonId" element={<Lesson />} />
+        </Route>
+
+        {/* Admin-only: unauthenticated → /login, non-admin → /dashboard */}
+        <Route element={<AdminRoute />}>
           <Route path="admin" element={<AdminPanel />} />
         </Route>
 
