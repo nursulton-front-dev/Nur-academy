@@ -1,13 +1,59 @@
 <!doctype html>
-<html lang="en">
+<html lang="uz">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
+
+    <!-- ── Primary SEO (Uzbek, latin) ─────────────────────────────────────
+         These STATIC defaults are what crawlers that do NOT run JavaScript
+         see — most importantly Telegram link previews, which read index.html
+         for every shared URL. Per-page overrides happen client-side via the
+         <Seo> component (picked up by Google, which renders JS). -->
+    <title>Nur Academy — Informatika oʻqituvchilari attestatsiyaga tayyorgarlik</title>
+    <meta
+      name="description"
+      content="Informatika oʻqituvchilari uchun attestatsiyaga tayyorgarlik platformasi: video darslar, testlar, mock imtihonlar va AI mentor. Oʻzbekiston pedagoglari uchun."
+    />
+    <meta
+      name="keywords"
+      content="informatika oʻqituvchilari attestatsiya, attestatsiyaga tayyorgarlik, test tayyorlash, pedagogika informatika, oʻqituvchi attestatsiya Oʻzbekiston"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://nuracademy.uz/" />
+
+    <!-- ── Open Graph (Telegram / Facebook / LinkedIn previews) ─────────── -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Nur Academy" />
+    <meta property="og:locale" content="uz_UZ" />
+    <meta property="og:title" content="Nur Academy — Informatika oʻqituvchilari attestatsiyaga tayyorgarlik" />
+    <meta
+      property="og:description"
+      content="Video darslar, testlar, mock imtihonlar va AI mentor bilan attestatsiyaga puxta tayyorlaning."
+    />
+    <meta property="og:url" content="https://nuracademy.uz/" />
+    <!-- Working raster preview today. For a dedicated 1200x630 cover, export
+         /og-cover.svg to PNG and swap this path (see notes). -->
+    <meta property="og:image" content="https://nuracademy.uz/images/dashboard-hero.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Nur Academy — attestatsiyaga tayyorgarlik platformasi" />
+
+    <!-- ── Twitter Card ─────────────────────────────────────────────────── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Nur Academy — Informatika oʻqituvchilari attestatsiyaga tayyorgarlik" />
+    <meta name="twitter:description" content="Video darslar, testlar, mock imtihonlar va AI mentor bilan attestatsiyaga tayyorlaning." />
+    <meta name="twitter:image" content="https://nuracademy.uz/images/dashboard-hero.png" />
+
+    <!-- ── Google Search Console verification ───────────────────────────────
+         Replace the content value with the token GSC gives you (or use the
+         DNS / HTML-file method instead — see notes). -->
+    <meta name="google-site-verification" content="ODfMewIQXnCjoUYDidCx4gwRw8k5Px0dyoXEDy90-EE" />
+
+    <!-- ── Yandex Webmaster verification (optional) ─────────────────────── -->
+    <!-- <meta name="yandex-verification" content="REPLACE_WITH_YANDEX_TOKEN" /> -->
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

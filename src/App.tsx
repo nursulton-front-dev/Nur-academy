@@ -1,13 +1,16 @@
+import { useEffect } from 'react';
 import {
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
   Route,
   Navigate,
+  Outlet,
   useLocation
 } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { trackPageView, trackYmHit } from './lib/analytics';
 import { Layout } from './components/Layout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AdminRoute } from './components/AdminRoute';
@@ -47,6 +50,17 @@ function LegacyAttestatsiyaRedirect() {
   return <Navigate to={target} replace />;
 }
 
+// Layout wrapper that fires a page_view on every route change.
+// Returns <Outlet> so all child routes render normally.
+function RouteTracker() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    trackPageView(pathname);
+    trackYmHit(pathname);
+  }, [pathname]);
+  return <Outlet />;
+}
+
 // Data router (createBrowserRouter) is required for useBlocker — used to guard
 // against losing in-progress test answers on navigation.
 //
@@ -57,7 +71,7 @@ function LegacyAttestatsiyaRedirect() {
 //    works for ANY course under /kurs/:slug, including /obuna.
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
+    <Route element={<RouteTracker />}>
       {/* ───────── PUBLIC + focus-mode (public Layout) ───────── */}
       <Route element={<Layout />}>
         <Route path="/" element={<Landing />} />
