@@ -280,7 +280,8 @@ export default function DiagnosticRunner({
             <div className="mt-3.5 pt-3 border-t border-border-card/50 grid grid-cols-1 gap-1.5 text-[11px] font-semibold text-text-secondary">
               <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-accent-blue shrink-0" />Joriy savol</span>
               <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-success-green shrink-0" />Javob berilgan</span>
-              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0" />Belgilangan</span>
+              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-orange-500 shrink-0" />Belgilangan</span>
+              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0" />Kirilgan</span>
               <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-border-card border border-border-card shrink-0" />Javob berilmagan</span>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { mockQuestions, mockTopicTests } from '../data/attestatsiyaMocks';
 import { domainLabel } from './domains';
+import { supabase } from './supabase';
 import {
   loadByBlueprint,
   loadQuestionsFromBank,
@@ -164,8 +165,8 @@ export const attestatsiyaService = {
     return { status: 'saved' };
   },
 
-  /** Grades the attempt against the locally stored answer key. */
-  async finishExam(attemptId: string): Promise<FinishExamResponse> {
+  /** Grades the attempt against the locally stored answer key and persists to DB. */
+  async finishExam(attemptId: string, userId?: string): Promise<FinishExamResponse> {
     const questions = readJson<BankQuestion[]>(DEF_PREFIX + attemptId, []);
     const answers = readJson<Record<string, ExamAnswer>>(ANSWERS_PREFIX + attemptId, {});
 
@@ -212,6 +213,25 @@ export const attestatsiyaService = {
     localStorage.setItem(RESULT_PREFIX + attemptId, JSON.stringify(result));
     // Question key is no longer needed once graded.
     localStorage.removeItem(DEF_PREFIX + attemptId);
+
+    // Persist to DB so results survive localStorage clears and sync across devices.
+    if (userId) {
+      const map = readJson<Record<string, string>>(ATTEMPT_MAP_KEY, {});
+      const examIdText = map[attemptId] ?? attemptId;
+      // Fire-and-forget — don't block the result screen on a network call.
+      supabase.from('exam_attempts').insert({
+        user_id: userId,
+        mock_exam_id: null,
+        exam_id_text: examIdText,
+        total_score: finalScore,
+        max_score: 100,
+        finished_at: result.finished_at,
+        domain_scores: domainScores,
+        answers_review: answersReview,
+      }).then(({ error }) => {
+        if (error) console.warn('exam_attempts: save failed', error.message);
+      });
+    }
 
     return result;
   },

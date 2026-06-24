@@ -73,6 +73,10 @@ function CustomExamModal({
   );
 }
 
+/* ───────────────────── Constants ───────────────────── */
+
+const MINUTES_PER_QUESTION = 1.5; // 15q → ~23 min, 20q → 30 min, 50q → 75 min
+
 /* ───────────────────── Main Component ───────────────────── */
 
 export default function AttestatsiyaExam() {
@@ -88,10 +92,12 @@ export default function AttestatsiyaExam() {
   const [userAnswers, setUserAnswers] = useState<{ [questionId: string]: number | string }>({});
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [visitedQuestions, setVisitedQuestions] = useState<Set<string>>(new Set<string>());
-  const [timeLeft, setTimeLeft] = useState(120 * 60);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  // 'loading' → questions fetch; 'warning' → pre-exam screen; 'running' → exam; 'finishing' → saving
+  const [phase, setPhase] = useState<'loading' | 'warning' | 'running' | 'finishing'>('loading');
   const [finished, setFinished] = useState(false);
+  const [fullscreenLeft, setFullscreenLeft] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -102,10 +108,12 @@ export default function AttestatsiyaExam() {
         setAttemptId(response.attempt_id);
         const savedAnswers = localStorage.getItem(`answers_${response.attempt_id}`);
         if (savedAnswers) setUserAnswers(JSON.parse(savedAnswers));
+        // Proportional timer: 1.5 min per question
+        setTimeLeft(Math.round(response.questions.length * MINUTES_PER_QUESTION * 60));
+        setPhase('warning');
       } catch (err) {
         console.error("Failed to load exam questions", err);
-      } finally {
-        setIsLoading(false);
+        setPhase('warning'); // still show warning even on error (fallback)
       }
     }
     loadData();
@@ -124,7 +132,7 @@ export default function AttestatsiyaExam() {
   }, [currentQuestionIndex, questions]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (phase !== 'running') return;
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) { clearInterval(timer); handleFinishExam(); return 0; }
@@ -132,7 +140,22 @@ export default function AttestatsiyaExam() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [isLoading]);
+  }, [phase]);
+
+  // Soft fullscreen-exit warning — does NOT interrupt the exam
+  useEffect(() => {
+    if (phase !== 'running') return;
+    const handler = () => {
+      if (!document.fullscreenElement) setFullscreenLeft(true);
+    };
+    document.addEventListener('fullscreenchange', handler);
+    return () => document.removeEventListener('fullscreenchange', handler);
+  }, [phase]);
+
+  const handleStart = () => {
+    document.documentElement.requestFullscreen?.().catch(() => {});
+    setPhase('running');
+  };
 
   const formatTime = (seconds: number) => {
     const hrs = Math.floor(seconds / 3600);
@@ -190,10 +213,11 @@ export default function AttestatsiyaExam() {
   const handleFinishExam = async () => {
     if (!attemptId) return;
     try {
-      setIsLoading(true);
+      setPhase('finishing');
       setShowSubmitModal(false);
       setFinished(true);
-      const res = await attestatsiyaService.finishExam(attemptId);
+      if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+      const res = await attestatsiyaService.finishExam(attemptId, user?.id ?? undefined);
       if (res && res.score !== undefined) {
         completeTestOrExam(id || '', res.score);
         if (user) {
@@ -207,7 +231,7 @@ export default function AttestatsiyaExam() {
       navigate(coursePath(slug, `imtihon/${id}/natija?attempt_id=${attemptId}`));
     } catch (err) {
       console.error("Failed to finish exam", err);
-      setIsLoading(false);
+      setPhase('running');
     }
   };
 
@@ -241,7 +265,73 @@ export default function AttestatsiyaExam() {
   const progressOffset = circ - (examAnsweredPercent / 100) * circ;
   const isFlagged = currentQuestion ? flaggedQuestions.has(currentQuestion.id) : false;
 
-  if (isLoading || !currentQuestion) {
+  if (phase === 'loading') {
+    return (
+      <div className="fixed inset-0 z-[60] bg-primary-bg flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="font-bold text-sm text-text-secondary">Savollar yuklanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'finishing') {
+    return (
+      <div className="fixed inset-0 z-[60] bg-primary-bg flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="font-bold text-sm text-text-secondary">Natijalar saqlanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'warning') {
+    return (
+      <div className="fixed inset-0 z-[60] bg-primary-bg flex items-center justify-center p-4">
+        <div className="bg-surface border border-border-card rounded-[24px] max-w-lg w-full p-8 shadow-2xl space-y-6 text-left animate-fadeIn">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-6 h-6 text-amber-500" />
+            </div>
+            <div>
+              <h2 className="font-serif font-extrabold text-xl text-text-primary">Imtihon boshlashdan oldin</h2>
+              <p className="text-xs text-text-secondary mt-0.5">{exam.title}</p>
+            </div>
+          </div>
+
+          <ul className="space-y-3 text-sm text-text-secondary">
+            <li className="flex items-start gap-2.5">
+              <Clock className="w-4 h-4 shrink-0 mt-0.5 text-accent-blue" />
+              <span>Imtihon <strong className="text-text-primary">{Math.ceil(questions.length * MINUTES_PER_QUESTION)} daqiqa</strong> vaqt bilan cheklangan ({questions.length} ta savol)</span>
+            </li>
+            <li className="flex items-start gap-2.5">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
+              <span>Sahifani <strong className="text-text-primary">yopmang</strong> yoki boshqa ilovaga oʻtmang — vaqt to'xtamaydi</span>
+            </li>
+            <li className="flex items-start gap-2.5">
+              <LogOut className="w-4 h-4 shrink-0 mt-0.5 text-text-secondary transform rotate-180" />
+              <span>Imtihon <strong className="text-text-primary">toʻliq ekran</strong> rejimida boshlanadi</span>
+            </li>
+          </ul>
+
+          <div className="bg-primary-bg border border-border-card/50 rounded-2xl p-4 text-center">
+            <p className="text-xs text-text-secondary">Tayyor boʻlsangiz, quyidagi tugmani bosing</p>
+          </div>
+
+          <button
+            onClick={handleStart}
+            className="w-full bg-accent-blue hover:bg-accent-blue/95 text-white py-4 rounded-xl text-sm font-bold shadow-md shadow-accent-blue/15 transition-all active:scale-98 cursor-pointer"
+          >
+            Boshlash
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentQuestion) {
     return (
       <div className="fixed inset-0 z-[60] bg-primary-bg flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -255,6 +345,23 @@ export default function AttestatsiyaExam() {
   return (
     <div className="fixed inset-0 z-[60] h-[100dvh] w-screen bg-primary-bg overflow-hidden flex flex-col font-sans select-none">
       <TestExitGuard when={!finished} />
+
+      {/* Soft fullscreen-exit warning — does not stop the exam */}
+      {fullscreenLeft && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[110] animate-fadeIn">
+          <div className="bg-amber-500 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 text-sm font-semibold">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>Toʻliq ekrandan chiqdingiz. Imtihon davom etmoqda.</span>
+            <button
+              onClick={() => { setFullscreenLeft(false); document.documentElement.requestFullscreen?.().catch(() => {}); }}
+              className="ml-2 underline text-white/90 hover:text-white text-xs cursor-pointer"
+            >
+              Qaytish
+            </button>
+            <button onClick={() => setFullscreenLeft(false)} className="ml-1 text-white/80 hover:text-white cursor-pointer">✕</button>
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <header className="h-16 shrink-0 bg-surface border-b border-border-card px-4 sm:px-6 flex justify-between items-center z-10">
@@ -270,6 +377,19 @@ export default function AttestatsiyaExam() {
           🏁 <span className="hidden sm:inline">Imtihonni</span> yakunlash
         </button>
       </header>
+
+      {/* Mobile compact status strip */}
+      <div className="lg:hidden shrink-0 flex items-center gap-2 px-4 py-2 bg-surface border-b border-border-card">
+        <span className="text-xs font-bold text-success-green">{answeredCount}/{questions.length}</span>
+        <span className="text-text-secondary text-xs">javob</span>
+        {flaggedCount > 0 && (
+          <span className="ml-1 text-xs font-bold text-orange-500">{flaggedCount} belgi</span>
+        )}
+        <div className={`ml-auto flex items-center gap-1.5 font-mono font-extrabold text-sm ${isTimeCritical ? 'text-rose-500' : 'text-text-primary'}`}>
+          <Clock className="w-4 h-4" />
+          {formatTime(timeLeft)}
+        </div>
+      </div>
 
       {/* Main workspace */}
       <div className="flex-1 min-h-0 flex gap-4 lg:gap-6 p-4 lg:p-6 overflow-hidden">
