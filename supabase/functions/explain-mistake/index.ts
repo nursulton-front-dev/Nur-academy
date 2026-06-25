@@ -14,50 +14,50 @@ const corsHeaders = {
 const FALLBACK_EXPLANATIONS: Record<string, Record<string, { hint: string; explanation: string }>> = {
   'Axborot va raqamli savodxonlik': {
     default: {
-      hint: 'Bu mavzuda asosiy tushunchalarni eslab ko\'ring. Axborot, ma\'lumot va bilim o\'rtasidagi farq muhim.',
-      explanation: 'To\'g\'ri javob: Axborot — bu qayta ishlangan, ma\'noga ega bo\'lgan ma\'lumot. Ma\'lumot — bu xom faktlar yig\'indisi, Axborot esa qayta ishlangan va foydali bo\'lgan ma\'lumot. Bilim esa Axborot asosida shakllanadigan tushuncha. Bu tushunchalarni farqlashni o\'rganing.',
+      hint: 'Axborot va ma\'lumot tushunchalarini farqlashga harakat qiling. Axborot — qayta ishlangan, ma\'noga ega bo\'lgan narsa.',
+      explanation: 'To\'g\'ri javob: Axborot — bu qayta ishlangan, ma\'noga ega bo\'lgan ma\'lumot. Ma\'lumot — bu xom faktlar yig\'indisi, Axborot esa qayta ishlangan va foydali bo\'lgan ma\'lumot. Bilim esa Axborot asosida shakllanadigan tushuncha.',
     },
   },
   'Kompyuter savodxonligi': {
     default: {
-      hint: 'Kompyuter tarkibiy qismlari va ularning vazifalari haqida o\'ylab ko\'ring.',
-      explanation: 'Kompyuter tarkibiy qismlari: protsessor (hisoblash), xotira (saqlash), kirish/chiqish qurilmalari. Har birining vazifasini bilishingiz kerak.',
+      hint: 'Kompyuter qismlarining har birining o\'ziga xos vazifasi borligini eslab ko\'ring.',
+      explanation: 'Kompyuter tarkibiy qismlari: protsessor (CPU) — hisoblash; RAM — vaqtinchalik xotira; HDD/SSD — doimiy saqlash; kirish/chiqish qurilmalari. Har birining vazifasini farqlash muhim.',
     },
   },
   'Mantiq va sanoq sistemalari': {
     default: {
-      hint: 'Ikkilik sanoq tizimi va mantiqiy operatsiyalar haqida eslab ko\'ring.',
-      explanation: 'Ikkilik sanoq tizimida 0 va 1 qiymatlar ishlatiladi. Mantiqiy operatsiyalar: AND (va), OR (yoki), NOT (emas). Bu asosiy tushunchalarni bilishingiz kerak.',
+      hint: 'Ikkilik sanoq tizimini o\'nlikdan farqlash uchun 2 ning darajalarini eslab ko\'ring.',
+      explanation: 'Ikkilik sanoq tizimida faqat 0 va 1 qiymatlar ishlatiladi. O\'nlikdan ikkilikka o\'tkazish uchun soni 2 ga bo\'lib ketish usuli qo\'llaniladi. Mantiqiy operatsiyalar: AND (va), OR (yoki), NOT (emas).',
     },
   },
   'Dasturlash asoslari': {
     default: {
-      hint: 'Dasturlash tillarining turlari va ularning xususiyatlari haqida o\'ylab ko\'ring.',
-      explanation: 'Dasturlash tillari: kompilyatsiya qilinadigan (C, C++) va interpretatsiya qilinadigan (Python, JavaScript). Har birining afzalliklari va kamchiliklari bor.',
+      hint: 'Dasturlash tushunchasini kod qanday bajarilishi bilan bog\'lang.',
+      explanation: 'Dasturlash tillari: kompilyatsiya qilinadigan (C, C++) — kod oldin mashina tiliga o\'giriladi; interpretatsiya qilinadigan (Python, JavaScript) — kod qator-qator bajariladi.',
     },
   },
   'Grafik va multimediya': {
     default: {
-      hint: 'Raqamli grafika turlari va formatlari haqida eslab ko\'ring.',
-      explanation: 'Raqamli grafika: vektorli (SVG) va raster (PNG, JPG). Vektorli katta hajmda saqlanadi va o\'lchami o\'zgartiriladi. Raster piksellardan tashkil topgan.',
+      hint: 'Vektorli va rastrli grafikaning asosiy farqini eslab ko\'ring.',
+      explanation: 'Vektorli grafika (SVG) matematik formulalar asosida, sifat yo\'qolmaydi. Rastrli grafika (PNG, JPG) piksellardan tashkil topgan, kattalashtirsa sifat pasayadi.',
     },
   },
   'Tarmoq va internet': {
     default: {
-      hint: 'Tarmoq protokollari va ularning vazifalari haqida o\'ylab ko\'ring.',
-      explanation: 'Asosiy protokollar: HTTP (veb), FTP (fayl), SMTP (email), TCP/IP (paket uzatish). Har biri ma\'lum maqsadda ishlatiladi.',
+      hint: 'Har bir protokol o\'z maqsadi uchun yaratilganligini eslab ko\'ring.',
+      explanation: 'Asosiy protokollar: HTTP/HTTPS — veb sahifalar; FTP — fayllar; SMTP — elektron pochta; TCP/IP — ma\'lumot paketlarini uzatish. Har biri ma\'lum maqsadda ishlatiladi.',
     },
   },
   'Kiberxavfsizlik': {
     default: {
-      hint: 'Xavfsizlik asoslari va tahdidlar turlari haqida eslab ko\'ring.',
-      explanation: 'Asosiy tahdidlar: viruslar, phishing, DDoS. Xavfsizlik choraları: parol, shifrlash, antivirus, firewall.',
+      hint: 'Har xil hujum turlarini ularning maqsadiga qarab ajrating.',
+      explanation: 'Asosiy tahdidlar: virus — o\'z-o\'zidan tarqaladi; phishing — foydalanuvchini aldaydi; DDoS — serverni ishdan chiqaradi. Himoya: murakkab parol, shifrlash, antivirus, firewall.',
     },
   },
   'Pedagogika va metodika': {
     default: {
-      hint: 'O\'qitish metodlari va zamonaviy ta\'lim texnologiyalari haqida o\'ylab ko\'ring.',
-      explanation: 'Zamonaviy o\'qitish metodlari: loyiha asosida o\'qitish, muammoni hal qilish, kooperativ o\'qitish. Har biri turli vaziyatda samarali.',
+      hint: 'O\'qitish metodini uning maqsadi bilan bog\'lang: o\'quvchi faolligi yoki tushuntirish.',
+      explanation: 'Zamonaviy o\'qitish metodlari: loyiha asosida o\'qitish (mustaqillik), muammoli ta\'lim (fikrlash), kooperativ o\'qitish (jamoaviylik). Har biri turli maqsadda samarali.',
     },
   },
 };
@@ -66,10 +66,10 @@ function getFallbackExplanation(domain: string, mode: 'hint' | 'explanation'): s
   const domainKey = Object.keys(FALLBACK_EXPLANATIONS).find(
     k => domain.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(domain.toLowerCase())
   ) || Object.keys(FALLBACK_EXPLANATIONS)[0];
-  
-  const fallback = FALLBACK_EXPLANATIONS[domainKey]?.default || 
+
+  const fallback = FALLBACK_EXPLANATIONS[domainKey]?.default ||
     FALLBACK_EXPLANATIONS[Object.keys(FALLBACK_EXPLANATIONS)[0]].default;
-  
+
   return mode === 'hint' ? fallback.hint : fallback.explanation;
 }
 
@@ -77,13 +77,14 @@ function getFallbackExplanation(domain: string, mode: 'hint' | 'explanation'): s
 async function callGroqWithRetry(
   systemPrompt: string,
   userPrompt: string,
+  maxTokens: number,
   maxRetries = 3,
   baseDelay = 1000
 ): Promise<string | null> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
       const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
@@ -97,8 +98,9 @@ async function callGroqWithRetry(
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt },
           ],
-          temperature: 0.7,
-          max_tokens: 300,
+          // Lower temperature → more factual, less hallucination for educational content.
+          temperature: 0.4,
+          max_tokens: maxTokens,
         }),
         signal: controller.signal,
       });
@@ -127,6 +129,71 @@ async function callGroqWithRetry(
     }
   }
   return null;
+}
+
+/* ── System prompts ─────────────────────────────────────────────────────────
+   Hint  — first wrong attempt. Don't reveal the answer; guide with questions.
+   Explanation — final reveal. Structured 4-part explanation, simple language.
+   Both: Uzbek (latin), friendly teacher tone, no jargon without definition,
+   anchor strictly to the provided correct answer (never invent a different one).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+const HINT_SYSTEM_PROMPT = `Sen informatika fanidan tajribali va mehribon o'qituvchisan. O'quvchi attestatsiya testida xato javob berdi — birinchi urinish.
+
+VAZIFANG — qisqa maslahat (2–3 jumla):
+1. Uning javobi nima uchun to'g'ri emas — muloyim, qoralashsiz.
+2. To'g'ri yo'nalishni ishora qil, lekin TO'G'RI JAVOBNI OSHKOR ETMA — o'quvchi o'zi topsin.
+3. Qaysi tushunchani yoki qoidani eslab ko'rishni tavsiya qil.
+
+USLUB:
+- Oddiy, tushunarli so'zlar. Atamani ishlatсаng, qisqacha izohlа.
+- Do'stona, dalda beruvchi ton ("Xato qilish — o'rganishning bir qismi").
+- Faqat O'ZBEK TILIDA (lotin yozuvi). Formul yoki raqam bo'lsa — aniq yoz.
+- TO'G'RI JAVOBNI HECH QACHON AYTMA.`;
+
+const EXPLANATION_SYSTEM_PROMPT = `Sen informatika fanidan tajribali va mehribon o'qituvchisan. O'quvchi attestatsiya testida xato javob berdi — endi to'liq tushuntirish vaqti.
+
+JAVOB TUZILISHI (aniq shu tartibda):
+1. ✅ To'g'ri javob va sababi — nima uchun u to'g'ri, qadamma-qadam oddiy tilda.
+2. ❌ O'quvchi javobi — nima uchun u noto'g'ri, muloyim va aniq.
+3. 💡 Oddiy misol yoki hayotiy o'xshatma — tushunchani mustahkamlash uchun.
+4. 📌 Eslab qolish uchun qisqa qoida yoki kalit so'z.
+
+USLUB:
+- Har bir bo'lim 1–2 jumladan iborat, ortiqcha uzaytirma.
+- Oddiy, barcha o'quvchilarga tushunarli so'zlar. Atamani ishlatсаng, izohlа.
+- Matematika yoki kod bo'lsa — hisoblashni qadamma-qadam ko'rsat.
+- Do'stona, rag'batlantiruvchi ton ("Endi bilding!").
+- Faqat O'ZBEK TILIDA (lotin yozuvi).
+- Taqdim etilgan TO'G'RI JAVOBGA QATIY TAYANA — o'z javobingni o'ylab chiqarma.`;
+
+/* ── Format the user message with full context ── */
+function buildUserMessage(params: {
+  questionText: string;
+  optionsList: string;
+  userAnswerText: string;
+  correctAnswerText: string;
+  domain: string;
+  mode: 'hint' | 'explanation';
+}): string {
+  const { questionText, optionsList, userAnswerText, correctAnswerText, domain, mode } = params;
+
+  const intro = mode === 'hint'
+    ? 'O\'quvchi birinchi marta xato javob berdi. Qisqa maslahat ber.'
+    : 'O\'quvchi xatoni tuzata olmadi. To\'liq tushuntir.';
+
+  return `${intro}
+
+📚 Mavzu: ${domain}
+
+❓ Savol:
+${questionText}
+
+📋 Barcha javob variantlari:
+${optionsList}
+
+👤 O'quvchi tanladi: "${userAnswerText}"
+✅ To'g'ri javob:   "${correctAnswerText}"`;
 }
 
 serve(async (req) => {
@@ -171,17 +238,20 @@ serve(async (req) => {
       .eq('locale', 'uz')
       .single();
 
-    // 3. Get domain for fallback
-    let domain = 'default';
+    // 3. Get domain and subdomain for richer context
+    let domain = 'Informatika';
+    let subdomain = '';
     const { data: qMeta } = await supabase
       .from('question_bank')
-      .select('domain')
+      .select('domain, subdomain')
       .eq('id', question_id)
       .maybeSingle();
     if (qMeta?.domain) domain = qMeta.domain;
+    if (qMeta?.subdomain) subdomain = qMeta.subdomain;
+
+    const fullDomain = subdomain ? `${domain} → ${subdomain}` : domain;
 
     if (!question) {
-      // Question not found in DB — use local fallback
       const fallback = getFallbackExplanation(domain, mode);
       return new Response(
         JSON.stringify({ explanation: fallback, cached: false, source: 'local_fallback' }),
@@ -193,40 +263,28 @@ serve(async (req) => {
     const correctOption = options.find((o) => o.is_correct);
     const userOption = options[user_answer_index];
 
-    // 4. Build the Groq prompt
-    const hintPrompt = `Sen oʻzbek tilida taʼlim beruvchi doʻstona AI yordamchisan.
-O'zbek o'qituvchisi attestatsiyaga tayyorlanmoqda. U noto'g'ri javob berdi BIRINCHI MARTA.
+    // Build a labelled options list: "A) ...\nB) ...\nC) ...\nD) ..."
+    const optionsList = options
+      .map((o, i) => `${String.fromCharCode(65 + i)}) ${o.text}`)
+      .join('\n');
 
-MUHIM: SEN TOʻGʻRI JAVOBNI AYTMAYSAN! Foydalanuvchi yana oʻzi oʻylab koʻrsin.
+    // 4. Build prompts with full context
+    const systemPrompt = mode === 'hint' ? HINT_SYSTEM_PROMPT : EXPLANATION_SYSTEM_PROMPT;
 
-Vazifang (2-3 qisqa jumla):
-1. Nima uchun uning javobi notoʻgʻri (lekin doʻstona, qoralashsiz)
-2. Qaysi tomonga oʻylash kerakligini ishora qil (variantni nomlamasdan)
-3. Qaysi mavzu/tushunchani eslab koʻrishni tavsiya qil
+    const userPrompt = buildUserMessage({
+      questionText: question.question_text,
+      optionsList,
+      userAnswerText: userOption?.text || "noma'lum",
+      correctAnswerText: correctOption?.text || "noma'lum",
+      domain: fullDomain,
+      mode,
+    });
 
-JAVOB FAQAT OʻZBEK TILIDA. TOʻGʻRI VARIANTNI NOMLAMA!`;
-
-    const explanationPrompt = `Sen oʻzbek tilida taʼlim beruvchi doʻstona AI yordamchisan.
-O'zbek o'qituvchisi attestatsiyaga tayyorlanmoqda. U IKKINCHI MARTA notoʻgʻri javob berdi. Endi toʻliq tushuntir.
-
-Vazifang (3-4 qisqa jumla):
-1. Toʻgʻri javob qaysi va NIMA UCHUN
-2. Nima uchun uning tanlovi notoʻgʻri
-3. Qaysi mavzuni takrorlash kerak
-
-JAVOB FAQAT OʻZBEK TILIDA. Doʻstona ohangda.`;
-
-    const systemPrompt = mode === 'hint' ? hintPrompt : explanationPrompt;
-
-    const userPrompt = `Savol: ${question.question_text}
-
-Foydalanuvchi javobi: ${userOption?.text || "noma'lum"}
-To'g'ri javob: ${correctOption?.text || "noma'lum"}
-
-Xatoni tushuntir.`;
+    // hint: concise (200 tokens); explanation: structured 4-part (420 tokens)
+    const maxTokens = mode === 'hint' ? 200 : 420;
 
     // 5. Call Groq with retry
-    let explanation = await callGroqWithRetry(systemPrompt, userPrompt);
+    let explanation = await callGroqWithRetry(systemPrompt, userPrompt, maxTokens);
 
     // 6. If Groq failed, use local fallback
     if (!explanation) {
