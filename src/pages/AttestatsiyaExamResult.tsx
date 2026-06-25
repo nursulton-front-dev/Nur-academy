@@ -68,7 +68,8 @@ export default function AttestatsiyaExamResult() {
         explanation: q.explanation,
         question_type: 'multiple_choice' as const,
         user_answer_text: undefined as string | undefined,
-        correct_answer_text: undefined as string | undefined
+        correct_answer_text: undefined as string | undefined,
+        imageUrl: null as string | null
       }));
 
   // Function to get color class based on score percentage
@@ -245,6 +246,11 @@ export default function AttestatsiyaExamResult() {
                   <h4 className="text-text-primary font-medium leading-relaxed">
                     {q.text}
                   </h4>
+
+                  {q.imageUrl && (
+                    <img src={q.imageUrl} alt="Savol rasmi" loading="lazy"
+                      className="max-w-full h-auto rounded-xl border border-border-card" />
+                  )}
 
                   {/* Input answer review */}
                   {q.question_type === 'input' ? (

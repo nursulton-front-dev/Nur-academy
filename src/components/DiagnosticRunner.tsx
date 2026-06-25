@@ -325,6 +325,10 @@ export default function DiagnosticRunner({
             <h2 className="text-lg sm:text-xl font-serif font-extrabold text-text-primary leading-relaxed">
               {current.text}
             </h2>
+            {current.imageUrl && (
+              <img src={current.imageUrl} alt="Savol rasmi" loading="lazy"
+                className="max-w-full h-auto rounded-xl border border-border-card" />
+            )}
             {current.questionType === 'input' ? (
               <div className="space-y-2">
                 <label className="text-[11px] font-bold text-text-secondary uppercase tracking-widest">

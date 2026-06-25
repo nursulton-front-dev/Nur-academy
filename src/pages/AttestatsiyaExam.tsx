@@ -474,6 +474,11 @@ export default function AttestatsiyaExam() {
 
               <h2 className="text-lg sm:text-xl font-serif font-extrabold text-text-primary leading-relaxed">{currentQuestion.text}</h2>
 
+              {currentQuestion.imageUrl && (
+                <img src={currentQuestion.imageUrl} alt="Savol rasmi" loading="lazy"
+                  className="max-w-full h-auto rounded-xl border border-border-card mt-3" />
+              )}
+
               {isInputQuestion ? (
                 <div className="space-y-2">
                   <label className="text-[11px] font-bold text-text-secondary uppercase tracking-widest">

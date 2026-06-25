@@ -23,6 +23,7 @@ export interface BankQuestion {
   options: string[]; // MC: option labels. input: [] (rendered as a text field).
   correctIndex: number; // MC: index of the correct option. input: -1.
   correctText: string; // input: the expected answer. MC: text of the correct option.
+  imageUrl?: string | null; // optional illustration (diagram, code, table) shown with the question.
 }
 
 export interface DomainBlueprint {
@@ -72,6 +73,7 @@ interface BankRow {
   id: string;
   domain: string;
   question_type: string;
+  image_url?: string | null;
 }
 
 interface TranslationRow {
@@ -104,7 +106,8 @@ function buildQuestion(row: BankRow, trans: TranslationRow): BankQuestion | null
       text: trans.question_text,
       options: [],
       correctIndex: -1,
-      correctText
+      correctText,
+      imageUrl: row.image_url ?? null
     };
   }
 
@@ -125,7 +128,8 @@ function buildQuestion(row: BankRow, trans: TranslationRow): BankQuestion | null
     text: trans.question_text,
     options,
     correctIndex,
-    correctText: correctIndex >= 0 ? options[correctIndex] : ''
+    correctText: correctIndex >= 0 ? options[correctIndex] : '',
+    imageUrl: row.image_url ?? null
   };
 }
 
@@ -177,7 +181,7 @@ export async function loadByBlueprint(
   const wantedDomains = blueprint.map((b) => b.domain).filter(Boolean);
 
   try {
-    let bankQuery = supabase.from('question_bank').select('id, domain, question_type');
+    let bankQuery = supabase.from('question_bank').select('id, domain, question_type, image_url');
     if (wantedDomains.length > 0) bankQuery = bankQuery.in('domain', wantedDomains);
     if (options.difficulty) bankQuery = bankQuery.eq('difficulty', options.difficulty);
 

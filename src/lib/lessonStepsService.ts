@@ -11,6 +11,7 @@ export interface StepQuestion {
   options: string[];
   correctIndex: number;
   questionType: QuizQuestionType;
+  imageUrl?: string | null;
 }
 
 export interface LessonStep {
@@ -88,13 +89,15 @@ export const lessonStepsService = {
     const [{ data: qTrans }, { data: qMeta }] = questionIds.length
       ? await Promise.all([
           supabase.from('question_bank_translations').select('question_id, question_text, options').eq('locale', 'uz').in('question_id', questionIds),
-          supabase.from('question_bank').select('id, question_type').in('id', questionIds),
+          supabase.from('question_bank').select('id, question_type, image_url').in('id', questionIds),
         ])
       : [{ data: [] as any[] }, { data: [] as any[] }];
 
     const typeById = new Map<string, QuizQuestionType>();
+    const imageById = new Map<string, string | null>();
     for (const m of (qMeta ?? []) as any[]) {
       typeById.set(m.id, m.question_type === 'input' ? 'input' : 'multiple_choice');
+      imageById.set(m.id, m.image_url ?? null);
     }
 
     const transByStep = new Map<string, { title: string | null; content: string | null }>();
@@ -117,6 +120,7 @@ export const lessonStepsService = {
         options: q.options,
         correctIndex: q.correctIndex,
         questionType: typeById.get(link.question_id) ?? 'multiple_choice',
+        imageUrl: imageById.get(link.question_id) ?? null,
       });
       questionsByStep.set(link.step_id, list);
     }

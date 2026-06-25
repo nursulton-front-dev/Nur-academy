@@ -18,6 +18,7 @@ export interface DiagnosticQuestion {
   correctIndex: number; // -1 when no option is flagged correct
   questionType?: BankQuestionType; // 'input' renders a text field; default multiple_choice
   correctText?: string; // expected answer for input questions
+  imageUrl?: string | null; // optional illustration shown with the question
 }
 
 // A runner answer is an option index (MC) or a typed string (input).
@@ -159,7 +160,8 @@ export const diagnosticService = {
       options: q.options,
       correctIndex: q.correctIndex,
       questionType: q.questionType,
-      correctText: q.correctText
+      correctText: q.correctText,
+      imageUrl: q.imageUrl ?? null
     }));
   },
 

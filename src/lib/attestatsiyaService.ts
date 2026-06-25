@@ -19,6 +19,7 @@ export interface ExamQuestion {
   text: string;
   options: string[];
   order_index: number;
+  imageUrl?: string | null;
 }
 
 export interface ExamAttemptResponse {
@@ -41,6 +42,7 @@ export interface AnswerReview {
   question_type: string;
   user_answer_text?: string; // input questions: what the user typed
   correct_answer_text?: string; // input questions: the expected answer
+  imageUrl?: string | null; // optional illustration shown with the question
 }
 
 export interface FinishExamResponse {
@@ -146,7 +148,8 @@ export const attestatsiyaService = {
       question_type: q.questionType,
       text: q.text,
       options: q.options,
-      order_index: idx + 1
+      order_index: idx + 1,
+      imageUrl: q.imageUrl ?? null
     }));
 
     return { attempt_id: attemptId, questions: sanitized };
@@ -195,7 +198,8 @@ export const attestatsiyaService = {
         explanation: '',
         question_type: q.questionType,
         user_answer_text: isInput ? String(userAnswer ?? '') : undefined,
-        correct_answer_text: isInput ? q.correctText : undefined
+        correct_answer_text: isInput ? q.correctText : undefined,
+        imageUrl: q.imageUrl ?? null
       });
     }
 

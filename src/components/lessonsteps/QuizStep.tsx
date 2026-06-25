@@ -275,6 +275,11 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
         {q.text}
       </h3>
 
+      {q.imageUrl && (
+        <img src={q.imageUrl} alt="Savol rasmi" loading="lazy"
+          className="max-w-full h-auto rounded-xl border border-border-card mx-auto mb-4" />
+      )}
+
       {isInput ? (
         <div className="space-y-4">
           <input

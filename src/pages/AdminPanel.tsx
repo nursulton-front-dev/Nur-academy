@@ -6,8 +6,9 @@ import {
   Users, BookOpen, HelpCircle, BarChart3, AlertTriangle,
   Plus, TrendingUp, Award, ClipboardList, CheckSquare, Star,
   ShieldCheck, Crown, Trash2, Loader2, X, Search,
-  Zap, MessageSquare, Clock, StopCircle
+  Zap, MessageSquare, Clock, StopCircle, ImagePlus
 } from 'lucide-react';
+import { uploadQuestionImage, deleteQuestionImage } from '../lib/questionImageService';
 
 type AdminTab = 'overview' | 'questions' | 'modules' | 'users' | 'analytics' | 'campaigns' | 'feedback';
 
@@ -130,7 +131,7 @@ export default function AdminPanel() {
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [newQuestion, setNewQuestion] = useState({
     domain: '', subdomain: '', question_type: 'multiple_choice', difficulty: 'medium',
-    question_text: '',
+    question_text: '', image_url: '' as string,
     options: [
       { text: '', is_correct: true },
       { text: '', is_correct: false },
@@ -138,6 +139,9 @@ export default function AdminPanel() {
       { text: '', is_correct: false },
     ],
   });
+  // Question-image upload state (admin-only; bucket RLS also enforces it)
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   // User-management action state
   const [actionUserId, setActionUserId] = useState<string | null>(null); // row with an in-flight tier change
@@ -340,6 +344,29 @@ export default function AdminPanel() {
     setMarkingId(null);
   }
 
+  // Upload a question illustration to Storage and keep its public URL in the form.
+  async function handleQuestionImage(file: File | undefined) {
+    if (!file) return;
+    setImageError(null);
+    setImageUploading(true);
+    try {
+      // Replace any previously uploaded image (best-effort cleanup).
+      if (newQuestion.image_url) await deleteQuestionImage(newQuestion.image_url);
+      const { url } = await uploadQuestionImage(file);
+      setNewQuestion(p => ({ ...p, image_url: url }));
+    } catch (e: any) {
+      setImageError(e?.message ?? 'Rasm yuklashda xato');
+    } finally {
+      setImageUploading(false);
+    }
+  }
+
+  async function handleRemoveQuestionImage() {
+    if (newQuestion.image_url) await deleteQuestionImage(newQuestion.image_url);
+    setNewQuestion(p => ({ ...p, image_url: '' }));
+    setImageError(null);
+  }
+
   async function handleAddQuestion() {
     if (!newQuestion.domain || !newQuestion.question_text) return;
 
@@ -348,6 +375,7 @@ export default function AdminPanel() {
       subdomain: newQuestion.subdomain || null,
       question_type: newQuestion.question_type,
       difficulty: newQuestion.difficulty,
+      image_url: newQuestion.image_url || null,
     }).select().single();
 
     if (qbErr || !qb) { console.error('Failed to insert question:', qbErr); return; }
@@ -362,9 +390,10 @@ export default function AdminPanel() {
     if (tErr) { console.error('Failed to insert translation:', tErr); return; }
 
     setShowQuestionForm(false);
+    setImageError(null);
     setNewQuestion({
       domain: '', subdomain: '', question_type: 'multiple_choice', difficulty: 'medium',
-      question_text: '',
+      question_text: '', image_url: '',
       options: [{ text: '', is_correct: true }, { text: '', is_correct: false }, { text: '', is_correct: false }, { text: '', is_correct: false }],
     });
     loadAdminData();
@@ -495,6 +524,30 @@ export default function AdminPanel() {
                   rows={3}
                   className="w-full mt-1 px-3 py-2.5 rounded-xl border border-border-card bg-surface text-sm text-text-primary focus:outline-none focus:border-accent-blue resize-none" />
               </div>
+
+              {/* Optional illustration (schema, diagram, code, table) */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-text-secondary uppercase">Rasm (ixtiyoriy) — sxema, diagramma, kod, jadval</label>
+                {newQuestion.image_url ? (
+                  <div className="flex items-start gap-3">
+                    <img src={newQuestion.image_url} alt="Savol rasmi" className="max-h-40 w-auto max-w-full rounded-xl border border-border-card" />
+                    <button type="button" onClick={handleRemoveQuestionImage}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-error-red hover:bg-error-red/10 cursor-pointer">
+                      <Trash2 className="w-3.5 h-3.5" /> O'chirish
+                    </button>
+                  </div>
+                ) : (
+                  <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-border-card text-xs font-bold text-text-secondary hover:bg-surface-hover cursor-pointer w-fit">
+                    {imageUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImagePlus className="w-4 h-4" />}
+                    {imageUploading ? 'Yuklanmoqda...' : 'Rasm yuklash'}
+                    <input type="file" accept="image/*" className="hidden" disabled={imageUploading}
+                      onChange={e => { handleQuestionImage(e.target.files?.[0]); e.target.value = ''; }} />
+                  </label>
+                )}
+                <p className="text-[10px] text-text-secondary">PNG, JPG, WEBP, GIF, SVG · maks. 2 MB</p>
+                {imageError && <p className="text-[11px] text-error-red font-medium">{imageError}</p>}
+              </div>
+
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-text-secondary uppercase">Javob variantlari (belgilang to'g'risini)</label>
                 {newQuestion.options.map((opt, i) => (
