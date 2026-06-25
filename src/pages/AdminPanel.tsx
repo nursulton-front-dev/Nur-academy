@@ -5,10 +5,35 @@ import { supabase } from '../lib/supabase';
 import {
   Users, BookOpen, HelpCircle, BarChart3, AlertTriangle,
   Plus, TrendingUp, Award, ClipboardList, CheckSquare, Star,
-  ShieldCheck, Crown, Trash2, Loader2, X, Search
+  ShieldCheck, Crown, Trash2, Loader2, X, Search,
+  Zap, MessageSquare, Clock, StopCircle
 } from 'lucide-react';
 
-type AdminTab = 'overview' | 'questions' | 'modules' | 'users' | 'analytics';
+type AdminTab = 'overview' | 'questions' | 'modules' | 'users' | 'analytics' | 'campaigns' | 'feedback';
+
+interface Campaign {
+  id: string;
+  title: string;
+  message: string;
+  started_at: string;
+  ends_at: string;
+  is_active: boolean;
+  course_id: string | null;
+  created_at: string;
+}
+
+interface FeedbackRow {
+  id: string;
+  user_id: string;
+  course_id: string | null;
+  type: string;
+  message: string;
+  rating: number | null;
+  status: string;
+  created_at: string;
+  profiles?: { full_name: string | null } | null;
+  courses?: { title: string | null } | null;
+}
 
 interface QuestionRow {
   id: string;
@@ -87,6 +112,19 @@ export default function AdminPanel() {
   const [recentDiagnostics, setRecentDiagnostics] = useState<DiagnosticRow[]>([]);
   const [tierBreakdown, setTierBreakdown] = useState<Array<{ tier: string; count: number }>>([]);
   const [topXpUsers, setTopXpUsers] = useState<UserRow[]>([]);
+
+  // Campaigns state
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [campaignForm, setCampaignForm] = useState({ title: '', message: '', course_id: '' });
+  const [campaignSaving, setCampaignSaving] = useState(false);
+  const [campaignError, setCampaignError] = useState<string | null>(null);
+  const [stoppingId, setStoppingId] = useState<string | null>(null);
+
+  // Feedback state
+  const [feedbackRows, setFeedbackRows] = useState<FeedbackRow[]>([]);
+  const [feedbackTypeFilter, setFeedbackTypeFilter] = useState<string>('all');
+  const [feedbackStatusFilter, setFeedbackStatusFilter] = useState<string>('all');
+  const [markingId, setMarkingId] = useState<string | null>(null);
 
   // Question form
   const [showQuestionForm, setShowQuestionForm] = useState(false);
@@ -249,6 +287,57 @@ export default function AdminPanel() {
     }
 
     if (topXp) setTopXpUsers(topXp as UserRow[]);
+
+    // Campaigns (all, admin sees history too)
+    const { data: campData } = await supabase
+      .from('campaigns')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (campData) setCampaigns(campData as Campaign[]);
+
+    // Feedback
+    const { data: fbData } = await supabase
+      .from('feedback')
+      .select('id, user_id, course_id, type, message, rating, status, created_at, profiles(full_name), courses(title)')
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (fbData) setFeedbackRows(fbData as unknown as FeedbackRow[]);
+  }
+
+  async function handleLaunchCampaign() {
+    if (!campaignForm.title.trim() || !campaignForm.message.trim()) return;
+    setCampaignSaving(true);
+    setCampaignError(null);
+    const ends_at = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    const { error } = await supabase.from('campaigns').insert({
+      title: campaignForm.title.trim(),
+      message: campaignForm.message.trim(),
+      ends_at,
+      is_active: true,
+      course_id: campaignForm.course_id || null,
+    });
+    if (error) {
+      setCampaignError(error.message);
+    } else {
+      setCampaignForm({ title: '', message: '', course_id: '' });
+      loadAdminData();
+    }
+    setCampaignSaving(false);
+  }
+
+  async function handleStopCampaign(id: string) {
+    setStoppingId(id);
+    await supabase.from('campaigns').update({ is_active: false }).eq('id', id);
+    setCampaigns(prev => prev.map(c => c.id === id ? { ...c, is_active: false } : c));
+    setStoppingId(null);
+  }
+
+  async function handleMarkReviewed(id: string) {
+    setMarkingId(id);
+    await supabase.from('feedback').update({ status: 'reviewed' }).eq('id', id);
+    setFeedbackRows(prev => prev.map(f => f.id === id ? { ...f, status: 'reviewed' } : f));
+    setMarkingId(null);
   }
 
   async function handleAddQuestion() {
@@ -305,6 +394,8 @@ export default function AdminPanel() {
     { id: 'modules', label: 'Modullar', icon: BookOpen },
     { id: 'users', label: 'Foydalanuvchilar', icon: Users },
     { id: 'analytics', label: 'Analitika', icon: TrendingUp },
+    { id: 'campaigns', label: 'Aksiyalar', icon: Zap },
+    { id: 'feedback', label: 'Fikrlar', icon: MessageSquare },
   ];
 
   return (
@@ -774,6 +865,242 @@ export default function AdminPanel() {
           </div>
         </div>
       )}
+
+      {/* ─── CAMPAIGNS ─── */}
+      {activeTab === 'campaigns' && (
+        <div className="space-y-6">
+          {/* Active campaign status */}
+          {(() => {
+            const active = campaigns.find(c => c.is_active && new Date(c.ends_at) > new Date());
+            return active ? (
+              <div className="bg-accent-blue/8 border border-accent-blue/30 rounded-[24px] p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      Faol
+                    </span>
+                    <span className="text-sm font-bold text-text-primary truncate">{active.title}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-text-secondary">
+                    <Clock className="w-3.5 h-3.5" />
+                    Tugaydi: {new Date(active.ends_at).toLocaleString('uz-UZ')}
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleStopCampaign(active.id)}
+                  disabled={stoppingId === active.id}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-error-red/50 text-error-red text-xs font-bold hover:bg-error-red/10 transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {stoppingId === active.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <StopCircle className="w-3.5 h-3.5" />}
+                  To'xtatish
+                </button>
+              </div>
+            ) : (
+              <div className="bg-surface border border-border-card rounded-[24px] p-5 flex items-center gap-3">
+                <span className="w-2 h-2 rounded-full bg-text-secondary" />
+                <p className="text-sm text-text-secondary">Hozirda faol aksiya yo'q.</p>
+              </div>
+            );
+          })()}
+
+          {/* Launch form */}
+          <div className="bg-surface border border-border-card rounded-[24px] p-6 space-y-4">
+            <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">Yangi aksiya boshlash</h3>
+            {campaignError && (
+              <p className="text-xs text-error-red">{campaignError}</p>
+            )}
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider block mb-1">Sarlavha</label>
+                <input
+                  type="text"
+                  placeholder="masalan: 24 soatlik maxsus taklif"
+                  value={campaignForm.title}
+                  onChange={e => setCampaignForm(f => ({ ...f, title: e.target.value }))}
+                  className="w-full px-4 py-2.5 bg-primary-bg border border-border-card rounded-xl text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-blue transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider block mb-1">Xabar (banner matni)</label>
+                <textarea
+                  rows={3}
+                  placeholder="Foydalanuvchiga ko'rsatiladigan matn..."
+                  value={campaignForm.message}
+                  onChange={e => setCampaignForm(f => ({ ...f, message: e.target.value }))}
+                  className="w-full px-4 py-2.5 bg-primary-bg border border-border-card rounded-xl text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-blue transition-colors resize-none"
+                />
+              </div>
+            </div>
+            <button
+              onClick={handleLaunchCampaign}
+              disabled={campaignSaving || !campaignForm.title.trim() || !campaignForm.message.trim()}
+              className="inline-flex items-center gap-2 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-accent-blue/90 transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {campaignSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+              Aksiyani boshlash (24 soat)
+            </button>
+          </div>
+
+          {/* Campaign history */}
+          {campaigns.length > 0 && (
+            <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
+              <div className="px-6 py-4 border-b border-border-card">
+                <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">Tarix</h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border-card bg-primary-bg">
+                      <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Sarlavha</th>
+                      <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Tugadi</th>
+                      <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Holat</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {campaigns.map(c => {
+                      const isRunning = c.is_active && new Date(c.ends_at) > new Date();
+                      const expired = new Date(c.ends_at) <= new Date();
+                      return (
+                        <tr key={c.id} className="border-b border-border-card/40">
+                          <td className="py-3 px-4">
+                            <p className="font-medium text-text-primary">{c.title}</p>
+                            <p className="text-[11px] text-text-secondary line-clamp-1 mt-0.5">{c.message}</p>
+                          </td>
+                          <td className="py-3 px-4 text-xs text-text-secondary">
+                            {new Date(c.ends_at).toLocaleString('uz-UZ')}
+                          </td>
+                          <td className="py-3 px-4">
+                            {isRunning ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase">
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />Faol
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-full bg-primary-bg text-text-secondary text-[10px] font-bold uppercase">
+                                {expired ? 'Tugagan' : 'To\'xtatilgan'}
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ─── FEEDBACK ─── */}
+      {activeTab === 'feedback' && (() => {
+        const filtered = feedbackRows.filter(f => {
+          const matchType = feedbackTypeFilter === 'all' || f.type === feedbackTypeFilter;
+          const matchStatus = feedbackStatusFilter === 'all' || f.status === feedbackStatusFilter;
+          return matchType && matchStatus;
+        });
+        return (
+          <div className="space-y-4">
+            {/* Filters */}
+            <div className="flex flex-wrap gap-3">
+              <select
+                value={feedbackTypeFilter}
+                onChange={e => setFeedbackTypeFilter(e.target.value)}
+                className="px-3 py-2 bg-surface border border-border-card rounded-xl text-sm text-text-primary focus:outline-none focus:border-accent-blue cursor-pointer"
+              >
+                <option value="all">Barcha turlar</option>
+                <option value="review">Umumiy fikr</option>
+                <option value="bug">Xato / muammo</option>
+                <option value="idea">Taklif / g'oya</option>
+              </select>
+              <select
+                value={feedbackStatusFilter}
+                onChange={e => setFeedbackStatusFilter(e.target.value)}
+                className="px-3 py-2 bg-surface border border-border-card rounded-xl text-sm text-text-primary focus:outline-none focus:border-accent-blue cursor-pointer"
+              >
+                <option value="all">Barcha statuslar</option>
+                <option value="new">Yangi</option>
+                <option value="reviewed">Ko'rilgan</option>
+              </select>
+              <span className="self-center text-xs text-text-secondary">{filtered.length} ta</span>
+            </div>
+
+            {filtered.length === 0 ? (
+              <div className="bg-surface border border-border-card rounded-[24px] p-8 text-center">
+                <p className="text-sm text-text-secondary">Fikrlar yo'q</p>
+              </div>
+            ) : (
+              <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border-card bg-primary-bg">
+                        <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Foydalanuvchi</th>
+                        <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Tur</th>
+                        <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Xabar</th>
+                        <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Reyting</th>
+                        <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Sana</th>
+                        <th className="text-right py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filtered.map(f => (
+                        <tr key={f.id} className="border-b border-border-card/40 hover:bg-surface-hover">
+                          <td className="py-3 px-4">
+                            <p className="font-medium text-text-primary text-xs">{(f.profiles as any)?.full_name || 'Noma\'lum'}</p>
+                            <p className="text-[10px] text-text-secondary font-mono">{f.user_id.slice(0, 10)}…</p>
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
+                              f.type === 'review' ? 'bg-accent-blue/10 text-accent-blue' :
+                              f.type === 'bug' ? 'bg-error-red/10 text-error-red' :
+                              'bg-purple-500/10 text-purple-500'
+                            }`}>{f.type}</span>
+                          </td>
+                          <td className="py-3 px-4 max-w-[240px]">
+                            <p className="text-xs text-text-primary line-clamp-2">{f.message}</p>
+                            {(f.courses as any)?.title && (
+                              <p className="text-[10px] text-text-secondary mt-0.5">{(f.courses as any).title}</p>
+                            )}
+                          </td>
+                          <td className="py-3 px-4">
+                            {f.rating ? (
+                              <div className="flex gap-0.5">
+                                {Array.from({ length: 5 }, (_, i) => (
+                                  <Star key={i} className={`w-3 h-3 ${i < f.rating! ? 'text-amber-400 fill-amber-400' : 'text-border-card'}`} />
+                                ))}
+                              </div>
+                            ) : <span className="text-xs text-text-secondary">—</span>}
+                          </td>
+                          <td className="py-3 px-4 text-xs text-text-secondary whitespace-nowrap">
+                            {new Date(f.created_at).toLocaleDateString('uz-UZ')}
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            {f.status === 'reviewed' ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-green-500/10 text-green-500">
+                                <CheckSquare className="w-3 h-3" />Ko'rilgan
+                              </span>
+                            ) : (
+                              <button
+                                onClick={() => handleMarkReviewed(f.id)}
+                                disabled={markingId === f.id}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold border border-border-card text-text-secondary hover:bg-surface-hover cursor-pointer disabled:opacity-50"
+                              >
+                                {markingId === f.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckSquare className="w-3 h-3" />}
+                                Ko'rildi
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 }
