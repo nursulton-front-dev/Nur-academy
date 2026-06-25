@@ -31,9 +31,11 @@ function continueHref(title: string, courseId: string): string {
 export default function Dashboard() {
   const { user } = useAuth();
   const { slug = ATTESTATSIYA_SLUG } = useParams<{ slug: string }>();
-  const { campaign } = useCampaign();
-  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [enrollments, setEnrollments] = useState<EnrolledCourse[]>([]);
+  // Stable memoised list so useCampaign dep comparison doesn't loop.
+  const enrolledCourseIds = useMemo(() => enrollments.map(e => e.course_id), [enrollments]);
+  const { campaign } = useCampaign(enrolledCourseIds);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [streak, setStreak] = useState(0);
   const [activeToday, setActiveToday] = useState(true);
   const [loading, setLoading] = useState(true);

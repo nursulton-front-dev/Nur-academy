@@ -36,6 +36,13 @@ interface FeedbackRow {
   courses?: { title: string | null } | null;
 }
 
+interface CourseRow {
+  id: string;
+  title: string;
+  slug: string | null;
+  order_index: number | null;
+}
+
 interface QuestionRow {
   id: string;
   domain: string;
@@ -99,6 +106,13 @@ export default function AdminPanel() {
   const { user } = useAuth();
   const { isAdmin, loading } = useIsAdmin();
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
+
+  // Course selector — 'all' = platform-wide; specific id = filter all tabs by course
+  const [courses, setCourses] = useState<CourseRow[]>([]);
+  const [selectedCourseId, setSelectedCourseId] = useState<string>('all');
+
+  // Enrollments raw data (user_id + course_id) for per-course counting
+  const [enrollmentRows, setEnrollmentRows] = useState<{ user_id: string; course_id: string }[]>([]);
 
   // Overview stats
   const [stats, setStats] = useState<OverviewStats>({
@@ -231,7 +245,7 @@ export default function AdminPanel() {
     ] = await Promise.all([
       supabase.from('profiles').select('*', { count: 'exact', head: true }),
       supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('subscription_tier', 'pro'),
-      supabase.from('enrollments').select('user_id').limit(1000),
+      supabase.from('enrollments').select('user_id, course_id').limit(1000),
       supabase.from('question_bank').select('*', { count: 'exact', head: true }),
       supabase.from('exam_attempts').select('total_score, max_score').not('finished_at', 'is', null),
       supabase.from('diagnostic_attempts').select('*', { count: 'exact', head: true }).not('finished_at', 'is', null),
@@ -243,8 +257,12 @@ export default function AdminPanel() {
       supabase.from('profiles').select('id, full_name, role, subscription_tier, is_admin, xp').order('xp', { ascending: false }).limit(10),
     ]);
 
-    // Unique enrolled users
-    const uniqueEnrolled = new Set((enrollData || []).map(e => e.user_id)).size;
+    // Keep raw enrollment rows for per-course filtering
+    const allEnrolls = (enrollData || []) as { user_id: string; course_id: string }[];
+    setEnrollmentRows(allEnrolls);
+
+    // Unique enrolled users (global — per-course computed in render)
+    const uniqueEnrolled = new Set(allEnrolls.map(e => e.user_id)).size;
 
     // Avg exam score
     let avgScore: number | null = null;
@@ -307,6 +325,18 @@ export default function AdminPanel() {
       .order('created_at', { ascending: false })
       .limit(200);
     if (fbData) setFeedbackRows(fbData as unknown as FeedbackRow[]);
+
+    // Courses list for the selector
+    const { data: courseData } = await supabase
+      .from('courses')
+      .select('id, title, slug, order_index')
+      .eq('is_published', true)
+      .order('order_index', { ascending: true });
+    if (courseData) {
+      setCourses(courseData as CourseRow[]);
+      // Auto-select first course if only one (or keep 'all' for multi-course)
+      if (courseData.length === 1) setSelectedCourseId(courseData[0].id);
+    }
   }
 
   async function handleLaunchCampaign() {
@@ -314,12 +344,14 @@ export default function AdminPanel() {
     setCampaignSaving(true);
     setCampaignError(null);
     const ends_at = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    // Campaign is bound to the currently selected course, or platform-wide when 'all'
+    const campaign_course_id = selectedCourseId !== 'all' ? selectedCourseId : null;
     const { error } = await supabase.from('campaigns').insert({
       title: campaignForm.title.trim(),
       message: campaignForm.message.trim(),
       ends_at,
       is_active: true,
-      course_id: campaignForm.course_id || null,
+      course_id: campaign_course_id,
     });
     if (error) {
       setCampaignError(error.message);
@@ -429,9 +461,27 @@ export default function AdminPanel() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-serif font-extrabold text-text-primary">Admin Panel</h1>
-        <p className="text-sm text-text-secondary mt-1">Platforma boshqaruvi</p>
+      <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+        <div>
+          <h1 className="text-2xl font-serif font-extrabold text-text-primary">Admin Panel</h1>
+          <p className="text-sm text-text-secondary mt-1">Platforma boshqaruvi</p>
+        </div>
+        {/* Course selector — filters Overview enrolled count, Feedback, Campaigns */}
+        {courses.length > 0 && (
+          <div className="sm:ml-auto flex items-center gap-2 flex-shrink-0">
+            <BookOpen className="w-4 h-4 text-text-secondary shrink-0" />
+            <select
+              value={selectedCourseId}
+              onChange={e => setSelectedCourseId(e.target.value)}
+              className="px-3 py-2 bg-surface border border-border-card rounded-xl text-sm text-text-primary focus:outline-none focus:border-accent-blue transition-colors cursor-pointer min-w-[180px]"
+            >
+              {courses.length > 1 && <option value="all">Barcha kurslar</option>}
+              {courses.map(c => (
+                <option key={c.id} value={c.id}>{c.title}</option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Tabs */}
@@ -453,22 +503,35 @@ export default function AdminPanel() {
       </div>
 
       {/* ─── OVERVIEW ─── */}
-      {activeTab === 'overview' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={Users} label="Foydalanuvchilar" value={stats.totalUsers} color="bg-accent-blue/10 text-accent-blue" />
-            <StatCard icon={Award} label="Pro obunachi" value={stats.proUsers} color="bg-purple-500/10 text-purple-500" />
-            <StatCard icon={BookOpen} label="Kursga yozilgan" value={stats.enrolledUsers} color="bg-success-green/10 text-success-green" />
-            <StatCard icon={HelpCircle} label="Savollar" value={stats.totalQuestions} color="bg-warning-amber/10 text-warning-amber" />
+      {activeTab === 'overview' && (() => {
+        // Enrolled count filtered to selected course (or global when 'all')
+        const enrolledForCourse = selectedCourseId === 'all'
+          ? new Set(enrollmentRows.map(e => e.user_id)).size
+          : new Set(enrollmentRows.filter(e => e.course_id === selectedCourseId).map(e => e.user_id)).size;
+        const selectedCourse = courses.find(c => c.id === selectedCourseId);
+        const courseLabel = selectedCourse ? selectedCourse.title : 'Barcha kurslar';
+        return (
+          <div className="space-y-6">
+            {selectedCourseId !== 'all' && (
+              <p className="text-[11px] text-text-secondary font-medium">
+                Ko'rsatilmoqda: <span className="text-accent-blue font-bold">{courseLabel}</span>
+              </p>
+            )}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <StatCard icon={Users} label="Foydalanuvchilar" value={stats.totalUsers} color="bg-accent-blue/10 text-accent-blue" />
+              <StatCard icon={Award} label="Pro obunachi" value={stats.proUsers} color="bg-purple-500/10 text-purple-500" />
+              <StatCard icon={BookOpen} label={selectedCourseId === 'all' ? "Kursga yozilgan" : "Kursda o'quvchilar"} value={enrolledForCourse} color="bg-success-green/10 text-success-green" />
+              <StatCard icon={HelpCircle} label="Savollar bazasi" value={stats.totalQuestions} color="bg-warning-amber/10 text-warning-amber" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <StatCard icon={ClipboardList} label="Imtihon topshirildi" value={stats.finishedExams} color="bg-accent-blue/10 text-accent-blue" />
+              <StatCard icon={BarChart3} label="O'rtacha ball" value={stats.avgExamScore != null ? `${stats.avgExamScore}%` : '—'} color="bg-success-green/10 text-success-green" />
+              <StatCard icon={TrendingUp} label="Diagnostika tugandi" value={stats.finishedDiagnostics} color="bg-purple-500/10 text-purple-500" />
+              <StatCard icon={CheckSquare} label="Dars tugatildi" value={stats.completedLessons} color="bg-warning-amber/10 text-warning-amber" />
+            </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={ClipboardList} label="Imtihon topshirildi" value={stats.finishedExams} color="bg-accent-blue/10 text-accent-blue" />
-            <StatCard icon={BarChart3} label="O'rtacha ball" value={stats.avgExamScore != null ? `${stats.avgExamScore}%` : '—'} color="bg-success-green/10 text-success-green" />
-            <StatCard icon={TrendingUp} label="Diagnostika tugandi" value={stats.finishedDiagnostics} color="bg-purple-500/10 text-purple-500" />
-            <StatCard icon={CheckSquare} label="Dars tugatildi" value={stats.completedLessons} color="bg-warning-amber/10 text-warning-amber" />
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ─── QUESTIONS ─── */}
       {activeTab === 'questions' && (
@@ -640,10 +703,15 @@ export default function AdminPanel() {
       {/* ─── USERS ─── */}
       {activeTab === 'users' && (() => {
         const q = userSearch.trim().toLowerCase();
+        // IDs enrolled in the selected course (used for optional filter)
+        const enrolledInCourse = selectedCourseId !== 'all'
+          ? new Set(enrollmentRows.filter(e => e.course_id === selectedCourseId).map(e => e.user_id))
+          : null;
         const filteredUsers = users.filter(u => {
           const matchName = !q || (u.full_name ?? '').toLowerCase().includes(q);
           const matchTier = tierFilter === 'all' || (u.subscription_tier ?? 'free') === tierFilter;
-          return matchName && matchTier;
+          const matchCourse = !enrolledInCourse || enrolledInCourse.has(u.id);
+          return matchName && matchTier && matchCourse;
         });
         return (
         <div className="space-y-4">
@@ -676,7 +744,12 @@ export default function AdminPanel() {
               <option value="pro">Pro</option>
             </select>
           </div>
-          <p className="text-[11px] text-text-secondary">{filteredUsers.length} / {users.length} foydalanuvchi</p>
+          <p className="text-[11px] text-text-secondary">
+            {filteredUsers.length} / {users.length} foydalanuvchi
+            {selectedCourseId !== 'all' && (
+              <span className="ml-2 text-accent-blue font-medium">· {courses.find(c => c.id === selectedCourseId)?.title ?? ''} kursida ro'yxatdan o'tganlar</span>
+            )}
+          </p>
 
           <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
             <div className="overflow-x-auto">
@@ -920,11 +993,17 @@ export default function AdminPanel() {
       )}
 
       {/* ─── CAMPAIGNS ─── */}
-      {activeTab === 'campaigns' && (
+      {activeTab === 'campaigns' && (() => {
+        // Filter campaigns: show those for selected course OR platform-wide (course_id=null)
+        const visibleCampaigns = selectedCourseId === 'all'
+          ? campaigns
+          : campaigns.filter(c => c.course_id === selectedCourseId || c.course_id === null);
+        const selectedCourseName = courses.find(c => c.id === selectedCourseId)?.title;
+        return (
         <div className="space-y-6">
           {/* Active campaign status */}
           {(() => {
-            const active = campaigns.find(c => c.is_active && new Date(c.ends_at) > new Date());
+            const active = visibleCampaigns.find(c => c.is_active && new Date(c.ends_at) > new Date());
             return active ? (
               <div className="bg-accent-blue/8 border border-accent-blue/30 rounded-[24px] p-5 flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="flex-1 min-w-0 space-y-1">
@@ -959,7 +1038,21 @@ export default function AdminPanel() {
 
           {/* Launch form */}
           <div className="bg-surface border border-border-card rounded-[24px] p-6 space-y-4">
-            <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">Yangi aksiya boshlash</h3>
+            <div className="flex items-center gap-3">
+              <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">Yangi aksiya boshlash</h3>
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                selectedCourseId !== 'all'
+                  ? 'bg-accent-blue/10 text-accent-blue'
+                  : 'bg-primary-bg text-text-secondary'
+              }`}>
+                {selectedCourseId !== 'all' && selectedCourseName ? selectedCourseName : 'Barcha kurslar'}
+              </span>
+            </div>
+            {selectedCourseId !== 'all' && (
+              <p className="text-[11px] text-text-secondary">
+                Bu aksiya faqat <span className="font-bold text-text-primary">{selectedCourseName}</span> kursiga yozilgan o'quvchilarga ko'rsatiladi.
+              </p>
+            )}
             {campaignError && (
               <p className="text-xs text-error-red">{campaignError}</p>
             )}
@@ -996,7 +1089,7 @@ export default function AdminPanel() {
           </div>
 
           {/* Campaign history */}
-          {campaigns.length > 0 && (
+          {visibleCampaigns.length > 0 && (
             <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
               <div className="px-6 py-4 border-b border-border-card">
                 <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">Tarix</h3>
@@ -1006,19 +1099,28 @@ export default function AdminPanel() {
                   <thead>
                     <tr className="border-b border-border-card bg-primary-bg">
                       <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Sarlavha</th>
+                      <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Kurs</th>
                       <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Tugadi</th>
                       <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Holat</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {campaigns.map(c => {
+                    {visibleCampaigns.map(c => {
                       const isRunning = c.is_active && new Date(c.ends_at) > new Date();
                       const expired = new Date(c.ends_at) <= new Date();
+                      const cName = c.course_id
+                        ? (courses.find(cr => cr.id === c.course_id)?.title ?? c.course_id.slice(0, 8))
+                        : 'Umumiy';
                       return (
                         <tr key={c.id} className="border-b border-border-card/40">
                           <td className="py-3 px-4">
                             <p className="font-medium text-text-primary">{c.title}</p>
                             <p className="text-[11px] text-text-secondary line-clamp-1 mt-0.5">{c.message}</p>
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${c.course_id ? 'bg-accent-blue/10 text-accent-blue' : 'bg-primary-bg text-text-secondary'}`}>
+                              {cName}
+                            </span>
                           </td>
                           <td className="py-3 px-4 text-xs text-text-secondary">
                             {new Date(c.ends_at).toLocaleString('uz-UZ')}
@@ -1043,14 +1145,17 @@ export default function AdminPanel() {
             </div>
           )}
         </div>
-      )}
+        );
+      })()}
 
       {/* ─── FEEDBACK ─── */}
       {activeTab === 'feedback' && (() => {
         const filtered = feedbackRows.filter(f => {
           const matchType = feedbackTypeFilter === 'all' || f.type === feedbackTypeFilter;
           const matchStatus = feedbackStatusFilter === 'all' || f.status === feedbackStatusFilter;
-          return matchType && matchStatus;
+          // Course filter: show feedback for selected course; null rows are platform-wide → always show
+          const matchCourse = selectedCourseId === 'all' || f.course_id === selectedCourseId || f.course_id === null;
+          return matchType && matchStatus && matchCourse;
         });
         return (
           <div className="space-y-4">
