@@ -16,15 +16,18 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { learningEngineService, ErrorRecord } from '../lib/learningEngine';
-import { subscriptionService } from '../lib/subscription';
+import { useProStatus } from '../hooks/useProStatus';
 import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
 import { EmptyState } from '../components/app/ui';
 
 export default function ErrorNotebook() {
   const navigate = useNavigate();
+  // Pro gate read from the DB (source of truth) so it's correct on any device,
+  // not just where the user checked out. localStorage is only a reflection.
+  const { isPro, loading: proLoading } = useProStatus();
   const errors = learningEngineService.getErrors();
   const reviewQueue = learningEngineService.getReviewQueue();
-  const isLocked = subscriptionService.isFeatureLocked('hasErrorNotebook');
+  const isLocked = !isPro;
 
   // Filter states
   const [activeTab, setActiveTab] = useState<'queue' | 'all'>('queue');
@@ -35,6 +38,18 @@ export default function ErrorNotebook() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [calcInput, setCalcInput] = useState('');
   const [reviewResult, setReviewResult] = useState<{ isCorrect: boolean; explanation: string } | null>(null);
+
+  // While the DB Pro check resolves, show a spinner instead of flashing the lock
+  // wall to a Pro user (whose localStorage may still be cold on a new device).
+  if (proLoading) {
+    return (
+      <AppPage>
+        <div className="flex justify-center items-center min-h-[40vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue" />
+        </div>
+      </AppPage>
+    );
+  }
 
   // Lock Wall redirect
   if (isLocked) {
