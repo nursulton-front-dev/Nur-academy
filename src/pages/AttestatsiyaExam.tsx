@@ -14,6 +14,8 @@ import { attestatsiyaService, ExamQuestion } from '../lib/attestatsiyaService';
 import { useAuth } from '../contexts/AuthContext';
 import { xpService } from '../lib/xpService';
 import TestExitGuard from '../components/TestExitGuard';
+import { useFullscreenGuard } from '../hooks/useFullscreenGuard';
+import FullscreenPauseOverlay from '../components/FullscreenPauseOverlay';
 
 /* ───────────────────── Sub-components ───────────────────── */
 
@@ -97,7 +99,6 @@ export default function AttestatsiyaExam() {
   // 'loading' → questions fetch; 'warning' → pre-exam screen; 'running' → exam; 'finishing' → saving
   const [phase, setPhase] = useState<'loading' | 'warning' | 'running' | 'finishing'>('loading');
   const [finished, setFinished] = useState(false);
-  const [fullscreenLeft, setFullscreenLeft] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -130,27 +131,6 @@ export default function AttestatsiyaExam() {
       });
     }
   }, [currentQuestionIndex, questions]);
-
-  useEffect(() => {
-    if (phase !== 'running') return;
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) { clearInterval(timer); handleFinishExam(); return 0; }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [phase]);
-
-  // Soft fullscreen-exit warning — does NOT interrupt the exam
-  useEffect(() => {
-    if (phase !== 'running') return;
-    const handler = () => {
-      if (!document.fullscreenElement) setFullscreenLeft(true);
-    };
-    document.addEventListener('fullscreenchange', handler);
-    return () => document.removeEventListener('fullscreenchange', handler);
-  }, [phase]);
 
   const handleStart = () => {
     document.documentElement.requestFullscreen?.().catch(() => {});
@@ -234,6 +214,24 @@ export default function AttestatsiyaExam() {
       setPhase('running');
     }
   };
+
+  // Fullscreen guard: pause on exit, auto-finish (with save) after MAX exits.
+  const { paused, exitCount, maxExits, terminated, resume } = useFullscreenGuard({
+    active: phase === 'running' && !finished,
+    onLimitReached: handleFinishExam,
+  });
+
+  // Countdown — frozen while paused (out of fullscreen).
+  useEffect(() => {
+    if (phase !== 'running' || paused || terminated) return;
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) { clearInterval(timer); handleFinishExam(); return 0; }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [phase, paused, terminated]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -346,21 +344,15 @@ export default function AttestatsiyaExam() {
     <div className="fixed inset-0 z-[60] h-[100dvh] w-screen bg-primary-bg overflow-hidden flex flex-col font-sans select-none">
       <TestExitGuard when={!finished} />
 
-      {/* Soft fullscreen-exit warning — does not stop the exam */}
-      {fullscreenLeft && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[110] animate-fadeIn">
-          <div className="bg-amber-500 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 text-sm font-semibold">
-            <AlertTriangle className="w-4 h-4 shrink-0" />
-            <span>Toʻliq ekrandan chiqdingiz. Imtihon davom etmoqda.</span>
-            <button
-              onClick={() => { setFullscreenLeft(false); document.documentElement.requestFullscreen?.().catch(() => {}); }}
-              className="ml-2 underline text-white/90 hover:text-white text-xs cursor-pointer"
-            >
-              Qaytish
-            </button>
-            <button onClick={() => setFullscreenLeft(false)} className="ml-1 text-white/80 hover:text-white cursor-pointer">✕</button>
-          </div>
-        </div>
+      {/* Fullscreen pause / auto-finish overlay */}
+      {(paused || terminated) && (
+        <FullscreenPauseOverlay
+          label="Imtihon"
+          exitCount={exitCount}
+          maxExits={maxExits}
+          terminated={terminated}
+          onResume={resume}
+        />
       )}
 
       {/* Header */}
