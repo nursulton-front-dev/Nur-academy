@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Target, Lightbulb, ArrowRight, RefreshCw, BookOpen, XCircle } from 'lucide-react';
+import { Sparkles, Target, Lightbulb, ArrowRight, RefreshCw, BookOpen, XCircle, CheckCircle2, ListChecks, ChevronDown } from 'lucide-react';
 import { DomainResult } from '../lib/diagnosticService';
 import { domainLabel } from '../lib/domains';
 import { AIMentorBlock } from './AIMentorBlock';
@@ -9,6 +9,20 @@ export interface WrongAnswerReview {
   questionId: string;
   questionText: string;
   userAnswerIndex: number;
+}
+
+// Full per-question review (every question, right or wrong) — mirrors the mock
+// exam result breakdown so students can study their answers.
+export interface AnswerReviewItem {
+  questionId: string;
+  questionText: string;
+  options: string[];
+  userAnswerIndex: number; // -1 = unanswered or input question
+  correctAnswerIndex: number; // -1 for input questions
+  isCorrect: boolean;
+  isInput?: boolean;
+  userAnswerText?: string;
+  correctAnswerText?: string;
 }
 
 interface DiagnosticResultViewProps {
@@ -20,6 +34,7 @@ interface DiagnosticResultViewProps {
   onRetake?: () => void; // when provided, renders an action button instead of a link
   retaking?: boolean;
   wrongAnswers?: WrongAnswerReview[]; // fresh completion only — drives the AI Mentor review
+  answerReview?: AnswerReviewItem[]; // full per-question breakdown (correct + wrong)
 }
 
 // Domain bar color by performance band.
@@ -46,10 +61,13 @@ export default function DiagnosticResultView({
   finishedAt,
   onRetake,
   retaking = false,
-  wrongAnswers
+  wrongAnswers,
+  answerReview
 }: DiagnosticResultViewProps) {
   const meetsGoal = goalScore != null && totalScore >= goalScore;
   const pointsToGoal = goalScore != null ? Math.max(0, goalScore - totalScore) : 0;
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const correctCount = answerReview?.filter((a) => a.isCorrect).length ?? 0;
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto py-8 px-4 text-left font-sans">
@@ -147,6 +165,76 @@ export default function DiagnosticResultView({
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Full per-question answer review (collapsible) */}
+      {answerReview && answerReview.length > 0 && (
+        <div className="bg-surface border border-border-card rounded-[24px] shadow-sm text-left overflow-hidden">
+          <button
+            onClick={() => setReviewOpen((v) => !v)}
+            className="w-full flex items-center justify-between gap-3 p-6 cursor-pointer hover:bg-surface-hover transition-colors"
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <ListChecks className="w-5 h-5 text-accent-blue shrink-0" />
+              <h3 className="font-serif font-bold text-base text-text-primary truncate">Javoblar tahlili</h3>
+              <span className="text-xs font-bold text-text-secondary shrink-0">
+                ({correctCount} / {answerReview.length} toʻgʻri)
+              </span>
+            </div>
+            <ChevronDown className={`w-5 h-5 text-text-secondary shrink-0 transition-transform ${reviewOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {reviewOpen && (
+            <div className="px-4 sm:px-6 pb-6 space-y-4">
+              {answerReview.map((q, idx) => (
+                <div key={q.questionId} className="border border-border-card/60 rounded-2xl p-4 space-y-3">
+                  <div className="flex items-start gap-2.5">
+                    {q.isCorrect ? (
+                      <CheckCircle2 className="w-4.5 h-4.5 text-emerald-500 shrink-0 mt-0.5" />
+                    ) : (
+                      <XCircle className="w-4.5 h-4.5 text-rose-500 shrink-0 mt-0.5" />
+                    )}
+                    <p className="text-sm font-semibold text-text-primary leading-snug">
+                      <span className="text-text-secondary">{idx + 1}. </span>{q.questionText}
+                    </p>
+                  </div>
+
+                  {q.isInput ? (
+                    <div className="pl-7 space-y-1.5 text-sm">
+                      <p className={q.isCorrect ? 'text-emerald-600' : 'text-rose-600'}>
+                        Sizning javobingiz: <strong>{q.userAnswerText || '—'}</strong>
+                      </p>
+                      {!q.isCorrect && (
+                        <p className="text-emerald-600">Toʻgʻri javob: <strong>{q.correctAnswerText || '—'}</strong></p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="pl-7 space-y-1.5">
+                      {q.options.map((opt, oi) => {
+                        const isCorrectOpt = oi === q.correctAnswerIndex;
+                        const isUserOpt = oi === q.userAnswerIndex;
+                        let cls = 'border-border-card text-text-secondary';
+                        if (isCorrectOpt) cls = 'border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-semibold';
+                        else if (isUserOpt && !q.isCorrect) cls = 'border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 font-semibold';
+                        return (
+                          <div key={oi} className={`flex items-center gap-2.5 text-sm px-3 py-2 rounded-lg border ${cls}`}>
+                            <span className="text-[10px] font-bold uppercase shrink-0">{String.fromCharCode(65 + oi)}</span>
+                            <span className="leading-snug">{opt}</span>
+                            {isCorrectOpt && <CheckCircle2 className="w-4 h-4 ml-auto shrink-0 text-emerald-500" />}
+                            {isUserOpt && !q.isCorrect && <XCircle className="w-4 h-4 ml-auto shrink-0 text-rose-500" />}
+                          </div>
+                        );
+                      })}
+                      {q.userAnswerIndex === -1 && (
+                        <p className="text-xs text-text-secondary italic">Javob berilmagan</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

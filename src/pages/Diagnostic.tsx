@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PlayCircle, ListChecks, Clock, Layers, Loader2 } from 'lucide-react';
+import { PlayCircle, ListChecks, Clock, Layers, Loader2, AlertTriangle, Maximize2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { enrollmentService } from '../lib/enrollmentService';
 import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
@@ -23,7 +23,7 @@ import {
 } from '../lib/diagnosticService';
 import { isBankAnswerCorrect } from '../lib/questionBankService';
 import DiagnosticRunner from '../components/DiagnosticRunner';
-import DiagnosticResultView from '../components/DiagnosticResultView';
+import DiagnosticResultView, { AnswerReviewItem } from '../components/DiagnosticResultView';
 
 type DiagnosticState = 'loading' | 'intro' | 'test' | 'result';
 
@@ -39,6 +39,7 @@ interface ResultData {
   recommendation: string;
   finishedAt: string | null;
   wrongAnswers?: WrongAnswer[];
+  answerReview?: AnswerReviewItem[];
 }
 
 export default function Diagnostic() {
@@ -102,6 +103,8 @@ export default function Diagnostic() {
       setAttempt(created);
       setQuestions(loadedQuestions);
       setResult(null);
+      // Enter fullscreen for a focused test (same UX as the mock exam). Best-effort.
+      document.documentElement.requestFullscreen?.().catch(() => {});
       setState('test');
     } finally {
       setStarting(false);
@@ -123,7 +126,28 @@ export default function Diagnostic() {
         userAnswerIndex: q.questionType === 'input' ? -1 : Number(answers[q.id])
       }));
 
-    setResult({ totalScore, domainResults, recommendation, finishedAt: new Date().toISOString(), wrongAnswers });
+    // Full per-question review (correct + wrong) for the collapsible breakdown.
+    const answerReview: AnswerReviewItem[] = questions.map((q) => {
+      const ans = answers[q.id];
+      const isInput = q.questionType === 'input';
+      const given = ans !== undefined && ans !== '';
+      return {
+        questionId: q.id,
+        questionText: q.text,
+        options: q.options,
+        userAnswerIndex: isInput || !given ? -1 : Number(ans),
+        correctAnswerIndex: isInput ? -1 : q.correctIndex,
+        isCorrect: given && isBankAnswerCorrect(q, ans),
+        isInput,
+        userAnswerText: isInput ? String(ans ?? '') : undefined,
+        correctAnswerText: isInput ? q.correctText : undefined,
+      };
+    });
+
+    // Leaving the focus/fullscreen mode as the test ends.
+    if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+
+    setResult({ totalScore, domainResults, recommendation, finishedAt: new Date().toISOString(), wrongAnswers, answerReview });
     setState('result');
 
     // Mirror into localStorage so legacy sidebar cards (WeakTopicsCard, etc.) keep working.
@@ -182,6 +206,7 @@ export default function Diagnostic() {
         onRetake={startTest}
         retaking={starting}
         wrongAnswers={result.wrongAnswers}
+        answerReview={result.answerReview}
       />
     );
   }
@@ -252,6 +277,24 @@ export default function Diagnostic() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Pre-test warning — matches the mock exam UX */}
+        <div className="relative z-10 bg-amber-500/[0.07] border border-amber-500/25 rounded-2xl p-4 space-y-2.5">
+          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+            <AlertTriangle className="w-4.5 h-4.5 shrink-0" />
+            <p className="text-xs font-bold uppercase tracking-wider">Boshlashdan oldin</p>
+          </div>
+          <ul className="space-y-1.5 text-sm text-text-secondary">
+            <li className="flex items-start gap-2.5">
+              <Clock className="w-4 h-4 shrink-0 mt-0.5 text-accent-blue" />
+              <span>Test <strong className="text-text-primary">120 daqiqa</strong> bilan cheklangan — sahifani yopmang, vaqt toʻxtamaydi.</span>
+            </li>
+            <li className="flex items-start gap-2.5">
+              <Maximize2 className="w-4 h-4 shrink-0 mt-0.5 text-accent-blue" />
+              <span>Test <strong className="text-text-primary">toʻliq ekran</strong> rejimida boshlanadi.</span>
+            </li>
+          </ul>
         </div>
 
         <div className="relative z-10">
