@@ -41,6 +41,9 @@ import Konspektlar from './pages/Konspektlar';
 import Pricing from './pages/Pricing';
 import AdminPanel from './pages/AdminPanel';
 import AttestatsiyaResults from './pages/AttestatsiyaResults';
+import Feedback from './pages/Feedback';
+import NotFound from './pages/NotFound';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Generic legacy redirect: /attestatsiya/<rest> → /kurs/attestatsiya/<rest>,
 // preserving the subpath + query so old links and bookmarks keep working.
@@ -71,14 +74,17 @@ function RouteTracker() {
 //    works for ANY course under /kurs/:slug, including /obuna.
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<RouteTracker />}>
+    <Route element={<RouteTracker />} errorElement={<ErrorBoundary />}>
       {/* ───────── PUBLIC + focus-mode (public Layout) ───────── */}
       <Route element={<Layout />}>
         <Route path="/" element={<Landing />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
+        {/* Common alias people type/land on → real signup page. */}
+        <Route path="register" element={<Navigate to="/signup" replace />} />
         <Route path="courses" element={<CourseCatalog />} />
         <Route path="courses/:id" element={<CourseDetails />} />
+        <Route path="feedback" element={<Feedback />} />
         <Route path="dev-status" element={<DevStatus />} />
         <Route path="project-status" element={<DevStatus />} />
 
@@ -120,6 +126,11 @@ const router = createBrowserRouter(
       {/* ───────── LEGACY redirects: /attestatsiya/* → /kurs/attestatsiya/* ───────── */}
       <Route path="attestatsiya" element={<Navigate to="/kurs/attestatsiya" replace />} />
       <Route path="attestatsiya/*" element={<LegacyAttestatsiyaRedirect />} />
+
+      {/* ───────── Catch-all → custom 404 (inside public Layout chrome) ───────── */}
+      <Route element={<Layout />}>
+        <Route path="*" element={<NotFound />} />
+      </Route>
     </Route>
   )
 );

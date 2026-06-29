@@ -219,6 +219,18 @@ export function Layout() {
       <main className="flex-1">
         <Outlet />
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border-card bg-surface mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
+          <p className="text-text-secondary">© {new Date().getFullYear()} Nur Academy</p>
+          <nav className="flex items-center gap-5">
+            <Link to="/courses" className="text-text-secondary hover:text-text-primary transition-colors">Kurslar</Link>
+            <Link to="/pricing" className="text-text-secondary hover:text-text-primary transition-colors">Tariflar</Link>
+            <Link to="/feedback" className="text-text-secondary hover:text-text-primary transition-colors">Fikr bildirish</Link>
+          </nav>
+        </div>
+      </footer>
     </div>
   );
 }
