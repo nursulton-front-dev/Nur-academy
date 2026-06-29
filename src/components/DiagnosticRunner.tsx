@@ -3,6 +3,8 @@ import { ChevronLeft, ChevronRight, Bookmark, Clock, AlertTriangle } from 'lucid
 import { DiagnosticQuestion, DiagnosticAnswer } from '../lib/diagnosticService';
 import { domainLabel } from '../lib/domains';
 import TestExitGuard from './TestExitGuard';
+import { useFullscreenGuard } from '../hooks/useFullscreenGuard';
+import FullscreenPauseOverlay from './FullscreenPauseOverlay';
 
 interface DiagnosticRunnerProps {
   questions: DiagnosticQuestion[];
@@ -90,7 +92,6 @@ export default function DiagnosticRunner({
   const [timeLeft, setTimeLeft] = useState(durationSeconds);
   const [showSubmit, setShowSubmit] = useState(false);
   const [finished, setFinished] = useState(false);
-  const [fullscreenLeft, setFullscreenLeft] = useState(false);
 
   const current = questions[currentIndex];
 
@@ -99,7 +100,15 @@ export default function DiagnosticRunner({
     onFinish(answers);
   }, [answers, onFinish]);
 
+  // Fullscreen guard: pause on exit, auto-finish (with save) after MAX exits.
+  const { paused, exitCount, maxExits, terminated, resume } = useFullscreenGuard({
+    active: !finished,
+    onLimitReached: finish,
+  });
+
+  // Countdown — frozen while paused (out of fullscreen).
   useEffect(() => {
+    if (paused || terminated) return;
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -111,17 +120,7 @@ export default function DiagnosticRunner({
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [finish]);
-
-  // Soft fullscreen-exit warning — does NOT interrupt the test (mirrors the exam).
-  useEffect(() => {
-    if (finished) return;
-    const handler = () => {
-      if (!document.fullscreenElement) setFullscreenLeft(true);
-    };
-    document.addEventListener('fullscreenchange', handler);
-    return () => document.removeEventListener('fullscreenchange', handler);
-  }, [finished]);
+  }, [finish, paused, terminated]);
 
   useEffect(() => {
     if (!current) return;
@@ -225,20 +224,15 @@ export default function DiagnosticRunner({
     <div className="fixed inset-0 z-[60] h-[100dvh] w-screen bg-primary-bg overflow-hidden flex flex-col font-sans select-none">
       <TestExitGuard when={!finished} />
 
-      {/* Soft fullscreen-exit warning — does not stop the test */}
-      {fullscreenLeft && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[110] animate-fadeIn px-4 w-full max-w-md">
-          <div className="bg-amber-500 text-white px-4 sm:px-5 py-3 rounded-xl shadow-xl flex items-center gap-2.5 text-sm font-semibold">
-            <AlertTriangle className="w-4 h-4 shrink-0" />
-            <span className="min-w-0">Toʻliq ekrandan chiqdingiz. Test davom etmoqda.</span>
-            <button
-              onClick={() => { setFullscreenLeft(false); document.documentElement.requestFullscreen?.().catch(() => {}); }}
-              className="ml-auto underline text-white/90 hover:text-white text-xs cursor-pointer shrink-0"
-            >
-              Qaytish
-            </button>
-          </div>
-        </div>
+      {/* Fullscreen pause / auto-finish overlay */}
+      {(paused || terminated) && (
+        <FullscreenPauseOverlay
+          label="Test"
+          exitCount={exitCount}
+          maxExits={maxExits}
+          terminated={terminated}
+          onResume={resume}
+        />
       )}
 
       {/* Header */}

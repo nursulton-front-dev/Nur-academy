@@ -44,6 +44,7 @@ import AttestatsiyaResults from './pages/AttestatsiyaResults';
 import Feedback from './pages/Feedback';
 import NotFound from './pages/NotFound';
 import ErrorBoundary from './components/ErrorBoundary';
+import { PublicOnlyRoute } from './components/PublicOnlyRoute';
 
 // Generic legacy redirect: /attestatsiya/<rest> → /kurs/attestatsiya/<rest>,
 // preserving the subpath + query so old links and bookmarks keep working.
@@ -78,8 +79,11 @@ const router = createBrowserRouter(
       {/* ───────── PUBLIC + focus-mode (public Layout) ───────── */}
       <Route element={<Layout />}>
         <Route path="/" element={<Landing />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
+        {/* Auth pages: a signed-in user is bounced to the dashboard. */}
+        <Route element={<PublicOnlyRoute />}>
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
+        </Route>
         {/* Common alias people type/land on → real signup page. */}
         <Route path="register" element={<Navigate to="/signup" replace />} />
         <Route path="courses" element={<CourseCatalog />} />
