@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { PlayCircle, CheckCircle, Circle, Lock } from 'lucide-react';
+import { useSeo } from '../lib/seo';
 
 interface CourseData {
   id: string;
@@ -36,6 +37,13 @@ export default function CourseDetails() {
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
   const [completedLessonIds, setCompletedLessonIds] = useState<Set<string>>(new Set());
+
+  useSeo({
+    path: id ? `/courses/${id}` : undefined,
+    title: course?.title,
+    description: course?.description || undefined,
+    image: course?.cover_url || undefined
+  });
 
   useEffect(() => {
     async function fetchCourseDetails() {

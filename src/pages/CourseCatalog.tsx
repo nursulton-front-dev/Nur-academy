@@ -4,6 +4,7 @@ import { fetchPublishedCourses, type CourseMeta } from '../lib/courses';
 import { useAuth } from '../contexts/AuthContext';
 import { enrollmentService } from '../lib/enrollmentService';
 import CourseStartButton from '../components/CourseStartButton';
+import { useSeo } from '../lib/seo';
 
 function priceLabel(price: number): string {
   return price > 0 ? `${price.toLocaleString('uz-UZ')} soʻm` : 'Bepul';
@@ -15,6 +16,14 @@ export default function CourseCatalog() {
   const [enrolledIds, setEnrolledIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useSeo({
+    path: '/courses',
+    title: 'Kurslar',
+    description:
+      'Nur Academy kurslari — informatika oʻqituvchilari uchun attestatsiyaga tayyorgarlik dasturlari: ' +
+      'video darslar, testlar, konspektlar va mock imtihonlar.'
+  });
 
   useEffect(() => {
     let active = true;

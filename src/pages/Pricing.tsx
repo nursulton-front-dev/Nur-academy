@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSeo } from '../lib/seo';
 import { 
   Check, 
   X, 
@@ -19,6 +20,14 @@ export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const currentTier = subscriptionService.getSubscriptionTier();
+
+  useSeo({
+    path: '/pricing',
+    title: 'Obuna va tariflar',
+    description:
+      'Nur Academy obuna tariflari — attestatsiyaga toʻliq tayyorgarlik uchun barcha imkoniyatlar: ' +
+      'darslar, testlar, mock imtihonlar va AI-mentor.'
+  });
 
   // Mirrors the chosen tier into profiles.subscription_tier so the AI Mentor
   // (which gates on the DB column) actually unlocks after a mock checkout.

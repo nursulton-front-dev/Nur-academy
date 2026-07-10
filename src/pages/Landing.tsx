@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchPublishedCourses, type CourseMeta } from '../lib/courses';
 import CourseStartButton from '../components/CourseStartButton';
+import { useSeo } from '../lib/seo';
 import {
   Sparkles,
   ArrowRight,
@@ -81,6 +82,14 @@ export default function Landing() {
       active = false;
     };
   }, []);
+
+  useSeo({
+    path: '/',
+    title: undefined, // home uses the full default title
+    description:
+      'Attestatsiyaga ishonch bilan tayyorlaning. Informatika oʻqituvchilari uchun onlayn platforma — ' +
+      'diagnostika, video darslar, testlar va mock imtihonlar, oʻzbek tilida.'
+  });
 
   // Logged-in visitors have already seen the pitch → send them to their cabinet.
   if (user) {
