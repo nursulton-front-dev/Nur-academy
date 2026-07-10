@@ -1,14 +1,13 @@
 User-agent: *
 Allow: /
 
-# Служебные и приватные разделы
-Disallow: /admin
+# Do not index internal/authenticated app pages
 Disallow: /dashboard
-Disallow: /dev-status
-Disallow: /project-status
+Disallow: /admin
 Disallow: /kurs/
 Disallow: /learn/
 Disallow: /certificates
-Disallow: /attestatsiya
+Disallow: /login
+Disallow: /signup
 
 Sitemap: https://nur--academy.vercel.app/sitemap.xml

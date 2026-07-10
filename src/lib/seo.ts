@@ -1,72 +1,57 @@
-import { useEffect } from 'react';
+// Central SEO configuration.
+//
+// NOTE: SITE_URL is the production origin used for absolute canonical/OG URLs.
+// Override it per-environment with VITE_SITE_URL; the default is the intended
+// production domain (change it once the real domain is live).
+export const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, '')
+  || 'https://nur--academy.vercel.app';
 
-// Single source of truth for canonical origin + site-wide SEO defaults.
-// Keep these in sync with the static fallbacks in index.html.
-export const SITE_URL = 'https://nur--academy.vercel.app';
 export const SITE_NAME = 'Nur Academy';
-export const DEFAULT_TITLE = 'Nur Academy — attestatsiyaga tayyorgarlik platformasi';
-export const DEFAULT_DESCRIPTION =
-  'Nur Academy — informatika oʻqituvchilari uchun onlayn tayyorgarlik platformasi. ' +
-  'Diagnostika, video darslar, testlar va mock imtihonlar — barchasi bir tizimda, oʻzbek tilida.';
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-cover.png`;
 
-interface SeoOptions {
-  /** Page-specific title. Site name is appended automatically. Omit for the home page. */
-  title?: string;
-  description?: string;
-  /** Canonical path, e.g. "/courses". Defaults to the current pathname. */
-  path?: string;
-  image?: string;
-  /** Exclude from indexing (rare for public pages). */
-  noIndex?: boolean;
-}
+// Default OG/Twitter preview image. A working raster lives at this path today;
+// a dedicated branded 1200x630 source is at /og-cover.svg (export to PNG and
+// point DEFAULT_OG_IMAGE here for the ideal preview).
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/dashboard-hero.png`;
 
-function upsertMeta(attr: 'name' | 'property', key: string, content: string): void {
-  let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
-  if (!el) {
-    el = document.createElement('meta');
-    el.setAttribute(attr, key);
-    document.head.appendChild(el);
-  }
-  el.setAttribute('content', content);
-}
-
-function upsertCanonical(href: string): void {
-  let el = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-  if (!el) {
-    el = document.createElement('link');
-    el.setAttribute('rel', 'canonical');
-    document.head.appendChild(el);
-  }
-  el.setAttribute('href', href);
-}
+// Platform-level default (brand). Used by the home page, the student cabinet and
+// any page that doesn't set its own meta. Kept course-agnostic on purpose — the
+// platform is bigger than a single course. Course pages override this with their
+// own (search-optimised) meta via `courseSeo()`.
+export const DEFAULT_SEO = {
+  title: 'Nur Academy — oʻqituvchilar uchun taʼlim platformasi',
+  description:
+    'Nur Academy — oʻqituvchilar uchun zamonaviy onlayn taʼlim platformasi. Video darslar, testlar, mock imtihonlar va AI mentor bilan kasbiy tayyorgarlik. Birinchi kurs: informatika attestatsiyasi.',
+};
 
 /**
- * Imperatively syncs document title, description, canonical and OG/Twitter tags
- * for a public page. Lightweight replacement for react-helmet — no provider,
- * no extra dependency. Crawlers that render JS (Googlebot) and the Stage 5
- * prerender both pick up the resulting DOM.
+ * Per-course SEO. The attestatsiya course KEEPS the "informatika attestatsiya"
+ * search keyword in its title/description — that's how teachers find it on
+ * Google. Other courses fall back to their DB title.
+ *
+ * Note: these refine the browser tab + JS-aware crawlers (Google). Non-JS
+ * crawlers (Telegram, etc.) only read the static tags in index.html.
  */
-export function useSeo({ title, description, path, image, noIndex }: SeoOptions = {}): void {
-  useEffect(() => {
-    const fullTitle = title ? `${title} — ${SITE_NAME}` : DEFAULT_TITLE;
-    const desc = description ?? DEFAULT_DESCRIPTION;
-    const canonicalPath = path ?? window.location.pathname;
-    const canonical = `${SITE_URL}${canonicalPath}`;
-    const ogImage = image ?? DEFAULT_OG_IMAGE;
+export function courseSeo(
+  slug: string | undefined,
+  dbTitle: string | undefined
+): { title: string; description: string; rawTitle: boolean } {
+  if (slug === 'attestatsiya') {
+    return {
+      title: 'Informatika attestatsiyasiga tayyorgarlik | Nur Academy',
+      description:
+        'Informatika oʻqituvchilari attestatsiyasiga tayyorgarlik: video darslar, mavzu testlari, mock imtihonlar, diagnostika va AI mentor. Nur Academy platformasi.',
+      rawTitle: true,
+    };
+  }
+  return {
+    title: dbTitle || 'Kurs',
+    description:
+      `${dbTitle || 'Kurs'} — Nur Academy platformasida oʻqing: video darslar, testlar va imtihonlar.`,
+    rawTitle: false,
+  };
+}
 
-    document.title = fullTitle;
-    upsertMeta('name', 'description', desc);
-    upsertMeta('name', 'robots', noIndex ? 'noindex, nofollow' : 'index, follow');
-    upsertCanonical(canonical);
-
-    upsertMeta('property', 'og:title', fullTitle);
-    upsertMeta('property', 'og:description', desc);
-    upsertMeta('property', 'og:url', canonical);
-    upsertMeta('property', 'og:image', ogImage);
-
-    upsertMeta('name', 'twitter:title', fullTitle);
-    upsertMeta('name', 'twitter:description', desc);
-    upsertMeta('name', 'twitter:image', ogImage);
-  }, [title, description, path, image, noIndex]);
+export function absoluteUrl(path: string): string {
+  if (/^https?:\/\//.test(path)) return path;
+  return `${SITE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
 }

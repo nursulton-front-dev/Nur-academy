@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"  stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle grid overlay -->
+  <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+    <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#ffffff08" stroke-width="1"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Accent bar left -->
+  <rect x="80" y="190" width="6" height="200" rx="3" fill="url(#accent)"/>
+
+  <!-- Logo / site name -->
+  <text x="112" y="238" font-family="Georgia, serif" font-size="52" font-weight="700" fill="#f8fafc" letter-spacing="-1">Nur Academy</text>
+
+  <!-- Tagline -->
+  <text x="112" y="300" font-family="system-ui, sans-serif" font-size="26" fill="#94a3b8">Informatika oʻqituvchilari uchun</text>
+  <text x="112" y="340" font-family="system-ui, sans-serif" font-size="26" fill="#94a3b8">attestatsiyaga tayyorgarlik platformasi</text>
+
+  <!-- Feature pills -->
+  <rect x="112" y="380" width="160" height="36" rx="18" fill="#3b82f620"/>
+  <text x="192" y="403" font-family="system-ui, sans-serif" font-size="15" fill="#60a5fa" text-anchor="middle">Video darslar</text>
+
+  <rect x="286" y="380" width="130" height="36" rx="18" fill="#3b82f620"/>
+  <text x="351" y="403" font-family="system-ui, sans-serif" font-size="15" fill="#60a5fa" text-anchor="middle">Mock imtihon</text>
+
+  <rect x="430" y="380" width="100" height="36" rx="18" fill="#3b82f620"/>
+  <text x="480" y="403" font-family="system-ui, sans-serif" font-size="15" fill="#60a5fa" text-anchor="middle">AI Mentor</text>
+
+  <rect x="544" y="380" width="82" height="36" rx="18" fill="#3b82f620"/>
+  <text x="585" y="403" font-family="system-ui, sans-serif" font-size="15" fill="#60a5fa" text-anchor="middle">Testlar</text>
+
+  <!-- Decorative circles top-right -->
+  <circle cx="1060" cy="120" r="180" fill="#3b82f6" opacity="0.07"/>
+  <circle cx="1100" cy="160" r="100" fill="#6366f1" opacity="0.09"/>
+
+  <!-- Bottom domain label -->
+  <text x="112" y="580" font-family="system-ui, sans-serif" font-size="18" fill="#475569">nuracademy.uz</text>
+</svg>

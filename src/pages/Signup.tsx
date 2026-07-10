@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { BookOpen } from 'lucide-react';
-import { useSeo } from '../lib/seo';
 
 // Only allow internal relative paths as a post-signup redirect (no open redirects).
 function safeNext(raw: string | null): string {
@@ -20,13 +19,6 @@ export default function Signup() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = safeNext(params.get('next'));
-
-  useSeo({
-    path: '/signup',
-    title: 'Roʻyxatdan oʻtish',
-    description:
-      'Nur Academy platformasida bepul roʻyxatdan oʻting va attestatsiyaga tayyorgarlikni boshlang.'
-  });
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();

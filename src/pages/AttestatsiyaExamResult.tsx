@@ -1,23 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { 
-  Award, 
-  BookOpen, 
-  ChevronDown, 
-  ChevronUp, 
-  Check, 
-  X, 
+import {
+  Award,
+  BookOpen,
+  ChevronDown,
+  ChevronUp,
+  Check,
+  X,
   RefreshCw,
-  Home
+  Home,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
 import { mockExams, mockQuestions, mockExamResult } from '../data/attestatsiyaMocks';
 import { attestatsiyaService } from '../lib/attestatsiyaService';
 import { coursePath } from '../lib/courses';
 import { AIMentorBlock } from '../components/AIMentorBlock';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AttestatsiyaExamResult() {
   const { id, slug = 'attestatsiya' } = useParams<{ id: string; slug: string }>();
+  const { user } = useAuth();
   const [showReview, setShowReview] = useState(false);
+  const [tier, setTier] = useState<'free' | 'pro' | null>(null);
+
+  useEffect(() => {
+    if (!user) { setTier('free'); return; }
+    supabase
+      .from('profiles')
+      .select('subscription_tier')
+      .eq('id', user.id)
+      .maybeSingle()
+      .then(({ data }) => setTier(data?.subscription_tier === 'pro' ? 'pro' : 'free'));
+  }, [user]);
 
   // Retrieve attempt_id from query params if available
   const attemptId = new URLSearchParams(window.location.search).get('attempt_id');
@@ -167,6 +183,27 @@ export default function AttestatsiyaExamResult() {
             Savollar va javoblar tahlili
           </h3>
 
+          {/* Free-tier: one banner instead of per-question Pro gates */}
+          {tier === 'free' && (
+            <div className="rounded-xl border p-5 bg-[#1A1730] border-[#2D2750] flex items-start gap-4">
+              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#6366F1,#8B5CF6)' }}>
+                <Sparkles className="w-4 h-4 text-white" />
+              </div>
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-white">AI Mentor tushuntirishlari</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md" style={{ backgroundColor: '#EEF2FF', color: '#6366F1' }}>PRO</span>
+                </div>
+                <p className="text-[13px] text-slate-300 leading-relaxed">
+                  Har bir xato javob uchun AI tomonidan batafsil tushuntirish olish uchun Pro tarifga oʻting.
+                </p>
+                <Link to="/attestatsiya/obuna" className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors">
+                  Pro tarifga oʻtish <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-6">
             {reviewQuestions.map((q, idx) => {
               const selectedAnswer = q.user_answer;
@@ -264,8 +301,8 @@ export default function AttestatsiyaExamResult() {
                     </div>
                   )}
 
-                  {/* AI Mentor — only for wrong answers */}
-                  {!isCorrect && q.question_id && (
+                  {/* AI Mentor — only for wrong answers, only for Pro subscribers */}
+                  {!isCorrect && q.question_id && tier === 'pro' && (
                     <AIMentorBlock questionId={q.question_id} userAnswerIndex={selectedAnswer ?? 0} />
                   )}
                 </div>

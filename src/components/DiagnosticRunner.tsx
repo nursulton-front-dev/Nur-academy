@@ -3,6 +3,8 @@ import { ChevronLeft, ChevronRight, Bookmark, Clock, AlertTriangle } from 'lucid
 import { DiagnosticQuestion, DiagnosticAnswer } from '../lib/diagnosticService';
 import { domainLabel } from '../lib/domains';
 import TestExitGuard from './TestExitGuard';
+import { useFullscreenGuard } from '../hooks/useFullscreenGuard';
+import FullscreenPauseOverlay from './FullscreenPauseOverlay';
 
 interface DiagnosticRunnerProps {
   questions: DiagnosticQuestion[];
@@ -98,7 +100,15 @@ export default function DiagnosticRunner({
     onFinish(answers);
   }, [answers, onFinish]);
 
+  // Fullscreen guard: pause on exit, auto-finish (with save) after MAX exits.
+  const { paused, exitCount, maxExits, terminated, resume } = useFullscreenGuard({
+    active: !finished,
+    onLimitReached: finish,
+  });
+
+  // Countdown — frozen while paused (out of fullscreen).
   useEffect(() => {
+    if (paused || terminated) return;
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -110,7 +120,7 @@ export default function DiagnosticRunner({
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [finish]);
+  }, [finish, paused, terminated]);
 
   useEffect(() => {
     if (!current) return;
@@ -214,6 +224,17 @@ export default function DiagnosticRunner({
     <div className="fixed inset-0 z-[60] h-[100dvh] w-screen bg-primary-bg overflow-hidden flex flex-col font-sans select-none">
       <TestExitGuard when={!finished} />
 
+      {/* Fullscreen pause / auto-finish overlay */}
+      {(paused || terminated) && (
+        <FullscreenPauseOverlay
+          label="Test"
+          exitCount={exitCount}
+          maxExits={maxExits}
+          terminated={terminated}
+          onResume={resume}
+        />
+      )}
+
       {/* Header */}
       <header className="h-16 shrink-0 bg-surface border-b border-border-card px-4 sm:px-6 flex justify-between items-center z-10">
         <div className="flex items-center space-x-2 min-w-0">
@@ -280,7 +301,8 @@ export default function DiagnosticRunner({
             <div className="mt-3.5 pt-3 border-t border-border-card/50 grid grid-cols-1 gap-1.5 text-[11px] font-semibold text-text-secondary">
               <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-accent-blue shrink-0" />Joriy savol</span>
               <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-success-green shrink-0" />Javob berilgan</span>
-              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0" />Belgilangan</span>
+              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-orange-500 shrink-0" />Belgilangan</span>
+              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0" />Kirilgan</span>
               <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-border-card border border-border-card shrink-0" />Javob berilmagan</span>
             </div>
           </div>

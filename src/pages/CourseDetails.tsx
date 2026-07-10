@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { PlayCircle, CheckCircle, Circle, Lock } from 'lucide-react';
-import { useSeo } from '../lib/seo';
+import { Seo } from '../components/Seo';
 
 interface CourseData {
   id: string;
@@ -37,13 +37,6 @@ export default function CourseDetails() {
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
   const [completedLessonIds, setCompletedLessonIds] = useState<Set<string>>(new Set());
-
-  useSeo({
-    path: id ? `/courses/${id}` : undefined,
-    title: course?.title,
-    description: course?.description || undefined,
-    image: course?.cover_url || undefined
-  });
 
   useEffect(() => {
     async function fetchCourseDetails() {
@@ -204,6 +197,14 @@ export default function CourseDetails() {
 
   return (
     <div className="bg-primary-bg">
+      <Seo
+        title={course ? `${course.title} — attestatsiyaga tayyorgarlik` : 'Kurs — Nur Academy'}
+        description={course?.description
+          ? `${course.description.slice(0, 140)}…`
+          : 'Nur Academy kursida attestatsiyaga tayyorlaning: darslar, testlar va mock imtihonlar.'}
+        image={course?.cover_url || undefined}
+        type="article"
+      />
       {/* Course Header */}
       <div className="bg-surface border-b border-border-card py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

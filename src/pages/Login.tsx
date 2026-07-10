@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { BookOpen } from 'lucide-react';
-import { useSeo } from '../lib/seo';
 
 // Only allow internal relative paths as a post-login redirect (no open redirects).
 function safeNext(raw: string | null): string {
@@ -18,12 +17,6 @@ export default function Login() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = safeNext(params.get('next'));
-
-  useSeo({
-    path: '/login',
-    title: 'Tizimga kirish',
-    description: 'Nur Academy hisobingizga kiring va attestatsiyaga tayyorgarlikni davom ettiring.'
-  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

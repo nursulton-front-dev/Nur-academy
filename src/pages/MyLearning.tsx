@@ -14,6 +14,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { enrollmentService, type MyCourse } from '../lib/enrollmentService';
 import { fetchCourseProgress, type CourseProgress } from '../lib/attestatsiyaCourse';
 import { coursePath } from '../lib/courses';
+import { Seo } from '../components/Seo';
 
 interface EnrolledItem {
   my: MyCourse;
@@ -59,10 +60,21 @@ export default function MyLearning() {
     };
   }, [authLoading, user]);
 
+  // Platform-level meta for the student cabinet — resets the browser tab off any
+  // course-specific title when arriving here from a course page.
+  const platformSeo = (
+    <Seo
+      title="Mening kurslarim"
+      description="Nur Academy — oʻqituvchilar uchun taʼlim platformasi. Kurslaringiz va oʻqish jarayoni."
+      canonicalPath="/dashboard"
+    />
+  );
+
   /* ───────────── Loading ───────────── */
   if (status === 'loading' || authLoading) {
     return (
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {platformSeo}
         <div className="flex justify-center items-center min-h-[40vh]">
           <Loader2 className="w-10 h-10 animate-spin text-accent-blue" />
         </div>
@@ -74,6 +86,7 @@ export default function MyLearning() {
   if (status === 'guest') {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+        {platformSeo}
         <div className="bg-surface border border-border-card rounded-3xl p-10 sm:p-14 text-center space-y-5">
           <div className="w-16 h-16 mx-auto rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center">
             <GraduationCap className="w-8 h-8" />
@@ -109,6 +122,7 @@ export default function MyLearning() {
   if (items.length === 0) {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+        {platformSeo}
         <div className="bg-surface border border-dashed border-border-card rounded-3xl p-10 sm:p-14 text-center space-y-5">
           <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
             <BookOpen className="w-8 h-8" />
@@ -136,6 +150,7 @@ export default function MyLearning() {
   /* ───────────── Ready ───────────── */
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+      {platformSeo}
       <header className="mb-8 space-y-1.5">
         <h1 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary tracking-tight">
           Mening kurslarim

@@ -50,8 +50,9 @@ async function callGroq(systemPrompt: string, userPrompt: string): Promise<strin
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt },
           ],
-          temperature: 0.8,
-          max_tokens: 220,
+          // Lower temperature → sticks to the real stats, less invention.
+          temperature: 0.5,
+          max_tokens: 260,
         }),
         signal: controller.signal,
       });
@@ -92,16 +93,18 @@ serve(async (req) => {
 
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // 1. Gate on subscription tier — FREE never reaches Groq.
+    // 1. Gate on subscription tier — FREE never reaches Groq. Also pull XP for
+    //    context (used to praise progress in the recommendation).
     const { data: profile } = await admin
       .from('profiles')
-      .select('subscription_tier')
+      .select('subscription_tier, xp')
       .eq('id', user.id)
       .maybeSingle();
     const tier = (profile?.subscription_tier as string) ?? 'free';
     if (!PRO_TIERS.includes(tier)) {
       return json({ locked: true });
     }
+    const xp = (profile?.xp as number) ?? 0;
 
     // 2. Serve today's cached recommendation if it exists.
     const today = new Date().toISOString().slice(0, 10);
@@ -138,28 +141,64 @@ serve(async (req) => {
     const score = (attempt?.total_score as number) ?? null;
     const rbd = (attempt?.results_by_domain as Record<string, { percentage: number }>) ?? {};
 
-    const weak = Object.entries(rbd)
+    const domainsSorted = Object.entries(rbd)
       .map(([code, v]) => ({ code, pct: v?.percentage ?? 0 }))
-      .sort((a, b) => a.pct - b.pct)
-      .slice(0, 2);
+      .sort((a, b) => a.pct - b.pct);
+    const weak = domainsSorted.slice(0, 2);
     const weakLabels = weak.map((w) => DOMAIN_LABELS[w.code] ?? w.code);
+    // Strongest domain (highest %) → used to praise the student honestly.
+    const strongLabels = domainsSorted.length
+      ? [DOMAIN_LABELS[domainsSorted[domainsSorted.length - 1].code] ?? domainsSorted[domainsSorted.length - 1].code]
+      : [];
+
+    // Activity signal: how many mock exams finished + how recently. Drives the
+    // praise ("zoʻr sur'at") vs nudge ("qaytib keling") tone. No course filter —
+    // exam_attempts has no course_id column.
+    const { data: recentExams } = await admin
+      .from('exam_attempts')
+      .select('finished_at')
+      .eq('user_id', user.id)
+      .not('finished_at', 'is', null)
+      .order('finished_at', { ascending: false })
+      .limit(10);
+    const examCount = recentExams?.length ?? 0;
+    const lastFinished = recentExams?.[0]?.finished_at as string | undefined;
+    const lastActiveDays = lastFinished
+      ? Math.floor((Date.now() - new Date(lastFinished).getTime()) / 86_400_000)
+      : null;
 
     // 4. Generate the recommendation.
-    const systemPrompt = `Sen oʻzbek informatika oʻqituvchilariga attestatsiyaga tayyorgarlikda yordam beruvchi doʻstona AI mentorsan.
-Bugungi kun uchun qisqa, aniq va motivatsion shaxsiy tavsiya yoz (2-3 jumla).
-Foydalanuvchining zaif mavzulari va maqsadiga asoslan. JAVOB FAQAT OʻZBEK TILIDA.`;
+    const systemPrompt = `Sen oʻzbek informatika oʻqituvchilariga attestatsiyaga tayyorgarlikda yordam beruvchi gʻamxoʻr va ilhomlantiruvchi AI mentorsan.
+Bugun uchun QISQA (3-4 jumla), ANIQ va shaxsiy tavsiya yoz. Quyidagi tuzilishga amal qil:
+1) MAQTOV — oʻquvchi nimada kuchli yoki qanday yutuqqa erishganini ayt (real maʼlumotga tayan: kuchli mavzu, XP yoki faollik).
+2) NIMANI YAXSHILASH — eng zaif mavzuni muloyim koʻrsat.
+3) BUGUNGI ANIQ QADAM — aynan nima qilishni ayt (qaysi test yoki mavzu), taxminiy vaqt bilan (masalan "15 daqiqa") va mos bitta emoji bilan yakunla.
 
-    const userPrompt = `Diagnostika bali: ${score ?? "nomaʼlum"} / 100.
-Maqsad bali: ${goal}.
-Eng zaif mavzular: ${weakLabels.length ? weakLabels.join(', ') : 'aniqlanmagan'}.
-Tugallanmagan dars: ${currentLesson ?? "yoʻq"}.
-Bugun aynan nima qilishni tavsiya qil.`;
+QOIDALAR:
+- FAQAT berilgan real maʼlumotlarga tayan. Raqam yoki faktni OʻYLAB TOPMA. Maʼlumot yetishmasa, umumiy ammo aniq maslahat ber.
+- Doʻstona, ragʻbatlantiruvchi ohang; quruq umumiy gaplardan saqlan.
+- JAVOB FAQAT OʻZBEK TILIDA (lotin yozuvi).`;
+
+    const userPrompt = `Oʻquvchi statistikasi:
+- Diagnostika bali: ${score ?? "nomaʼlum"} / 100 (maqsad: ${goal})
+- Eng kuchli mavzu: ${strongLabels.length ? strongLabels[0] : "aniqlanmagan"}
+- Eng zaif mavzu(lar): ${weakLabels.length ? weakLabels.join(', ') : "aniqlanmagan"}
+- Toʻplangan XP: ${xp}
+- Tugatilgan mock imtihonlar: ${examCount}${lastActiveDays !== null ? `, oxirgi faollik: ${lastActiveDays} kun oldin` : ''}
+- Tugallanmagan dars: ${currentLesson ?? "yoʻq"}
+
+Shu real maʼlumotlarga asoslanib, bugungi shaxsiy tavsiyani yoz.`;
 
     let recommendation = await callGroq(systemPrompt, userPrompt);
     if (!recommendation) {
+      const praise = strongLabels.length
+        ? `"${strongLabels[0]}" boʻyicha kuchlisiz! `
+        : xp > 0
+          ? `${xp} XP toʻpladingiz — zoʻr sur'at! `
+          : '';
       recommendation = weakLabels.length
-        ? `Bugun "${weakLabels[0]}" mavzusiga eʼtibor qarating — shu boʻlim testlarini ishlang. Maqsadingiz ${goal} ballga yaqinlashish uchun har kungi kichik qadam muhim!`
-        : `Bugun bitta mavzu testini ishlab, bilimingizni mustahkamlang. Har kuni izchil mashq — attestatsiyada katta natija beradi!`;
+        ? `${praise}Bugun "${weakLabels[0]}" mavzusiga eʼtibor qarating — shu boʻlim testlarini ishlang. 15 daqiqa yetadi 💪`
+        : `${praise}Bugun bitta mavzu testini ishlab, bilimingizni mustahkamlang. Har kuni izchil mashq — attestatsiyada katta natija beradi! 💪`;
     }
 
     // 5. Deterministic action links (valid in-app routes, not LLM-generated).

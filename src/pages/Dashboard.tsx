@@ -2,6 +2,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { Flame, Target, TrendingUp, CalendarDays, CalendarCheck, Trophy } from 'lucide-react';
+import { useCampaign } from '../hooks/useCampaign';
+import CampaignBanner from '../components/CampaignBanner';
+import FeedbackModal from '../components/FeedbackModal';
 import { xpService } from '../lib/xpService';
 import { userProgressService } from '../lib/userProgress';
 import { learningEngineService } from '../lib/learningEngine';
@@ -28,6 +31,8 @@ function continueHref(title: string, courseId: string): string {
 export default function Dashboard() {
   const { user } = useAuth();
   const { slug = ATTESTATSIYA_SLUG } = useParams<{ slug: string }>();
+  const { campaign } = useCampaign();
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [enrollments, setEnrollments] = useState<EnrolledCourse[]>([]);
   const [streak, setStreak] = useState(0);
   const [activeToday, setActiveToday] = useState(true);
@@ -175,6 +180,18 @@ export default function Dashboard() {
     // The page lives inside the AppShell's single scroll region (main), so the
     // sticky panel pins without adding a second page scrollbar.
     <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      {/* Campaign banner — only when enrolled and campaign is active */}
+      {campaign && enrollments.length > 0 && (
+        <CampaignBanner campaign={campaign} onCtaClick={() => setShowFeedbackModal(true)} />
+      )}
+      {showFeedbackModal && campaign && (
+        <FeedbackModal
+          campaign={campaign}
+          courseId={enrollments[0]?.course_id ?? null}
+          onClose={() => setShowFeedbackModal(false)}
+        />
+      )}
+
       {/* Streak nudge */}
       {streak >= 3 && !activeToday && (
         <div className="rounded-2xl border border-amber-200 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/5 px-5 py-4 flex items-center gap-3 mb-6">

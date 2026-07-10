@@ -23,6 +23,8 @@ import { enrollmentService } from '../lib/enrollmentService';
 import { useAuth } from '../contexts/AuthContext';
 import { CourseProvider } from '../contexts/CourseContext';
 import AppTopbar from './app/AppTopbar';
+import { Seo } from './Seo';
+import { courseSeo } from '../lib/seo';
 
 // Width of the fixed course sidebar. Kept ~240px so nav labels never truncate.
 const SIDEBAR_WIDTH = 'w-60';
@@ -319,8 +321,13 @@ export default function CourseLayout() {
     </nav>
   );
 
+  const seo = courseSeo(slug, title);
+
   return (
     <CourseProvider value={{ slug: slug ?? '', courseId: courseId ?? '', title }}>
+      {/* Course-level meta (browser tab + Google). The attestatsiya course keeps
+          its "informatika attestatsiya" search keyword here. */}
+      <Seo title={seo.title} description={seo.description} rawTitle={seo.rawTitle} canonicalPath={base} />
       {/* AppShell: viewport-locked. The root is exactly 100dvh with overflow hidden,
           the topbar is fixed, and ONLY the main content area scrolls. */}
       <div className="h-dvh overflow-hidden flex flex-col bg-primary-bg font-sans">

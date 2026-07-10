@@ -24,7 +24,7 @@ import puppeteer from 'puppeteer';
 const DIST = resolve(fileURLToPath(new URL('../dist', import.meta.url)));
 
 // PUBLIC routes only. Keep in sync with the public <Route>s in src/App.tsx.
-const ROUTES = ['/', '/courses', '/pricing', '/login', '/signup'];
+const ROUTES = ['/', '/courses', '/kurs/attestatsiya', '/pricing', '/login', '/signup'];
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
