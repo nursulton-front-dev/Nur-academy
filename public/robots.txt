@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Служебные и приватные разделы
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /dev-status
+Disallow: /project-status
+Disallow: /kurs/
+Disallow: /learn/
+Disallow: /certificates
+Disallow: /attestatsiya
+
+Sitemap: https://nuracademy.uz/sitemap.xml
