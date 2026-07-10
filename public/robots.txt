@@ -11,4 +11,4 @@ Disallow: /learn/
 Disallow: /certificates
 Disallow: /attestatsiya
 
-Sitemap: https://nuracademy.uz/sitemap.xml
+Sitemap: https://nur--academy.vercel.app/sitemap.xml

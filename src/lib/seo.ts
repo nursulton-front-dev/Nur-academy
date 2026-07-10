@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 // Single source of truth for canonical origin + site-wide SEO defaults.
 // Keep these in sync with the static fallbacks in index.html.
-export const SITE_URL = 'https://nuracademy.uz';
+export const SITE_URL = 'https://nur--academy.vercel.app';
 export const SITE_NAME = 'Nur Academy';
 export const DEFAULT_TITLE = 'Nur Academy — attestatsiyaga tayyorgarlik platformasi';
 export const DEFAULT_DESCRIPTION =
