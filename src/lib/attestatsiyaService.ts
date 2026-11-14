@@ -1,6 +1,7 @@
 import { mockQuestions, mockTopicTests } from '../data/attestatsiyaMocks';
 import { domainLabel } from './domains';
 import { supabase } from './supabase';
+import { ATTESTATSIYA_COURSE_ID } from './courses';
 import {
   loadByBlueprint,
   loadQuestionsFromBank,
@@ -221,6 +222,7 @@ export const attestatsiyaService = {
       // Fire-and-forget — don't block the result screen on a network call.
       supabase.from('exam_attempts').insert({
         user_id: userId,
+        course_id: ATTESTATSIYA_COURSE_ID,
         mock_exam_id: null,
         exam_id_text: examIdText,
         total_score: finalScore,

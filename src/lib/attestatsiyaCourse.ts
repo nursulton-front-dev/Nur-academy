@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from './supabase';
 import { ATTESTATSIYA_COURSE_ID, fetchCourseBySlug, type CourseMeta } from './courses';
-import { getCompletedLessonIds } from './lessonStepsService';
+import { getCompletedLessonIds, syncUserProgress } from './lessonStepsService';
+import { useAuth } from '../contexts/AuthContext';
 import type { Module, Lesson } from '../data/attestatsiyaMocks';
 
 /**
@@ -56,7 +57,15 @@ function routeId(content: string | null, dbId: string): string {
 }
 
 /** Loads modules + lessons (uz titles) for ANY course id, shaped as Module[]. */
-export async function fetchCourseStructure(courseId: string): Promise<Module[]> {
+export async function fetchCourseStructure(courseId: string, userId?: string): Promise<Module[]> {
+  if (userId) {
+    try {
+      await syncUserProgress(userId);
+    } catch (syncErr) {
+      console.warn('[course] syncUserProgress error:', syncErr);
+    }
+  }
+
   const { data, error } = await supabase
     .from('modules')
     .select(
@@ -68,7 +77,7 @@ export async function fetchCourseStructure(courseId: string): Promise<Module[]> 
   if (error) throw error;
 
   const rows = (data ?? []) as unknown as DbModule[];
-  const completedLessons = new Set(getCompletedLessonIds());
+  const completedLessons = new Set(getCompletedLessonIds(userId));
 
   // Pass 1 — shape modules/lessons from the DB and tag which lessons are done.
   const built = rows.map((mod, moduleIdx) => {
@@ -135,8 +144,8 @@ export async function fetchCourseStructure(courseId: string): Promise<Module[]> 
 }
 
 /** Back-compat wrapper: the attestatsiya course structure by its fixed id. */
-export async function fetchAttestatsiyaCourse(): Promise<Module[]> {
-  return fetchCourseStructure(ATTESTATSIYA_COURSE_ID);
+export async function fetchAttestatsiyaCourse(userId?: string): Promise<Module[]> {
+  return fetchCourseStructure(ATTESTATSIYA_COURSE_ID, userId);
 }
 
 export interface CourseProgress {
@@ -149,8 +158,8 @@ export interface CourseProgress {
  * Computes lesson completion for a course from the same source the sidebar uses
  * (lesson completion set). Returns 0/0/0 when the course has no lessons.
  */
-export async function fetchCourseProgress(courseId: string): Promise<CourseProgress> {
-  const modules = await fetchCourseStructure(courseId);
+export async function fetchCourseProgress(courseId: string, userId?: string): Promise<CourseProgress> {
+  const modules = await fetchCourseStructure(courseId, userId);
   let total = 0;
   let completed = 0;
   for (const mod of modules) {
@@ -171,6 +180,7 @@ interface UseAttestatsiyaCourse {
 }
 
 export function useAttestatsiyaCourse(): UseAttestatsiyaCourse {
+  const { user } = useAuth();
   const [modules, setModules] = useState<Module[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -178,13 +188,13 @@ export function useAttestatsiyaCourse(): UseAttestatsiyaCourse {
     setError(null);
     setModules(null);
     try {
-      const data = await fetchAttestatsiyaCourse();
+      const data = await fetchAttestatsiyaCourse(user?.id);
       setModules(data);
     } catch (err) {
       console.error('[attestatsiya] course load failed:', err);
       setError('Kurs maʼlumotlarini yuklab boʻlmadi');
     }
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     load();
@@ -210,6 +220,7 @@ interface UseCourse {
  * hardcode the course id.
  */
 export function useCourse(slug: string | undefined): UseCourse {
+  const { user } = useAuth();
   const [course, setCourse] = useState<CourseMeta | null>(null);
   const [modules, setModules] = useState<Module[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -233,13 +244,13 @@ export function useCourse(slug: string | undefined): UseCourse {
         return;
       }
       setCourse(meta);
-      const data = await fetchCourseStructure(meta.id);
+      const data = await fetchCourseStructure(meta.id, user?.id);
       setModules(data);
     } catch (err) {
       console.error('[course] load failed:', err);
       setError('Kurs maʼlumotlarini yuklab boʻlmadi');
     }
-  }, [slug]);
+  }, [slug, user?.id]);
 
   useEffect(() => {
     load();

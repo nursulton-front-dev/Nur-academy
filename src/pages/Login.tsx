@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, CheckCircle2 } from 'lucide-react';
 
 // Only allow internal relative paths as a post-login redirect (no open redirects).
 function safeNext(raw: string | null): string {
@@ -55,6 +55,13 @@ export default function Login() {
           <p className="text-text-secondary mt-2">Darslarni davom ettirish uchun</p>
         </div>
 
+        {params.get('reset') === 'success' && (
+          <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 rounded-lg text-sm flex items-start gap-2.5">
+            <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
+            <span>Parolingiz muvaffaqiyatli yangilandi. Yangi parol bilan tizimga kiring.</span>
+          </div>
+        )}
+
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-error-red/20 text-error-red rounded-lg text-sm">
             {error}
@@ -74,7 +81,12 @@ export default function Login() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1">Parol</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-sm font-medium text-text-primary">Parol</label>
+              <Link to="/forgot-password" className="text-xs text-accent-blue hover:underline">
+                Parolni unutdingizmi?
+              </Link>
+            </div>
             <input
               type="password"
               required

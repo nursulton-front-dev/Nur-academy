@@ -122,7 +122,7 @@ export default function Dashboard() {
   }, [user]);
 
   // Course structure (modules + lessons) now comes from Supabase.
-  const { modules, error: courseError } = useAttestatsiyaCourse();
+  const { modules, loading: modulesLoading, error: courseError } = useAttestatsiyaCourse();
 
   const primary = enrollments[0];
   const readinessScore = diagnosticScore ?? 0;
@@ -266,7 +266,7 @@ export default function Dashboard() {
         </div>
 
         {/* 4. Modules */}
-        <ModulesSection modules={modules ?? []} />
+        <ModulesSection modules={modules ?? []} loading={modulesLoading} />
       </div>
     </div>
   );

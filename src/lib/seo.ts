@@ -4,7 +4,7 @@
 // Override it per-environment with VITE_SITE_URL; the default is the intended
 // production domain (change it once the real domain is live).
 export const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, '')
-  || 'https://nur--academy.vercel.app';
+  || 'https://nuracademy.uz';
 
 export const SITE_NAME = 'Nur Academy';
 

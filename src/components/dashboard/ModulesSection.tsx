@@ -10,9 +10,10 @@ const MODULE_ICONS: Record<string, string> = {
 
 interface ModulesSectionProps {
   modules: Module[];
+  loading?: boolean;
 }
 
-export default function ModulesSection({ modules }: ModulesSectionProps) {
+export default function ModulesSection({ modules, loading }: ModulesSectionProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -22,8 +23,15 @@ export default function ModulesSection({ modules }: ModulesSectionProps) {
         </Link>
       </div>
 
-      <div className="space-y-2">
-        {modules.map((mod, index) => {
+      {loading ? (
+        <div className="space-y-2" aria-hidden>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-16 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-[#243447] animate-pulse" />
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {modules.map((mod, index) => {
           const isCompleted = mod.status === 'completed';
           const isCurrent = mod.status === 'current';
           const isLocked = mod.status === 'locked';
@@ -103,7 +111,8 @@ export default function ModulesSection({ modules }: ModulesSectionProps) {
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

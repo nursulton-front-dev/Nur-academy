@@ -19,6 +19,8 @@ import { AdminRoute } from './components/AdminRoute';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import CourseCatalog from './pages/CourseCatalog';
 import CourseDetails from './pages/CourseDetails';
@@ -83,7 +85,9 @@ const router = createBrowserRouter(
         <Route element={<PublicOnlyRoute />}>
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
         </Route>
+        <Route path="reset-password" element={<ResetPassword />} />
         {/* Common alias people type/land on → real signup page. */}
         <Route path="register" element={<Navigate to="/signup" replace />} />
         <Route path="courses" element={<CourseCatalog />} />

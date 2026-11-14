@@ -14,6 +14,8 @@ interface SeoProps {
   canonicalPath?: string;
   /** Use the title verbatim (no site-name suffix). */
   rawTitle?: boolean;
+  /** Instruct search engines not to index this page (e.g. auth flows) */
+  noindex?: boolean;
 }
 
 /**
@@ -27,7 +29,7 @@ interface SeoProps {
  * are the shared-link defaults; this component refines per-page metadata for
  * the browser tab and JS-aware crawlers.
  */
-export function Seo({ title, description, image, type = 'website', canonicalPath, rawTitle }: SeoProps) {
+export function Seo({ title, description, image, type = 'website', canonicalPath, rawTitle, noindex }: SeoProps) {
   const location = useLocation();
 
   useEffect(() => {
@@ -53,7 +55,19 @@ export function Seo({ title, description, image, type = 'website', canonicalPath
     upsertMeta('name', 'twitter:description', desc);
     upsertMeta('name', 'twitter:image', img);
     upsertCanonical(url);
-  }, [title, description, image, type, canonicalPath, rawTitle, location.pathname]);
+
+    if (noindex) {
+      upsertMeta('name', 'robots', 'noindex, nofollow');
+    } else {
+      upsertMeta('name', 'robots', 'index, follow');
+    }
+
+    return () => {
+      if (noindex) {
+        upsertMeta('name', 'robots', 'index, follow');
+      }
+    };
+  }, [title, description, image, type, canonicalPath, rawTitle, noindex, location.pathname]);
 
   return null;
 }

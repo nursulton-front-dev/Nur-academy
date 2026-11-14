@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { subscriptionService } from '../lib/subscription';
+import { syncUserProgress } from '../lib/lessonStepsService';
 
 interface AuthContextType {
   user: User | null;
@@ -34,6 +35,17 @@ async function syncTierFromDb(u: User | null) {
   subscriptionService.setSubscriptionTier(isPro ? 'pro' : 'free');
 }
 
+async function syncUserDataFromDb(u: User | null) {
+  if (!u) {
+    subscriptionService.setSubscriptionTier('free');
+    return;
+  }
+  await Promise.allSettled([
+    syncTierFromDb(u),
+    syncUserProgress(u.id),
+  ]);
+}
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -44,17 +56,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
-      void syncTierFromDb(session?.user ?? null);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
       // Defer the DB call: Supabase advises against invoking other supabase
       // methods synchronously inside the auth callback (can deadlock).
+      // Only sync progress on INITIAL_SESSION and SIGNED_IN, not on TOKEN_REFRESHED.
       const nextUser = session?.user ?? null;
-      setTimeout(() => { void syncTierFromDb(nextUser); }, 0);
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+        setTimeout(() => { void syncUserDataFromDb(nextUser); }, 0);
+      } else if (event === 'SIGNED_OUT') {
+        setTimeout(() => { void syncUserDataFromDb(null); }, 0);
+      }
     });
 
     return () => subscription.unsubscribe();

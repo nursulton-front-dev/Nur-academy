@@ -19,7 +19,7 @@ serve(async (req) => {
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     )
 
-    const { mock_exam_id } = await req.json()
+    const { mock_exam_id, course_id = '0a7e57a7-0000-4000-8000-000000000001' } = await req.json()
 
     // 1. Get user auth info
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser()
@@ -41,6 +41,7 @@ serve(async (req) => {
         .from('exam_attempts')
         .insert({
           user_id: user.id,
+          course_id: course_id,
           mock_exam_id: mock_exam_id,
           started_at: new Date().toISOString()
         })

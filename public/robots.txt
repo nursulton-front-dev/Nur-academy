@@ -4,10 +4,19 @@ Allow: /
 # Do not index internal/authenticated app pages
 Disallow: /dashboard
 Disallow: /admin
-Disallow: /kurs/
 Disallow: /learn/
 Disallow: /certificates
 Disallow: /login
 Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /kurs/*/dars/
+Disallow: /kurs/*/imtihon/
+Disallow: /kurs/*/testlar
+Disallow: /kurs/*/diagnostika
+Disallow: /kurs/*/xatolar
+Disallow: /kurs/*/konspektlar
+Disallow: /kurs/*/natija
+Disallow: /kurs/*/onboarding
 
-Sitemap: https://nur--academy.vercel.app/sitemap.xml
+Sitemap: https://nuracademy.uz/sitemap.xml

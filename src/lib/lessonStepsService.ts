@@ -49,16 +49,120 @@ function parseOptions(raw: unknown): { options: string[]; correctIndex: number }
 // completion locally and upsert the lesson-level progress row when all steps are done.
 const stepKey = (lessonId: string) => `nur_lesson_steps_${lessonId}`;
 
-// Lesson-level completion set, mirrored locally so the course view (sidebar /
-// dashboard) can reflect progress even without an authenticated session.
-const COMPLETED_LESSONS_KEY = 'nur_completed_lessons';
+// Legacy global key from prior versions (before per-user key isolation)
+const LEGACY_COMPLETED_LESSONS_KEY = 'nur_completed_lessons';
 
-export function getCompletedLessonIds(): string[] {
+/** Returns user-scoped localStorage key for completed lessons */
+export function userCompletedLessonsKey(userId?: string | null): string {
+  return userId ? `nur_completed_lessons:${userId}` : 'nur_completed_lessons:guest';
+}
+
+/**
+ * Migrates old shared 'nur_completed_lessons' key to 'nur_completed_lessons:<userId>'
+ * on user login, then deletes the old key.
+ */
+function migrateLegacyKey(userId: string) {
   try {
-    const raw = localStorage.getItem(COMPLETED_LESSONS_KEY);
-    return raw ? (JSON.parse(raw) as string[]) : [];
+    const raw = localStorage.getItem(LEGACY_COMPLETED_LESSONS_KEY);
+    if (!raw) return;
+    const legacyIds = JSON.parse(raw);
+    if (Array.isArray(legacyIds) && legacyIds.length > 0) {
+      const currentKey = userCompletedLessonsKey(userId);
+      const existingRaw = localStorage.getItem(currentKey);
+      const existingIds = existingRaw ? JSON.parse(existingRaw) : [];
+      const merged = Array.from(new Set([...(Array.isArray(existingIds) ? existingIds : []), ...legacyIds]));
+      localStorage.setItem(currentKey, JSON.stringify(merged));
+    }
+    localStorage.removeItem(LEGACY_COMPLETED_LESSONS_KEY);
+  } catch (err) {
+    console.warn('[progress] legacy migration error:', err);
+    localStorage.removeItem(LEGACY_COMPLETED_LESSONS_KEY);
+  }
+}
+
+export function getCompletedLessonIds(userId?: string | null): string[] {
+  try {
+    if (userId) {
+      migrateLegacyKey(userId);
+    }
+    const key = userCompletedLessonsKey(userId);
+    const raw = localStorage.getItem(key);
+    if (raw) return JSON.parse(raw) as string[];
+
+    // Guest fallback if legacy key still present
+    if (!userId) {
+      const legacyRaw = localStorage.getItem(LEGACY_COMPLETED_LESSONS_KEY);
+      if (legacyRaw) return JSON.parse(legacyRaw) as string[];
+    }
+    return [];
   } catch {
     return [];
+  }
+}
+
+export function setCompletedLessonIds(lessons: string[], userId?: string | null): void {
+  try {
+    const key = userCompletedLessonsKey(userId);
+    localStorage.setItem(key, JSON.stringify(lessons));
+  } catch (err) {
+    console.warn('[progress] failed to save to localStorage:', err);
+  }
+}
+
+/**
+ * Reads completed lessons for this user from the `progress` table in Supabase,
+ * merges them with `localStorage` (union of sets, never overwriting/dropping local items),
+ * and writes the merged set back to `localStorage`.
+ * Also backfills any locally completed lessons to the `progress` table in Supabase.
+ */
+export async function syncUserProgress(userId: string): Promise<string[]> {
+  if (!userId) return getCompletedLessonIds(null);
+
+  // Migrate legacy key first if it exists
+  migrateLegacyKey(userId);
+
+  try {
+    const { data, error } = await supabase
+      .from('progress')
+      .select('lesson_id')
+      .eq('user_id', userId)
+      .eq('completed', true);
+
+    if (error) {
+      console.warn('[progress] sync from DB failed:', error.message);
+      return getCompletedLessonIds(userId);
+    }
+
+    const remoteLessonIds = (data ?? []).map((r: any) => r.lesson_id).filter(Boolean);
+    const localLessonIds = getCompletedLessonIds(userId);
+
+    // Union of both sets (no overwrite of un-synced local progress)
+    const mergedSet = new Set([...localLessonIds, ...remoteLessonIds]);
+    const merged = Array.from(mergedSet);
+    setCompletedLessonIds(merged, userId);
+
+    // Best-effort backfill: push any local-only completed lessons to the DB
+    const remoteSet = new Set(remoteLessonIds);
+    const localOnly = localLessonIds.filter((id) => !remoteSet.has(id));
+    if (localOnly.length > 0) {
+      const rows = localOnly.map((lessonId) => ({
+        user_id: userId,
+        lesson_id: lessonId,
+        completed: true,
+        completed_at: new Date().toISOString(),
+      }));
+      supabase
+        .from('progress')
+        .upsert(rows, { onConflict: 'user_id,lesson_id' })
+        .then(({ error: upsertErr }) => {
+          if (upsertErr) console.warn('[progress] local-to-remote backfill failed:', upsertErr.message);
+        });
+    }
+
+    return merged;
+  } catch (err) {
+    console.warn('[progress] sync exception:', err);
+    return getCompletedLessonIds(userId);
   }
 }
 
@@ -165,10 +269,10 @@ export const lessonStepsService = {
 
     if (allDone) {
       // Local lesson-completion marker (drives sidebar/dashboard status, even for guests).
-      const lessons = new Set(getCompletedLessonIds());
+      const lessons = new Set(getCompletedLessonIds(userId));
       if (!lessons.has(lessonId)) {
         lessons.add(lessonId);
-        localStorage.setItem(COMPLETED_LESSONS_KEY, JSON.stringify([...lessons]));
+        setCompletedLessonIds([...lessons], userId);
         lessonCompleted = true;
       }
 
