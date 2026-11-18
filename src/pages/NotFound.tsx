@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Compass, Home, MapPinned } from 'lucide-react';
+import { Compass, Home } from 'lucide-react';
 import { Seo } from '../components/Seo';
+import { BrandLogo } from '../components/BrandLogo';
 
 /**
  * Custom 404 for unmatched routes. Academic-calm styling: soft gradient halo,
@@ -17,8 +18,8 @@ export default function NotFound() {
         <div className="absolute -bottom-24 -right-12 w-72 h-72 bg-success-green/10 rounded-full blur-3xl -z-10 pointer-events-none" />
 
         <div className="bg-surface border border-border-card rounded-[32px] p-8 sm:p-12 text-center space-y-6 shadow-sm">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center">
-            <MapPinned className="w-8 h-8" />
+          <div className="flex justify-center">
+            <BrandLogo size="lg" />
           </div>
 
           <div className="space-y-1">

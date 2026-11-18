@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { BookOpen } from 'lucide-react';
+import { BrandLogo } from '../components/BrandLogo';
 
 // Only allow internal relative paths as a post-signup redirect (no open redirects).
 function safeNext(raw: string | null): string {
@@ -45,7 +46,7 @@ export default function Signup() {
         // Automatically logged in
         navigate(next);
       } else {
-        setSuccess('Roʻyxatdan muvaffaqiyatli oʻtdingiz. Emailingizni tasdiqlang!');
+        setSuccess('Ro‘yxatdan o‘tdingiz. Elektron pochtangizga yuborilgan havolani tasdiqlang.');
         setLoading(false);
       }
     }
@@ -65,9 +66,9 @@ export default function Signup() {
     <div className="flex flex-col items-center justify-center py-20 px-4">
       <div className="w-full max-w-md bg-surface p-8 rounded-xl border border-border-card shadow-sm">
         <div className="flex flex-col items-center mb-8">
-          <BookOpen className="w-12 h-12 text-accent-blue mb-4" />
-          <h2 className="text-2xl font-serif font-bold text-text-primary">Roʻyxatdan oʻtish</h2>
-          <p className="text-text-secondary mt-2">Yangi bilimlarga bir qadam</p>
+          <BrandLogo size="lg" className="mb-4" />
+          <h2 className="text-2xl font-serif font-bold text-text-primary">Ro‘yxatdan o‘tish</h2>
+          <p className="text-text-secondary mt-2">Attestatsiyaga tayyorgarlikni boshlang</p>
         </div>
 
         {error && (
@@ -84,14 +85,14 @@ export default function Signup() {
 
         <form onSubmit={handleSignup} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1">Ism Familiya</label>
+            <label className="block text-sm font-medium text-text-primary mb-1">Ism va familiya</label>
             <input
               type="text"
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               className="w-full px-4 py-2 bg-transparent border border-border-card rounded-lg focus:ring-2 focus:ring-accent-blue focus:border-accent-blue outline-none transition-all"
-              placeholder="Masalan: Alisher Navoiy"
+              placeholder="Ism va familiyangiz"
             />
           </div>
           <div>
@@ -102,7 +103,7 @@ export default function Signup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 bg-transparent border border-border-card rounded-lg focus:ring-2 focus:ring-accent-blue focus:border-accent-blue outline-none transition-all"
-              placeholder="Sizning emailingiz"
+              placeholder="pochta@misol.uz"
             />
           </div>
           <div>

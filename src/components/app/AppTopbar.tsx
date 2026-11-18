@@ -17,6 +17,8 @@ function clearLocalUserData() {
   }
 }
 
+import { BrandLogo } from '../BrandLogo';
+
 interface AppTopbarProps {
   onMenuClick?: () => void;
   /** Where the logo links to. Defaults to the legacy attestatsiya home. */
@@ -56,8 +58,8 @@ export default function AppTopbar({ onMenuClick, homeHref = '/attestatsiya' }: A
               <Menu className="w-5 h-5" />
             </button>
           )}
-          <Link to={homeHref} className="flex items-center space-x-2.5 flex-shrink-0">
-            <div className="w-9 h-9 bg-accent-blue rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-accent-blue/30 transition-transform hover:scale-105">N</div>
+          <Link to={homeHref} className="flex items-center space-x-2.5 flex-shrink-0 group">
+            <BrandLogo size="md" showText={false} imgClassName="group-hover:scale-105 transition-transform" />
             <span className="font-serif font-extrabold text-xl tracking-tight text-text-primary hidden sm:inline">Nur Academy</span>
           </Link>
         </div>

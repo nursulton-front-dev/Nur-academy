@@ -58,18 +58,7 @@ export default function AttestatsiyaExamResult() {
 
   const reviewQuestions = savedResult
     ? savedResult.answers_review
-    : mockQuestions.map(q => ({
-        question_id: q.id,
-        text: q.text,
-        options: q.options,
-        user_answer: mockExamResult.userAnswers[q.id],
-        correct_answer: q.correctOptionIndex,
-        is_correct: mockExamResult.userAnswers[q.id] === q.correctOptionIndex,
-        explanation: q.explanation,
-        question_type: 'multiple_choice' as const,
-        user_answer_text: undefined as string | undefined,
-        correct_answer_text: undefined as string | undefined
-      }));
+    : [];
 
   // Function to get color class based on score percentage
   const getProgressColor = (percent: number) => {
@@ -90,13 +79,13 @@ export default function AttestatsiyaExamResult() {
       <div className="bg-primary-bg rounded-2xl border border-border-card p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-center gap-6 shadow-sm">
         <div className="space-y-2 text-center sm:text-left">
           <span className="text-[10px] bg-[#3B7DD8]/10 text-[#3B7DD8] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
-            Natija e'lon qilindi
+            Natija e’lon qilindi
           </span>
           <h1 className="font-serif font-extrabold text-2xl sm:text-3xl text-text-primary">
             {exam.title}
           </h1>
           <p className="text-sm text-text-secondary">
-            Imtihon topshirilgan vaqti: Bugun, {new Date().toLocaleDateString('uz-UZ')}
+            Topshirilgan sana: Bugun, {new Date().toLocaleDateString('uz-UZ')}
           </p>
         </div>
 
@@ -116,7 +105,7 @@ export default function AttestatsiyaExamResult() {
         <div className="flex items-center space-x-2 pb-3 border-b border-border-card/50">
           <BookOpen className="w-5 h-5 text-[#3B7DD8]" />
           <h2 className="font-serif font-bold text-lg sm:text-xl text-text-primary">
-            Bo'limlar bo'yicha tahlil
+            Bo‘limlar bo‘yicha tahlil
           </h2>
         </div>
 
@@ -171,7 +160,7 @@ export default function AttestatsiyaExamResult() {
           onClick={() => setShowReview(!showReview)}
           className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#3B7DD8] hover:bg-opacity-95 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-md transition-all active:scale-95"
         >
-          <span>Javoblarni ko'rish</span>
+          <span>Javoblarni ko‘rish</span>
           {showReview ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
       </div>
@@ -195,10 +184,10 @@ export default function AttestatsiyaExamResult() {
                   <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md" style={{ backgroundColor: '#EEF2FF', color: '#6366F1' }}>PRO</span>
                 </div>
                 <p className="text-[13px] text-slate-300 leading-relaxed">
-                  Har bir xato javob uchun AI tomonidan batafsil tushuntirish olish uchun Pro tarifga oʻting.
+                  Har bir xato sababini AI Mentor bilan chuqur tahlil qilish uchun Pro tarifga o‘ting.
                 </p>
                 <Link to="/attestatsiya/obuna" className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors">
-                  Pro tarifga oʻtish <ArrowRight className="w-3.5 h-3.5" />
+                  Pro tarifga o‘tish <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </div>
@@ -231,12 +220,12 @@ export default function AttestatsiyaExamResult() {
                       {isCorrect ? (
                         <>
                           <Check className="w-3 h-3" />
-                          <span>To'g'ri</span>
+                          <span>To‘g‘ri</span>
                         </>
                       ) : (
                         <>
                           <X className="w-3 h-3" />
-                          <span>Noto'g'ri</span>
+                          <span>Noto‘g‘ri</span>
                         </>
                       )}
                     </span>
@@ -258,7 +247,7 @@ export default function AttestatsiyaExamResult() {
                       </div>
                       {!isCorrect && (
                         <div className="flex items-center gap-2 p-3 rounded-lg border border-[#4CAF82] text-[#4CAF82] bg-[#4CAF82]/10">
-                          <span className="font-bold">To'g'ri javob:</span>
+                          <span className="font-bold">To‘g‘ri javob:</span>
                           <span className="flex-grow">{q.correct_answer_text}</span>
                           <Check className="w-4 h-4 flex-shrink-0" />
                         </div>
@@ -296,7 +285,7 @@ export default function AttestatsiyaExamResult() {
                   {/* Explanation */}
                   {q.explanation && (
                     <div className="bg-primary-bg p-4 rounded-lg border border-border-card text-xs text-text-secondary leading-relaxed">
-                      <span className="font-bold text-text-primary block mb-1">Izoh (Tushuntirish):</span>
+                      <span className="font-bold text-text-primary block mb-1">Tushuntirish:</span>
                       {q.explanation}
                     </div>
                   )}

@@ -37,8 +37,8 @@ export default function GoalSetupModal({ isOpen, onClose, onSave }: GoalSetupMod
               <Target className="w-5.5 h-5.5 text-accent-blue" />
             </div>
             <div>
-              <h3 className="font-serif font-extrabold text-lg text-text-primary">Attestatsiya Maqsadi</h3>
-              <p className="text-xs text-text-secondary">O'zingiz uchun target ballni tanlang</p>
+              <h3 className="font-serif font-extrabold text-lg text-text-primary">Attestatsiya maqsadi</h3>
+              <p className="text-xs text-text-secondary">O‘zingiz uchun maqsad ballni tanlang</p>
             </div>
           </div>
           <button 
@@ -55,11 +55,11 @@ export default function GoalSetupModal({ isOpen, onClose, onSave }: GoalSetupMod
             
             // Customize target description labels
             let desc = "";
-            if (option.value === 55) desc = "Attestatsiyadan muvaffaqiyatli o'tish va amaldagi toifani saqlash";
+            if (option.value === 55) desc = "Attestatsiyadan o‘tish va toifani saqlash";
             if (option.value === 60) desc = "Ikkinchi toifa imtihon talabini bajarish";
             if (option.value === 70) desc = "Birinchi toifa imtihon talabini bajarish";
             if (option.value === 80) desc = "Oliy toifa imtihon talabini bajarish";
-            if (option.value === 86) desc = "Maksimal natija va qo'shimcha ustama foizlarini olish";
+            if (option.value === 86) desc = "Yuqori natija va ustama olish";
 
             return (
               <button

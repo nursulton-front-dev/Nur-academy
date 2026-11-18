@@ -28,31 +28,25 @@ export default function Pricing() {
     if (error) console.error('Pricing: failed to sync subscription_tier:', error.message);
   };
 
-  // Fake checkout modal states
+  // Honest Pro modal states (no fake card input or simulated transaction)
   const [selectedPlan, setSelectedPlan] = useState<{ id: SubscriptionTier; title: string; price: string } | null>(null);
-  const [checkoutStep, setCheckoutStep] = useState<'checkout' | 'success'>('checkout');
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvv, setCardCvv] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const plans = [
     {
       id: 'free' as SubscriptionTier,
       title: 'Free',
       price: '0 UZS',
-      desc: 'Boshlang\'ich tanishuv va cheklangan imkoniyatlar',
+      desc: 'Boshlang‘ich tanishuv va bosqichma-bosqich o‘rganish imkoniyatlari',
       features: [
-        'Birinchi 2 ta modul darslari bepul',
-        '1 ta Diagnostika testi',
+        'Ketma-ket ochiluvchi modul darslari (bosqichma-bosqich)',
+        '1 ta to‘liq Diagnostika testi (50 savol)',
         '2 ta Mock imtihon topshirish',
-        'Mavzu testlari'
+        'Mavzu testlari va mustahkamlash'
       ],
       missing: [
-        'Barcha 8 modul darslari',
-        'AI Mentor shaxsiy yordamchisi',
-        'Xatolar daftarchasi',
-        'Kengaytirilgan analitika va sertifikat'
+        'AI Mentor shaxsiy yordamchisi va izohlar',
+        'Xatolar daftarchasi (spaced repetition)',
+        'Kengaytirilgan analitika va natijalar tahlili'
       ],
       btnText: 'Amaldagi tarif',
       popular: false
@@ -61,17 +55,17 @@ export default function Pricing() {
       id: 'pro' as SubscriptionTier,
       title: 'Pro',
       price: '99,000 UZS',
-      desc: 'Attestatsiyaga toʻliq tayyorgarlik uchun barcha imkoniyatlar',
+      desc: 'Attestatsiyaga to‘liq tayyorgarlik uchun barcha Pro imkoniyatlar',
       features: [
-        'Barcha 8 ta modul darslari ochiq',
+        'Barcha modullar va darslarga cheklovlarsiz kirish',
         'Cheksiz Diagnostika va Mock imtihonlar',
-        'AI Mentor — har kunlik shaxsiy reja',
-        'Xatolar daftarchasi (spaced repetition)',
+        'AI Mentor — har bir xatoga individual tushuntirish',
+        'Xatolar daftarchasi (spaced repetition takrorlash)',
         'Kengaytirilgan natija va tahlil',
-        'Yakuniy sertifikat'
+        'Barcha modullar bo‘yicha chuqur tahlil'
       ],
       missing: [],
-      btnText: 'Pro tarifni tanlash',
+      btnText: 'Pro tarif haqida',
       popular: true
     }
   ];
@@ -84,35 +78,13 @@ export default function Pricing() {
       return;
     }
     setSelectedPlan(plan);
-    setCheckoutStep('checkout');
-    setCardNumber('');
-    setCardExpiry('');
-    setCardCvv('');
-  };
-
-  const handlePay = () => {
-    if (!selectedPlan) return;
-
-    // Simple mock card validation
-    if (cardNumber.length < 16) {
-      alert("Iltimos, 16 xonali karta raqamini to'liq kiriting");
-      return;
-    }
-
-    setIsLoading(true);
-    setTimeout(async () => {
-      subscriptionService.setSubscriptionTier(selectedPlan.id);
-      await syncTierToDb(selectedPlan.id);
-      setIsLoading(false);
-      setCheckoutStep('success');
-    }, 1500);
   };
 
   return (
     <AppPage className="text-left font-sans">
       <PageHeader
         title="Obuna"
-        description="Maqsadingizga eng tez erishish imkonini beruvchi tarif rejasini tanlang. Barcha toʻlovlar simulyatsiya qilinadi."
+        description="Maqsadingizga mos tarif rejasini tanlang. Dastlabki bosqichda platformaning asosiy imkoniyatlaridan bepul foydalanishingiz mumkin."
       />
       <PageContent className="space-y-8">
 
@@ -153,7 +125,7 @@ export default function Pricing() {
 
                 <div className="py-2">
                   <p className="text-2xl font-serif font-extrabold text-text-primary">{plan.price}</p>
-                  <p className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">bir oylik to'lov</p>
+                  <p className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">bir oylik to‘lov</p>
                 </div>
 
                 <div className="space-y-2.5 pt-2 border-t border-border-card/50">
@@ -206,8 +178,8 @@ export default function Pricing() {
                   <CreditCard className="w-5 h-5 text-accent-blue" />
                 </div>
                 <div>
-                  <h3 className="font-serif font-extrabold text-base text-text-primary">To'lov simulyatori</h3>
-                  <p className="text-[10px] text-text-secondary">Xavfsiz mock to'lov jarayoni</p>
+                  <h3 className="font-serif font-extrabold text-base text-text-primary">Pro tarif haqida ma’lumot</h3>
+                  <p className="text-[10px] text-text-secondary">Onlayn to‘lov tizimlari ulanmoqda</p>
                 </div>
               </div>
               <button 
@@ -218,104 +190,47 @@ export default function Pricing() {
               </button>
             </div>
 
-            {checkoutStep === 'checkout' ? (
-              <div className="space-y-4">
-                <div className="bg-primary-bg p-4 rounded-2xl border border-border-card/50 flex justify-between items-center text-xs">
-                  <div>
-                    <p className="font-bold text-text-primary">Tarif: {selectedPlan.title}</p>
-                    <p className="text-[10px] text-text-secondary mt-0.5">Bir martalik to'lov faollashuvi</p>
-                  </div>
-                  <span className="font-serif font-extrabold text-text-primary text-sm">{selectedPlan.price}</span>
+            <div className="space-y-4">
+              <div className="bg-primary-bg p-4 rounded-2xl border border-border-card/50 flex justify-between items-center text-xs">
+                <div>
+                  <p className="font-bold text-text-primary">Tarif: {selectedPlan.title}</p>
+                  <p className="text-[10px] text-text-secondary mt-0.5">To‘liq attestatsiya paketi</p>
                 </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Karta raqami (16 xonali)</label>
-                    <input
-                      type="text"
-                      maxLength={16}
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, ''))}
-                      className="w-full px-4 py-2.5 bg-primary-bg border border-border-card rounded-xl text-xs font-semibold text-text-primary focus:ring-2 focus:ring-accent-blue outline-none transition-all"
-                      placeholder="8600 0000 0000 0000"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Muddati</label>
-                      <input
-                        type="text"
-                        maxLength={5}
-                        value={cardExpiry}
-                        onChange={(e) => setCardExpiry(e.target.value)}
-                        className="w-full px-4 py-2.5 bg-primary-bg border border-border-card rounded-xl text-xs font-semibold text-text-primary focus:ring-2 focus:ring-accent-blue outline-none transition-all"
-                        placeholder="MM/YY"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">CVV / CVC</label>
-                      <input
-                        type="password"
-                        maxLength={3}
-                        value={cardCvv}
-                        onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, ''))}
-                        className="w-full px-4 py-2.5 bg-primary-bg border border-border-card rounded-xl text-xs font-semibold text-text-primary focus:ring-2 focus:ring-accent-blue outline-none transition-all"
-                        placeholder="•••"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2 flex gap-3">
-                  <button
-                    onClick={() => setSelectedPlan(null)}
-                    className="flex-1 border border-border-card hover:bg-surface-hover text-text-primary py-3 rounded-xl text-xs font-bold transition-all cursor-pointer"
-                  >
-                    Bekor qilish
-                  </button>
-                  <button
-                    onClick={handlePay}
-                    disabled={isLoading}
-                    className="flex-1 bg-accent-blue hover:bg-accent-blue/95 disabled:opacity-75 text-white py-3 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/15 transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    {isLoading ? (
-                      <span>To'lanmoqda...</span>
-                    ) : (
-                      <>
-                        <Check className="w-4 h-4" />
-                        <span>To'lash</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+                <span className="font-serif font-extrabold text-text-primary text-sm">{selectedPlan.price}</span>
               </div>
-            ) : (
-              <div className="text-center py-6 space-y-4">
-                <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/25 rounded-full flex items-center justify-center mx-auto text-emerald-500 animate-bounce">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <div className="space-y-1">
-                  <h4 className="font-serif font-extrabold text-lg text-text-primary">Tabriklaymiz!</h4>
-                  <p className="text-xs text-text-secondary">Sizning tarifingiz muvaffaqiyatli faollashtirildi!</p>
-                </div>
-                <p className="text-[11px] bg-primary-bg p-3 rounded-xl border border-border-card/50 text-text-secondary max-w-xs mx-auto">
-                  Endi sizda <strong>{selectedPlan.title}</strong> tarifi bo'yicha barcha premium imkoniyatlar ochildi.
+
+              <div className="bg-accent-blue/5 border border-accent-blue/20 rounded-2xl p-4 text-xs space-y-2 text-text-secondary leading-relaxed">
+                <p className="font-bold text-text-primary flex items-center gap-1.5 text-accent-blue">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Onlayn to‘lov tizimlari ulanmoqda</span>
                 </p>
-                <div className="pt-3">
-                  <button
-                    onClick={() => {
-                      setSelectedPlan(null);
-                      navigate('/attestatsiya');
-                      window.location.reload();
-                    }}
-                    className="bg-accent-blue hover:bg-accent-blue/95 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md active:scale-97 cursor-pointer"
-                  >
-                    Tizimga qaytish
-                  </button>
-                </div>
+                <p>
+                  Platforma dastlabki ochiq rejimda ishlamoqda. Ro‘yxatdan o‘tgan o‘qituvchilar darslar, diagnostika va mavzu testlaridan bepul foydalanishlari mumkin.
+                </p>
+                <p>
+                  Pro tarifni individual yoki maktab jamoasi uchun faollashtirish bo‘yicha fikr bildirish bo‘limi orqali murojaat qilishingiz mumkin.
+                </p>
               </div>
-            )}
+
+              <div className="pt-2 flex gap-3">
+                <button
+                  onClick={() => setSelectedPlan(null)}
+                  className="flex-1 border border-border-card hover:bg-surface-hover text-text-primary py-3 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                >
+                  Yopish
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedPlan(null);
+                    navigate('/feedback');
+                  }}
+                  className="flex-1 bg-accent-blue hover:bg-accent-blue/95 text-white py-3 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/15 transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Murojaat qilish</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
 
           </div>
         </div>

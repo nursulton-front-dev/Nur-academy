@@ -1,7 +1,8 @@
 import { mockQuestions, mockTopicTests } from '../data/attestatsiyaMocks';
 import { domainLabel } from './domains';
 import { supabase } from './supabase';
-import { ATTESTATSIYA_COURSE_ID } from './courses';
+import { ATTESTATSIYA_COURSE_ID, GEOGRAFIYA_COURSE_ID, GEOGRAFIYA_SLUG } from './courses';
+import { geografiyaService } from './geografiyaService';
 import {
   loadByBlueprint,
   loadQuestionsFromBank,
@@ -62,9 +63,10 @@ type ExamAnswer = number | string;
 
 // localStorage namespaces. All swept on logout by Layout.handleSignOut
 // (keys prefixed with nur_ / answers_ / result_).
-const DEF_PREFIX = 'nur_exam_def_'; // full question set incl. correct answers
+// NOTE: DEF_PREFIX has been completely removed to prevent storing answer keys on the client.
+const QUESTIONS_PREFIX = 'nur_exam_q_'; // sanitized question metadata only (no answer keys)
 const ANSWERS_PREFIX = 'answers_'; // user answers keyed by question id
-const RESULT_PREFIX = 'result_'; // graded result for the result screen
+const RESULT_PREFIX = 'result_'; // graded result for the result screen (stored only AFTER server grading)
 const ATTEMPT_MAP_KEY = 'nur_exam_attempt_map'; // attempt_id -> exam id
 
 function readJson<T>(key: string, fallback: T): T {
@@ -100,8 +102,8 @@ function mockFallback(examId: string): BankQuestion[] {
     questionType: 'multiple_choice' as const,
     text: q.text,
     options: q.options,
-    correctIndex: q.correctOptionIndex,
-    correctText: q.options[q.correctOptionIndex] ?? ''
+    correctIndex: -1,
+    correctText: ''
   }));
 }
 
@@ -129,26 +131,62 @@ async function selectQuestions(examId: string): Promise<BankQuestion[]> {
 export const attestatsiyaService = {
   /**
    * Starts a fresh exam attempt: draws a new random question set from the bank
-   * (so repeated mock exams differ), stores the answer key locally for grading,
-   * and returns the questions without revealing the correct answers.
+   * (so repeated mock exams differ), stores ONLY sanitized questions locally
+   * (zero answer keys), and returns the questions.
    */
-  async getExamQuestions(examId: string): Promise<ExamAttemptResponse> {
-    const questions = await selectQuestions(examId);
-    const attemptId = 'att_' + Math.random().toString(36).substring(2, 11);
+  async getExamQuestions(examId: string, userId?: string, courseSlug?: string): Promise<ExamAttemptResponse> {
+    const isGeografiya = courseSlug === GEOGRAFIYA_SLUG || ['A', 'B', 'C', 'O1', 'O2', 'O3', 'O4'].includes(examId);
+    let sanitized: ExamQuestion[] = [];
 
-    localStorage.setItem(DEF_PREFIX + attemptId, JSON.stringify(questions));
+    if (isGeografiya) {
+      let geoQuestions: any[] = [];
+      if (['A', 'B', 'C'].includes(examId)) {
+        geoQuestions = geografiyaService.getRealMockQuestions(examId as any);
+      } else if (['O1', 'O2', 'O3', 'O4'].includes(examId)) {
+        geoQuestions = geografiyaService.getOddiyMockQuestions(examId as any);
+      }
+
+      sanitized = geoQuestions.map((q, idx) => ({
+        id: q.id,
+        domain: `S${q.section}`,
+        subdomain: q.module_id,
+        question_type: q.question_type,
+        text: q.stem,
+        options: q.options.map((o: any) => `${o.code}) ${o.text}`),
+        order_index: idx + 1
+      }));
+    } else {
+      const questions = await selectQuestions(examId);
+      sanitized = questions.map((q, idx) => ({
+        id: q.id,
+        domain: q.domain,
+        subdomain: '',
+        question_type: q.questionType,
+        text: q.text,
+        options: q.options,
+        order_index: idx + 1
+      }));
+    }
+
+    const attemptId = crypto.randomUUID();
+    const effectiveCourseId = isGeografiya ? GEOGRAFIYA_COURSE_ID : ATTESTATSIYA_COURSE_ID;
+
+    localStorage.setItem(QUESTIONS_PREFIX + attemptId, JSON.stringify(sanitized));
     localStorage.setItem(ANSWERS_PREFIX + attemptId, JSON.stringify({}));
     mapAttempt(attemptId, examId);
 
-    const sanitized: ExamQuestion[] = questions.map((q, idx) => ({
-      id: q.id,
-      domain: q.domain,
-      subdomain: '',
-      question_type: q.questionType,
-      text: q.text,
-      options: q.options,
-      order_index: idx + 1
-    }));
+    if (userId) {
+      supabase.from('exam_attempts').insert({
+        id: attemptId,
+        user_id: userId,
+        course_id: effectiveCourseId,
+        exam_id_text: examId,
+        question_ids: sanitized.map((q) => q.id),
+        started_at: new Date().toISOString()
+      }).then(({ error }) => {
+        if (error) console.warn('exam_attempts: initial record failed', error.message);
+      });
+    }
 
     return { attempt_id: attemptId, questions: sanitized };
   },
@@ -166,18 +204,44 @@ export const attestatsiyaService = {
     return { status: 'saved' };
   },
 
-  /** Grades the attempt against the locally stored answer key and persists to DB. */
+  /** Grades the attempt on the server via check-answer (batch) and persists to DB. */
   async finishExam(attemptId: string, userId?: string): Promise<FinishExamResponse> {
-    const questions = readJson<BankQuestion[]>(DEF_PREFIX + attemptId, []);
+    const questions = readJson<ExamQuestion[]>(QUESTIONS_PREFIX + attemptId, []);
     const answers = readJson<Record<string, ExamAnswer>>(ANSWERS_PREFIX + attemptId, {});
 
     let correctCount = 0;
     const domainScores: { [domain: string]: { correct: number; total: number } } = {};
     const answersReview: AnswerReview[] = [];
 
+    // Invoke server-side batch grading
+    let serverResults: Record<string, any> = {};
+    try {
+      const batchPayload = questions.map((q) => ({
+        question_id: q.id,
+        user_answer: answers[q.id]
+      }));
+
+      const { data, error } = await supabase.functions.invoke('check-answer', {
+        body: {
+          exam_attempt_id: userId ? attemptId : undefined,
+          batch: batchPayload
+        }
+      });
+
+      if (!error && data?.results) {
+        serverResults = data.results;
+      } else if (userId) {
+        throw new Error(error?.message || 'Server tekshiruvi muvaffaqiyatsiz bo‘ldi');
+      }
+    } catch (err) {
+      console.error('attestatsiyaService.finishExam: server check failed', err);
+      if (userId) throw err;
+    }
+
     for (const q of questions) {
       const userAnswer = answers[q.id];
-      const isCorrect = isBankAnswerCorrect(q, userAnswer);
+      const res = serverResults[q.id];
+      const isCorrect = Boolean(res?.is_correct);
       if (isCorrect) correctCount++;
 
       const domainKey = domainLabel(q.domain);
@@ -185,18 +249,19 @@ export const attestatsiyaService = {
       domainScores[domainKey].total += 1;
       if (isCorrect) domainScores[domainKey].correct += 1;
 
-      const isInput = q.questionType === 'input';
+      const isInput = q.question_type === 'input';
+      const corrAns = res?.correct_answer;
       answersReview.push({
         question_id: q.id,
         text: q.text,
         options: q.options,
         user_answer: isInput ? -1 : userAnswer !== undefined ? Number(userAnswer) : -1,
-        correct_answer: q.correctIndex,
+        correct_answer: isInput ? -1 : (typeof corrAns === 'number' ? corrAns : -1),
         is_correct: isCorrect,
-        explanation: '',
-        question_type: q.questionType,
+        explanation: res?.explanation || '',
+        question_type: q.question_type,
         user_answer_text: isInput ? String(userAnswer ?? '') : undefined,
-        correct_answer_text: isInput ? q.correctText : undefined
+        correct_answer_text: isInput ? String(corrAns ?? '') : undefined
       });
     }
 
@@ -212,26 +277,13 @@ export const attestatsiyaService = {
     };
 
     localStorage.setItem(RESULT_PREFIX + attemptId, JSON.stringify(result));
-    // Question key is no longer needed once graded.
-    localStorage.removeItem(DEF_PREFIX + attemptId);
+    localStorage.removeItem(QUESTIONS_PREFIX + attemptId);
 
-    // Persist to DB so results survive localStorage clears and sync across devices.
+    // Result is authoritatively stored on server by check-answer/finish-exam via adminClient.
+    // Sync completed attempt state if needed.
     if (userId) {
-      const map = readJson<Record<string, string>>(ATTEMPT_MAP_KEY, {});
-      const examIdText = map[attemptId] ?? attemptId;
-      // Fire-and-forget — don't block the result screen on a network call.
-      supabase.from('exam_attempts').insert({
-        user_id: userId,
-        course_id: ATTESTATSIYA_COURSE_ID,
-        mock_exam_id: null,
-        exam_id_text: examIdText,
-        total_score: finalScore,
-        max_score: 100,
-        finished_at: result.finished_at,
-        domain_scores: domainScores,
-        answers_review: answersReview,
-      }).then(({ error }) => {
-        if (error) console.warn('exam_attempts: save failed', error.message);
+      supabase.from('exam_attempts').select('id, total_score, finished_at').eq('id', attemptId).maybeSingle().then(({ error }) => {
+        if (error) console.warn('exam_attempts: check sync failed', error.message);
       });
     }
 

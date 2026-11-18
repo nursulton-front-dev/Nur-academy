@@ -172,10 +172,10 @@ export default function AttestatsiyaOnboarding() {
                 Diagnostika
               </span>
               <h1 className="text-2xl sm:text-3xl font-serif font-extrabold text-text-primary tracking-tight">
-                Bilim darajangizni tekshirib koʻrasizmi?
+                Boshlang‘ich bilimingizni tekshirasizmi?
               </h1>
               <p className="text-text-secondary text-sm sm:text-base leading-relaxed max-w-xl">
-                50 ta savol, 2 soat. Bu sizga zaif mavzularni topish va samarali tayyorgarlik koʻrishga yordam beradi.
+                50 ta savol, 120 daqiqa. Diagnostika orqali zaif mavzularni aniqlab, o‘rganish rejangizni tuzib olasiz.
               </p>
             </div>
 
@@ -184,14 +184,14 @@ export default function AttestatsiyaOnboarding() {
                 <ListChecks className="w-5 h-5 text-accent-blue shrink-0" />
                 <div>
                   <p className="text-sm font-bold text-text-primary">50 ta savol</p>
-                  <p className="text-[11px] text-text-secondary">Barcha asosiy modullar boʻyicha</p>
+                  <p className="text-[11px] text-text-secondary">Barcha 8 ta modul bo‘yicha</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-primary-bg/60 border border-border-card/50 rounded-2xl p-4">
                 <Clock className="w-5 h-5 text-accent-blue shrink-0" />
                 <div>
-                  <p className="text-sm font-bold text-text-primary">2 soat</p>
-                  <p className="text-[11px] text-text-secondary">Istalgan vaqtda toʻxtatsangiz boʻladi</p>
+                  <p className="text-sm font-bold text-text-primary">120 daqiqa</p>
+                  <p className="text-[11px] text-text-secondary">Haqiqiy attestatsiya vaqti bilan bir xil</p>
                 </div>
               </div>
             </div>
@@ -204,7 +204,7 @@ export default function AttestatsiyaOnboarding() {
                 className="flex-1 inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-6 py-4 rounded-xl font-bold text-sm hover:bg-accent-blue/95 shadow-md shadow-accent-blue/20 transition-all active:scale-97 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 <PlayCircle className="w-5 h-5" />
-                <span>Hozir boshlash</span>
+                <span>Diagnostikani boshlash</span>
               </button>
               <button
                 type="button"
@@ -212,7 +212,7 @@ export default function AttestatsiyaOnboarding() {
                 disabled={saving}
                 className="flex-1 inline-flex items-center justify-center gap-2 border border-border-card hover:bg-surface-hover text-text-primary px-6 py-4 rounded-xl font-bold text-sm transition-all active:scale-97 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
-                <span>Keyinroq qilaman</span>
+                <span>Keyinroq o‘tish</span>
               </button>
             </div>
           </div>

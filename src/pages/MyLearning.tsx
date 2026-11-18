@@ -65,7 +65,7 @@ export default function MyLearning() {
   const platformSeo = (
     <Seo
       title="Mening kurslarim"
-      description="Nur Academy — oʻqituvchilar uchun taʼlim platformasi. Kurslaringiz va oʻqish jarayoni."
+      description="Nur Academy — o‘qituvchilar uchun ta’lim platformasi. Kurslaringiz va o‘qish jarayoni."
       canonicalPath="/dashboard"
     />
   );
@@ -94,7 +94,7 @@ export default function MyLearning() {
           <div className="space-y-2">
             <h1 className="text-2xl font-serif font-extrabold text-text-primary">Mening kurslarim</h1>
             <p className="text-text-secondary text-sm max-w-md mx-auto leading-relaxed">
-              Kurslaringiz va oʻqish jarayonini koʻrish uchun tizimga kiring.
+              Kurslaringiz va o‘qish jarayonini ko‘rish uchun tizimga kiring.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -110,7 +110,7 @@ export default function MyLearning() {
               className="inline-flex items-center gap-2 bg-surface border border-border-card text-text-primary px-6 py-3 rounded-xl text-sm font-bold hover:bg-surface-hover transition-all"
             >
               <Compass className="w-4.5 h-4.5" />
-              Kurslarni koʻrish
+              Kurslarni ko‘rish
             </Link>
           </div>
         </div>
@@ -132,7 +132,7 @@ export default function MyLearning() {
               Hali kursga yozilmagansiz
             </h1>
             <p className="text-text-secondary text-sm max-w-md mx-auto leading-relaxed">
-              Katalogdan oʻzingizga mos kursni tanlang va oʻqishni boshlang.
+              Katalogdan o‘zingizga mos kursni tanlang va o‘qishni boshlang.
             </p>
           </div>
           <Link
@@ -140,7 +140,7 @@ export default function MyLearning() {
             className="inline-flex items-center gap-2 bg-accent-blue text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-accent-blue/95 transition-all active:scale-[0.98]"
           >
             <Compass className="w-4.5 h-4.5" />
-            Kurslarni koʻrish
+            Kurslarni ko‘rish
           </Link>
         </div>
       </div>
@@ -156,7 +156,7 @@ export default function MyLearning() {
           Mening kurslarim
         </h1>
         <p className="text-text-secondary text-sm sm:text-base">
-          Oʻqishni qoldirgan joyingizdan davom ettiring.
+          O‘qishni qoldirgan joyingizdan davom ettiring.
         </p>
       </header>
 
@@ -234,7 +234,7 @@ export default function MyLearning() {
                 <Link
                   to={href}
                   className="ml-auto inline-flex items-center text-text-secondary hover:text-accent-blue transition-colors"
-                  aria-label="Kursga oʻtish"
+                  aria-label="Kursga o‘tish"
                 >
                   <ArrowRight className="w-5 h-5" />
                 </Link>
@@ -251,7 +251,7 @@ export default function MyLearning() {
           className="inline-flex items-center gap-2 text-sm font-bold text-accent-blue hover:underline"
         >
           <Compass className="w-4 h-4" />
-          Boshqa kurslarni koʻrish
+          Boshqa kurslarni ko‘rish
         </Link>
       </div>
     </div>

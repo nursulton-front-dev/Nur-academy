@@ -1,0 +1,12 @@
+issue_id,severity,entity_type,entity_id,error_code,description
+ISSUE-ASSET-L4,P1,Asset,R-03,MALFORMED_CSV_COLUMNS,"Line 4 has 8 columns instead of 6 due to unquoted lesson list. Applied confirmed mapping preserving all 3 target lessons: M6-D3, M6-D4, M8-D2."
+ISSUE-ASSET-R-05-MAP,P1,Asset,R-05,MAP_ANTARCTICA_CUTOFF_AND_LICENSE,Map cut off at 60°S (Antarctica outline truncated). Europe/Asia labeled separately as 'materiklar' contrary to textbook standard (Yevrosiyo). GSHHG/Basemap license requires verification.
+ISSUE-ASSET-R-06-MAP,P1,Asset,R-06,MAP_ANTARCTICA_CUTOFF_AND_LICENSE,Map cut off at 60°S (Antarctica outline truncated). Europe/Asia labeled separately as 'materiklar' contrary to textbook standard (Yevrosiyo). GSHHG/Basemap license requires verification.
+ISSUE-POOL-ISOLATION-01,P0,Question,RM-A-30 / O-O3-009 / O-O4-008,CROSS_POOL_CLONE,"Savol '1:200 000 masshtabli xaritada 4 sm masofa joyda necha km?' bir vaqtning o‘zida Real mock (RM-A-30) va Oddiy mock (O-O3-009, O-O4-008) da takrorlangan. Pool isolation buzilgan."
+ISSUE-CONTENT-RM-A-04,P1,Question,RM-A-04,CONTENT_LOGIC_ERROR,"Kognitiv darajasi 'mulohaza' deb belgilangan, ammo topshiriq faktik eslash/aniqlash darajasiga tegishli."
+ISSUE-CONTENT-RM-B-04,P1,Question,RM-B-04,CONTENT_LOGIC_ERROR,"Kognitiv darajasi 'mulohaza' deb belgilangan, ammo topshiriq faktik eslash darajasiga tegishli."
+ISSUE-CONTENT-RM-B-05,P1,Question,RM-B-05,CONTENT_LOGIC_ERROR,Savol Yer harakati va fasllar (M1-D2) mavzusiga noto‘g‘ri bog‘langan. Mazmuni: yog‘in-tuproq-o‘simlik geografik jarayoni (M1-D3/D4 mavzusi).
+ISSUE-CONTENT-RM-B-21,P1,Question,RM-B-21,CONTENT_LOGIC_ERROR,Savol aholi va migratsiya (M4-D2) mavzusiga noto‘g‘ri bog‘langan. Mazmuni: xo‘jalik tarmoqlari sektorlari (M4-D3 Jahon xo‘jaligi mavzusi).
+ISSUE-CONTENT-RM-B-35,P1,Question,RM-B-35,CONTENT_LOGIC_ERROR,Ketma-ketlik savolida tartib noaniqligi: xaritadagi masofani o‘lchash (1) va masshtabni aniqlash (2) tartibi o‘zaro teng huquqli.
+ISSUE-CONTENT-RM-C-05,P1,Question,RM-C-05,CONTENT_LOGIC_ERROR,G‘arbiy-sharqiy joylashuv vaqtga ta’siri bosqichlarida 2 va 3-bandlar o‘rtasida mantiqiy noaniqlik mavjud.
+ISSUE-CONTENT-RM-C-10,P1,Question,RM-C-10,CONTENT_LOGIC_ERROR,"Savol geologiya va resurslar (M2-D3) mavzusiga noto‘g‘ri bog‘langan. Mazmuni: okean geografiyasi (qo‘ltiq, bo‘g‘iz, dengiz — M2-D4 mavzusi)."

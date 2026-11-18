@@ -18,9 +18,9 @@ export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/dashboard-hero.png`;
 // platform is bigger than a single course. Course pages override this with their
 // own (search-optimised) meta via `courseSeo()`.
 export const DEFAULT_SEO = {
-  title: 'Nur Academy — oʻqituvchilar uchun taʼlim platformasi',
+  title: 'Nur Academy — o‘qituvchilar uchun ta’lim platformasi',
   description:
-    'Nur Academy — oʻqituvchilar uchun zamonaviy onlayn taʼlim platformasi. Video darslar, testlar, mock imtihonlar va AI mentor bilan kasbiy tayyorgarlik. Birinchi kurs: informatika attestatsiyasi.',
+    'Nur Academy — o‘qituvchilar uchun onlayn ta’lim platformasi. Video darslar, amaliy testlar, mock imtihonlar va xatolar tahlili. Birinchi kurs: informatika attestatsiyasi.',
 };
 
 /**
@@ -39,14 +39,14 @@ export function courseSeo(
     return {
       title: 'Informatika attestatsiyasiga tayyorgarlik | Nur Academy',
       description:
-        'Informatika oʻqituvchilari attestatsiyasiga tayyorgarlik: video darslar, mavzu testlari, mock imtihonlar, diagnostika va AI mentor. Nur Academy platformasi.',
+        'Informatika o‘qituvchilari attestatsiyasiga tayyorgarlik: video darslar, mavzu testlari, mock imtihonlar, diagnostika va xatolar ustida ishlash. Nur Academy.',
       rawTitle: true,
     };
   }
   return {
     title: dbTitle || 'Kurs',
     description:
-      `${dbTitle || 'Kurs'} — Nur Academy platformasida oʻqing: video darslar, testlar va imtihonlar.`,
+      `${dbTitle || 'Kurs'} — Nur Academy platformasida o‘qing: video darslar, testlar va imtihonlar.`,
     rawTitle: false,
   };
 }

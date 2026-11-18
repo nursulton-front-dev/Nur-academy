@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { BookOpen, CheckCircle2 } from 'lucide-react';
+import { BrandLogo } from '../components/BrandLogo';
 
 // Only allow internal relative paths as a post-login redirect (no open redirects).
 function safeNext(raw: string | null): string {
@@ -50,15 +51,15 @@ export default function Login() {
     <div className="flex flex-col items-center justify-center py-20 px-4">
       <div className="w-full max-w-md bg-surface p-8 rounded-xl border border-border-card shadow-sm">
         <div className="flex flex-col items-center mb-8">
-          <BookOpen className="w-12 h-12 text-accent-blue mb-4" />
-          <h2 className="text-2xl font-serif font-bold text-text-primary">Tizimga kiring</h2>
-          <p className="text-text-secondary mt-2">Darslarni davom ettirish uchun</p>
+          <BrandLogo size="lg" className="mb-4" />
+          <h2 className="text-2xl font-serif font-bold text-text-primary">Tizimga kirish</h2>
+          <p className="text-text-secondary mt-2">O‘quv kabinetingizga kiring</p>
         </div>
 
         {params.get('reset') === 'success' && (
           <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 rounded-lg text-sm flex items-start gap-2.5">
             <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
-            <span>Parolingiz muvaffaqiyatli yangilandi. Yangi parol bilan tizimga kiring.</span>
+            <span>Parolingiz yangilandi. Yangi parol bilan tizimga kiring.</span>
           </div>
         )}
 

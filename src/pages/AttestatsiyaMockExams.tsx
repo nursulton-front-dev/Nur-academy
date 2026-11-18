@@ -13,6 +13,8 @@ import {
 import { mockExams } from '../data/attestatsiyaMocks';
 import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
 import { MetricCard, StatusBadge } from '../components/app/ui';
+import GeografiyaMockExamsView from '../components/geografiya/GeografiyaMockExamsView';
+import { GEOGRAFIYA_SLUG } from '../lib/courses';
 
 const EXAM_DURATION_MIN = 120;
 
@@ -20,13 +22,17 @@ const EXAM_DURATION_MIN = 120;
 // exam ladder rather than identical rows.
 function difficultyFor(index: number): { label: string; variant: 'open' | 'mid' | 'low' } {
   if (index < 3) return { label: 'Yengil', variant: 'open' };
-  if (index < 7) return { label: 'Oʻrtacha', variant: 'mid' };
+  if (index < 7) return { label: 'O‘rtacha', variant: 'mid' };
   return { label: 'Qiyin', variant: 'low' };
 }
 
 export default function AttestatsiyaMockExams() {
   const navigate = useNavigate();
   const { slug = 'attestatsiya' } = useParams<{ slug: string }>();
+
+  if (slug === GEOGRAFIYA_SLUG) {
+    return <GeografiyaMockExamsView />;
+  }
 
   const handleStartExam = (examId: string) => {
     navigate(coursePath(slug, `imtihon/${examId}`));
@@ -39,7 +45,7 @@ export default function AttestatsiyaMockExams() {
     <AppPage className="text-left font-sans">
       <PageHeader
         title="Mock imtihonlar"
-        description="Attestatsiya imtihoni andozasi asosidagi 50 talik sinov testlari. Har bir testga 120 daqiqa ajratiladi."
+        description="Haqiqiy attestatsiya talablariga mos 50 ta savolli sinov imtihonlari. Davomiyligi: 120 daqiqa."
       />
       <PageContent className="space-y-8">
         {/* Summary metrics */}
@@ -148,7 +154,7 @@ export default function AttestatsiyaMockExams() {
         </div>
 
         <p className="text-center text-[11px] text-text-secondary">
-          Har bir imtihon real attestatsiya formatida — {EXAM_DURATION_MIN} daqiqa, 50 ta savol.
+          Har bir sinov imtihoni haqiqiy attestatsiya talablariga mos: {EXAM_DURATION_MIN} daqiqa, 50 ta savol.
         </p>
       </PageContent>
     </AppPage>

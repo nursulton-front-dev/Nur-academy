@@ -94,9 +94,6 @@ function buildQuestion(row: BankRow, trans: TranslationRow): BankQuestion | null
   const rawOptions = Array.isArray(trans.options) ? (trans.options as RawOption[]) : [];
 
   if (questionType === 'input') {
-    const answer = rawOptions.find((o) => o?.is_correct) ?? rawOptions[0];
-    const correctText = String(answer?.text ?? '').trim();
-    if (!correctText) return null;
     return {
       id: row.id,
       domain: row.domain,
@@ -104,15 +101,13 @@ function buildQuestion(row: BankRow, trans: TranslationRow): BankQuestion | null
       text: trans.question_text,
       options: [],
       correctIndex: -1,
-      correctText
+      correctText: ''
     };
   }
 
   const options: string[] = [];
-  let correctIndex = -1;
-  rawOptions.forEach((opt, i) => {
-    options.push(String(opt?.text ?? ''));
-    if (opt?.is_correct === true) correctIndex = i;
+  rawOptions.forEach((opt) => {
+    options.push(typeof opt === 'object' ? String(opt?.text ?? '') : String(opt ?? ''));
   });
 
   // A multiple-choice question with no usable options is unscoreable — skip it.
@@ -124,8 +119,8 @@ function buildQuestion(row: BankRow, trans: TranslationRow): BankQuestion | null
     questionType: 'multiple_choice',
     text: trans.question_text,
     options,
-    correctIndex,
-    correctText: correctIndex >= 0 ? options[correctIndex] : ''
+    correctIndex: -1,
+    correctText: ''
   };
 }
 

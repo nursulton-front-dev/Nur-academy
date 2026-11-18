@@ -26,7 +26,7 @@ export default function DashboardHero({ continueHref: href }: DashboardHeroProps
         <div className="flex-1 lg:basis-[60%] min-w-0 px-6 sm:px-8 lg:px-10 py-6 sm:py-7 lg:py-8 flex flex-col justify-center items-start">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-accent-blue/15 text-accent-blue dark:text-[#7FB1F0]">
             <ShieldCheck className="w-3.5 h-3.5" />
-            Davlat tomonidan tasdiqlangan kurs
+            Attestatsiya dasturi asosida
           </div>
 
           <h1 className="mt-5 2xl:mt-7 font-serif font-extrabold text-slate-900 dark:text-white leading-tight text-2xl sm:text-3xl lg:text-[2.5rem]">

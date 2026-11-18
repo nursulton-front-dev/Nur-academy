@@ -1,6 +1,6 @@
 {
   "name": "Nur Academy",
-  "description": "Oʻzbekiston onlayn ta'lim platformasi. Sifatli video darslar, amaliy teztlar va o'zlashtirishni kuzatish markazi.",
+  "description": "O‘qituvchilarni kasbiy attestatsiyaga tayyorlash platformasi. Amaliy testlar, qadam-baqadam darslar va tahlillar.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

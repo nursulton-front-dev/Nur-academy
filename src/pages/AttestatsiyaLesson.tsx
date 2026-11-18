@@ -19,6 +19,8 @@ import { supabase } from '../lib/supabase';
 import { lessonStepsService, LessonStep } from '../lib/lessonStepsService';
 import StepLesson from '../components/lessonsteps/StepLesson';
 import { AIMentorBlock } from '../components/AIMentorBlock';
+import GeografiyaLessonView from '../components/geografiya/GeografiyaLessonView';
+import { GEOGRAFIYA_SLUG } from '../lib/courses';
 
 interface DbLessonMeta {
   title: string;
@@ -29,9 +31,14 @@ interface DbLessonMeta {
 // Entry point: prefers the step-based (Stepik) model when the DB has steps for
 // this lesson; otherwise falls back to the legacy single-page mock lesson.
 export default function AttestatsiyaLesson() {
-  const { id } = useParams<{ id: string }>();
+  const { id, slug = ATTESTATSIYA_SLUG } = useParams<{ id: string; slug: string }>();
   const [steps, setSteps] = useState<LessonStep[] | null>(null); // null = loading
   const [meta, setMeta] = useState<DbLessonMeta | null>(null);
+
+  // If Geografiya course, render dedicated GeografiyaLessonView
+  if (slug === GEOGRAFIYA_SLUG) {
+    return <GeografiyaLessonView lessonId={id || ''} />;
+  }
 
   useEffect(() => {
     let active = true;

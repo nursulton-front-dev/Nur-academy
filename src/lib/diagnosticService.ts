@@ -48,10 +48,11 @@ export interface DiagnosticAttempt {
   total_score: number;
   results_by_domain: ResultsByDomain | null;
   recommendations: string | null;
+  question_ids?: string[];
 }
 
 const ATTEMPT_COLUMNS =
-  'id, user_id, enrollment_id, course_id, started_at, finished_at, total_score, results_by_domain, recommendations';
+  'id, user_id, enrollment_id, course_id, started_at, finished_at, total_score, results_by_domain, recommendations, question_ids';
 
 // Total score is out of 100 → each of the 50 questions is worth 2 points.
 const POINTS_PER_QUESTION = 2;
@@ -125,13 +126,13 @@ export function generateRecommendation(domainResults: DomainResult[]): string {
     .slice(0, 3);
 
   if (weak.length === 0) {
-    return 'Ajoyib natija! Barcha mavzularda yaxshi koʻrsatkich. Mock imtihonga oʻtishingiz mumkin.';
+    return 'Barcha bo‘limlarda tayyorgarlik darajasi 50% dan yuqori. Endi sinov imtihonini (mock) topshirib ko‘rishingiz mumkin.';
   }
   if (weak.length === 1) {
-    return `Sizga "${domainLabel(weak[0].name)}" mavzusiga eʼtibor qaratish tavsiya etiladi. Ushbu boʻlim materiallarini koʻring.`;
+    return `Qayta takrorlash tavsiya etiladi: "${domainLabel(weak[0].name)}". Shu modul darslari va testlarini ko‘rib chiqing.`;
   }
   const names = weak.map((w) => domainLabel(w.name)).join(', ');
-  return `Sizning zaif tomonlaringiz: ${names}. Avval shu mavzularning materiallarini oʻrganishni boshlang.`;
+  return `Qayta takrorlash tavsiya etiladi: ${names}. Avval shu bo‘limlar darslarini ko‘rib chiqing.`;
 }
 
 /* ───────────────────── Supabase access ───────────────────── */
@@ -157,17 +158,21 @@ export const diagnosticService = {
       domain: q.domain,
       text: q.text,
       options: q.options,
-      correctIndex: q.correctIndex,
+      correctIndex: -1, // Hidden from client to avoid key leaks before completion
       questionType: q.questionType,
-      correctText: q.correctText
+      correctText: ''
     }));
   },
 
   /** Starts a new attempt. enrollment_id stays null (enrollments has a composite PK, no id). */
-  async createAttempt(userId: string, courseId: string): Promise<DiagnosticAttempt | null> {
+  async createAttempt(userId: string, courseId: string, questionIds?: string[]): Promise<DiagnosticAttempt | null> {
+    const payload: Record<string, any> = { user_id: userId, course_id: courseId };
+    if (questionIds && questionIds.length > 0) {
+      payload.question_ids = questionIds;
+    }
     const { data, error } = await supabase
       .from('diagnostic_attempts')
-      .insert({ user_id: userId, course_id: courseId })
+      .insert(payload)
       .select(ATTEMPT_COLUMNS)
       .single();
 
@@ -178,25 +183,19 @@ export const diagnosticService = {
     return data as DiagnosticAttempt;
   },
 
-  /** Writes the graded result onto an attempt. */
+  /** Fetches the server-graded result for an attempt completed by check-answer Edge Function. */
   async finishAttempt(
     attemptId: string,
-    payload: { total_score: number; results_by_domain: ResultsByDomain; recommendations: string }
+    _payload?: { total_score: number; results_by_domain: ResultsByDomain; recommendations: string }
   ): Promise<DiagnosticAttempt | null> {
     const { data, error } = await supabase
       .from('diagnostic_attempts')
-      .update({
-        finished_at: new Date().toISOString(),
-        total_score: payload.total_score,
-        results_by_domain: payload.results_by_domain,
-        recommendations: payload.recommendations
-      })
-      .eq('id', attemptId)
       .select(ATTEMPT_COLUMNS)
+      .eq('id', attemptId)
       .single();
 
     if (error) {
-      console.error('finishAttempt failed:', error.message);
+      console.warn('finishAttempt: unable to fetch completed record:', error.message);
       return null;
     }
     return data as DiagnosticAttempt;

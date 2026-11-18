@@ -19,7 +19,7 @@ export default function ModulesSection({ modules, loading }: ModulesSectionProps
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-bold text-slate-500 dark:text-[#8B9CB3] uppercase tracking-wider">Modullar</h2>
         <Link to="/attestatsiya" className="text-xs font-bold text-[#3B7DD8] hover:opacity-80 transition-opacity">
-          Barchasini ko'rish
+          Barchasini ko‘rish
         </Link>
       </div>
 

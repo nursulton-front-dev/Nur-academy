@@ -46,7 +46,7 @@ function ErrorFallback({ onRetry }: { onRetry: () => void }) {
           <span className="text-sm font-medium text-white">AI Mentor hozir javob bera olmayapti</span>
         </div>
         <p className="text-[13px] text-slate-300">
-          Internet aloqasini tekshiring yoki keyinroq qayta urinib koʻring.
+          Internet aloqasini tekshiring yoki keyinroq qayta urinib ko‘ring.
         </p>
         <button
           onClick={onRetry}
@@ -190,7 +190,7 @@ export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation
               to="/attestatsiya/obuna"
               className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors"
             >
-              Pro tarifga oʻtish
+              Pro tarifga o‘tish
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -226,7 +226,7 @@ export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation
         {state === 'loading' ? (
           <div className="space-y-3">
             <p className="text-sm text-slate-300" style={{ color: '#CBD5E1' }}>
-              AI Mentor oʻylamoqda<TypingDots />
+              AI Mentor o‘ylamoqda<TypingDots />
             </p>
             <div className="space-y-2" aria-hidden>
               <div

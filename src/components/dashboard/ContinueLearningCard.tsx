@@ -22,7 +22,7 @@ export default function ContinueLearningCard({
       <div className="p-5 sm:p-6 space-y-4 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest bg-blue-50 dark:bg-blue-500/10 px-2.5 py-1 rounded-full">
-            DAVOM ETING
+            Davom etish
           </span>
         </div>
 

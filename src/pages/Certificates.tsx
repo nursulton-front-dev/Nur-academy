@@ -19,15 +19,15 @@ export default function Certificates() {
           <div className="w-16 h-16 rounded-2xl bg-accent-blue/10 flex items-center justify-center mx-auto mb-4">
             <Award className="w-8 h-8 text-accent-blue" />
           </div>
-          <h2 className="text-xl font-serif font-bold text-text-primary mb-2">Hozircha sertifikatlaringiz yoʻq</h2>
+          <h2 className="text-xl font-serif font-bold text-text-primary mb-2">Hozircha sertifikatlar yo‘q</h2>
           <p className="text-text-secondary mb-6 max-w-md mx-auto">
-            Kursni yakunlang va sertifikat oling.
+            Platformaning beta bosqichida sertifikat berilmaydi. Sertifikatlar tizimi keyingi yangilanishlarda qo‘shiladi.
           </p>
           <Link
             to="/courses"
             className="inline-flex items-center gap-2 bg-accent-blue text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-accent-blue/95 shadow-md transition-all active:scale-97 cursor-pointer"
           >
-            <span>Kurslarga oʻtish</span>
+            <span>Kurslarga o‘tish</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

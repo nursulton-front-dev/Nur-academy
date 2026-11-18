@@ -21,7 +21,7 @@ export default function ResetPassword() {
     const combined = `${hash}&${search}`;
 
     if (combined.includes('error=') || combined.includes('otp_expired') || combined.includes('access_denied')) {
-      setSessionError('Havola eskirgan yoki yaroqsiz. Iltimos, parolni qayta tiklash uchun yangi soʻrov yuboring.');
+      setSessionError('Havola eskirgan yoki yaroqsiz. Parolni tiklash uchun yangi so‘rov yuboring.');
       setSessionChecking(false);
       return;
     }
@@ -41,7 +41,7 @@ export default function ResetPassword() {
         const timer = setTimeout(() => {
           supabase.auth.getSession().then(({ data: { session: s2 } }) => {
             if (!s2) {
-              setSessionError('Havola eskirgan yoki sessiya topilmadi. Iltimos, parolni tiklash soʻrovini qayta yuboring.');
+              setSessionError('Havola eskirgan. Parolni tiklash so‘rovini qayta yuboring.');
             }
             setSessionChecking(false);
           });
@@ -62,12 +62,12 @@ export default function ResetPassword() {
     setError(null);
 
     if (password.length < 8) {
-      setError('Parol kamida 8 ta belgidan iborat boʻlishi kerak.');
+      setError('Parol kamida 8 ta belgidan iborat bo‘lishi kerak.');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Kiritilgan parollar bir-biriga mos kelmadi.');
+      setError('Kiritilgan parollar bir xil emas.');
       return;
     }
 
@@ -80,9 +80,9 @@ export default function ResetPassword() {
 
       if (updateError) {
         if (updateError.message.includes('weak') || updateError.message.includes('Password')) {
-          setError('Parol juda oddiy. Iltimos, kuchliroq parol tanlang (harflar va raqamlar aralashmasi).');
+          setError('Parol juda oddiy. Kuchliroq parol tanlang (harf va raqamlar ishlating).');
         } else if (updateError.message.includes('fetch') || updateError.message.includes('network')) {
-          setError('Tarmoqda xatolik yuz berdi. Internet aloqasini tekshiring va qayta urinib koʻring.');
+          setError('Internet aloqasini tekshirib, qayta urinib ko‘ring.');
         } else {
           setError(updateError.message || 'Parolni yangilashda xatolik yuz berdi.');
         }
@@ -93,7 +93,7 @@ export default function ResetPassword() {
       // Success: redirect to /login with query parameter
       navigate('/login?reset=success');
     } catch {
-      setError('Kutilmagan xatolik yuz berdi. Iltimos, qayta urinib koʻring.');
+      setError('Xatolik yuz berdi. Qayta urinib ko‘ring.');
       setLoading(false);
     }
   };
@@ -127,7 +127,7 @@ export default function ResetPassword() {
             to="/forgot-password"
             className="w-full inline-flex items-center justify-center gap-2 bg-accent-blue text-white py-3 rounded-xl font-medium hover:bg-accent-blue/90 transition-all text-sm"
           >
-            <span>Qayta soʻrov yuborish</span>
+            <span>Qayta so‘rov yuborish</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -138,8 +138,8 @@ export default function ResetPassword() {
   return (
     <div className="flex flex-col items-center justify-center py-20 px-4 min-h-[70vh]">
       <Seo
-        title="Yangi parol oʻrnatish | Nur Academy"
-        description="Akkauntingiz uchun yangi parol oʻrnating."
+        title="Yangi parol o‘rnatish | Nur Academy"
+        description="Akkauntingiz uchun yangi parol o‘rnating."
         noindex={true}
       />
       <div className="w-full max-w-md bg-surface p-8 rounded-2xl border border-border-card shadow-sm">
@@ -148,10 +148,10 @@ export default function ResetPassword() {
             <Lock className="w-6 h-6" />
           </div>
           <h2 className="text-2xl font-serif font-bold text-text-primary text-center">
-            Yangi parol oʻrnatish
+            Yangi parol o‘rnatish
           </h2>
           <p className="text-text-secondary text-sm mt-2 text-center">
-            Iltimos, akkauntingiz uchun kamida 8 ta belgidan iborat yangi parol kiriting.
+            Akkauntingiz uchun kamida 8 ta belgidan iborat yangi parol kiriting.
           </p>
         </div>
 
@@ -182,13 +182,13 @@ export default function ResetPassword() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors p-1"
-                aria-label={showPassword ? 'Parolni yashirish' : 'Parolni koʻrsatish'}
+                aria-label={showPassword ? 'Parolni yashirish' : 'Parolni ko‘rsatish'}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
             <p className="text-[11px] text-text-secondary mt-1">
-              Kamida 8 ta belgi boʻlishi shart
+              Kamida 8 ta belgi bo‘lishi shart
             </p>
           </div>
 

@@ -9,7 +9,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { mockExams, completeTestOrExam } from '../data/attestatsiyaMocks';
-import { coursePath } from '../lib/courses';
+import { coursePath, fetchCourseBySlug, CourseMeta, GEOGRAFIYA_SLUG } from '../lib/courses';
 import { attestatsiyaService, ExamQuestion } from '../lib/attestatsiyaService';
 import { useAuth } from '../contexts/AuthContext';
 import { xpService } from '../lib/xpService';
@@ -42,7 +42,7 @@ function CustomExamModal({
           </div>
           <div>
             <h4 className="font-serif font-extrabold text-lg text-text-primary">{title}</h4>
-            <p className="text-xs text-text-secondary">Ushbu amalni ortga qaytarib bo'lmaydi</p>
+            <p className="text-xs text-text-secondary">Yakunlangandan so‘ng javoblarni o‘zgartirib bo‘lmaydi</p>
           </div>
         </div>
         <p className="text-sm text-text-secondary leading-relaxed">{description}</p>
@@ -53,7 +53,7 @@ function CustomExamModal({
               <p className="text-lg font-serif font-extrabold text-success-green">{stats.answered}</p>
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Javobsiz</p>
+              <p className="text-[10px] uppercase font-bold text-text-secondary">Javob berilmagan</p>
               <p className="text-lg font-serif font-extrabold text-text-secondary">{stats.unanswered}</p>
             </div>
             <div>
@@ -89,6 +89,7 @@ export default function AttestatsiyaExam() {
   const exam = mockExams.find(e => e.id === id) || { title: "Attestatsiya Mock Imtihoni" };
 
   const [questions, setQuestions] = useState<ExamQuestion[]>([]);
+  const [course, setCourse] = useState<CourseMeta | null>(null);
   const [attemptId, setAttemptId] = useState<string>('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<{ [questionId: string]: number | string }>({});
@@ -104,13 +105,27 @@ export default function AttestatsiyaExam() {
     async function loadData() {
       if (!id) return;
       try {
-        const response = await attestatsiyaService.getExamQuestions(id);
+        const [response, courseMeta] = await Promise.all([
+          attestatsiyaService.getExamQuestions(id, user?.id, slug),
+          fetchCourseBySlug(slug)
+        ]);
         setQuestions(response.questions);
         setAttemptId(response.attempt_id);
+        setCourse(courseMeta);
         const savedAnswers = localStorage.getItem(`answers_${response.attempt_id}`);
         if (savedAnswers) setUserAnswers(JSON.parse(savedAnswers));
-        // Proportional timer: 1.5 min per question
-        setTimeLeft(Math.round(response.questions.length * MINUTES_PER_QUESTION * 60));
+
+        // Real mock (A/B/C) = 90 min, Oddiy mock (O1-O4) = 45 min, Topic tests proportional, Informatika = 120m
+        let examMinutes = 120;
+        if (slug === GEOGRAFIYA_SLUG || ['A', 'B', 'C', 'O1', 'O2', 'O3', 'O4'].includes(id || '')) {
+          examMinutes = ['O1', 'O2', 'O3', 'O4'].includes(id || '') ? 45 : 90;
+        } else if (id?.startsWith('t')) {
+          examMinutes = Math.round(response.questions.length * MINUTES_PER_QUESTION);
+        } else {
+          examMinutes = courseMeta?.exam_duration_minutes ?? 120;
+        }
+
+        setTimeLeft(examMinutes * 60);
         setPhase('warning');
       } catch (err) {
         console.error("Failed to load exam questions", err);
@@ -118,7 +133,7 @@ export default function AttestatsiyaExam() {
       }
     }
     loadData();
-  }, [id]);
+  }, [id, slug]);
 
   useEffect(() => {
     if (questions.length > 0 && questions[currentQuestionIndex]) {
@@ -132,7 +147,12 @@ export default function AttestatsiyaExam() {
     }
   }, [currentQuestionIndex, questions]);
 
+  const TIMER_NOTICE_KEY = 'nur_timer_120_notice_seen';
+  const [showTimerNotice, setShowTimerNotice] = useState(() => !localStorage.getItem(TIMER_NOTICE_KEY));
+
   const handleStart = () => {
+    localStorage.setItem(TIMER_NOTICE_KEY, 'true');
+    setShowTimerNotice(false);
     document.documentElement.requestFullscreen?.().catch(() => {});
     setPhase('running');
   };
@@ -286,6 +306,11 @@ export default function AttestatsiyaExam() {
   }
 
   if (phase === 'warning') {
+    const isTopicTest = Boolean(id?.startsWith('t'));
+    const examMinutes = isTopicTest
+      ? Math.ceil(questions.length * MINUTES_PER_QUESTION)
+      : (course?.exam_duration_minutes ?? 120);
+
     return (
       <div className="fixed inset-0 z-[60] bg-primary-bg flex items-center justify-center p-4">
         <div className="bg-surface border border-border-card rounded-[24px] max-w-lg w-full p-8 shadow-2xl space-y-6 text-left animate-fadeIn">
@@ -302,21 +327,37 @@ export default function AttestatsiyaExam() {
           <ul className="space-y-3 text-sm text-text-secondary">
             <li className="flex items-start gap-2.5">
               <Clock className="w-4 h-4 shrink-0 mt-0.5 text-accent-blue" />
-              <span>Imtihon <strong className="text-text-primary">{Math.ceil(questions.length * MINUTES_PER_QUESTION)} daqiqa</strong> vaqt bilan cheklangan ({questions.length} ta savol)</span>
+              <span>Imtihon vaqti — <strong className="text-text-primary">{examMinutes} daqiqa</strong> ({questions.length} ta savol)</span>
             </li>
             <li className="flex items-start gap-2.5">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
-              <span>Sahifani <strong className="text-text-primary">yopmang</strong> yoki boshqa ilovaga oʻtmang — vaqt to'xtamaydi</span>
+              <span>Sahifani <strong className="text-text-primary">yopmang</strong> yoki boshqa oynaga o‘tmang — vaqt to‘xtamaydi</span>
             </li>
             <li className="flex items-start gap-2.5">
               <LogOut className="w-4 h-4 shrink-0 mt-0.5 text-text-secondary transform rotate-180" />
-              <span>Imtihon <strong className="text-text-primary">toʻliq ekran</strong> rejimida boshlanadi</span>
+              <span>Imtihon qulaylik uchun <strong className="text-text-primary">to‘liq ekran</strong> rejimida o‘tkaziladi</span>
             </li>
           </ul>
 
-          <div className="bg-primary-bg border border-border-card/50 rounded-2xl p-4 text-center">
-            <p className="text-xs text-text-secondary">Tayyor boʻlsangiz, quyidagi tugmani bosing</p>
-          </div>
+          {showTimerNotice && (
+            <div className="bg-accent-blue/10 border border-accent-blue/20 rounded-2xl p-3.5 flex items-center justify-between text-xs text-text-primary animate-fadeIn">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-accent-blue shrink-0" />
+                <span>Imtihon vaqti <strong>120 daqiqa</strong> qilib belgilandi</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.setItem(TIMER_NOTICE_KEY, 'true');
+                  setShowTimerNotice(false);
+                }}
+                className="text-text-secondary hover:text-text-primary px-1.5 py-0.5 font-bold cursor-pointer"
+                title="Yopish"
+              >
+                ✕
+              </button>
+            </div>
+          )}
 
           <button
             onClick={handleStart}
@@ -366,7 +407,7 @@ export default function AttestatsiyaExam() {
           <span className="font-serif font-extrabold text-sm text-text-primary truncate">{exam.title}</span>
         </div>
         <button onClick={() => setShowSubmitModal(true)} className="bg-accent-blue hover:bg-accent-blue/95 text-white px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/15 transition-all active:scale-98 cursor-pointer shrink-0">
-          🏁 <span className="hidden sm:inline">Imtihonni</span> yakunlash
+          <span className="hidden sm:inline">Imtihonni </span>yakunlash
         </button>
       </header>
 
@@ -527,7 +568,7 @@ export default function AttestatsiyaExam() {
       {showSubmitModal && (
         <CustomExamModal
           title="Imtihonni yakunlash"
-          description="Yakunlangandan so'ng javoblarni o'zgartirib bo'lmaydi. Davom etasizmi?"
+          description="Barcha javoblaringiz saqlanadi va natija hisoblanadi. Yakunlaysizmi?"
           confirmText="Ha, yakunlash"
           confirmBtnStyle="bg-emerald-500 hover:bg-emerald-600"
           onCancel={() => setShowSubmitModal(false)}

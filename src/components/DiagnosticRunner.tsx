@@ -41,22 +41,22 @@ function ConfirmModal({
           </div>
           <div>
             <h4 className="font-serif font-extrabold text-lg text-text-primary">{title}</h4>
-            <p className="text-xs text-text-secondary">Ushbu amalni ortga qaytarib boʻlmaydi</p>
+            <p className="text-xs text-text-secondary">Yakunlangandan so‘ng javoblarni o‘zgartirib bo‘lmaydi</p>
           </div>
         </div>
         <p className="text-sm text-text-secondary leading-relaxed">{description}</p>
         {stats && (
           <div className="bg-primary-bg p-4 rounded-2xl border border-border-card/40 grid grid-cols-3 gap-2 text-center">
             <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Javobli</p>
+              <p className="text-[10px] uppercase font-bold text-text-secondary">Javob berilgan</p>
               <p className="text-lg font-serif font-extrabold text-success-green">{stats.answered}</p>
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Javobsiz</p>
+              <p className="text-[10px] uppercase font-bold text-text-secondary">Javob berilmagan</p>
               <p className="text-lg font-serif font-extrabold text-text-secondary">{stats.unanswered}</p>
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Belgili</p>
+              <p className="text-[10px] uppercase font-bold text-text-secondary">Belgilangan</p>
               <p className="text-lg font-serif font-extrabold text-orange-500">{stats.flagged}</p>
             </div>
           </div>
@@ -245,7 +245,7 @@ export default function DiagnosticRunner({
           onClick={() => setShowSubmit(true)}
           className="bg-accent-blue hover:bg-accent-blue/95 text-white px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/15 transition-all active:scale-98 cursor-pointer shrink-0"
         >
-          🏁 Yakunlash
+          Yakunlash
         </button>
       </header>
 
@@ -413,7 +413,7 @@ export default function DiagnosticRunner({
       {showSubmit && (
         <ConfirmModal
           title="Diagnostikani yakunlash"
-          description="Yakunlangandan soʻng javoblarni oʻzgartirib boʻlmaydi. Davom etasizmi?"
+          description="Barcha javoblaringiz saqlanadi va natija hisoblanadi. Yakunlaysizmi?"
           confirmText="Ha, yakunlash"
           stats={{ answered: answeredCount, unanswered: remainingCount, flagged: flagged.size }}
           onCancel={() => setShowSubmit(false)}

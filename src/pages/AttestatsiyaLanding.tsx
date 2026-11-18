@@ -200,7 +200,7 @@ export default function AttestatsiyaLanding() {
               className="inline-flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wide bg-blue-50 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400"
             >
               <ShieldCheck className="w-4 h-4" />
-              Davlat tomonidan tasdiqlangan kurs
+              Attestatsiya dasturi asosida
             </span>
             <h1 className="text-3xl lg:text-4xl leading-tight font-extrabold text-slate-900 dark:text-white max-w-[560px]">
               Informatika oʻqituvchilari attestatsiyasi
@@ -250,7 +250,7 @@ export default function AttestatsiyaLanding() {
                 <p className="text-[13px] font-bold text-slate-900 dark:text-white leading-tight line-clamp-2" title={stat.weakLabel || 'Aniqlanmagan'}>
                   {stat.weakLabel || 'Aniqlanmagan'}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">{stat.weakPct != null ? `${stat.weakPct}% to'g'ri javob` : '0% to\'g\'ri javob'}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">{stat.weakPct != null ? `${stat.weakPct}% to‘g‘ri javob` : '0% to‘g‘ri javob'}</p>
              </div>
           </div>
 
@@ -481,7 +481,7 @@ export default function AttestatsiyaLanding() {
           {stat.score == null && (
              <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-2xl p-4 text-center mt-2">
                 <Link to="/attestatsiya/diagnostika" className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline">
-                  Diagnostikadan o'tish →
+                  Diagnostikadan o‘tish →
                 </Link>
              </div>
           )}

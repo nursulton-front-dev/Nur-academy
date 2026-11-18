@@ -60,9 +60,9 @@ export default function ErrorNotebook() {
             <AlertCircle className="w-8 h-8" />
           </div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-serif font-extrabold text-text-primary">Premium imkoniyat</h2>
+            <h2 className="text-2xl font-serif font-extrabold text-text-primary">Pro imkoniyat</h2>
             <p className="text-sm text-text-secondary leading-relaxed max-w-md mx-auto">
-              Xatolar daftarchasi yordamida testlarda yo'l qo'ygan xatolaringizni tizimli tahlil qiling va Spaced Repetition orqali takrorlang.
+              Xatolar daftarchasi orqali testlarda yo‘l qo‘ygan xatolaringizni tizimli tahlil qiling va takrorlash rejasi bo‘yicha mustahkamlang.
             </p>
           </div>
           <div className="pt-2">
@@ -70,7 +70,7 @@ export default function ErrorNotebook() {
               to="/attestatsiya/obuna"
               className="inline-flex items-center space-x-2 bg-accent-blue text-white px-8 py-3.5 rounded-xl font-bold text-xs shadow-md hover:bg-accent-blue/95 transition-all"
             >
-              <span>Tarifni yangilash</span>
+              <span>Pro tarifga o‘tish</span>
             </Link>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function ErrorNotebook() {
     <AppPage className="text-left font-sans">
       <PageHeader
         title="Xatolar daftarchasi"
-        description="Kiber-kviz, mock imtihon va diagnostikadagi xatolaringizning tizimli tahlili."
+        description="Darslar, mavzu testlari va mock imtihonlardagi xatolaringizning tizimli tahlili."
         action={
           <div className="bg-orange-500/10 text-orange-600 px-4 py-2 rounded-2xl border border-orange-500/15 flex items-center space-x-2 shrink-0">
             <span className="text-lg font-serif font-extrabold">{reviewQueue.length}</span>
@@ -140,7 +140,7 @@ export default function ErrorNotebook() {
         <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm space-y-4">
           <div className="flex items-center space-x-2">
             <TrendingUp className="w-5 h-5 text-accent-blue" />
-            <h3 className="font-serif font-bold text-base text-text-primary">Eng ko'p xato qilingan bo'limlar</h3>
+            <h3 className="font-serif font-bold text-base text-text-primary">Eng ko‘p xato qilingan bo‘limlar</h3>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -154,7 +154,7 @@ export default function ErrorNotebook() {
               </div>
             ))}
             {sortedStats.length === 0 && (
-              <p className="text-xs text-text-secondary italic">Hozircha xatolar yo'q. Ajoyib ko'rsatkich!</p>
+              <p className="text-xs text-text-secondary italic">Hozircha xatolar yo‘q.</p>
             )}
           </div>
         </div>

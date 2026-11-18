@@ -24,12 +24,12 @@ export default function ForgotPassword() {
       if (resetError) {
         // Handle network / rate-limiting errors gracefully
         if (resetError.message.includes('fetch') || resetError.message.includes('network')) {
-          setError('Tarmoqda xatolik yuz berdi. Internet aloqasini tekshiring va qayta urinib koʻring.');
+          setError('Internet aloqasini tekshirib, qayta urinib ko‘ring.');
           setLoading(false);
           return;
         }
         if (resetError.status === 429) {
-          setError('Juda koʻp soʻrov yuborildi. Iltimos, birozdan soʻng qayta urinib koʻring.');
+          setError('Juda ko‘p so‘rov yuborildi. Birozdan so‘ng qayta urinib ko‘ring.');
           setLoading(false);
           return;
         }
@@ -38,7 +38,7 @@ export default function ForgotPassword() {
       // Neutral message regardless of whether the email exists in DB for privacy/security
       setSubmitted(true);
     } catch {
-      setError('Kutilmagan xatolik yuz berdi. Iltimos, keyinroq qayta urinib koʻring.');
+      setError('Xatolik yuz berdi. Keyinroq qayta urinib ko‘ring.');
     } finally {
       setLoading(false);
     }
@@ -78,7 +78,7 @@ export default function ForgotPassword() {
               <div className="space-y-1">
                 <p className="font-semibold text-text-primary">Xat yuborildi</p>
                 <p className="text-text-secondary leading-relaxed text-xs">
-                  Agar <strong className="text-text-primary">{email}</strong> manzili tizimda mavjud boʻlsa, parolni tiklash boʻyicha koʻrsatmalar yuborildi. Iltimos, pochtangizni (jumladan spam papkasini) tekshiring.
+                  Agar <strong className="text-text-primary">{email}</strong> manzili tizimda ro‘yxatdan o‘tgan bo‘lsa, parolni tiklash havolasi yuborildi. Pochtani (va spam papkasini) tekshiring.
                 </p>
               </div>
             </div>

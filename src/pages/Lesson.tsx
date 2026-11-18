@@ -16,7 +16,6 @@ interface LessonData {
 interface Answer {
   id: string;
   text: string;
-  is_correct: boolean;
 }
 
 interface Question {
@@ -37,6 +36,7 @@ export default function Lesson() {
   // Quiz state
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null);
+  const [correctAnswerId, setCorrectAnswerId] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
@@ -87,9 +87,9 @@ export default function Lesson() {
           if (qsData && qsData.length > 0) {
             const qIds = qsData.map(q => q.id);
             const [{ data: qsTrans }, { data: ansData }, { data: ansTrans }] = await Promise.all([
-              supabase.from('question_translations').select('*').in('question_id', qIds).eq('locale', 'uz'),
-              supabase.from('answers').select('*').in('question_id', qIds),
-              supabase.from('answer_translations').select('*').eq('locale', 'uz')
+              supabase.from('question_translations').select('question_id, question_text').in('question_id', qIds).eq('locale', 'uz'),
+              supabase.from('answers').select('id, question_id').in('question_id', qIds),
+              supabase.from('answer_translations').select('answer_id, answer_text').eq('locale', 'uz')
             ]);
 
             const loadedQuestions = qsData.map(q => {
@@ -102,8 +102,7 @@ export default function Lesson() {
                   const aT = ansTrans?.find(t => t.answer_id === a.id);
                   return {
                     id: a.id,
-                    text: aT?.answer_text || 'Javob n/a',
-                    is_correct: a.is_correct
+                    text: aT?.answer_text || 'Javob n/a'
                   };
                 })
               };
@@ -127,12 +126,25 @@ export default function Lesson() {
     return (match && match[2].length === 11) ? match[2] : null;
   };
 
-  const handleAnswerSelect = (answerId: string, isCorrect: boolean) => {
+  const handleAnswerSelect = async (answerId: string) => {
     if (isAnswered) return;
     setSelectedAnswerId(answerId);
     setIsAnswered(true);
-    if (isCorrect) {
-      setScore(s => s + 1);
+
+    try {
+      const currentQ = questions[currentQuestionIndex];
+      const { data } = await supabase.functions.invoke('check-answer', {
+        body: { question_id: currentQ.id, user_answer: answerId }
+      });
+
+      if (data?.is_correct) {
+        setScore(s => s + 1);
+        setCorrectAnswerId(answerId);
+      } else if (data?.correct_answer) {
+        setCorrectAnswerId(String(data.correct_answer));
+      }
+    } catch (err) {
+      console.error('Error checking answer:', err);
     }
   };
 
@@ -140,10 +152,11 @@ export default function Lesson() {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(c => c + 1);
       setSelectedAnswerId(null);
+      setCorrectAnswerId(null);
       setIsAnswered(false);
     } else {
       setQuizFinished(true);
-      await saveProgress(score + (questions[currentQuestionIndex].answers.find(a => a.id === selectedAnswerId)?.is_correct ? 1 : 0));
+      await saveProgress(score);
     }
   };
 
@@ -247,7 +260,7 @@ export default function Lesson() {
                   let icon = null;
 
                   if (isAnswered) {
-                    if (answer.is_correct) {
+                    if (answer.id === correctAnswerId) {
                       btnClass += " border-success-green bg-success-green/10 text-success-green font-medium";
                       icon = <CheckCircle2 className="w-5 h-5 text-success-green" />;
                     } else if (isSelected) {
@@ -266,7 +279,7 @@ export default function Lesson() {
                     <button
                       key={answer.id}
                       disabled={isAnswered}
-                      onClick={() => handleAnswerSelect(answer.id, answer.is_correct)}
+                      onClick={() => handleAnswerSelect(answer.id)}
                       className={btnClass}
                     >
                       <span className="pr-4">{answer.text}</span>

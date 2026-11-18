@@ -17,6 +17,8 @@ import StatCard from '../components/dashboard/StatCard';
 import ContinueLearningCard from '../components/dashboard/ContinueLearningCard';
 import AIMentorRecommendationCard from '../components/dashboard/AIMentorRecommendationCard';
 import ModulesSection from '../components/dashboard/ModulesSection';
+import GeografiyaDashboardView from '../components/geografiya/GeografiyaDashboardView';
+import { GEOGRAFIYA_SLUG } from '../lib/courses';
 
 interface EnrolledCourse {
   course_id: string;
@@ -31,6 +33,10 @@ function continueHref(title: string, courseId: string): string {
 export default function Dashboard() {
   const { user } = useAuth();
   const { slug = ATTESTATSIYA_SLUG } = useParams<{ slug: string }>();
+
+  if (slug === GEOGRAFIYA_SLUG) {
+    return <GeografiyaDashboardView />;
+  }
   const { campaign } = useCampaign();
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [enrollments, setEnrollments] = useState<EnrolledCourse[]>([]);

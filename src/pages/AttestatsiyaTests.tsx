@@ -31,14 +31,14 @@ export default function AttestatsiyaTests() {
     <AppPage className="text-left font-sans">
       <PageHeader
         title="Mavzu testlari"
-        description="Har bir modul boʻyicha bilimlaringizni sinab koʻring va oʻzlashtirish darajangizni baholang."
+        description="Har bir modul bo‘yicha bilimlaringizni sinab ko‘ring va o‘zlashtirish darajangizni baholang."
       />
       <PageContent className="space-y-8">
         {/* Summary metrics */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <MetricCard icon={<FileText className="w-5 h-5" />} label="Jami testlar" value={total} accent="blue" />
           <MetricCard icon={<Unlock className="w-5 h-5" />} label="Ochilgan" value={open} accent="green" hint="modul" />
-          <MetricCard icon={<Lock className="w-5 h-5" />} label="Bloklangan" value={locked} accent="amber" hint="modul" />
+          <MetricCard icon={<Lock className="w-5 h-5" />} label="Yopiq" value={locked} accent="amber" hint="modul" />
           <MetricCard icon={<ListChecks className="w-5 h-5" />} label="Jami savollar" value={totalQuestions} accent="purple" />
         </div>
 
@@ -47,7 +47,7 @@ export default function AttestatsiyaTests() {
           <div className="flex items-center gap-2">
             <HelpCircle className="w-5 h-5 text-accent-blue" />
             <h2 className="text-lg sm:text-xl font-serif font-bold text-text-primary">
-              Modullar boʻyicha testlar
+              Modullar bo‘yicha testlar
             </h2>
           </div>
 
@@ -101,7 +101,7 @@ export default function AttestatsiyaTests() {
                         {test.questionsCount} ta savol
                       </span>
                       {isLocked ? (
-                        <span className="text-[11px] text-text-secondary">Modul ochilgandan soʻng</span>
+                        <span className="text-[11px] text-text-secondary">Oldingi modul yakunlangach ochiladi</span>
                       ) : (
                         <button
                           onClick={() => handleStartExam(test.id)}

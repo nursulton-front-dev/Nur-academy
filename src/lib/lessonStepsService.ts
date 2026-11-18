@@ -31,17 +31,15 @@ interface RawOption {
 function parseOptions(raw: unknown): { options: string[]; correctIndex: number } {
   const arr = Array.isArray(raw) ? raw : [];
   const options: string[] = [];
-  let correctIndex = -1;
-  arr.forEach((item, i) => {
+  arr.forEach((item) => {
     if (item && typeof item === 'object') {
       const opt = item as RawOption;
       options.push(String(opt.text ?? ''));
-      if (opt.is_correct === true) correctIndex = i;
     } else {
       options.push(String(item));
     }
   });
-  return { options, correctIndex };
+  return { options, correctIndex: -1 };
 }
 
 // Per-lesson completed step ids live in localStorage (prefixed nur_ → swept on logout).

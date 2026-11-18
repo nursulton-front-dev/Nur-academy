@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Check, X, ArrowRight, RefreshCw, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Check, X, ArrowRight, RefreshCw, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
 import { LessonStep } from '../../lib/lessonStepsService';
 import { lessonQuizService } from '../../lib/lessonQuizService';
 import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../lib/supabase';
 import { AIMentorBlock } from '../AIMentorBlock';
 
 interface QuizStepProps {
@@ -43,6 +44,9 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
   // Questions answered correctly only on the 2nd attempt (partial credit).
   const [secondTryMap, setSecondTryMap] = useState<Record<string, boolean>>({});
   const [showSummary, setShowSummary] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [serverCorrectAnswer, setServerCorrectAnswer] = useState<any>(null);
+  const [serverExplanation, setServerExplanation] = useState<string | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => () => {
@@ -60,13 +64,17 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
 
   const q = questions[index];
   const isInput = q.questionType === 'input';
-  // For input questions the single correct option's text is the expected answer.
-  const correctText = q.options[q.correctIndex] ?? q.options[0] ?? '';
+  const targetCorrectIndex = typeof serverCorrectAnswer === 'number'
+    ? serverCorrectAnswer
+    : (q.correctIndex >= 0 ? q.correctIndex : -1);
+  const correctText = typeof serverCorrectAnswer === 'string'
+    ? serverCorrectAnswer
+    : (targetCorrectIndex >= 0 ? (q.options[targetCorrectIndex] ?? '') : (q.options[0] ?? ''));
+
   let inputFieldStyle = 'border-border-card focus:border-accent-blue';
   if (isInput && phase === 'correct') inputFieldStyle = 'border-emerald-500 bg-emerald-500/10 text-emerald-700 font-semibold';
   else if (isInput && (phase === 'hint' || phase === 'explanation')) inputFieldStyle = 'border-rose-500 bg-rose-500/10 text-rose-700 font-semibold';
   const correctCount = Object.values(correctMap).filter(Boolean).length;
-  const answeredCount = Object.keys(correctMap).length;
   const scorePercent = Math.round((correctCount / questions.length) * 100);
   const passed = scorePercent >= PASS_THRESHOLD;
 
@@ -78,6 +86,8 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
     setPhase('answering');
     setAttemptCount(0);
     setWrongPicks([]);
+    setServerCorrectAnswer(null);
+    setServerExplanation(null);
     if (index + 1 < questions.length) {
       setIndex((i) => i + 1);
     } else {
@@ -99,66 +109,134 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
     });
   };
 
-  const handleSelect = (optIdx: number) => {
+  const handleSelect = async (optIdx: number) => {
     // Only selectable while answering, and never the same wrong option twice.
-    if (phase !== 'answering' || wrongPicks.includes(optIdx)) return;
+    if (phase !== 'answering' || wrongPicks.includes(optIdx) || checking) return;
 
-    const isCorrect = optIdx === q.correctIndex;
     setSelected(optIdx);
+    setChecking(true);
 
-    if (isCorrect) {
-      const onSecondTry = attemptCount >= 1;
-      setCorrectMap((prev) => ({ ...prev, [q.id]: true }));
-      if (onSecondTry) {
-        setSecondTryMap((prev) => ({ ...prev, [q.id]: true }));
+    try {
+      let isCorrect = false;
+      let wrongCount = attemptCount + 1;
+      let revealedAnswer: any = null;
+      let explanation: string | null = null;
+
+      // Authoritative check via Edge Function check-answer
+      const { data, error } = await supabase.functions.invoke('check-answer', {
+        body: {
+          question_id: q.id,
+          user_answer: optIdx
+        }
+      });
+
+      if (error || !data) {
+        console.error('QuizStep check-answer error:', error);
+        if (q.correctIndex >= 0) {
+          isCorrect = optIdx === q.correctIndex;
+        } else {
+          setChecking(false);
+          return;
+        }
+      } else {
+        isCorrect = data.is_correct === true;
+        wrongCount = data.wrong_count ?? wrongCount;
+        revealedAnswer = data.correct_answer ?? null;
+        explanation = data.explanation ?? null;
       }
-      // Terminal: solved. attemptCount counts prior wrong tries, so tries = +1.
-      persistAnswer(optIdx, true, attemptCount + 1);
-      setPhase('correct');
-      // No AI Mentor on correct; auto-advance (slightly longer if it was a recovery).
-      advanceTimer.current = setTimeout(goNext, onSecondTry ? 1300 : 1000);
-      return;
-    }
 
-    // Wrong answer.
-    const nextAttempt = attemptCount + 1;
-    setAttemptCount(nextAttempt);
-    setWrongPicks((prev) => [...prev, optIdx]);
-    if (nextAttempt >= 2) {
-      // 2nd (or later) wrong → terminal miss: record it and show the full explanation.
-      setCorrectMap((prev) => ({ ...prev, [q.id]: false }));
-      persistAnswer(optIdx, false, nextAttempt);
-      setPhase('explanation');
-    } else {
-      // 1st wrong → hint only, let them try a different option.
-      setPhase('hint');
+      if (isCorrect) {
+        const onSecondTry = attemptCount >= 1;
+        setCorrectMap((prev) => ({ ...prev, [q.id]: true }));
+        if (onSecondTry) {
+          setSecondTryMap((prev) => ({ ...prev, [q.id]: true }));
+        }
+        persistAnswer(optIdx, true, attemptCount + 1);
+        setPhase('correct');
+        advanceTimer.current = setTimeout(goNext, onSecondTry ? 1300 : 1000);
+        return;
+      }
+
+      // Wrong answer
+      setAttemptCount(wrongCount);
+      setWrongPicks((prev) => [...prev, optIdx]);
+      if (wrongCount >= 2) {
+        setCorrectMap((prev) => ({ ...prev, [q.id]: false }));
+        if (revealedAnswer !== null && revealedAnswer !== undefined) {
+          setServerCorrectAnswer(revealedAnswer);
+        }
+        if (explanation) {
+          setServerExplanation(explanation);
+        }
+        persistAnswer(optIdx, false, wrongCount);
+        setPhase('explanation');
+      } else {
+        setPhase('hint');
+      }
+    } finally {
+      setChecking(false);
     }
   };
 
-  // Input questions: check the typed answer against the expected one. Reuses the
-  // same scaffolding (hint → explanation) as multiple-choice, just keyed off text.
-  const handleCheckInput = () => {
-    if (phase !== 'answering' || !inputValue.trim()) return;
-    const isCorrect = inputMatches(inputValue, correctText);
+  // Input questions: check the typed answer via server check-answer.
+  const handleCheckInput = async () => {
+    if (phase !== 'answering' || !inputValue.trim() || checking) return;
 
-    if (isCorrect) {
-      const onSecondTry = attemptCount >= 1;
-      setCorrectMap((prev) => ({ ...prev, [q.id]: true }));
-      if (onSecondTry) setSecondTryMap((prev) => ({ ...prev, [q.id]: true }));
-      persistAnswer(q.correctIndex, true, attemptCount + 1);
-      setPhase('correct');
-      advanceTimer.current = setTimeout(goNext, onSecondTry ? 1300 : 1000);
-      return;
-    }
+    setChecking(true);
+    try {
+      let isCorrect = false;
+      let wrongCount = attemptCount + 1;
+      let revealedAnswer: any = null;
+      let explanation: string | null = null;
 
-    const nextAttempt = attemptCount + 1;
-    setAttemptCount(nextAttempt);
-    if (nextAttempt >= 2) {
-      setCorrectMap((prev) => ({ ...prev, [q.id]: false }));
-      persistAnswer(-1, false, nextAttempt);
-      setPhase('explanation');
-    } else {
-      setPhase('hint');
+      const { data, error } = await supabase.functions.invoke('check-answer', {
+        body: {
+          question_id: q.id,
+          user_answer: inputValue.trim()
+        }
+      });
+
+      if (error || !data) {
+        console.error('QuizStep check-answer error (input):', error);
+        if (correctText) {
+          isCorrect = inputMatches(inputValue, correctText);
+        } else {
+          setChecking(false);
+          return;
+        }
+      } else {
+        isCorrect = data.is_correct === true;
+        wrongCount = data.wrong_count ?? wrongCount;
+        revealedAnswer = data.correct_answer ?? null;
+        explanation = data.explanation ?? null;
+      }
+
+      if (isCorrect) {
+        const onSecondTry = attemptCount >= 1;
+        setCorrectMap((prev) => ({ ...prev, [q.id]: true }));
+        if (onSecondTry) setSecondTryMap((prev) => ({ ...prev, [q.id]: true }));
+        persistAnswer(targetCorrectIndex >= 0 ? targetCorrectIndex : -1, true, attemptCount + 1);
+        setPhase('correct');
+        advanceTimer.current = setTimeout(goNext, onSecondTry ? 1300 : 1000);
+        return;
+      }
+
+      setAttemptCount(wrongCount);
+      if (wrongCount >= 2) {
+        setCorrectMap((prev) => ({ ...prev, [q.id]: false }));
+        if (revealedAnswer !== null && revealedAnswer !== undefined) {
+          setServerCorrectAnswer(revealedAnswer);
+        }
+        if (explanation) {
+          setServerExplanation(explanation);
+        }
+        persistAnswer(-1, false, wrongCount);
+        setPhase('explanation');
+      } else {
+        setPhase('hint');
+      }
+    } finally {
+      setChecking(false);
     }
   };
 
@@ -167,6 +245,8 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
     setSelected(null);
     setInputValue('');
     setPhase('answering');
+    setServerCorrectAnswer(null);
+    setServerExplanation(null);
   };
 
   // Full quiz restart from the summary screen.
@@ -179,6 +259,8 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
     setWrongPicks([]);
     setCorrectMap({});
     setSecondTryMap({});
+    setServerCorrectAnswer(null);
+    setServerExplanation(null);
     setShowSummary(false);
   };
 
@@ -296,10 +378,10 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
           {phase === 'answering' && (
             <button
               onClick={handleCheckInput}
-              disabled={!inputValue.trim()}
+              disabled={!inputValue.trim() || checking}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#3B7DD8] hover:bg-[#3B7DD8]/95 disabled:opacity-40 disabled:cursor-not-allowed text-white px-7 py-3.5 rounded-xl text-sm font-bold shadow-md shadow-[#3B7DD8]/15 transition-all active:scale-[0.98] cursor-pointer"
             >
-              <Check className="w-4.5 h-4.5 stroke-[2.5]" /> Tekshirish
+              {checking ? <Loader2 className="w-4.5 h-4.5 animate-spin" /> : <Check className="w-4.5 h-4.5 stroke-[2.5]" />} Tekshirish
             </button>
           )}
           {phase === 'explanation' && (
@@ -312,10 +394,10 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {q.options.map((option, optIdx) => {
             const isSelected = selected === optIdx;
-            const isCorrectOpt = optIdx === q.correctIndex;
+            const isCorrectOpt = targetCorrectIndex >= 0 && optIdx === targetCorrectIndex;
             const isWrongPick = wrongPicks.includes(optIdx);
             const revealCorrect = phase === 'explanation' || phase === 'correct';
-            const locked = phase !== 'answering';
+            const locked = phase !== 'answering' || checking;
 
             let style = 'border-border-card hover:border-[#3B7DD8]/30 hover:bg-surface-hover/50 text-text-primary bg-surface';
             let badgeStyle = 'bg-surface-muted text-text-secondary border-border-card';
@@ -372,7 +454,14 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
       {/* 2nd wrong attempt → full explanation with the answer, then continue (counts as a miss) */}
       {phase === 'explanation' && (
         <div className="space-y-3">
-          <AIMentorBlock questionId={q.id} userAnswerIndex={isInput ? -1 : (selected ?? 0)} mode="explanation" />
+          {serverExplanation ? (
+            <div className="rounded-xl border p-4 bg-[#1A1730] border-[#2D2750] text-slate-100">
+              <p className="text-sm font-semibold text-white mb-1">Tushuntirish:</p>
+              <p className="text-sm text-slate-300 leading-relaxed">{serverExplanation}</p>
+            </div>
+          ) : (
+            <AIMentorBlock questionId={q.id} userAnswerIndex={isInput ? -1 : (selected ?? 0)} mode="explanation" />
+          )}
           <div className="flex justify-end">
             <button
               onClick={goNext}

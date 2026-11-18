@@ -9,6 +9,10 @@ export const ATTESTATSIYA_COURSE_ID = '0a7e57a7-0000-4000-8000-000000000001';
 // Canonical slug for the attestatsiya course (used by legacy → /kurs redirects).
 export const ATTESTATSIYA_SLUG = 'attestatsiya';
 
+// Fixed identifiers for Geografiya 2026 course
+export const GEOGRAFIYA_COURSE_ID = '0c7e57a7-0000-4000-8000-000000000003';
+export const GEOGRAFIYA_SLUG = 'geografiya';
+
 /** Course catalog metadata, read from the `courses` table by slug. */
 export interface CourseMeta {
   id: string;
@@ -18,9 +22,11 @@ export interface CourseMeta {
   cover_url: string | null;
   price: number;
   is_published: boolean;
+  exam_duration_minutes?: number | null;
 }
 
-const COURSE_COLUMNS = 'id, slug, title, description, cover_url, price, is_published';
+const BASE_COLUMNS = 'id, slug, title, description, cover_url, price, is_published';
+const COURSE_COLUMNS = 'id, slug, title, description, cover_url, price, is_published, exam_duration_minutes';
 
 /** Lists every published course, ordered for the catalog by order_index. */
 export async function fetchPublishedCourses(): Promise<CourseMeta[]> {
@@ -30,6 +36,14 @@ export async function fetchPublishedCourses(): Promise<CourseMeta[]> {
     .eq('is_published', true)
     .order('order_index', { ascending: true });
   if (error) {
+    if (error.message?.includes('exam_duration_minutes')) {
+      const fallback = await supabase
+        .from('courses')
+        .select(BASE_COLUMNS)
+        .eq('is_published', true)
+        .order('order_index', { ascending: true });
+      if (!fallback.error) return (fallback.data as CourseMeta[]) ?? [];
+    }
     console.error('fetchPublishedCourses failed:', error.message);
     return [];
   }
@@ -44,6 +58,14 @@ export async function fetchCourseBySlug(slug: string): Promise<CourseMeta | null
     .eq('slug', slug)
     .maybeSingle();
   if (error) {
+    if (error.message?.includes('exam_duration_minutes')) {
+      const fallback = await supabase
+        .from('courses')
+        .select(BASE_COLUMNS)
+        .eq('slug', slug)
+        .maybeSingle();
+      if (!fallback.error) return (fallback.data as CourseMeta) ?? null;
+    }
     console.error('fetchCourseBySlug failed:', error.message);
     return null;
   }
@@ -68,8 +90,8 @@ export interface GoalOption {
 }
 
 export const ATTESTATSIYA_GOAL_OPTIONS: GoalOption[] = [
-  { value: 55, title: "55+ baholar", subtitle: "Attestatsiyadan oʻtish" },
-  { value: 70, title: "70+ baholar", subtitle: "Birinchi toifa" },
-  { value: 80, title: "80+ baholar", subtitle: "Oliy toifa" },
-  { value: 86, title: "86+ baholar", subtitle: "TOP natija" }
+  { value: 55, title: "55+ ball", subtitle: "Attestatsiyadan o‘tish" },
+  { value: 70, title: "70+ ball", subtitle: "Birinchi toifa" },
+  { value: 80, title: "80+ ball", subtitle: "Oliy toifa" },
+  { value: 86, title: "86+ ball", subtitle: "Yuqori natija" }
 ];

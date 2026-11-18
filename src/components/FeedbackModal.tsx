@@ -16,7 +16,7 @@ type FeedbackType = 'review' | 'bug' | 'idea';
 const TYPE_LABELS: Record<FeedbackType, string> = {
   review: 'Umumiy fikr',
   bug: 'Xato / muammo',
-  idea: 'Taklif / g\'oya',
+  idea: 'Taklif / g‘oya',
 };
 
 export default function FeedbackModal({ campaign, courseId, onClose }: Props) {
@@ -61,10 +61,10 @@ export default function FeedbackModal({ campaign, courseId, onClose }: Props) {
         <div className="flex items-start justify-between px-6 pt-6 pb-4">
           <div className="space-y-1">
             <h2 className="text-lg font-serif font-extrabold text-text-primary">
-              Fikringizni bering — bonus oling!
+              Fikr bildiring va bonusga ega bo‘ling
             </h2>
             <p className="text-xs text-text-secondary">
-              Platformani sinab ko'rdingizmi? Vaqt cheklangan.
+              Platforma haqida o‘z xulosangizni qoldiring.
             </p>
           </div>
           <button onClick={onClose} className="text-text-secondary hover:text-text-primary transition-colors cursor-pointer ml-4">
@@ -92,7 +92,7 @@ export default function FeedbackModal({ campaign, courseId, onClose }: Props) {
             <div>
               <p className="text-lg font-serif font-extrabold text-text-primary">Rahmat!</p>
               <p className="text-sm text-text-secondary mt-1">
-                Bonusingiz tez orada beriladi 🎉
+                Fikringiz qabul qilindi.
               </p>
             </div>
             <button

@@ -10,7 +10,7 @@ type FeedbackType = 'review' | 'bug' | 'idea';
 const TYPE_LABELS: Record<FeedbackType, string> = {
   review: 'Umumiy fikr',
   bug: 'Xato / muammo',
-  idea: "Taklif / g'oya",
+  idea: 'Taklif / g‘oya',
 };
 
 /**
@@ -104,7 +104,7 @@ export default function Feedback() {
           </div>
           <div>
             <p className="text-xl font-serif font-extrabold text-text-primary">Rahmat!</p>
-            <p className="text-sm text-text-secondary mt-1">Fikringiz qabul qilindi 🎉</p>
+            <p className="text-sm text-text-secondary mt-1">Fikringiz qabul qilindi.</p>
           </div>
           <Link
             to="/dashboard"
@@ -121,9 +121,9 @@ export default function Feedback() {
     <Shell>
       <div className="bg-surface border border-border-card rounded-3xl p-6 sm:p-8 space-y-6">
         <div className="space-y-1">
-          <h1 className="text-2xl font-serif font-extrabold text-text-primary">Fikringizni bering</h1>
+          <h1 className="text-2xl font-serif font-extrabold text-text-primary">Fikr bildirish</h1>
           <p className="text-sm text-text-secondary">
-            Sizning fikringiz platformani yaxshilashga yordam beradi.
+            Fikr va takliflaringiz platformani yaxshilashga yordam beradi.
           </p>
         </div>
 

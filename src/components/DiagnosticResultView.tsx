@@ -46,10 +46,10 @@ function barColor(percentage: number): string {
 
 // Highest attestation level reachable at the current score.
 function achievableLevel(score: number): string {
-  if (score >= 86) return '86+ — TOP natija';
+  if (score >= 86) return '86+ — Yuqori natija';
   if (score >= 80) return '80+ — Oliy toifa';
   if (score >= 70) return '70+ — Birinchi toifa';
-  if (score >= 55) return '55+ — Attestatsiyadan oʻtish';
+  if (score >= 55) return '55+ — Attestatsiyadan o‘tish';
   return '55+ dan past';
 }
 
@@ -94,8 +94,8 @@ export default function DiagnosticResultView({
             {goalScore != null && (
               <p className={`text-sm font-bold ${meetsGoal ? 'text-emerald-600' : 'text-orange-500'}`}>
                 {meetsGoal
-                  ? '🎯 Maqsadingizga yaqinsiz!'
-                  : `Maqsadingizgacha ${pointsToGoal} ball yetishmayapti`}
+                  ? 'Maqsadingizga erishdingiz!'
+                  : `Maqsadingizgacha ${pointsToGoal} ball qoldi`}
               </p>
             )}
           </div>
@@ -111,7 +111,7 @@ export default function DiagnosticResultView({
       <div className="bg-surface border border-border-card rounded-[28px] p-6 sm:p-8 shadow-sm text-left space-y-5">
         <div className="flex items-center space-x-2 pb-3 border-b border-border-card/50">
           <BookOpen className="w-5 h-5 text-accent-blue" />
-          <h3 className="font-serif font-bold text-lg text-text-primary">Mavzular boʻyicha tahlil</h3>
+          <h3 className="font-serif font-bold text-lg text-text-primary">Bo‘limlar bo‘yicha tahlil</h3>
         </div>
 
         <div className="space-y-4">
@@ -179,7 +179,7 @@ export default function DiagnosticResultView({
               <ListChecks className="w-5 h-5 text-accent-blue shrink-0" />
               <h3 className="font-serif font-bold text-base text-text-primary truncate">Javoblar tahlili</h3>
               <span className="text-xs font-bold text-text-secondary shrink-0">
-                ({correctCount} / {answerReview.length} toʻgʻri)
+                ({correctCount} / {answerReview.length} to‘g‘ri)
               </span>
             </div>
             <ChevronDown className={`w-5 h-5 text-text-secondary shrink-0 transition-transform ${reviewOpen ? 'rotate-180' : ''}`} />
@@ -206,7 +206,7 @@ export default function DiagnosticResultView({
                         Sizning javobingiz: <strong>{q.userAnswerText || '—'}</strong>
                       </p>
                       {!q.isCorrect && (
-                        <p className="text-emerald-600">Toʻgʻri javob: <strong>{q.correctAnswerText || '—'}</strong></p>
+                        <p className="text-emerald-600">To‘g‘ri javob: <strong>{q.correctAnswerText || '—'}</strong></p>
                       )}
                     </div>
                   ) : (
@@ -263,7 +263,7 @@ export default function DiagnosticResultView({
           to="/attestatsiya"
           className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent-blue hover:bg-accent-blue/95 text-white px-8 py-3.5 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/20 transition-all active:scale-97 cursor-pointer"
         >
-          <span>Materiallarga oʻtish</span>
+          <span>Darslarga o‘tish</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>

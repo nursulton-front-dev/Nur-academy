@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PlayCircle, ListChecks, Clock, Layers, Loader2, AlertTriangle, Maximize2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 import { enrollmentService } from '../lib/enrollmentService';
-import { ATTESTATSIYA_COURSE_ID } from '../lib/courses';
+import { ATTESTATSIYA_COURSE_ID, GEOGRAFIYA_SLUG, coursePath } from '../lib/courses';
 import { userProgressService } from '../lib/userProgress';
-import { domainLabel } from '../lib/domains';
+import { DOMAIN_ORDER, domainLabel } from '../lib/domains';
 import { xpService } from '../lib/xpService';
 import { emitDiagnosticCompleted } from '../lib/events';
 import {
@@ -44,7 +45,18 @@ interface ResultData {
 
 export default function Diagnostic() {
   const navigate = useNavigate();
+  const { slug = 'attestatsiya' } = useParams<{ slug: string }>();
   const { user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (slug === GEOGRAFIYA_SLUG) {
+      navigate(coursePath(GEOGRAFIYA_SLUG, 'imtihon/A'), { replace: true });
+    }
+  }, [slug, navigate]);
+
+  if (slug === GEOGRAFIYA_SLUG) {
+    return null;
+  }
 
   const [state, setState] = useState<DiagnosticState>('loading');
   const [domainCounts, setDomainCounts] = useState<DomainCount[]>([]);
@@ -96,10 +108,9 @@ export default function Diagnostic() {
     try {
       // New attempt → un-dismiss the sidebar result banner so the fresh score shows.
       localStorage.removeItem(`nur_diagnostic_banner_dismissed_${user.id}`);
-      const [created, loadedQuestions] = await Promise.all([
-        diagnosticService.createAttempt(user.id, ATTESTATSIYA_COURSE_ID),
-        diagnosticService.getQuestions()
-      ]);
+      const loadedQuestions = await diagnosticService.getQuestions();
+      const questionIds = loadedQuestions.map((q) => q.id);
+      const created = await diagnosticService.createAttempt(user.id, ATTESTATSIYA_COURSE_ID, questionIds);
       setAttempt(created);
       setQuestions(loadedQuestions);
       setResult(null);
@@ -112,37 +123,89 @@ export default function Diagnostic() {
   };
 
   const handleFinish = async (answers: Record<string, DiagnosticAnswer>) => {
-    const domainResults = computeDomainResults(answers, questions);
-    const totalScore = computeTotalScore(answers, questions);
-    const recommendation = generateRecommendation(domainResults);
+    let domainResults: DomainResult[] = [];
+    let totalScore = 0;
+    let wrongAnswers: WrongAnswer[] = [];
+    let answerReview: AnswerReviewItem[] = [];
 
-    // Collect answered-but-wrong questions for the AI Mentor review.
-    // Input questions use -1 (AI Mentor's convention for free-text answers).
-    const wrongAnswers: WrongAnswer[] = questions
-      .filter((q) => answers[q.id] !== undefined && answers[q.id] !== '' && !isBankAnswerCorrect(q, answers[q.id]))
-      .map((q) => ({
-        questionId: q.id,
-        questionText: q.text,
-        userAnswerIndex: q.questionType === 'input' ? -1 : Number(answers[q.id])
+    // Attempt secure server-side grading via check-answer (batch)
+    let serverGraded = false;
+    try {
+      const batchPayload = questions.map((q) => ({
+        question_id: q.id,
+        user_answer: answers[q.id]
       }));
 
-    // Full per-question review (correct + wrong) for the collapsible breakdown.
-    const answerReview: AnswerReviewItem[] = questions.map((q) => {
-      const ans = answers[q.id];
-      const isInput = q.questionType === 'input';
-      const given = ans !== undefined && ans !== '';
-      return {
-        questionId: q.id,
-        questionText: q.text,
-        options: q.options,
-        userAnswerIndex: isInput || !given ? -1 : Number(ans),
-        correctAnswerIndex: isInput ? -1 : q.correctIndex,
-        isCorrect: given && isBankAnswerCorrect(q, ans),
-        isInput,
-        userAnswerText: isInput ? String(ans ?? '') : undefined,
-        correctAnswerText: isInput ? q.correctText : undefined,
-      };
-    });
+      const { data, error } = await supabase.functions.invoke('check-answer', {
+        body: {
+          diagnostic_attempt_id: attempt?.id,
+          batch: batchPayload
+        }
+      });
+
+      if (!error && data?.results) {
+        serverGraded = true;
+        const results = data.results as Record<string, { is_correct: boolean; correct_answer: any; explanation: string }>;
+        const byDomain = new Map<string, { correct: number; total: number }>();
+        let correctCount = 0;
+
+        for (const q of questions) {
+          const res = results[q.id];
+          const ans = answers[q.id];
+          const isInput = q.questionType === 'input';
+          const given = ans !== undefined && ans !== '';
+          const isCorrect = Boolean(res?.is_correct);
+
+          if (isCorrect) correctCount++;
+
+          const entry = byDomain.get(q.domain) ?? { correct: 0, total: 0 };
+          entry.total += 1;
+          if (isCorrect) entry.correct += 1;
+          byDomain.set(q.domain, entry);
+
+          if (given && !isCorrect) {
+            wrongAnswers.push({
+              questionId: q.id,
+              questionText: q.text,
+              userAnswerIndex: isInput ? -1 : Number(ans)
+            });
+          }
+
+          const corrAns = res?.correct_answer;
+          answerReview.push({
+            questionId: q.id,
+            questionText: q.text,
+            options: q.options,
+            userAnswerIndex: isInput || !given ? -1 : Number(ans),
+            correctAnswerIndex: isInput ? -1 : (typeof corrAns === 'number' ? corrAns : -1),
+            isCorrect,
+            isInput,
+            userAnswerText: isInput ? String(ans ?? '') : undefined,
+            correctAnswerText: isInput ? String(corrAns ?? '') : undefined
+          });
+        }
+
+        const orderedCodes = [
+          ...DOMAIN_ORDER.filter((c) => byDomain.has(c)),
+          ...Array.from(byDomain.keys()).filter((c) => !DOMAIN_ORDER.includes(c))
+        ];
+
+        domainResults = orderedCodes.map((code) => {
+          const { correct, total } = byDomain.get(code)!;
+          return { name: code, correct, total, percentage: total > 0 ? Math.round((correct / total) * 100) : 0 };
+        });
+
+        totalScore = typeof data.total_score === 'number' ? data.total_score : correctCount * 2;
+      } else {
+        throw new Error(error?.message || 'Server tekshiruvi muvaffaqiyatsiz bo‘ldi');
+      }
+    } catch (err) {
+      console.error('check-answer batch grading failed:', err);
+      alert('Natijalarni hisoblashda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.');
+      return;
+    }
+
+    const recommendation = generateRecommendation(domainResults);
 
     // Leaving the focus/fullscreen mode as the test ends.
     if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
@@ -226,8 +289,7 @@ export default function Diagnostic() {
             Diagnostika testi
           </h1>
           <p className="text-text-secondary text-sm sm:text-base leading-relaxed max-w-2xl">
-            50 ta savol, 8 ta mavzu boʻyicha, 120 daqiqa. Bu test sizning hozirgi bilim
-            darajangizni aniqlaydi va tavsiyalar beradi.
+            50 ta savol, 8 ta modul, 120 daqiqa. Diagnostika orqali boshlang‘ich bilimingizni tahlil qilib, o‘rganish rejangizni tuzib olasiz.
           </p>
         </div>
 
@@ -288,11 +350,11 @@ export default function Diagnostic() {
           <ul className="space-y-1.5 text-sm text-text-secondary">
             <li className="flex items-start gap-2.5">
               <Clock className="w-4 h-4 shrink-0 mt-0.5 text-accent-blue" />
-              <span>Test <strong className="text-text-primary">120 daqiqa</strong> bilan cheklangan — sahifani yopmang, vaqt toʻxtamaydi.</span>
+              <span>Test vaqti — <strong className="text-text-primary">120 daqiqa</strong>. Sahifani yopmang, vaqt to‘xtamaydi.</span>
             </li>
             <li className="flex items-start gap-2.5">
               <Maximize2 className="w-4 h-4 shrink-0 mt-0.5 text-accent-blue" />
-              <span>Test <strong className="text-text-primary">toʻliq ekran</strong> rejimida boshlanadi.</span>
+              <span>Test qulaylik uchun <strong className="text-text-primary">to‘liq ekran</strong> rejimida ochiladi.</span>
             </li>
           </ul>
         </div>
@@ -304,7 +366,7 @@ export default function Diagnostic() {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-accent-blue text-white px-8 py-4 rounded-xl font-bold text-sm hover:bg-accent-blue/95 transition-all shadow-md shadow-accent-blue/20 active:scale-97 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
           >
             {starting ? <Loader2 className="w-5 h-5 animate-spin" /> : <PlayCircle className="w-5 h-5" />}
-            <span>{starting ? 'Boshlanmoqda...' : 'Boshlash'}</span>
+            <span>{starting ? 'Yuklanmoqda...' : 'Diagnostikani boshlash'}</span>
           </button>
         </div>
       </div>

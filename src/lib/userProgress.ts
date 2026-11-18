@@ -18,11 +18,11 @@ const ONBOARDING_KEY = 'nur_academy_onboarding_completed';
 const DIAGNOSTIC_DONE_KEY = 'nur_academy_diagnostic_completed';
 
 export const goalOptions = [
-  { value: 55, label: "55+ — Attestatsiyadan o'tish", title: "Attestatsiyadan o'tish" },
-  { value: 60, label: "60+ — Ikkinchi toifa", title: "Ikkinchi toifa" },
-  { value: 70, label: "70+ — Birinchi toifa", title: "Birinchi toifa" },
-  { value: 80, label: "80+ — Oliy toifa", title: "Oliy toifa" },
-  { value: 86, label: "86+ — TOP natija (Ustama target)", title: "TOP natija" }
+  { value: 55, label: "55+ ball — Attestatsiyadan o‘tish", title: "Attestatsiyadan o‘tish" },
+  { value: 60, label: "60+ ball — Ikkinchi toifa", title: "Ikkinchi toifa" },
+  { value: 70, label: "70+ ball — Birinchi toifa", title: "Birinchi toifa" },
+  { value: 80, label: "80+ ball — Oliy toifa", title: "Oliy toifa" },
+  { value: 86, label: "86+ ball — Yuqori natija (ustama olish)", title: "Yuqori natija" }
 ];
 
 export const userProgressService = {

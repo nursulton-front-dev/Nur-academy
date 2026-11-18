@@ -8,8 +8,9 @@ import {
   ShieldCheck, Crown, Trash2, Loader2, X, Search,
   Zap, MessageSquare, Clock, StopCircle
 } from 'lucide-react';
+import GeografiyaAdminTab from '../components/admin/GeografiyaAdminTab';
 
-type AdminTab = 'overview' | 'questions' | 'modules' | 'users' | 'analytics' | 'campaigns' | 'feedback';
+type AdminTab = 'overview' | 'questions' | 'modules' | 'users' | 'analytics' | 'campaigns' | 'feedback' | 'geografiya';
 
 interface Campaign {
   id: string;
@@ -352,14 +353,27 @@ export default function AdminPanel() {
 
     if (qbErr || !qb) { console.error('Failed to insert question:', qbErr); return; }
 
+    const correctIdx = newQuestion.options.findIndex(o => o.is_correct);
+    const sanitizedOptions = newQuestion.options.map(o => ({ text: o.text }));
+
     const { error: tErr } = await supabase.from('question_bank_translations').insert({
       question_id: qb.id,
       locale: 'uz',
       question_text: newQuestion.question_text,
-      options: newQuestion.options,
+      options: sanitizedOptions,
     });
 
     if (tErr) { console.error('Failed to insert translation:', tErr); return; }
+
+    // Persist answer key securely into question_keys vault
+    await supabase.from('question_keys').insert({
+      question_id: qb.id,
+      key: {
+        type: newQuestion.question_type === 'input' ? 'input' : 'single',
+        correct_index: correctIdx !== -1 ? correctIdx : 0,
+        expected_answer: newQuestion.question_type === 'input' ? newQuestion.options[0]?.text : undefined
+      }
+    });
 
     setShowQuestionForm(false);
     setNewQuestion({
@@ -396,6 +410,7 @@ export default function AdminPanel() {
     { id: 'analytics', label: 'Analitika', icon: TrendingUp },
     { id: 'campaigns', label: 'Aksiyalar', icon: Zap },
     { id: 'feedback', label: 'Fikrlar', icon: MessageSquare },
+    { id: 'geografiya', label: 'Geografiya 2026', icon: ShieldCheck },
   ];
 
   return (
@@ -1101,6 +1116,8 @@ export default function AdminPanel() {
           </div>
         );
       })()}
+
+      {activeTab === 'geografiya' && <GeografiyaAdminTab />}
     </div>
   );
 }

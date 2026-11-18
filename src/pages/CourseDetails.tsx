@@ -248,7 +248,7 @@ export default function CourseDetails() {
         {/* Horizontal Module Progress Map */}
         {isEnrolled && modules.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-serif font-bold text-text-primary mb-6">Sizning progressingiz</h2>
+            <h2 className="text-2xl font-serif font-bold text-text-primary mb-6">O‘zlashtirish ko‘rsatkichi</h2>
             <div className="relative flex items-center justify-between overflow-x-auto pb-8 pt-4 px-4">
               <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-border-card -translate-y-1/2 z-0 hidden md:block"></div>
               
@@ -347,7 +347,7 @@ export default function CourseDetails() {
                             to={`/learn/${lesson.id}`}
                             className={`text-sm font-medium px-4 py-1.5 rounded-full border ${isCompleted ? 'border-success-green/30 text-success-green bg-success-green/5 hover:bg-success-green/10' : isCurrent ? 'border-accent-blue text-white bg-accent-blue hover:bg-opacity-90' : 'border-border-card text-text-secondary hover:text-text-primary hover:border-gray-400'}`}
                           >
-                            {isCompleted ? 'Qayta koʻrish' : isCurrent ? 'Boshlash' : 'Koʻrish'}
+                            {isCompleted ? 'Qayta ko‘rish' : isCurrent ? 'Boshlash' : 'Ko‘rish'}
                           </Link>
                         ) : (
                           <div className="text-gray-400 flex items-center space-x-1 py-1.5 px-4">
@@ -365,7 +365,7 @@ export default function CourseDetails() {
           
           {modules.length === 0 && (
             <div className="text-center py-12 bg-surface rounded-xl border border-border-card">
-              <p className="text-text-secondary">Ushbu kursda hozircha darslar mavjud emas.</p>
+              <p className="text-text-secondary">Bu kursda hozircha darslar yo‘q.</p>
             </div>
           )}
         </div>

@@ -139,7 +139,7 @@ export default function AttestatsiyaResults() {
   if (status === 'loading') {
     return (
       <AppPage>
-        <PageHeader title="Natija va tahlil" description="Maʼlumotlar yuklanmoqda..." />
+        <PageHeader title="Natija va tahlil" description="Ma’lumotlar yuklanmoqda..." />
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue" />
         </div>
@@ -159,7 +159,7 @@ export default function AttestatsiyaResults() {
           <div className="space-y-1.5">
             <h2 className="text-lg font-serif font-extrabold text-text-primary">Tahlil uchun tizimga kiring</h2>
             <p className="text-sm text-text-secondary leading-relaxed">
-              Natija va tahlilni koʻrish uchun tizimga kiring yoki demo rejimda davom eting.
+              Natija va tahlillarni ko‘rish uchun tizimga kiring yoki demo rejimida ko‘ring.
             </p>
           </div>
           <div className="flex flex-col gap-2.5">
@@ -167,13 +167,13 @@ export default function AttestatsiyaResults() {
               <LogIn className="w-4 h-4" /> Kirish
             </Link>
             <Link to="/signup" className="inline-flex items-center justify-center gap-2 bg-surface border border-border-card text-text-primary px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-surface-hover transition-all">
-              <UserPlus className="w-4 h-4" /> Roʻyxatdan oʻtish
+              <UserPlus className="w-4 h-4" /> Ro‘yxatdan o‘tish
             </Link>
             <button
               onClick={() => setDemoMode(true)}
               className="inline-flex items-center justify-center gap-2 text-xs font-bold text-text-secondary hover:text-accent-blue transition-colors py-1.5 cursor-pointer"
             >
-              <Eye className="w-4 h-4" /> Demo rejimda koʻrish
+              <Eye className="w-4 h-4" /> Demo rejimida ko‘rish
             </button>
           </div>
         </div>
@@ -191,9 +191,9 @@ export default function AttestatsiyaResults() {
             <AlertTriangle className="w-7 h-7" />
           </div>
           <div className="space-y-1.5">
-            <h2 className="text-lg font-serif font-extrabold text-text-primary">Maʼlumotni yuklab boʻlmadi</h2>
+            <h2 className="text-lg font-serif font-extrabold text-text-primary">Ma’lumotlarni yuklab bo‘lmadi</h2>
             <p className="text-sm text-text-secondary leading-relaxed">
-              Tahlil maʼlumotlarini olishda muammo yuzaga keldi. Iltimos, qayta urinib koʻring.
+              Ma’lumotlarni olishda xatolik yuz berdi. Qayta urinib ko‘ring.
             </p>
           </div>
           <button
@@ -221,7 +221,7 @@ export default function AttestatsiyaResults() {
               <Inbox className="w-6 h-6" />
             </div>
             <div className="flex-1 space-y-1">
-              <h3 className="text-sm font-bold text-text-primary">Hozircha tahlil uchun maʼlumot yoʻq</h3>
+              <h3 className="text-sm font-bold text-text-primary">Hozircha tahlil uchun ma’lumot yo‘q</h3>
               <p className="text-xs text-text-secondary leading-relaxed">
                 Avval diagnostika yoki mavzu testini topshiring — natijalaringiz shu yerda tahlil qilinadi.
               </p>
@@ -290,7 +290,7 @@ export default function AttestatsiyaResults() {
 
         {/* Quick metrics */}
         <div className="bg-surface border border-border-card rounded-2xl p-5 space-y-3">
-          <h3 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Koʻrsatkichlar</h3>
+          <h3 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Ko‘rsatkichlar</h3>
           <MetricRow icon={<BookOpen className="w-3.5 h-3.5" />} label="Darslar" value={`${completedLessons}/${totalLessons}`} />
           <MetricRow icon={<Target className="w-3.5 h-3.5" />} label="Testlar" value={`${completedTests}/${mockTopicTests.length}`} />
           <MetricRow icon={<Brain className="w-3.5 h-3.5" />} label="Xatolar" value={errors} />
@@ -327,7 +327,7 @@ export default function AttestatsiyaResults() {
             {weakDomains.length > 0 && (
               <div className="pt-3 border-t border-border-card/50 space-y-2">
                 <p className="text-xs font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
-                  <AlertTriangle className="w-3.5 h-3.5 text-error-red" /> Eng zaif boʻlimlar
+                  <AlertTriangle className="w-3.5 h-3.5 text-error-red" /> Eng zaif bo‘limlar
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {weakDomains.map((d) => (
@@ -383,7 +383,7 @@ export default function AttestatsiyaResults() {
           <MetricCard label="Darslar" value={`${completedLessons}/${totalLessons}`} />
           <MetricCard label="Imtihonlar" value={completedTests} />
           <MetricCard label="Ballar (XP)" value={xp} />
-          <MetricCard label="Oʻqish vaqti" value={`${studyHours} soat`} />
+          <MetricCard label="O‘qish vaqti" value={`${studyHours} soat`} />
         </div>
       </section>
 
