@@ -27,7 +27,7 @@ export function BrandLogo({
   return (
     <div className={`inline-flex items-center gap-2.5 ${className}`}>
       <img
-        src="/images/nur-logo.webp"
+        src="/assets/brand/branding/brand_mark.svg"
         alt="Nur Academy"
         width={44}
         height={44}

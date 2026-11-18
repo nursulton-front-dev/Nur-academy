@@ -15,13 +15,11 @@ interface AIMentorBlockProps {
 type FetchState = 'loading' | 'ready' | 'error' | 'hidden' | 'locked';
 
 function AvatarCircle({ hint }: { hint?: boolean }) {
-  const Icon = hint ? Lightbulb : Sparkles;
   return (
     <div
-      className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
-      style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}
+      className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-accent-blue/15 border border-accent-blue/30 shadow-xs"
     >
-      <Icon className="w-4 h-4 text-white" />
+      <img src="/assets/brand/icons/ai_mentor.svg" alt="" className="w-4 h-4" />
     </div>
   );
 }

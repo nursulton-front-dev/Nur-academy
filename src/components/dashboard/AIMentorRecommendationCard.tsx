@@ -20,8 +20,8 @@ function MentorShell({ badge, children }: { badge: React.ReactNode; children: Re
       <div className="p-5 sm:p-6 flex flex-col gap-4 flex-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-gradient-to-br from-indigo-500 to-purple-500 shadow-sm shadow-purple-500/20">
-              <Sparkles className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-accent-blue/15 dark:bg-accent-blue/25 shadow-xs border border-accent-blue/30">
+              <img src="/assets/brand/icons/ai_mentor.svg" alt="" className="w-4 h-4" />
             </div>
             <span className="text-sm font-bold text-[#1A2E2E] dark:text-[#EAEAFF]">AI Mentor tavsiyasi</span>
           </div>

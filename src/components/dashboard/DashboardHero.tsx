@@ -48,18 +48,19 @@ export default function DashboardHero({ continueHref: href }: DashboardHeroProps
         </div>
 
         {/* Illustration slot (~40%) */}
-        <div className="relative lg:basis-[46%] shrink-0 min-h-[160px] lg:min-h-0 flex items-center justify-center p-2 sm:p-3 lg:p-4">
+        <div className="relative lg:basis-[40%] shrink-0 min-h-[180px] lg:min-h-0 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-uzbek-ornament opacity-[0.04] dark:opacity-[0.08] pointer-events-none" />
           {showArt ? (
             <img
-              src="/images/dashboard-hero.png"
-              alt="Attestatsiyaga tayyorgarlik illyustratsiyasi"
-              className="mx-auto w-auto max-w-[620px] max-h-[200px] lg:max-h-[260px] object-contain scale-[1.75] lg:-translate-x-6 2xl:-translate-x-[124px]"
+              src="/assets/brand/mascot/hero_mentor_closeup.png"
+              alt="Attestatsiyaga tayyorgarlik mentori"
+              className="mx-auto w-auto max-w-[280px] lg:max-w-[320px] max-h-[200px] lg:max-h-[240px] object-contain drop-shadow-xl relative z-10"
               onError={() => setShowArt(false)}
             />
           ) : (
             // Placeholder gradient so the slot stays intentional if no asset.
             <div
-              className="w-full max-w-[620px] aspect-[4/3] rounded-2xl lg:-translate-x-6 2xl:-translate-x-[124px]"
+              className="w-full max-w-[320px] aspect-[4/3] rounded-2xl"
               style={{
                 background: 'radial-gradient(120% 120% at 70% 20%, rgba(59,125,216,0.22), rgba(139,92,246,0.12) 45%, transparent 75%)',
               }}
