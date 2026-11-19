@@ -305,15 +305,15 @@ export default function CourseDetails() {
             const hasStartedModule = module.lessons.some(l => completedLessonIds.has(l.id));
             
             return (
-              <div key={module.id} className="bg-surface rounded-xl border border-border-card overflow-hidden">
+              <div key={module.id} className="bg-surface rounded-2xl border border-border-card overflow-hidden shadow-xs">
                 <div className="p-6 bg-surface-hover border-b border-border-card flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 ${isModuleCompleted ? 'bg-success-green border-success-green text-white' : hasStartedModule ? 'bg-surface border-accent-blue text-accent-blue' : 'bg-surface border-border-card text-text-secondary'}`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm border-2 ${isModuleCompleted ? 'bg-success-green border-success-green text-white' : hasStartedModule ? 'bg-surface border-accent-blue text-accent-blue' : 'bg-surface border-border-card text-text-secondary'}`}>
                       {mIndex + 1}
                     </div>
                     <h3 className="font-serif font-bold text-xl text-text-primary">{module.title}</h3>
                   </div>
-                  <span className="text-sm text-text-secondary font-medium">
+                  <span className="text-xs sm:text-sm text-text-secondary font-medium">
                     {module.lessons.filter(l => completedLessonIds.has(l.id)).length} / {module.lessons.length} tugatildi
                   </span>
                 </div>
@@ -327,7 +327,7 @@ export default function CourseDetails() {
                     return (
                       <div 
                         key={lesson.id} 
-                        className={`p-4 sm:px-6 flex items-center justify-between transition-colors ${isCurrent ? 'bg-blue-50/30' : 'hover:bg-surface-hover'}`}
+                        className={`p-4 sm:px-6 flex items-center justify-between transition-colors ${isCurrent ? 'bg-accent-blue/[0.04]' : 'hover:bg-surface-hover'}`}
                       >
                         <div className="flex items-center space-x-3">
                           {isCompleted ? (
@@ -335,9 +335,9 @@ export default function CourseDetails() {
                           ) : isCurrent ? (
                             <PlayCircle className="w-5 h-5 text-accent-blue shrink-0" />
                           ) : (
-                            <Circle className="w-5 h-5 text-gray-300 shrink-0" />
+                            <Circle className="w-5 h-5 text-text-secondary/40 shrink-0" />
                           )}
-                          <span className={`font-medium ${isCurrent ? 'text-accent-blue' : 'text-text-primary'}`}>
+                          <span className={`font-medium text-sm sm:text-base ${isCurrent ? 'text-accent-blue font-semibold' : 'text-text-primary'}`}>
                             {mIndex + 1}.{lIndex + 1}. {lesson.title}
                           </span>
                         </div>
@@ -345,14 +345,14 @@ export default function CourseDetails() {
                         {canAccess ? (
                           <Link 
                             to={`/learn/${lesson.id}`}
-                            className={`text-sm font-medium px-4 py-1.5 rounded-full border ${isCompleted ? 'border-success-green/30 text-success-green bg-success-green/5 hover:bg-success-green/10' : isCurrent ? 'border-accent-blue text-white bg-accent-blue hover:bg-opacity-90' : 'border-border-card text-text-secondary hover:text-text-primary hover:border-gray-400'}`}
+                            className={`text-xs font-bold px-4 py-2 rounded-xl border transition-all ${isCompleted ? 'border-success-green/30 text-success-green bg-success-green/5 hover:bg-success-green/10' : isCurrent ? 'border-accent-blue text-white bg-accent-blue hover:bg-accent-hover' : 'border-border-card text-text-secondary hover:text-text-primary hover:bg-surface-hover'}`}
                           >
                             {isCompleted ? 'Qayta ko‘rish' : isCurrent ? 'Boshlash' : 'Ko‘rish'}
                           </Link>
                         ) : (
-                          <div className="text-gray-400 flex items-center space-x-1 py-1.5 px-4">
-                            <Lock className="w-4 h-4" />
-                            <span className="text-sm">Yopiq</span>
+                          <div className="text-text-secondary/60 flex items-center space-x-1 py-1.5 px-4 text-xs">
+                            <Lock className="w-3.5 h-3.5" />
+                            <span>Yopiq</span>
                           </div>
                         )}
                       </div>

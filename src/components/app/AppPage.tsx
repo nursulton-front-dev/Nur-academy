@@ -1,4 +1,5 @@
 import React from 'react';
+import { Breadcrumbs, BreadcrumbItem } from './ui';
 
 interface AppPageProps {
   children: React.ReactNode;
@@ -26,6 +27,7 @@ interface PageHeaderProps {
   title: string;
   description?: string;
   action?: React.ReactNode;
+  breadcrumbs?: BreadcrumbItem[];
 }
 
 /**
@@ -33,18 +35,21 @@ interface PageHeaderProps {
  * muted description, optional trailing action. Replaces the old oversized
  * per-page headings so internal pages read as one product.
  */
-export function PageHeader({ title, description, action }: PageHeaderProps) {
+export function PageHeader({ title, description, action, breadcrumbs }: PageHeaderProps) {
   return (
-    <header className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-      <div className="space-y-1.5 min-w-0">
-        <h1 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary leading-tight">
-          {title}
-        </h1>
-        {description && (
-          <p className="text-text-secondary text-sm max-w-2xl leading-relaxed">{description}</p>
-        )}
+    <header className="mb-6 sm:mb-8 space-y-3">
+      {breadcrumbs && <Breadcrumbs items={breadcrumbs} className="mb-2" />}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div className="space-y-1.5 min-w-0">
+          <h1 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary leading-tight">
+            {title}
+          </h1>
+          {description && (
+            <p className="text-text-secondary text-sm max-w-2xl leading-relaxed">{description}</p>
+          )}
+        </div>
+        {action && <div className="shrink-0">{action}</div>}
       </div>
-      {action && <div className="shrink-0">{action}</div>}
     </header>
   );
 }

@@ -73,9 +73,9 @@ export default function Feedback() {
   if (!user) {
     return (
       <Shell>
-        <div className="bg-surface border border-border-card rounded-3xl p-10 text-center space-y-5">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center">
-            <MessageSquare className="w-8 h-8" />
+        <div className="bg-surface border border-border-card rounded-2xl p-8 sm:p-10 text-center space-y-5 shadow-xs">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center">
+            <MessageSquare className="w-7 h-7" />
           </div>
           <div className="space-y-2">
             <h1 className="text-2xl font-serif font-extrabold text-text-primary">Fikr bildirish</h1>
@@ -85,9 +85,9 @@ export default function Feedback() {
           </div>
           <Link
             to="/login?next=/feedback"
-            className="inline-flex items-center gap-2 bg-accent-blue text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-accent-blue/95 transition-all active:scale-[0.98]"
+            className="inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-hover text-white px-6 py-3 rounded-xl text-xs font-bold transition-all shadow-xs"
           >
-            <LogIn className="w-4.5 h-4.5" />
+            <LogIn className="w-4 h-4" />
             Kirish
           </Link>
         </div>
@@ -98,9 +98,9 @@ export default function Feedback() {
   if (done) {
     return (
       <Shell>
-        <div className="bg-surface border border-border-card rounded-3xl p-10 text-center space-y-4">
-          <div className="w-16 h-16 mx-auto rounded-full bg-green-500/10 flex items-center justify-center">
-            <CheckCircle2 className="w-8 h-8 text-green-500" />
+        <div className="bg-surface border border-border-card rounded-2xl p-8 sm:p-10 text-center space-y-4 shadow-xs">
+          <div className="w-14 h-14 mx-auto rounded-full bg-success-green/10 flex items-center justify-center">
+            <CheckCircle2 className="w-7 h-7 text-success-green" />
           </div>
           <div>
             <p className="text-xl font-serif font-extrabold text-text-primary">Rahmat!</p>
@@ -108,7 +108,7 @@ export default function Feedback() {
           </div>
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-2 mt-2 px-6 py-2.5 bg-accent-blue text-white rounded-xl text-sm font-bold hover:bg-accent-blue/90 transition-colors"
+            className="inline-flex items-center gap-2 mt-2 px-6 py-2.5 bg-accent-blue hover:bg-accent-hover text-white rounded-xl text-xs font-bold transition-colors shadow-xs"
           >
             Mening kurslarim
           </Link>
@@ -119,7 +119,7 @@ export default function Feedback() {
 
   return (
     <Shell>
-      <div className="bg-surface border border-border-card rounded-3xl p-6 sm:p-8 space-y-6">
+      <div className="bg-surface border border-border-card rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs">
         <div className="space-y-1">
           <h1 className="text-2xl font-serif font-extrabold text-text-primary">Fikr bildirish</h1>
           <p className="text-sm text-text-secondary">

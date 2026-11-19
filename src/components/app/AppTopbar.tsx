@@ -37,6 +37,14 @@ export default function AppTopbar({ onMenuClick, homeHref = '/attestatsiya' }: A
   const appUser = useAppUser();
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [searchVal, setSearchVal] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchVal.trim()) {
+      navigate(`/courses?q=${encodeURIComponent(searchVal.trim())}`);
+    }
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -66,15 +74,17 @@ export default function AppTopbar({ onMenuClick, homeHref = '/attestatsiya' }: A
 
         {/* Center: search */}
         <div className="hidden md:flex flex-1 justify-center">
-          <div className="relative w-full max-w-md">
+          <form onSubmit={handleSearch} className="relative w-full max-w-md">
             <Search className="w-4 h-4 text-text-secondary absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
-              placeholder="Qidirish..."
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              placeholder="Kurslar va mavzularni qidirish..."
               aria-label="Qidirish"
               className="w-full pl-9 pr-3 py-2 rounded-xl bg-primary-bg border border-border-card text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue/50 transition-all"
             />
-          </div>
+          </form>
         </div>
 
         {/* Right: app controls (Seriya, Daraja, notifications, theme, avatar) */}

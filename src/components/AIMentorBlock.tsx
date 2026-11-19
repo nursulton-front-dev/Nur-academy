@@ -17,7 +17,7 @@ type FetchState = 'loading' | 'ready' | 'error' | 'hidden' | 'locked';
 function AvatarCircle({ hint }: { hint?: boolean }) {
   return (
     <div
-      className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-accent-blue/15 border border-accent-blue/30 shadow-xs"
+      className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-accent-blue/10 border border-accent-blue/20 shadow-xs"
     >
       <img src="/assets/brand/icons/ai_mentor.svg" alt="" className="w-4 h-4" />
     </div>
@@ -40,15 +40,15 @@ function ErrorFallback({ onRetry }: { onRetry: () => void }) {
       <AvatarCircle />
       <div className="flex-1 space-y-2">
         <div className="flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-amber-400" />
-          <span className="text-sm font-medium text-white">AI Mentor hozir javob bera olmayapti</span>
+          <AlertCircle className="w-4 h-4 text-amber-500" />
+          <span className="text-sm font-semibold text-text-primary">AI Mentor hozir javob bera olmayapti</span>
         </div>
-        <p className="text-[13px] text-slate-300">
+        <p className="text-xs text-text-secondary">
           Internet aloqasini tekshiring yoki keyinroq qayta urinib ko‘ring.
         </p>
         <button
           onClick={onRetry}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#A5B4FC] hover:underline cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent-blue hover:underline cursor-pointer"
         >
           <RefreshCw className="w-3 h-3" />
           Qayta urinish
@@ -161,36 +161,34 @@ export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation
 
   if (state === 'locked') {
     return (
-      <div className="rounded-xl border p-4 bg-[#1A1730] border-[#2D2750] text-slate-100">
-        <div className="flex items-start gap-3">
+      <div className="rounded-2xl border border-border-card p-5 bg-surface text-text-primary shadow-xs">
+        <div className="flex items-start gap-3.5">
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}
+            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-accent-blue/10 text-accent-blue"
           >
-            <Lock className="w-4 h-4 text-white" />
+            <Lock className="w-4.5 h-4.5" />
           </div>
-          <div className="flex-1 space-y-2.5">
+          <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-white">AI Mentor tushuntirishi</span>
-              <span
-                className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
-                style={{ backgroundColor: '#EEF2FF', color: '#6366F1' }}
-              >
+              <span className="text-sm font-serif font-bold text-text-primary">AI Mentor tushuntirishi</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-accent-gold/20 text-accent-gold-dark border border-accent-gold/40">
                 PRO
               </span>
             </div>
-            <p className="text-[13px] leading-[1.6] text-slate-300">
+            <p className="text-xs text-text-secondary leading-relaxed">
               {isHint
                 ? 'Shaxsiy maslahat va xatolaringiz tahlili Pro tarifda ochiladi.'
                 : 'Xatongizni AI Mentor batafsil tushuntirib beradi — Pro tarifda.'}
             </p>
-            <Link
-              to="/attestatsiya/obuna"
-              className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors"
-            >
-              Pro tarifga o‘tish
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <div className="pt-1">
+              <Link
+                to="/kurs/attestatsiya/obuna"
+                className="inline-flex items-center gap-1.5 bg-accent-blue hover:bg-accent-hover text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-xs"
+              >
+                <span>Pro tarifga o‘tish</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -198,63 +196,48 @@ export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation
   }
 
   return (
-    <div className="rounded-xl border p-3.5 bg-[#1A1730] border-[#2D2750] text-slate-100" style={{ color: '#F1F5F9' }}>
-      <div className="rounded-xl border border-[#2D2750] p-3.5">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2.5">
-            <AvatarCircle hint={isHint} />
-            <span className="text-sm font-medium text-white" style={{ color: '#FFFFFF' }}>
-              {isHint ? 'AI Mentor maslahati' : 'AI Mentor'}
-            </span>
-          </div>
-          <span
-            className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
-            style={
-              isHint
-                ? { backgroundColor: '#FEF3C7', color: '#92400E' }
-                : { backgroundColor: '#EEF2FF', color: '#6366F1' }
-            }
-          >
-            {isHint ? 'MASLAHAT' : 'TUSHUNTIRISH'}
+    <div className="rounded-2xl border border-accent-blue/20 p-4 sm:p-5 bg-accent-blue/[0.04] dark:bg-accent-blue/[0.08] text-text-primary shadow-xs transition-colors duration-200">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2.5">
+          <AvatarCircle hint={isHint} />
+          <span className="text-sm font-semibold text-text-primary">
+            {isHint ? 'AI Mentor maslahati' : 'AI Mentor'}
           </span>
         </div>
-
-        {/* Body */}
-        {state === 'loading' ? (
-          <div className="space-y-3">
-            <p className="text-sm text-slate-300" style={{ color: '#CBD5E1' }}>
-              AI Mentor o‘ylamoqda<TypingDots />
-            </p>
-            <div className="space-y-2" aria-hidden>
-              <div
-                className="h-3 rounded-full animate-pulse"
-                style={{ backgroundColor: '#2D2750', opacity: 0.6, width: '100%' }}
-              />
-              <div
-                className="h-3 rounded-full animate-pulse"
-                style={{ backgroundColor: '#2D2750', opacity: 0.5, width: '75%' }}
-              />
-              <div
-                className="h-3 rounded-full animate-pulse"
-                style={{ backgroundColor: '#2D2750', opacity: 0.4, width: '60%' }}
-              />
-            </div>
-          </div>
-        ) : state === 'error' ? (
-          <ErrorFallback onRetry={() => setReloadKey((k) => k + 1)} />
-        ) : (
-          <p
-            className="text-[13px] leading-[1.6] text-slate-100 whitespace-pre-line"
-            style={{ minHeight: '2.6em', color: '#F1F5F9' }}
-          >
-            {displayed}
-            {isTyping && (
-              <span className="inline-block w-[2px] h-[14px] bg-[#818CF8] ml-0.5 align-middle animate-[blink_0.8s_infinite]" />
-            )}
-          </p>
-        )}
+        <span
+          className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md border ${
+            isHint
+              ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20'
+              : 'bg-accent-blue/10 text-accent-blue border-accent-blue/20'
+          }`}
+        >
+          {isHint ? 'MASLAHAT' : 'TUSHUNTIRISH'}
+        </span>
       </div>
+
+      {/* Body */}
+      {state === 'loading' ? (
+        <div className="space-y-3">
+          <p className="text-xs font-medium text-text-secondary">
+            AI Mentor o‘ylamoqda<TypingDots />
+          </p>
+          <div className="space-y-2" aria-hidden>
+            <div className="h-2.5 rounded-full bg-border-card animate-pulse w-full" />
+            <div className="h-2.5 rounded-full bg-border-card animate-pulse w-3/4" />
+            <div className="h-2.5 rounded-full bg-border-card animate-pulse w-1/2" />
+          </div>
+        </div>
+      ) : state === 'error' ? (
+        <ErrorFallback onRetry={() => setReloadKey((k) => k + 1)} />
+      ) : (
+        <p className="text-xs sm:text-sm leading-relaxed text-text-primary whitespace-pre-line">
+          {displayed}
+          {isTyping && (
+            <span className="inline-block w-[2px] h-[14px] bg-accent-blue ml-0.5 align-middle animate-pulse" />
+          )}
+        </p>
+      )}
     </div>
   );
 }

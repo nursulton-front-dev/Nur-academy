@@ -25,7 +25,10 @@ import {
   ShieldCheck,
   Award,
   Layers,
-  ChevronRight
+  ChevronRight,
+  Flame,
+  Activity,
+  PlayCircle
 } from 'lucide-react';
 
 export default function Landing() {
@@ -59,7 +62,7 @@ export default function Landing() {
   const informatikaCourse = courses.find((c) => c.slug === 'attestatsiya');
 
   return (
-    <div className="flex flex-col bg-primary-bg overflow-x-hidden text-text-primary font-sans">
+    <div className="flex flex-col bg-primary-bg overflow-x-hidden text-text-primary font-sans transition-colors duration-200">
       <Seo
         rawTitle
         title="Nur Academy — Oʻqituvchilar uchun attestatsiya platformasi"
@@ -68,21 +71,16 @@ export default function Landing() {
       />
 
       {/* ─────────────────────────────────────────────────────────────────────────
-          1. HERO SECTION (Autonomous, Spacious, Multi-Layered with Mentor Mascot)
+          1. HERO SECTION (MODERN, HIGH-CONVERTING, MASCOT-FREE WITH REAL UI PREVIEW)
       ───────────────────────────────────────────────────────────────────────── */}
-      <section className="relative bg-surface border-b border-border-card min-h-[calc(100svh-4rem)] flex items-center overflow-hidden">
-        {/* Ambient atmospheric gradients & Uzbek ornament background */}
-        <div className="absolute top-0 -left-28 w-[600px] h-[600px] bg-accent-blue/8 rounded-full blur-3xl pointer-events-none -z-10" />
-        <div className="absolute bottom-0 -right-28 w-[600px] h-[600px] bg-amber-500/8 rounded-full blur-3xl pointer-events-none -z-10" />
-        <div className="absolute inset-0 bg-uzbek-ornament opacity-[0.03] dark:opacity-[0.05] pointer-events-none" />
-
-        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 relative z-10">
+      <section className="relative bg-surface border-b border-border-card min-h-[calc(100svh-4rem)] flex items-center overflow-hidden transition-colors duration-200">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 relative z-10">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             
             {/* Left 7 cols: Positioning, heading, actions, highlights */}
             <div className="lg:col-span-7 max-w-2xl">
               <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-blue/10 text-accent-blue text-xs font-bold uppercase tracking-wider mb-6">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <Sparkles className="w-3.5 h-3.5 text-accent-blue" />
                 Pedagoglar uchun ta’lim platformasi
               </span>
 
@@ -98,14 +96,14 @@ export default function Landing() {
               <div className="flex flex-col sm:flex-row gap-3.5 mb-10">
                 <Link
                   to="/signup"
-                  className="inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-8 py-4 rounded-xl font-bold text-base hover:bg-accent-blue/95 transition-all shadow-md shadow-accent-blue/25 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                  className="inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-8 py-4 rounded-xl font-bold text-base hover:bg-accent-hover transition-colors shadow-sm active:scale-98 focus-visible:outline-2 focus-visible:outline-accent-blue"
                 >
                   <span>Bepul boshlash</span>
                   <ArrowRight className="w-5 h-5" />
                 </Link>
                 <a
                   href="#platform-showcase"
-                  className="inline-flex items-center justify-center gap-2 border border-border-card bg-surface text-text-primary px-8 py-4 rounded-xl font-bold text-base hover:bg-surface-hover transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                  className="inline-flex items-center justify-center gap-2 border border-border-card bg-surface text-text-primary px-8 py-4 rounded-xl font-bold text-base hover:bg-surface-hover transition-colors focus-visible:outline-2 focus-visible:outline-accent-blue"
                 >
                   <span>Platformani ko‘rish</span>
                   <ChevronRight className="w-5 h-5 text-text-secondary" />
@@ -113,7 +111,7 @@ export default function Landing() {
               </div>
 
               {/* Three key feature highlights */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-6 border-t border-border-card/60">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-border-card/60">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-accent-blue/10 text-accent-blue flex items-center justify-center shrink-0">
                     <Layers className="w-4 h-4" />
@@ -141,49 +139,109 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Right 5 cols: Nur Academy Mascot Scene & Floating Badges */}
+            {/* Right 5 cols: Authentic Interactive-Grade Platform UI Preview */}
             <div className="lg:col-span-5 relative flex justify-center items-center">
-              {/* Radial backdrop */}
-              <div className="absolute inset-0 bg-radial from-accent-blue/15 via-transparent to-transparent rounded-full filter blur-2xl -z-10" />
+              <div className="w-full max-w-lg bg-surface border border-border-card rounded-3xl p-5 sm:p-6 shadow-xl relative overflow-hidden text-left">
+                
+                {/* Browser window top bar */}
+                <div className="flex items-center justify-between pb-4 mb-4 border-b border-border-card/70">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+                    <span className="text-[10px] font-mono text-text-secondary ml-2">nuracademy.uz / platforma</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                    <Flame className="w-3 h-3" />
+                    <span>7 kun seriya</span>
+                  </div>
+                </div>
 
-              {/* Hero Mentor Scene Image */}
-              <div className="relative w-full max-w-[480px]">
-                <img
-                  src="/assets/brand/mascot/hero_mascot_scene.png"
-                  alt="Nur Academy ustozi va mentori"
-                  className="w-full h-auto object-contain rounded-3xl drop-shadow-2xl"
-                  width="927"
-                  height="820"
-                  loading="eager"
-                />
+                {/* Course Overview Card */}
+                <div className="bg-primary-bg border border-border-card rounded-2xl p-4 mb-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-accent-blue">Faol o‘quv rejasi</span>
+                      <h4 className="font-serif font-bold text-base text-text-primary mt-0.5">Informatika attestatsiyasi</h4>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
+                      68% tugallandi
+                    </span>
+                  </div>
 
-                {/* Floating Badge 1: Diagnostika ball */}
-                <div className="absolute -top-3 -left-4 sm:-left-6 bg-surface/95 border border-border-card shadow-lg backdrop-blur-md rounded-2xl p-3 flex items-center gap-3 animate-float">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 font-bold font-mono">
-                    <TrendingUp className="w-5 h-5" />
+                  {/* Progress bar */}
+                  <div className="w-full bg-surface h-2 rounded-full overflow-hidden border border-border-card/40">
+                    <div className="bg-accent-blue h-full rounded-full transition-all duration-300" style={{ width: '68%' }} />
+                  </div>
+
+                  {/* Next Lesson Action */}
+                  <div className="pt-1 flex items-center justify-between text-xs">
+                    <span className="text-text-secondary flex items-center gap-1.5">
+                      <PlayCircle className="w-3.5 h-3.5 text-accent-blue" />
+                      <span>5-modul. Algoritmlash</span>
+                    </span>
+                    <Link
+                      to="/kurs/attestatsiya"
+                      className="text-accent-blue font-bold hover:underline inline-flex items-center gap-1"
+                    >
+                      <span>Davom ettirish</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* 2-Column Live Widgets in Hero Preview */}
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  
+                  {/* Widget 1: Diagnostika */}
+                  <div className="p-3.5 rounded-2xl bg-surface border border-border-card flex flex-col justify-between">
+                    <div className="flex items-center gap-1.5 text-text-secondary text-xs">
+                      <Activity className="w-3.5 h-3.5 text-emerald-500" />
+                      <span className="text-[11px] font-semibold">Diagnostika</span>
+                    </div>
+                    <div className="my-2">
+                      <div className="font-serif font-extrabold text-2xl font-mono text-emerald-600 dark:text-emerald-400">
+                        84 / 100
+                      </div>
+                      <div className="text-[10px] text-text-secondary">Yuqori tayyorgarlik</div>
+                    </div>
+                    <div className="text-[9px] text-emerald-600 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded text-center">
+                      50/50 topshirildi
+                    </div>
+                  </div>
+
+                  {/* Widget 2: Mock Imtihon */}
+                  <div className="p-3.5 rounded-2xl bg-surface border border-border-card flex flex-col justify-between">
+                    <div className="flex items-center gap-1.5 text-text-secondary text-xs">
+                      <Timer className="w-3.5 h-3.5 text-accent-blue" />
+                      <span className="text-[11px] font-semibold">Mock imtihon</span>
+                    </div>
+                    <div className="my-2">
+                      <div className="font-serif font-extrabold text-2xl font-mono text-text-primary">
+                        120 daq
+                      </div>
+                      <div className="text-[10px] text-text-secondary">Vaqt nazorati ostida</div>
+                    </div>
+                    <div className="text-[9px] text-accent-blue font-bold bg-accent-blue/10 px-1.5 py-0.5 rounded text-center">
+                      Davlat talabi
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* AI Mentor Insight Tip */}
+                <div className="p-3 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 border border-accent-blue/20 flex items-start gap-2.5 text-xs">
+                  <div className="w-6 h-6 rounded-lg bg-accent-blue/10 text-accent-blue flex items-center justify-center shrink-0 mt-0.5">
+                    <Brain className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-[11px] font-semibold text-text-secondary">Diagnostika natijasi</div>
-                    <div className="text-sm font-bold text-text-primary font-mono">94 / 100 ball</div>
+                    <span className="font-bold text-text-primary">AI Mentor:</span>
+                    <p className="text-text-secondary mt-0.5 leading-snug">
+                      "Sanoq sistemalari bo‘yicha 2 ta mashq yetarli bo‘lmadi. 10 ta amaliy test tavsiya etiladi."
+                    </p>
                   </div>
                 </div>
 
-                {/* Floating Badge 2: AI Mentor chip */}
-                <div className="absolute -bottom-4 -right-4 sm:-right-6 bg-surface/95 border border-border-card shadow-lg backdrop-blur-md rounded-2xl p-3 flex items-center gap-3 animate-float-delayed">
-                  <div className="w-10 h-10 rounded-xl bg-accent-blue/10 text-accent-blue flex items-center justify-center shrink-0">
-                    <Brain className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="text-[11px] font-semibold text-text-secondary">AI Mentor faol</div>
-                    <div className="text-xs font-bold text-text-primary">Xato mantiqini tushuntirdi</div>
-                  </div>
-                </div>
-
-                {/* Floating Badge 3: Tizimli yondashuv */}
-                <div className="absolute top-1/2 -right-4 bg-surface/90 border border-border-card shadow-md backdrop-blur-md rounded-full px-3 py-1 text-[11px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Toifa kafolati emas — tizimli tayyorgarlik</span>
-                </div>
               </div>
             </div>
 
@@ -197,12 +255,12 @@ export default function Landing() {
       <PlatformShowcase />
 
       {/* ─────────────────────────────────────────────────────────────────────────
-          3. WHY NUR ACADEMY? (4 SPACIOUS BENEFIT CARDS)
+          3. WHY NUR ACADEMY? (4 MINIMALIST BENEFIT CARDS)
       ───────────────────────────────────────────────────────────────────────── */}
       <BenefitsSection />
 
       {/* ─────────────────────────────────────────────────────────────────────────
-          4. HOW IT WORKS (4 STEPS WITH MASCOTS)
+          4. HOW IT WORKS (4 CLEAN STRUCTURED STEPS)
       ───────────────────────────────────────────────────────────────────────── */}
       <HowItWorksSection />
 
@@ -217,10 +275,10 @@ export default function Landing() {
       <StatisticsSection />
 
       {/* ─────────────────────────────────────────────────────────────────────────
-          7. PRICING SECTION
+          7. PRICING SECTION (REAL APP DATA ALIGNED WITH SUBSCRIPTION TIER)
       ───────────────────────────────────────────────────────────────────────── */}
-      <section id="tariflar" className="py-20 sm:py-28 bg-surface border-t border-border-card scroll-mt-16">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="tariflar" className="py-20 sm:py-28 bg-surface border-t border-border-card scroll-mt-16 transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-accent-blue/10 text-accent-blue text-xs font-bold uppercase tracking-wider mb-3">
               <Award className="w-3.5 h-3.5" />
@@ -235,10 +293,11 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
-            {/* Free Beta Card */}
+            
+            {/* Free Tier Card */}
             <div className="premium-card p-8 flex flex-col justify-between">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-text-secondary bg-surface-muted/50 px-3 py-1 rounded-full">
+                <span className="text-xs font-bold uppercase tracking-wider text-text-secondary bg-surface-muted px-3 py-1 rounded-full">
                   Bepul boshlash
                 </span>
                 <h3 className="font-serif font-bold text-2xl text-text-primary mt-4">
@@ -258,15 +317,19 @@ export default function Landing() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-emerald-500 shrink-0" />
-                    <span>1-modul barcha darslari va konspektlari</span>
+                    <span>Dastlabki 2 ta modul darslari va konspektlari</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-emerald-500 shrink-0" />
-                    <span>Mavzu bo‘yicha 10 ta amaliy mashq</span>
+                    <span>2 ta Mock imtihon topshirish imkoniyati</span>
                   </li>
-                  <li className="flex items-center gap-2.5 text-text-secondary/60">
+                  <li className="flex items-center gap-2.5">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                    <span>Mavzu testlari va mustahkamlash</span>
+                  </li>
+                  <li className="flex items-center gap-2.5 text-text-secondary/50">
                     <span className="w-4 h-4 text-center">✕</span>
-                    <span>Cheklangan AI Mentor tahlili</span>
+                    <span>AI Mentor yordamchisi va xatolar daftari</span>
                   </li>
                 </ul>
               </div>
@@ -282,8 +345,8 @@ export default function Landing() {
             </div>
 
             {/* Pro Plan Card */}
-            <div className="premium-card p-8 flex flex-col justify-between border-accent-blue/60 shadow-lg relative ring-2 ring-accent-blue/20">
-              <div className="absolute -top-3.5 right-6 bg-accent-blue text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+            <div className="premium-card p-8 flex flex-col justify-between border-accent-blue shadow-md relative">
+              <div className="absolute top-4 right-6 bg-accent-blue text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                 Tavsiya etiladi
               </div>
 
@@ -298,7 +361,7 @@ export default function Landing() {
                   Attestatsiyaga to‘liq, chuqur va uzluksiz tayyorlanishni istaganlar uchun.
                 </p>
                 <div className="text-3xl font-serif font-extrabold text-accent-blue mb-6 font-mono">
-                  199 000 <span className="text-base font-normal text-text-secondary">so‘m / kurs</span>
+                  99 000 <span className="text-base font-normal text-text-secondary">so‘m / oy</span>
                 </div>
 
                 <ul className="space-y-3.5 text-sm text-text-primary">
@@ -308,7 +371,7 @@ export default function Landing() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-emerald-500 shrink-0" />
-                    <span>Cheksiz 24/7 AI Mentor tushuntirishlari</span>
+                    <span>Cheksiz 24/7 AI Mentor individual tushuntirishlari</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-emerald-500 shrink-0" />
@@ -316,7 +379,11 @@ export default function Landing() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-emerald-500 shrink-0" />
-                    <span>Haqiqiy attestatsiya talabidagi Mock imtihonlar</span>
+                    <span>Haqiqiy attestatsiya talabidagi 120 daqiqalik Mock imtihonlar</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                    <span>Kengaytirilgan natija va tahlil hisobotlari</span>
                   </li>
                 </ul>
               </div>
@@ -324,12 +391,13 @@ export default function Landing() {
               <div className="mt-8 pt-6 border-t border-border-card">
                 <Link
                   to="/pricing"
-                  className="w-full inline-flex items-center justify-center gap-2 bg-accent-blue hover:bg-accent-blue/95 text-white py-3.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-accent-blue/20"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-accent-blue hover:bg-accent-hover text-white py-3.5 rounded-xl font-bold text-sm transition-colors shadow-sm"
                 >
-                  Pro tarifga o‘tish
+                  Pro tarif haqida
                 </Link>
               </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -340,73 +408,49 @@ export default function Landing() {
       <FaqSection />
 
       {/* ─────────────────────────────────────────────────────────────────────────
-          9. FINAL CALL TO ACTION (FULL-WIDTH WITH WAVE & MASCOT)
+          9. FINAL CALL TO ACTION (TYPOGRAPHIC & CLEAN COMPOSITION)
       ───────────────────────────────────────────────────────────────────────── */}
-      <section className="py-20 sm:py-28 bg-[#1E4EDB] text-white relative overflow-hidden">
-        {/* Background Wave & Ornamental Details */}
-        <div className="absolute inset-0 bg-uzbek-ornament opacity-[0.08] pointer-events-none" />
-        <div className="absolute top-0 left-0 right-0 h-10 opacity-30">
-          <img
-            src="/assets/brand/patterns/wave_divider.svg"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        </div>
+      <section className="py-20 sm:py-24 bg-[#1262F5] text-white relative overflow-hidden transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <div className="max-w-3xl mx-auto space-y-6">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/15 text-white text-xs font-semibold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              Vaqtingizni unumli sarflang
+            </span>
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-8 items-center">
-            
-            <div className="lg:col-span-8 text-center lg:text-left">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/15 text-white text-xs font-semibold uppercase tracking-wider mb-6">
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                Vaqtingizni unumli sarflang
-              </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-extrabold leading-tight tracking-tight">
+              Attestatsiyaga tayyorgarlikni bugun boshlang!
+            </h2>
 
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-extrabold mb-6 leading-tight tracking-tight">
-                Attestatsiyaga tayyorgarlikni bugun boshlang!
-              </h2>
+            <p className="text-base sm:text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed">
+              O‘z fani bo‘yicha bilimlarni tizimlashtiring, zaif mavzularni aniqlang va sinov imtihonlarida ishonch qozoning.
+            </p>
 
-              <p className="text-base sm:text-lg text-blue-100 mb-8 max-w-2xl leading-relaxed">
-                O‘z fani bo‘yicha bilimlarni tizimlashtiring, zaif mavzularni aniqlang va sinov imtihonlarida ishonch qozoning.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-                <Link
-                  to="/signup"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-[#1E4EDB] px-9 py-4 rounded-xl font-bold text-base hover:bg-white/95 transition-all shadow-xl hover:-translate-y-0.5 active:scale-[0.98]"
-                >
-                  <span>Bepul boshlash</span>
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-                <Link
-                  to="/kurs/attestatsiya"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-transparent text-white border border-white/40 px-9 py-4 rounded-xl font-bold text-base hover:bg-white/10 transition-all active:scale-[0.98]"
-                >
-                  <BookOpen className="w-5 h-5" />
-                  <span>Dastur bilan tanishish</span>
-                </Link>
-              </div>
+            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center pt-2">
+              <Link
+                to="/signup"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-[#1262F5] px-9 py-4 rounded-xl font-bold text-base hover:bg-slate-100 transition-colors shadow-lg active:scale-98"
+              >
+                <span>Bepul boshlash</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link
+                to="/kurs/attestatsiya"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-transparent text-white border border-white/40 px-9 py-4 rounded-xl font-bold text-base hover:bg-white/10 transition-colors active:scale-98"
+              >
+                <BookOpen className="w-5 h-5" />
+                <span>Dastur bilan tanishish</span>
+              </Link>
             </div>
-
-            {/* Mascot in CTA Scene */}
-            <div className="lg:col-span-4 flex justify-center">
-              <img
-                src="/assets/brand/mascot/cta_mascot_scene.png"
-                alt="Nur Academy attestatsiyaga tayyorgarlik"
-                className="max-h-72 object-contain drop-shadow-2xl"
-                loading="lazy"
-              />
-            </div>
-
           </div>
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────────────────
-          10. REFINED FOOTER (WITH ARCHITECTURE ILLUSTRATION & FOUNDERS)
+          10. REFINED MINIMALIST FOOTER (FOUNDERS & ESSENTIAL LINKS)
       ───────────────────────────────────────────────────────────────────────── */}
-      <footer className="bg-surface border-t border-border-card text-sm relative">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16">
+      <footer className="bg-surface border-t border-border-card text-sm relative transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
             
             {/* Col 1: Platform Brand */}
@@ -420,19 +464,9 @@ export default function Landing() {
               <p className="text-xs text-text-secondary/70">
                 Pedagoglar uchun attestatsiyaga tayyorgarlik platformasi
               </p>
-
-              {/* Decorative architecture graphic */}
-              <div className="pt-2 opacity-60 max-w-xs">
-                <img
-                  src="/assets/brand/features/footer_architecture.png"
-                  alt=""
-                  className="h-14 object-contain"
-                  loading="lazy"
-                />
-              </div>
             </div>
 
-            {/* Col 2: Asoschilar (Verified strictly by regression tests) */}
+            {/* Col 2: Asoschilar (Verified strictly) */}
             <div className="space-y-3">
               <p className="font-serif font-bold text-text-primary text-base">Asoschilar</p>
               <ul className="flex flex-col space-y-2 text-sm text-text-primary">
@@ -464,7 +498,7 @@ export default function Landing() {
                 {['Tarix', 'Geografiya', 'Ona tili'].map((subject) => (
                   <div key={subject} className="flex flex-wrap gap-2 items-center justify-between text-text-secondary">
                     <span>{subject}</span>
-                    <span className="text-[10px] font-bold bg-surface-hover px-2 py-0.5 rounded-full">Tayyorlanmoqda</span>
+                    <span className="text-[10px] font-bold bg-surface-muted px-2 py-0.5 rounded-full">Tayyorlanmoqda</span>
                   </div>
                 ))}
               </div>

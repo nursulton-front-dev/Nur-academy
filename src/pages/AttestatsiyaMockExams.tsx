@@ -65,10 +65,10 @@ export default function AttestatsiyaMockExams() {
             return (
               <div
                 key={exam.id}
-                className={`relative rounded-3xl border bg-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4 transition-all ${
+                className={`relative rounded-2xl border bg-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
                   isLocked
                     ? 'border-border-card'
-                    : 'border-border-card hover:border-accent-blue/50 hover:shadow-md'
+                    : 'border-border-card hover:border-accent-blue/50 hover:shadow-xs'
                 }`}
               >
                 {/* Left accent rail for open exams */}

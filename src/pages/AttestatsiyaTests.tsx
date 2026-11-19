@@ -60,10 +60,10 @@ export default function AttestatsiyaTests() {
               return (
                 <div
                   key={test.id}
-                  className={`group relative rounded-3xl border p-5 flex flex-col transition-all ${
+                  className={`group relative rounded-2xl border p-5 flex flex-col transition-all duration-200 ${
                     isLocked
                       ? 'bg-surface/60 border-border-card'
-                      : 'bg-surface border-border-card hover:border-accent-blue/50 hover:shadow-md'
+                      : 'bg-surface border-border-card hover:border-accent-blue/50 hover:shadow-xs'
                   }`}
                 >
                   {/* Accent rail on active cards */}

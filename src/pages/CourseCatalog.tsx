@@ -152,7 +152,7 @@ export default function CourseCatalog() {
               {filtered.map((course) => (
                 <div
                   key={course.id}
-                  className="group flex flex-col rounded-3xl border border-border-card bg-surface overflow-hidden hover:border-accent-blue/50 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                  className="group flex flex-col rounded-2xl border border-border-card bg-surface overflow-hidden hover:border-accent-blue/50 hover:shadow-md transition-all duration-200"
                 >
                   {/* Cover */}
                   <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-accent-blue/15 to-emerald-500/10">
@@ -233,7 +233,7 @@ export default function CourseCatalog() {
             {matchingUpcoming.map((item) => (
               <article
                 key={item.id}
-                className="group flex flex-col rounded-3xl border border-border-card bg-surface overflow-hidden hover:border-accent-blue/50 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                className="group flex flex-col rounded-2xl border border-border-card bg-surface overflow-hidden hover:border-accent-blue/50 hover:shadow-md transition-all duration-200"
               >
                 <div className="aspect-video relative overflow-hidden bg-primary-bg">
                   <img

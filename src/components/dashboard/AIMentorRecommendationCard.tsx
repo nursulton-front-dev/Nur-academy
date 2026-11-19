@@ -13,17 +13,18 @@ interface ActionLink {
 type State = 'loading' | 'pro' | 'locked' | 'error';
 
 function MentorShell({ badge, children }: { badge: React.ReactNode; children: React.ReactNode }) {
-  // Explicit spec palette so the recommendation text is readable in BOTH themes:
-  // surface #F5F3FF / #1A1730, text #1A2E2E / #EAEAFF.
   return (
-    <div className="rounded-2xl border overflow-hidden bg-[#F5F3FF] dark:bg-[#1A1730] border-[#DDD6FE] dark:border-[#2D2750] flex flex-col">
-      <div className="p-5 sm:p-6 flex flex-col gap-4 flex-1">
+    <div className="rounded-3xl border overflow-hidden bg-surface border-border-card shadow-xs flex flex-col justify-between">
+      <div className="p-6 sm:p-7 flex flex-col gap-4 flex-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-accent-blue/15 dark:bg-accent-blue/25 shadow-xs border border-accent-blue/30">
-              <img src="/assets/brand/icons/ai_mentor.svg" alt="" className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-accent-blue/10 border border-accent-blue/20">
+              <img src="/assets/brand/icons/ai_mentor.svg" alt="" className="w-5 h-5" />
             </div>
-            <span className="text-sm font-bold text-[#1A2E2E] dark:text-[#EAEAFF]">AI Mentor tavsiyasi</span>
+            <div>
+              <span className="text-sm font-serif font-extrabold text-text-primary block">AI Mentor tavsiyasi</span>
+              <span className="text-[11px] text-text-secondary">Shaxsiy metodik ko‘rsatma</span>
+            </div>
           </div>
           {badge}
         </div>
@@ -35,7 +36,7 @@ function MentorShell({ badge, children }: { badge: React.ReactNode; children: Re
 
 function Badge({ label }: { label: string }) {
   return (
-    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-accent-blue/10 text-accent-blue border border-accent-blue/20">
       {label}
     </span>
   );

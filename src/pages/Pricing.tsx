@@ -38,7 +38,7 @@ export default function Pricing() {
       price: '0 UZS',
       desc: 'Boshlang‘ich tanishuv va bosqichma-bosqich o‘rganish imkoniyatlari',
       features: [
-        'Ketma-ket ochiluvchi modul darslari (bosqichma-bosqich)',
+        'Dastlabki 2 ta modul darslari va konspektlari',
         '1 ta to‘liq Diagnostika testi (50 savol)',
         '2 ta Mock imtihon topshirish',
         'Mavzu testlari va mustahkamlash'
@@ -96,12 +96,12 @@ export default function Pricing() {
           return (
             <div 
               key={plan.id}
-              className={`bg-surface border rounded-[28px] p-5.5 flex flex-col justify-between transition-all duration-300 relative overflow-hidden ${
+              className={`bg-surface border rounded-2xl p-6 flex flex-col justify-between transition-all duration-200 relative overflow-hidden ${
                 isCurrent 
-                  ? 'border-accent-blue shadow-[0_0_15px_rgba(59,130,246,0.15)] bg-accent-blue/5' 
+                  ? 'border-accent-blue shadow-sm bg-accent-blue/5' 
                   : plan.popular 
                     ? 'border-accent-blue bg-surface shadow-sm'
-                    : 'border-border-card hover:border-accent-blue/35 shadow-sm'
+                    : 'border-border-card hover:border-accent-blue/40 shadow-xs'
               }`}
             >
               {plan.popular && (
@@ -169,8 +169,8 @@ export default function Pricing() {
 
       {/* ───────────────────── CHECKOUT MODAL ───────────────────── */}
       {selectedPlan && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-surface border border-border-card rounded-[28px] max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-6 text-left relative overflow-hidden transform scale-100 transition-all">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-surface border border-border-card rounded-2xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-6 text-left relative overflow-hidden transition-colors duration-200">
             
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-2.5">

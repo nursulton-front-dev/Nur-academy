@@ -52,7 +52,7 @@ function NavItem({ to, icon, label, active, badge, onNavigate }: NavItemProps) {
       <span className="shrink-0">{icon}</span>
       <span className="flex-1 truncate">{label}</span>
       {badge != null && badge > 0 && (
-        <span className="text-[9px] font-bold bg-orange-500/20 text-orange-500 px-1.5 py-0.5 rounded-full shrink-0">
+        <span className="text-[9px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-full shrink-0">
           {badge}
         </span>
       )}
@@ -272,51 +272,56 @@ export default function CourseLayout() {
 
       <div className="border-t border-border-card/50" />
 
-      {/* MASHQ — continuation of the same list, no section header */}
-      <div className="space-y-0.5">
-        <NavItem
-          to={coursePath(slug ?? '', 'diagnostika')}
-          icon={<Stethoscope className="w-4 h-4 text-purple-500" />}
-          label="Diagnostika"
-          active={isActive(coursePath(slug ?? '', 'diagnostika'))}
-          onNavigate={closeMobile}
-        />
-        <NavItem
-          to={coursePath(slug ?? '', 'testlar')}
-          icon={<FileText className="w-4 h-4 text-warning-amber" />}
-          label="Mavzu testlari"
-          active={isActive(coursePath(slug ?? '', 'testlar'))}
-          onNavigate={closeMobile}
-        />
-        <NavItem
-          to={coursePath(slug ?? '', 'imtihon')}
-          icon={<Award className="w-4 h-4 text-accent-blue" />}
-          label="Mock imtihon"
-          active={pathname.startsWith(coursePath(slug ?? '', 'imtihon'))}
-          onNavigate={closeMobile}
-        />
-        <NavItem
-          to={coursePath(slug ?? '', 'xatolar')}
-          icon={<BookMarked className="w-4 h-4 text-orange-500" />}
-          label="Xatolar daftari"
-          active={isActive(coursePath(slug ?? '', 'xatolar'))}
-          badge={reviewCount}
-          onNavigate={closeMobile}
-        />
-        <NavItem
-          to={coursePath(slug ?? '', 'konspektlar')}
-          icon={<NotebookPen className="w-4 h-4 text-[#F59E0B]" />}
-          label="Mening konspektlarim"
-          active={isActive(coursePath(slug ?? '', 'konspektlar'))}
-          onNavigate={closeMobile}
-        />
-        <NavItem
-          to={coursePath(slug ?? '', 'obuna')}
-          icon={<CreditCard className="w-4 h-4 text-emerald-500" />}
-          label="Obuna"
-          active={isActive(coursePath(slug ?? '', 'obuna'))}
-          onNavigate={closeMobile}
-        />
+      {/* AMALIYOT VA SINOV */}
+      <div>
+        <p className="px-3 text-[9px] font-bold text-text-secondary uppercase tracking-widest mb-1.5">
+          Amaliyot va sinov
+        </p>
+        <div className="space-y-0.5">
+          <NavItem
+            to={coursePath(slug ?? '', 'diagnostika')}
+            icon={<Stethoscope className="w-4 h-4 text-accent-blue" />}
+            label="Diagnostika"
+            active={isActive(coursePath(slug ?? '', 'diagnostika'))}
+            onNavigate={closeMobile}
+          />
+          <NavItem
+            to={coursePath(slug ?? '', 'testlar')}
+            icon={<FileText className="w-4 h-4 text-amber-500" />}
+            label="Mavzu testlari"
+            active={isActive(coursePath(slug ?? '', 'testlar'))}
+            onNavigate={closeMobile}
+          />
+          <NavItem
+            to={coursePath(slug ?? '', 'imtihon')}
+            icon={<Award className="w-4 h-4 text-accent-blue" />}
+            label="Mock imtihon"
+            active={pathname.startsWith(coursePath(slug ?? '', 'imtihon'))}
+            onNavigate={closeMobile}
+          />
+          <NavItem
+            to={coursePath(slug ?? '', 'xatolar')}
+            icon={<BookMarked className="w-4 h-4 text-amber-500" />}
+            label="Xatolar daftari"
+            active={isActive(coursePath(slug ?? '', 'xatolar'))}
+            badge={reviewCount}
+            onNavigate={closeMobile}
+          />
+          <NavItem
+            to={coursePath(slug ?? '', 'konspektlar')}
+            icon={<NotebookPen className="w-4 h-4 text-accent-gold-dark" />}
+            label="Mening konspektlarim"
+            active={isActive(coursePath(slug ?? '', 'konspektlar'))}
+            onNavigate={closeMobile}
+          />
+          <NavItem
+            to={coursePath(slug ?? '', 'obuna')}
+            icon={<CreditCard className="w-4 h-4 text-success-green" />}
+            label="Obuna"
+            active={isActive(coursePath(slug ?? '', 'obuna'))}
+            onNavigate={closeMobile}
+          />
+        </div>
       </div>
     </nav>
   );

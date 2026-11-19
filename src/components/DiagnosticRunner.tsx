@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Bookmark, Clock, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Bookmark, Clock, AlertTriangle, List, X } from 'lucide-react';
 import { DiagnosticQuestion, DiagnosticAnswer } from '../lib/diagnosticService';
 import { domainLabel } from '../lib/domains';
 import TestExitGuard from './TestExitGuard';
@@ -33,20 +33,20 @@ function ConfirmModal({
   onConfirm: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-surface border border-border-card rounded-[24px] max-w-md w-full p-8 shadow-2xl space-y-6 text-left">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+      <div className="bg-surface border border-border-card rounded-2xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-5 text-left transition-colors duration-200">
         <div className="flex items-center space-x-3.5">
-          <div className="w-12 h-12 rounded-full bg-accent-blue/10 flex items-center justify-center shrink-0">
-            <AlertTriangle className="w-6 h-6 text-accent-blue" />
+          <div className="w-11 h-11 rounded-xl bg-accent-blue/10 flex items-center justify-center shrink-0">
+            <AlertTriangle className="w-5 h-5 text-accent-blue" />
           </div>
           <div>
-            <h4 className="font-serif font-extrabold text-lg text-text-primary">{title}</h4>
+            <h4 className="font-serif font-extrabold text-base sm:text-lg text-text-primary">{title}</h4>
             <p className="text-xs text-text-secondary">Yakunlangandan so‘ng javoblarni o‘zgartirib bo‘lmaydi</p>
           </div>
         </div>
         <p className="text-sm text-text-secondary leading-relaxed">{description}</p>
         {stats && (
-          <div className="bg-primary-bg p-4 rounded-2xl border border-border-card/40 grid grid-cols-3 gap-2 text-center">
+          <div className="bg-primary-bg p-3.5 rounded-xl border border-border-card grid grid-cols-3 gap-2 text-center">
             <div>
               <p className="text-[10px] uppercase font-bold text-text-secondary">Javob berilgan</p>
               <p className="text-lg font-serif font-extrabold text-success-green">{stats.answered}</p>
@@ -57,20 +57,22 @@ function ConfirmModal({
             </div>
             <div>
               <p className="text-[10px] uppercase font-bold text-text-secondary">Belgilangan</p>
-              <p className="text-lg font-serif font-extrabold text-orange-500">{stats.flagged}</p>
+              <p className="text-lg font-serif font-extrabold text-amber-500">{stats.flagged}</p>
             </div>
           </div>
         )}
         <div className="flex space-x-3 pt-2">
           <button
+            type="button"
             onClick={onCancel}
-            className="flex-1 border border-border-card hover:bg-surface-hover text-text-primary py-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
+            className="flex-1 border border-border-card hover:bg-surface-hover text-text-primary py-3 rounded-xl text-xs font-bold transition-colors cursor-pointer"
           >
             Bekor qilish
           </button>
           <button
+            type="button"
             onClick={onConfirm}
-            className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-3.5 rounded-xl text-xs font-bold shadow-md transition-all active:scale-98 cursor-pointer"
+            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-98 cursor-pointer"
           >
             {confirmText}
           </button>
@@ -91,6 +93,7 @@ export default function DiagnosticRunner({
   const [visited, setVisited] = useState<Set<string>>(new Set());
   const [timeLeft, setTimeLeft] = useState(durationSeconds);
   const [showSubmit, setShowSubmit] = useState(false);
+  const [showMobileNav, setShowMobileNav] = useState(false);
   const [finished, setFinished] = useState(false);
 
   const current = questions[currentIndex];
@@ -203,17 +206,18 @@ export default function DiagnosticRunner({
     const isCurrent = currentIndex === idx;
     const answered = isAnswered(answers[q.id]);
     const isFlag = flagged.has(q.id);
-    const isVisited = visited.has(q.id);
-    let style = 'bg-primary-bg text-text-secondary border-border-card hover:bg-surface-hover';
-    if (isCurrent) style = 'bg-accent-blue text-white border-accent-blue font-bold shadow-sm';
-    else if (isFlag) style = 'bg-orange-500/10 text-orange-600 border-orange-500/30 font-semibold';
-    else if (answered) style = 'bg-success-green/10 text-success-green border-success-green/30 font-semibold';
-    else if (isVisited) style = 'bg-purple-500/10 text-purple-600 border-purple-500/20';
+    let style = 'bg-surface text-text-secondary border-border-card hover:bg-surface-hover';
+    if (isCurrent) style = 'bg-accent-blue text-white border-accent-blue font-bold shadow-xs';
+    else if (isFlag) style = 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40 font-bold';
+    else if (answered) style = 'bg-success-green/15 text-success-green border-success-green/40 font-bold';
     return (
       <button
         key={q.id}
-        onClick={() => setCurrentIndex(idx)}
-        className={`rounded-lg border text-[13px] font-medium flex items-center justify-center transition-all cursor-pointer ${style}`}
+        onClick={() => {
+          setCurrentIndex(idx);
+          setShowMobileNav(false);
+        }}
+        className={`rounded-lg border text-[13px] font-medium flex items-center justify-center transition-colors cursor-pointer ${style}`}
       >
         {idx + 1}
       </button>
@@ -237,23 +241,33 @@ export default function DiagnosticRunner({
 
       {/* Header */}
       <header className="h-16 shrink-0 bg-surface border-b border-border-card px-4 sm:px-6 flex justify-between items-center z-10">
-        <div className="flex items-center space-x-2 min-w-0">
-          <span className="w-2 h-2 rounded-full bg-accent-blue animate-pulse shrink-0" />
-          <span className="font-serif font-extrabold text-sm text-text-primary truncate">Diagnostika testi</span>
+        <div className="flex items-center space-x-3 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-accent-blue animate-pulse shrink-0" />
+          <span className="font-serif font-extrabold text-sm sm:text-base text-text-primary truncate">Diagnostika testi</span>
         </div>
-        <button
-          onClick={() => setShowSubmit(true)}
-          className="bg-accent-blue hover:bg-accent-blue/95 text-white px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/15 transition-all active:scale-98 cursor-pointer shrink-0"
-        >
-          Yakunlash
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            type="button"
+            onClick={() => setShowMobileNav(true)}
+            className="lg:hidden inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-border-card text-xs font-semibold text-text-primary hover:bg-surface-hover transition-colors"
+          >
+            <List className="w-3.5 h-3.5 text-accent-blue" />
+            <span>Savollar</span>
+          </button>
+          <button
+            onClick={() => setShowSubmit(true)}
+            className="bg-accent-blue hover:bg-accent-hover text-white px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-98 cursor-pointer shrink-0"
+          >
+            Yakunlash
+          </button>
+        </div>
       </header>
 
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-3 lg:gap-4 p-3 sm:p-4 lg:p-6 overflow-hidden">
         {/* Desktop left panel */}
         <aside className="hidden lg:flex lg:flex-col w-[280px] shrink-0 gap-4 min-h-0">
           {/* Progress + timer */}
-          <div className="bg-surface border border-border-card rounded-[20px] p-4 shadow-sm flex items-center gap-3">
+          <div className="bg-surface border border-border-card rounded-2xl p-4 shadow-xs flex items-center gap-3">
             <div className="relative flex items-center justify-center shrink-0">
               <svg height={radius * 2} width={radius * 2} className="transform -rotate-90">
                 <circle stroke="var(--theme-border-card)" fill="transparent" strokeWidth={stroke} r={normRadius} cx={radius} cy={radius} />
@@ -280,7 +294,7 @@ export default function DiagnosticRunner({
             </div>
           </div>
 
-          <div className={`bg-surface border rounded-[20px] p-4 shadow-sm transition-colors ${isTimeCritical ? 'border-rose-400 bg-rose-500/5' : 'border-border-card'}`}>
+          <div className={`bg-surface border rounded-2xl p-4 shadow-xs transition-colors ${isTimeCritical ? 'border-rose-400 bg-rose-500/5' : 'border-border-card'}`}>
             <div className="flex justify-between items-center mb-1.5">
               <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Qolgan vaqt</span>
               <Clock className={`w-4 h-4 ${isTimeCritical ? 'text-rose-500 animate-pulse' : 'text-text-secondary'}`} />
@@ -291,39 +305,70 @@ export default function DiagnosticRunner({
           </div>
 
           {/* Navigator — 6-col grid, square cells (~36px), no internal scroll */}
-          <div className="bg-surface border border-border-card rounded-[20px] p-4 shadow-sm min-h-0">
-            <h4 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-3">Navigator</h4>
-            <div className="grid grid-cols-6 gap-1.5 [&>button]:aspect-square [&>button]:min-h-[36px]">
+          <div className="bg-surface border border-border-card rounded-2xl p-4 shadow-xs min-h-0 flex-1 flex flex-col overflow-hidden">
+            <h4 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-3">Savollar navigatori</h4>
+            <div className="grid grid-cols-6 gap-1.5 overflow-y-auto pr-1 flex-1 [&>button]:aspect-square [&>button]:min-h-[34px]">
               {questions.map((q, idx) => renderNavCell(idx, q))}
             </div>
 
             {/* Legend */}
-            <div className="mt-3.5 pt-3 border-t border-border-card/50 grid grid-cols-1 gap-1.5 text-[11px] font-semibold text-text-secondary">
-              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-accent-blue shrink-0" />Joriy savol</span>
-              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-success-green shrink-0" />Javob berilgan</span>
-              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-orange-500 shrink-0" />Belgilangan</span>
-              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0" />Kirilgan</span>
-              <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-border-card border border-border-card shrink-0" />Javob berilmagan</span>
+            <div className="mt-3 pt-3 border-t border-border-card grid grid-cols-2 gap-2 text-[10px] font-semibold text-text-secondary">
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-accent-blue shrink-0" />Joriy</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-success-green shrink-0" />Javob berilgan</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />Belgilangan</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-border-card border border-border-card shrink-0" />Berilmagan</span>
             </div>
           </div>
         </aside>
 
         {/* Mobile compact strip */}
         <div className="lg:hidden shrink-0 space-y-2.5">
-          <div className="flex items-center justify-between bg-surface border border-border-card rounded-2xl px-4 py-2.5">
-            <span className="text-xs font-bold text-text-secondary">{answeredCount} / {questions.length}</span>
+          <div className="flex items-center justify-between bg-surface border border-border-card rounded-xl px-4 py-2.5">
+            <span className="text-xs font-bold text-text-secondary">{answeredCount} / {questions.length} javob</span>
             <div className={`flex items-center gap-1.5 font-mono font-extrabold text-sm ${isTimeCritical ? 'text-rose-500' : 'text-text-primary'}`}>
               <Clock className="w-4 h-4" />
               {formatTime(timeLeft)}
             </div>
           </div>
-          <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none [&>button]:w-8 [&>button]:h-8 [&>button]:shrink-0">
+          <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none [&>button]:w-9 [&>button]:h-9 [&>button]:shrink-0">
             {questions.map((q, idx) => renderNavCell(idx, q))}
           </div>
         </div>
 
+        {/* Mobile questions drawer modal */}
+        {showMobileNav && (
+          <div className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex justify-end animate-fadeIn">
+            <div className="w-full max-w-sm bg-surface h-full flex flex-col p-5 shadow-2xl">
+              <div className="flex items-center justify-between pb-4 border-b border-border-card">
+                <div className="flex items-center space-x-2">
+                  <List className="w-4 h-4 text-accent-blue" />
+                  <h3 className="font-serif font-bold text-base text-text-primary">Barcha savollar</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowMobileNav(false)}
+                  className="p-1 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-6 gap-2 py-4 overflow-y-auto flex-1 [&>button]:aspect-square">
+                {questions.map((q, idx) => renderNavCell(idx, q))}
+              </div>
+
+              <div className="pt-3 border-t border-border-card grid grid-cols-2 gap-2 text-xs text-text-secondary">
+                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-accent-blue" /> Joriy</span>
+                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-success-green" /> Javob berilgan</span>
+                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Belgilangan</span>
+                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-border-card border border-border-card" /> Berilmagan</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Main workspace */}
-        <main className="flex-1 min-h-0 bg-surface border border-border-card rounded-[24px] p-4 sm:p-6 flex flex-col shadow-sm overflow-hidden text-left">
+        <main className="flex-1 min-h-0 bg-surface border border-border-card rounded-2xl p-4 sm:p-6 flex flex-col shadow-xs overflow-hidden text-left">
           <div className="flex justify-between items-center pb-3 border-b border-border-card/50 shrink-0 gap-3">
             <div className="space-y-0.5 min-w-0">
               <span className="text-[10px] font-bold text-accent-blue uppercase tracking-widest truncate block">{domainLabel(current.domain)}</span>
@@ -333,7 +378,7 @@ export default function DiagnosticRunner({
             </div>
             <button
               onClick={toggleFlag}
-              className={`inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition-all border cursor-pointer shrink-0 ${isFlagged ? 'bg-orange-500/10 text-orange-600 border-orange-500/30' : 'bg-primary-bg text-text-secondary border-border-card hover:bg-surface-hover'}`}
+              className={`inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer shrink-0 ${isFlagged ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40' : 'bg-surface text-text-secondary border-border-card hover:bg-surface-hover'}`}
             >
               <Bookmark className="w-4 h-4" fill={isFlagged ? 'currentColor' : 'none'} />
               <span className="hidden sm:inline">Belgilash</span>
@@ -369,7 +414,7 @@ export default function DiagnosticRunner({
                   <button
                     key={idx}
                     onClick={() => selectOption(idx)}
-                    className={`w-full flex items-center text-left min-h-[54px] px-4 sm:px-5 py-3.5 rounded-xl border transition-all duration-150 cursor-pointer group ${isSelected ? 'bg-accent-blue/10 border-accent-blue shadow-[0_0_12px_rgba(59,130,246,0.15)] font-semibold' : 'bg-surface border-border-card hover:bg-surface-hover hover:border-accent-blue/45'}`}
+                    className={`w-full flex items-center text-left min-h-[54px] px-4 sm:px-5 py-3.5 rounded-xl border transition-all duration-150 cursor-pointer group ${isSelected ? 'bg-accent-blue/10 border-accent-blue font-semibold' : 'bg-surface border-border-card hover:bg-surface-hover hover:border-accent-blue/45'}`}
                   >
                     <div className={`w-5.5 h-5.5 rounded-full border flex items-center justify-center mr-4 shrink-0 transition-colors ${isSelected ? 'border-accent-blue bg-accent-blue' : 'border-border-card group-hover:border-accent-blue/40'}`}>
                       {isSelected ? (
@@ -390,22 +435,31 @@ export default function DiagnosticRunner({
           </div>
 
           {/* Footer nav */}
-          <div className="pt-4 border-t border-border-card/50 flex justify-between items-center shrink-0">
+          <div className="pt-4 border-t border-border-card flex justify-between items-center shrink-0">
             <button
               onClick={handlePrev}
               disabled={currentIndex === 0}
-              className="inline-flex items-center gap-2 border border-border-card hover:bg-surface-hover text-text-secondary hover:text-text-primary px-4 sm:px-6 py-3 rounded-xl text-xs font-bold disabled:opacity-35 disabled:cursor-not-allowed transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 border border-border-card hover:bg-surface-hover text-text-secondary hover:text-text-primary px-4 sm:px-6 py-3 rounded-xl text-xs font-bold disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
               <span>Oldingi</span>
             </button>
-            <button
-              onClick={() => (currentIndex === questions.length - 1 ? setShowSubmit(true) : handleNext())}
-              className="inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-blue/95 text-white px-5 sm:px-7 py-3 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/15 transition-all cursor-pointer"
-            >
-              <span>{currentIndex === questions.length - 1 ? 'Yakunlash' : 'Keyingi'}</span>
-              {currentIndex < questions.length - 1 && <ChevronRight className="w-4 h-4" />}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleFlag}
+                className={`sm:hidden inline-flex items-center gap-1.5 px-3 py-3 rounded-xl text-xs font-bold border transition-colors ${isFlagged ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40' : 'bg-surface text-text-secondary border-border-card hover:bg-surface-hover'}`}
+              >
+                <Bookmark className="w-4 h-4" fill={isFlagged ? 'currentColor' : 'none'} />
+              </button>
+              <button
+                onClick={() => (currentIndex === questions.length - 1 ? setShowSubmit(true) : handleNext())}
+                className="inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-hover text-white px-5 sm:px-7 py-3 rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer"
+              >
+                <span>{currentIndex === questions.length - 1 ? 'Yakunlash' : 'Keyingi'}</span>
+                {currentIndex < questions.length - 1 && <ChevronRight className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
         </main>
       </div>

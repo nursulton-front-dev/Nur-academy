@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import React from 'react';
+import { ArrowRight, ShieldCheck, CheckCircle2, BookOpen, Award, Brain } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface DashboardHeroProps {
@@ -7,66 +7,72 @@ interface DashboardHeroProps {
 }
 
 /**
- * Dark hero card (deep navy #16202E → darker, 16px radius). Text content on the
- * left (~60%), an illustration slot on the right (~40%). The slot renders the
- * provided asset if it loads, otherwise a subtle gradient placeholder so the
- * hero never looks broken.
+ * Modern Clean Dashboard Hero for Nur Academy.
+ * Focused on speed, clear course status, and next actionable step.
  */
 export default function DashboardHero({ continueHref: href }: DashboardHeroProps) {
-  const [showArt, setShowArt] = useState(true);
-
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-[#243447] bg-white dark:bg-[linear-gradient(135deg,#16202E_0%,#111A26_55%,#0C141F_100%)]">
-      {/* Ambient glow */}
-      <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full blur-3xl pointer-events-none bg-[rgba(59,125,216,0.10)] dark:bg-[rgba(59,125,216,0.14)]" />
-      <div className="absolute -bottom-16 -left-10 w-56 h-56 rounded-full blur-3xl pointer-events-none bg-[rgba(139,92,246,0.06)] dark:bg-[rgba(139,92,246,0.10)]" />
-
+    <div className="relative overflow-hidden rounded-2xl border border-border-card bg-surface shadow-xs transition-colors duration-200">
       <div className="relative flex flex-col lg:flex-row items-stretch">
+        
         {/* Text content (~60%) */}
-        <div className="flex-1 lg:basis-[60%] min-w-0 px-6 sm:px-8 lg:px-10 py-6 sm:py-7 lg:py-8 flex flex-col justify-center items-start">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-accent-blue/15 text-accent-blue dark:text-[#7FB1F0]">
+        <div className="flex-1 lg:basis-[60%] min-w-0 px-6 sm:px-8 py-7 sm:py-8 flex flex-col justify-center items-start">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-accent-blue/10 text-accent-blue">
             <ShieldCheck className="w-3.5 h-3.5" />
             Attestatsiya dasturi asosida
           </div>
 
-          <h1 className="mt-5 2xl:mt-7 font-serif font-extrabold text-slate-900 dark:text-white leading-tight text-2xl sm:text-3xl lg:text-[2.5rem]">
+          <h1 className="mt-4 font-serif font-extrabold text-text-primary leading-tight text-2xl sm:text-3xl lg:text-[2.25rem]">
             Informatika oʻqituvchilari<br className="hidden lg:block" /> attestatsiyasi
           </h1>
 
-          <p className="mt-3 text-sm sm:text-[15px] leading-relaxed max-w-lg text-slate-500 dark:text-[#8B9CB3]">
-            8 modul, mavzu testlari va mock imtihonlar bilan toʻliq tayyorgarlik. Diagnostika asosida shaxsiy oʻquv rejasi.
+          <p className="mt-3 text-sm sm:text-base leading-relaxed max-w-lg text-text-secondary">
+            8 ta modul, mavzu testlari va mock imtihonlar bilan toʻliq tayyorgarlik. Diagnostika natijalari asosida shaxsiy oʻquv rejasi.
           </p>
 
           <Link
             to={href}
-            className="mt-6 inline-flex items-center gap-2 text-white px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-lg active:scale-[0.97]"
-            style={{ backgroundColor: '#3B7DD8', boxShadow: '0 10px 24px rgba(59,125,216,0.25)' }}
+            className="mt-6 inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-hover text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm active:scale-98"
           >
-            Davom etish
+            <span>Davom etish</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
-        {/* Illustration slot (~40%) */}
-        <div className="relative lg:basis-[40%] shrink-0 min-h-[180px] lg:min-h-0 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-uzbek-ornament opacity-[0.04] dark:opacity-[0.08] pointer-events-none" />
-          {showArt ? (
-            <img
-              src="/assets/brand/mascot/hero_mentor_closeup.png"
-              alt="Attestatsiyaga tayyorgarlik mentori"
-              className="mx-auto w-auto max-w-[280px] lg:max-w-[320px] max-h-[200px] lg:max-h-[240px] object-contain drop-shadow-xl relative z-10"
-              onError={() => setShowArt(false)}
-            />
-          ) : (
-            // Placeholder gradient so the slot stays intentional if no asset.
-            <div
-              className="w-full max-w-[320px] aspect-[4/3] rounded-2xl"
-              style={{
-                background: 'radial-gradient(120% 120% at 70% 20%, rgba(59,125,216,0.22), rgba(139,92,246,0.12) 45%, transparent 75%)',
-              }}
-            />
-          )}
+        {/* Course Highlights Panel (~40%) */}
+        <div className="lg:basis-[40%] shrink-0 p-5 sm:p-6 lg:p-7 flex flex-col justify-center bg-primary-bg/50 border-t lg:border-t-0 lg:border-l border-border-card">
+          <div className="bg-surface rounded-2xl border border-border-card p-5 space-y-4 shadow-xs">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">Kurs tuzilmasi</span>
+              <span className="text-xs font-bold text-accent-blue bg-accent-blue/10 px-2 py-0.5 rounded-md">8 ta modul</span>
+            </div>
+
+            <div className="space-y-2.5 text-xs">
+              <div className="flex items-center gap-2.5 text-text-primary">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                <span>50+ video va matn darslar</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-text-primary">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                <span>Har bir modul bo‘yicha amaliy testlar</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-text-primary">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                <span>120 daqiqalik rasmiy Mock imtihonlar</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-text-primary">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                <span>24/7 AI Mentor individual tushuntirishlari</span>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-border-card flex items-center justify-between text-[11px] text-text-secondary">
+              <span>Faol tayyorgarlik</span>
+              <span className="text-emerald-600 font-semibold">Tizim tayyor</span>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
   );

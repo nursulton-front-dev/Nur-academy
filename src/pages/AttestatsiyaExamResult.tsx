@@ -62,48 +62,48 @@ export default function AttestatsiyaExamResult() {
 
   // Function to get color class based on score percentage
   const getProgressColor = (percent: number) => {
-    if (percent > 70) return 'bg-[#4CAF82]'; // Green
-    if (percent >= 40) return 'bg-[#3B7DD8]'; // Accent Blue
-    return 'bg-[#E0735C]'; // Terracotta
+    if (percent >= 70) return 'bg-success-green';
+    if (percent >= 40) return 'bg-accent-blue';
+    return 'bg-rose-500';
   };
 
   const getTextColor = (percent: number) => {
-    if (percent > 70) return 'text-[#4CAF82]';
-    if (percent >= 40) return 'text-[#3B7DD8]';
-    return 'text-[#E0735C]';
+    if (percent >= 70) return 'text-success-green';
+    if (percent >= 40) return 'text-accent-blue';
+    return 'text-rose-500';
   };
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto transition-colors duration-250">
+    <div className="space-y-8 max-w-4xl mx-auto transition-colors duration-200 text-left font-sans">
       {/* Title / Main Banner */}
-      <div className="bg-primary-bg rounded-2xl border border-border-card p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-center gap-6 shadow-sm">
+      <div className="bg-surface rounded-2xl border border-border-card p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-center gap-6 shadow-xs">
         <div className="space-y-2 text-center sm:text-left">
-          <span className="text-[10px] bg-[#3B7DD8]/10 text-[#3B7DD8] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+          <span className="text-[10px] bg-accent-blue/10 text-accent-blue px-3 py-1 rounded-full font-bold uppercase tracking-wider">
             Natija e’lon qilindi
           </span>
           <h1 className="font-serif font-extrabold text-2xl sm:text-3xl text-text-primary">
             {exam.title}
           </h1>
-          <p className="text-sm text-text-secondary">
+          <p className="text-xs sm:text-sm text-text-secondary">
             Topshirilgan sana: Bugun, {new Date().toLocaleDateString('uz-UZ')}
           </p>
         </div>
 
         {/* Large Score Circle */}
-        <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-[#3B7DD8] flex flex-col items-center justify-center bg-surface border-border-card shadow-md flex-shrink-0">
-          <span className="text-3xl sm:text-4xl font-extrabold text-text-primary">
+        <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-accent-blue flex flex-col items-center justify-center bg-surface border-border-card shadow-xs flex-shrink-0">
+          <span className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary">
             {score}
           </span>
-          <span className="text-xs font-semibold text-text-secondary uppercase border-t border-border-card pt-1 mt-1">
+          <span className="text-[11px] font-bold text-text-secondary uppercase border-t border-border-card pt-1 mt-1">
             / 100 ball
           </span>
         </div>
       </div>
 
       {/* Breakdown by Modules */}
-      <div className="bg-surface rounded-xl border border-border-card p-6 shadow-sm space-y-6">
-        <div className="flex items-center space-x-2 pb-3 border-b border-border-card/50">
-          <BookOpen className="w-5 h-5 text-[#3B7DD8]" />
+      <div className="bg-surface rounded-2xl border border-border-card p-6 sm:p-7 shadow-xs space-y-5">
+        <div className="flex items-center space-x-2 pb-3 border-b border-border-card">
+          <BookOpen className="w-5 h-5 text-accent-blue" />
           <h2 className="font-serif font-bold text-lg sm:text-xl text-text-primary">
             Bo‘limlar bo‘yicha tahlil
           </h2>
@@ -116,9 +116,9 @@ export default function AttestatsiyaExamResult() {
             const textColorClass = getTextColor(percentage);
 
             return (
-              <div key={idx} className="space-y-2">
+              <div key={idx} className="space-y-1.5">
                 <div className="flex justify-between items-center text-xs sm:text-sm">
-                  <span className="font-medium text-text-primary truncate pr-4">
+                  <span className="font-semibold text-text-primary truncate pr-4">
                     {item.title}
                   </span>
                   <span className={`font-bold ${textColorClass}`}>
@@ -138,18 +138,18 @@ export default function AttestatsiyaExamResult() {
       </div>
 
       {/* Action Redirects */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-2">
         <div className="flex gap-3 w-full sm:w-auto">
           <Link
             to={coursePath(slug)}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center space-x-1.5 border border-border-card hover:bg-primary-bg text-text-primary px-5 py-3 rounded-xl text-sm font-semibold transition-colors"
+            className="flex-1 sm:flex-none inline-flex items-center justify-center space-x-2 border border-border-card hover:bg-surface-hover text-text-primary px-5 py-3 rounded-xl text-xs font-bold transition-colors"
           >
             <Home className="w-4 h-4" />
             <span>Asosiy sahifa</span>
           </Link>
           <Link
             to={coursePath(slug, `imtihon/${id}`)}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center space-x-1.5 border border-border-card hover:bg-primary-bg text-text-primary px-5 py-3 rounded-xl text-sm font-semibold transition-colors"
+            className="flex-1 sm:flex-none inline-flex items-center justify-center space-x-2 border border-border-card hover:bg-surface-hover text-text-primary px-5 py-3 rounded-xl text-xs font-bold transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Qayta topshirish</span>
@@ -158,7 +158,7 @@ export default function AttestatsiyaExamResult() {
 
         <button
           onClick={() => setShowReview(!showReview)}
-          className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#3B7DD8] hover:bg-opacity-95 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-md transition-all active:scale-95"
+          className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-accent-blue hover:bg-accent-hover text-white px-6 py-3 rounded-xl text-xs font-bold shadow-xs transition-all active:scale-97 cursor-pointer"
         >
           <span>Javoblarni ko‘rish</span>
           {showReview ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -167,33 +167,35 @@ export default function AttestatsiyaExamResult() {
 
       {/* Answers Review Section */}
       {showReview && (
-        <div className="space-y-6 pt-4 animate-fadeIn">
-          <h3 className="font-serif font-bold text-xl text-text-primary pb-2 border-b border-border-card">
+        <div className="space-y-6 pt-2 animate-fadeIn">
+          <h3 className="font-serif font-bold text-xl text-text-primary pb-3 border-b border-border-card">
             Savollar va javoblar tahlili
           </h3>
 
-          {/* Free-tier: one banner instead of per-question Pro gates */}
+          {/* Free-tier banner */}
           {tier === 'free' && (
-            <div className="rounded-xl border p-5 bg-[#1A1730] border-[#2D2750] flex items-start gap-4">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#6366F1,#8B5CF6)' }}>
-                <Sparkles className="w-4 h-4 text-white" />
+            <div className="rounded-2xl border border-border-card p-5 bg-surface shadow-xs flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-accent-blue/10 text-accent-blue">
+                <Sparkles className="w-5 h-5" />
               </div>
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-white">AI Mentor tushuntirishlari</span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md" style={{ backgroundColor: '#EEF2FF', color: '#6366F1' }}>PRO</span>
+                  <span className="text-sm font-serif font-bold text-text-primary">AI Mentor tushuntirishlari</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-accent-gold/20 text-accent-gold-dark border border-accent-gold/40">PRO</span>
                 </div>
-                <p className="text-[13px] text-slate-300 leading-relaxed">
+                <p className="text-xs text-text-secondary leading-relaxed">
                   Har bir xato sababini AI Mentor bilan chuqur tahlil qilish uchun Pro tarifga o‘ting.
                 </p>
-                <Link to="/attestatsiya/obuna" className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors">
-                  Pro tarifga o‘tish <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                <div className="pt-1">
+                  <Link to="/kurs/attestatsiya/obuna" className="inline-flex items-center gap-1.5 bg-accent-blue hover:bg-accent-hover text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-xs">
+                    Pro tarifga o‘tish <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </div>
             </div>
           )}
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             {reviewQuestions.map((q, idx) => {
               const selectedAnswer = q.user_answer;
               const isCorrect = q.is_correct;
@@ -201,52 +203,52 @@ export default function AttestatsiyaExamResult() {
               return (
                 <div 
                   key={q.question_id || idx}
-                  className={`p-6 rounded-xl border space-y-4 ${
+                  className={`p-5 sm:p-6 rounded-2xl border space-y-4 transition-colors ${
                     isCorrect 
-                      ? 'bg-[#4CAF82]/5 border-[#4CAF82]/20 dark:border-[#4CAF82]/30' 
-                      : 'bg-[#E0735C]/5 border-[#E0735C]/20 dark:border-[#E0735C]/30'
+                      ? 'bg-success-green/[0.03] border-success-green/20' 
+                      : 'bg-rose-500/[0.03] border-rose-500/20'
                   }`}
                 >
                   {/* Question Title */}
                   <div className="flex justify-between items-start gap-4">
-                    <span className="text-xs font-semibold text-text-secondary">
+                    <span className="text-xs font-bold text-text-secondary uppercase tracking-wider">
                       Savol {idx + 1}
                     </span>
-                    <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full ${
+                    <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full ${
                       isCorrect 
-                        ? 'bg-[#4CAF82]/10 text-[#4CAF82]' 
-                        : 'bg-[#E0735C]/10 text-[#E0735C]'
+                        ? 'bg-success-green/10 text-success-green' 
+                        : 'bg-rose-500/10 text-rose-500'
                     }`}>
                       {isCorrect ? (
                         <>
-                          <Check className="w-3 h-3" />
+                          <Check className="w-3.5 h-3.5" />
                           <span>To‘g‘ri</span>
                         </>
                       ) : (
                         <>
-                          <X className="w-3 h-3" />
+                          <X className="w-3.5 h-3.5" />
                           <span>Noto‘g‘ri</span>
                         </>
                       )}
                     </span>
                   </div>
 
-                  <h4 className="text-text-primary font-medium leading-relaxed">
+                  <h4 className="text-text-primary font-medium text-sm sm:text-base leading-relaxed">
                     {q.text}
                   </h4>
 
                   {/* Input answer review */}
                   {q.question_type === 'input' ? (
                     <div className="space-y-2 text-sm">
-                      <div className={`flex items-center gap-2 p-3 rounded-lg border ${
-                        isCorrect ? 'border-[#4CAF82] text-[#4CAF82] bg-[#4CAF82]/10' : 'border-[#E0735C] text-[#E0735C] bg-[#E0735C]/10'
+                      <div className={`flex items-center gap-2 p-3 rounded-xl border ${
+                        isCorrect ? 'border-success-green text-success-green bg-success-green/10' : 'border-rose-500 text-rose-500 bg-rose-500/10'
                       }`}>
                         <span className="font-bold">Sizning javobingiz:</span>
                         <span className="flex-grow">{q.user_answer_text || '—'}</span>
                         {isCorrect ? <Check className="w-4 h-4 flex-shrink-0" /> : <X className="w-4 h-4 flex-shrink-0" />}
                       </div>
                       {!isCorrect && (
-                        <div className="flex items-center gap-2 p-3 rounded-lg border border-[#4CAF82] text-[#4CAF82] bg-[#4CAF82]/10">
+                        <div className="flex items-center gap-2 p-3 rounded-xl border border-success-green text-success-green bg-success-green/10">
                           <span className="font-bold">To‘g‘ri javob:</span>
                           <span className="flex-grow">{q.correct_answer_text}</span>
                           <Check className="w-4 h-4 flex-shrink-0" />
@@ -262,20 +264,20 @@ export default function AttestatsiyaExamResult() {
 
                       let optStyle = "border-border-card text-text-secondary bg-surface";
                       if (wasCorrect) {
-                        optStyle = "border-[#4CAF82] text-[#4CAF82] bg-[#4CAF82]/10 font-medium";
+                        optStyle = "border-success-green/40 text-success-green bg-success-green/10 font-medium";
                       } else if (wasSelected && !isCorrect) {
-                        optStyle = "border-[#E0735C] text-[#E0735C] bg-[#E0735C]/10 font-medium";
+                        optStyle = "border-rose-500/40 text-rose-500 bg-rose-500/10 font-medium";
                       }
 
                       return (
                         <div 
                           key={optIdx} 
-                          className={`flex items-center p-3 rounded-lg border text-sm ${optStyle}`}
+                          className={`flex items-center p-3 sm:p-3.5 rounded-xl border text-xs sm:text-sm ${optStyle}`}
                         >
-                          <span className="font-bold mr-2">{String.fromCharCode(65 + optIdx)}.</span>
+                          <span className="font-bold mr-2.5 uppercase">{String.fromCharCode(65 + optIdx)}.</span>
                           <span className="flex-grow">{opt}</span>
-                          {wasCorrect && <Check className="w-4 h-4 ml-2 flex-shrink-0" />}
-                          {wasSelected && !isCorrect && <X className="w-4 h-4 ml-2 flex-shrink-0" />}
+                          {wasCorrect && <Check className="w-4 h-4 ml-2 flex-shrink-0 text-success-green" />}
+                          {wasSelected && !isCorrect && <X className="w-4 h-4 ml-2 flex-shrink-0 text-rose-500" />}
                         </div>
                       );
                     })}
@@ -284,7 +286,7 @@ export default function AttestatsiyaExamResult() {
 
                   {/* Explanation */}
                   {q.explanation && (
-                    <div className="bg-primary-bg p-4 rounded-lg border border-border-card text-xs text-text-secondary leading-relaxed">
+                    <div className="bg-primary-bg p-4 rounded-xl border border-border-card text-xs text-text-secondary leading-relaxed">
                       <span className="font-bold text-text-primary block mb-1">Tushuntirish:</span>
                       {q.explanation}
                     </div>

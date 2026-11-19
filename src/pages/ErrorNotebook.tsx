@@ -67,8 +67,8 @@ export default function ErrorNotebook() {
           </div>
           <div className="pt-2">
             <Link
-              to="/attestatsiya/obuna"
-              className="inline-flex items-center space-x-2 bg-accent-blue text-white px-8 py-3.5 rounded-xl font-bold text-xs shadow-md hover:bg-accent-blue/95 transition-all"
+              to="/kurs/attestatsiya/obuna"
+              className="inline-flex items-center space-x-2 bg-accent-blue text-white px-8 py-3.5 rounded-xl font-bold text-xs shadow-md hover:bg-accent-hover transition-colors"
             >
               <span>Pro tarifga o‘tish</span>
             </Link>
@@ -127,7 +127,7 @@ export default function ErrorNotebook() {
         title="Xatolar daftarchasi"
         description="Darslar, mavzu testlari va mock imtihonlardagi xatolaringizning tizimli tahlili."
         action={
-          <div className="bg-orange-500/10 text-orange-600 px-4 py-2 rounded-2xl border border-orange-500/15 flex items-center space-x-2 shrink-0">
+          <div className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-4 py-2 rounded-xl border border-amber-500/20 flex items-center space-x-2 shrink-0">
             <span className="text-lg font-serif font-extrabold">{reviewQueue.length}</span>
             <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary">Takrorlashga tayyor</span>
           </div>
@@ -137,7 +137,7 @@ export default function ErrorNotebook() {
 
       {/* 1. TOP STATS (Eng ko'p xato qilingan mavzular) */}
       {errors.length > 0 && (
-        <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm space-y-4">
+        <div className="bg-surface border border-border-card rounded-2xl p-6 shadow-xs space-y-4">
           <div className="flex items-center space-x-2">
             <TrendingUp className="w-5 h-5 text-accent-blue" />
             <h3 className="font-serif font-bold text-base text-text-primary">Eng ko‘p xato qilingan bo‘limlar</h3>
@@ -145,7 +145,7 @@ export default function ErrorNotebook() {
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {sortedStats.map(([topic, count], idx) => (
-              <div key={idx} className="bg-primary-bg p-4 rounded-xl border border-border-card/40 flex justify-between items-center">
+              <div key={idx} className="bg-primary-bg p-4 rounded-xl border border-border-card flex justify-between items-center">
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-text-primary truncate">{topic}</p>
                   <p className="text-[10px] text-text-secondary">Faol xatolar soni</p>
@@ -208,11 +208,11 @@ export default function ErrorNotebook() {
           return (
             <div 
               key={record.questionId}
-              className={`bg-surface border rounded-[24px] p-5.5 transition-all shadow-sm ${
+              className={`bg-surface border rounded-2xl p-5.5 transition-all shadow-xs ${
                 isSolving 
-                  ? 'border-accent-blue shadow-[0_0_12px_rgba(59,130,246,0.1)]' 
+                  ? 'border-accent-blue shadow-sm' 
                   : isMastered
-                    ? 'border-emerald-500/20 bg-emerald-500/[0.01]'
+                    ? 'border-emerald-500/20 bg-emerald-500/[0.02]'
                     : 'border-border-card hover:border-accent-blue/30'
               }`}
             >
