@@ -5,250 +5,148 @@ interface CoverProps {
 }
 
 /**
- * Informatika PCB / Circuit Board Cover
- * Minimalist, high-tech vector illustration featuring a central processor chip,
- * orthogonal circuit traces with 45° bends, and gold/blue solder via pads.
+ * Informatika Poster Decorative Artwork SVG
+ * Features:
+ *  - Large cream-colored code symbol: `</>`
+ *  - Teal geometric angled ornament / polygonal grid
+ *  - Small vivid orange accent square
+ * Designed to sit on the right of the dark-teal horizontal poster and bleed past the edges.
  */
-export function InformatikaPcbCover({ className = 'w-full h-full' }: CoverProps) {
+export function InformatikaPosterArtSvg({ className = 'w-full h-full' }: CoverProps) {
   return (
     <svg
-      viewBox="0 0 240 160"
+      viewBox="0 0 320 220"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       preserveAspectRatio="xMidYMid slice"
       role="img"
-      aria-label="Informatika fani muqovasi — bosma plata chizmasi"
+      aria-label="Informatika dasturlash ramzi va geometrik bezak"
     >
       <defs>
-        <linearGradient id="inf-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#1262F5" />
-          <stop offset="65%" stopColor="#0D46B8" />
-          <stop offset="100%" stopColor="#082A73" />
+        <linearGradient id="teal-poly-1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#14B8A6" stopOpacity="0.45" />
+          <stop offset="100%" stopColor="#0D9488" stopOpacity="0.1" />
         </linearGradient>
 
-        <linearGradient id="inf-chip" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#0B2356" />
-          <stop offset="100%" stopColor="#061536" />
+        <linearGradient id="teal-poly-2" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#2DD4BF" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="#0F766E" stopOpacity="0.05" />
         </linearGradient>
 
-        <linearGradient id="inf-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#F9D77E" />
-          <stop offset="100%" stopColor="#F2B544" />
+        <linearGradient id="cream-code" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FFFDF8" />
+          <stop offset="100%" stopColor="#FAF1E0" />
         </linearGradient>
 
-        {/* Subtle grid pattern */}
-        <pattern id="inf-dots" width="16" height="16" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="1" fill="#60A5FA" fillOpacity="0.18" />
-        </pattern>
+        <filter id="cream-glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#042020" floodOpacity="0.5" />
+        </filter>
       </defs>
 
-      {/* Background with tech gradient */}
-      <rect width="240" height="160" fill="url(#inf-bg)" />
-      <rect width="240" height="160" fill="url(#inf-dots)" />
+      {/* Teal Geometric Ornament (Lattice, Angled Facets, Polygonal Lines) */}
+      <g opacity="0.85">
+        {/* Background angled polygon facets */}
+        <polygon
+          points="180,-20 340,30 290,180 140,110"
+          fill="url(#teal-poly-1)"
+        />
+        <polygon
+          points="220,60 360,110 320,240 180,190"
+          fill="url(#teal-poly-2)"
+        />
 
-      {/* Circuit Traces — Top Left */}
-      <path
-        d="M 85 55 L 60 55 L 40 35 L 20 35"
-        stroke="#93C5FD"
-        strokeWidth="1.5"
-        strokeOpacity="0.75"
-        strokeLinecap="round"
-      />
-      <circle cx="20" cy="35" r="3" fill="url(#inf-gold)" />
-      <circle cx="60" cy="55" r="2" fill="#93C5FD" fillOpacity="0.6" />
+        {/* Diagonal geometric grid lines */}
+        <line x1="120" y1="-20" x2="320" y2="180" stroke="#14B8A6" strokeWidth="1.2" strokeOpacity="0.25" />
+        <line x1="160" y1="-20" x2="360" y2="180" stroke="#14B8A6" strokeWidth="1.5" strokeOpacity="0.35" />
+        <line x1="200" y1="-20" x2="400" y2="180" stroke="#14B8A6" strokeWidth="1" strokeOpacity="0.2" />
 
-      <path
-        d="M 85 70 L 50 70 L 30 90 L 15 90"
-        stroke="#60A5FA"
-        strokeWidth="1.5"
-        strokeOpacity="0.85"
-        strokeLinecap="round"
-      />
-      <circle cx="15" cy="90" r="2.5" fill="#93C5FD" />
+        <line x1="300" y1="-20" x2="100" y2="180" stroke="#2DD4BF" strokeWidth="1" strokeOpacity="0.2" strokeDasharray="4 4" />
+        <line x1="340" y1="20" x2="140" y2="220" stroke="#2DD4BF" strokeWidth="1.2" strokeOpacity="0.25" strokeDasharray="4 4" />
 
-      <path
-        d="M 100 45 L 100 25 L 85 10 L 45 10"
-        stroke="#60A5FA"
-        strokeWidth="1.5"
-        strokeOpacity="0.6"
-        strokeLinecap="round"
-      />
-      <circle cx="45" cy="10" r="2.5" fill="url(#inf-gold)" />
+        {/* Subtle decorative nodes */}
+        <circle cx="210" cy="30" r="3" fill="#2DD4BF" fillOpacity="0.6" />
+        <circle cx="300" cy="110" r="3" fill="#2DD4BF" fillOpacity="0.5" />
+        <circle cx="170" cy="150" r="2.5" fill="#14B8A6" fillOpacity="0.4" />
+      </g>
 
-      {/* Circuit Traces — Top Right */}
-      <path
-        d="M 140 45 L 140 22 L 155 8 L 195 8"
-        stroke="#93C5FD"
-        strokeWidth="1.5"
-        strokeOpacity="0.7"
-        strokeLinecap="round"
-      />
-      <circle cx="195" cy="8" r="3" fill="url(#inf-gold)" />
+      {/* Large Cream Code Symbol: < / > */}
+      <g filter="url(#cream-glow)">
+        {/* Opening Bracket < */}
+        <path
+          d="M 115 65 L 68 110 L 115 155"
+          stroke="url(#cream-code)"
+          strokeWidth="16"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
 
-      <path
-        d="M 155 58 L 180 58 L 205 32 L 225 32"
-        stroke="#60A5FA"
-        strokeWidth="1.5"
-        strokeOpacity="0.8"
-        strokeLinecap="round"
-      />
-      <circle cx="225" cy="32" r="3" fill="#93C5FD" />
-      <circle cx="180" cy="58" r="2" fill="url(#inf-gold)" />
+        {/* Slash / */}
+        <line
+          x1="158"
+          y1="50"
+          x2="128"
+          y2="170"
+          stroke="url(#cream-code)"
+          strokeWidth="16"
+          strokeLinecap="round"
+        />
 
-      <path
-        d="M 155 72 L 190 72 L 210 92 L 230 92"
-        stroke="#93C5FD"
-        strokeWidth="1.5"
-        strokeOpacity="0.65"
-        strokeLinecap="round"
-      />
-      <circle cx="230" cy="92" r="2.5" fill="url(#inf-gold)" />
+        {/* Closing Bracket > */}
+        <path
+          d="M 172 65 L 219 110 L 172 155"
+          stroke="url(#cream-code)"
+          strokeWidth="16"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </g>
 
-      {/* Circuit Traces — Bottom Left */}
-      <path
-        d="M 85 92 L 65 92 L 45 112 L 45 138 L 30 152"
-        stroke="#93C5FD"
-        strokeWidth="1.5"
-        strokeOpacity="0.7"
-        strokeLinecap="round"
-      />
-      <circle cx="30" cy="152" r="3" fill="url(#inf-gold)" />
-      <circle cx="45" cy="112" r="2" fill="#60A5FA" />
+      {/* Small Vivid Orange Accent Square */}
+      <g transform="translate(232, 40) rotate(12)">
+        <rect
+          x="0"
+          y="0"
+          width="24"
+          height="24"
+          rx="5"
+          fill="#FF7A00"
+          style={{ filter: 'drop-shadow(0 3px 8px rgba(255, 122, 0, 0.45))' }}
+        />
+        {/* Inner subtle bevel */}
+        <rect
+          x="3"
+          y="3"
+          width="18"
+          height="18"
+          rx="3"
+          fill="#FF9433"
+          fillOpacity="0.3"
+        />
+      </g>
 
-      <path
-        d="M 100 115 L 100 135 L 85 150 L 55 150"
-        stroke="#60A5FA"
-        strokeWidth="1.5"
-        strokeOpacity="0.65"
-        strokeLinecap="round"
-      />
-      <circle cx="55" cy="150" r="2.5" fill="#93C5FD" />
-
-      {/* Circuit Traces — Bottom Right */}
-      <path
-        d="M 140 115 L 140 132 L 160 152 L 200 152"
-        stroke="#93C5FD"
-        strokeWidth="1.5"
-        strokeOpacity="0.8"
-        strokeLinecap="round"
-      />
-      <circle cx="200" cy="152" r="3" fill="url(#inf-gold)" />
-
-      <path
-        d="M 155 95 L 178 95 L 202 120 L 225 120"
-        stroke="#60A5FA"
-        strokeWidth="1.5"
-        strokeOpacity="0.75"
-        strokeLinecap="round"
-      />
-      <circle cx="225" cy="120" r="2.5" fill="url(#inf-gold)" />
-
-      {/* SMT Components */}
-      <rect x="52" y="32" width="10" height="6" rx="1.5" fill="#0A2968" stroke="#93C5FD" strokeWidth="1" strokeOpacity="0.8" />
-      <rect x="180" y="117" width="10" height="6" rx="1.5" fill="#0A2968" stroke="#F2B544" strokeWidth="1" strokeOpacity="0.8" />
-
-      {/* Central Microprocessor Chip */}
-      {/* Chip Pins */}
-      {/* Top Pins */}
-      <line x1="97" y1="41" x2="97" y2="45" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="108" y1="41" x2="108" y2="45" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="120" y1="41" x2="120" y2="45" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="132" y1="41" x2="132" y2="45" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="143" y1="41" x2="143" y2="45" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-
-      {/* Bottom Pins */}
-      <line x1="97" y1="115" x2="97" y2="119" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="108" y1="115" x2="108" y2="119" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="120" y1="115" x2="120" y2="119" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="132" y1="115" x2="132" y2="119" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="143" y1="115" x2="143" y2="119" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-
-      {/* Left Pins */}
-      <line x1="81" y1="57" x2="85" y2="57" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="81" y1="68" x2="85" y2="68" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="81" y1="80" x2="85" y2="80" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="81" y1="92" x2="85" y2="92" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="81" y1="103" x2="85" y2="103" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-
-      {/* Right Pins */}
-      <line x1="155" y1="57" x2="159" y2="57" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="155" y1="68" x2="159" y2="68" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="155" y1="80" x2="159" y2="80" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="155" y1="92" x2="159" y2="92" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="155" y1="103" x2="159" y2="103" stroke="url(#inf-gold)" strokeWidth="2.5" strokeLinecap="round" />
-
-      {/* Main Chip Body */}
+      {/* Secondary tiny orange accent */}
       <rect
-        x="85"
-        y="45"
-        width="70"
-        height="70"
-        rx="10"
-        fill="url(#inf-chip)"
-        stroke="#3B82F6"
-        strokeWidth="1.5"
+        x="60"
+        y="162"
+        width="10"
+        height="10"
+        rx="2.5"
+        fill="#FF7A00"
+        fillOpacity="0.75"
+        transform="rotate(-8 60 162)"
       />
-
-      {/* Chip Inner Frame */}
-      <rect
-        x="96"
-        y="56"
-        width="48"
-        height="48"
-        rx="6"
-        fill="#081E48"
-        stroke="#60A5FA"
-        strokeWidth="1"
-        strokeDasharray="2 2"
-        strokeOpacity="0.7"
-      />
-
-      {/* Gold Silicon Die Core */}
-      <rect
-        x="108"
-        y="68"
-        width="24"
-        height="24"
-        rx="4"
-        fill="url(#inf-gold)"
-        fillOpacity="0.95"
-      />
-
-      {/* Microprocessor Core Icon / Stylized Circuit Core */}
-      <path
-        d="M 114 77 L 126 77 M 120 73 L 120 87 M 116 83 L 124 83"
-        stroke="#061A3A"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-
-      {/* Pin 1 index dot */}
-      <circle cx="92" cy="52" r="2" fill="#F2B544" />
-
-      {/* Subtle branding or tech indicator */}
-      <text
-        x="120"
-        y="142"
-        fill="#93C5FD"
-        fillOpacity="0.45"
-        fontSize="7"
-        fontWeight="bold"
-        fontFamily="monospace"
-        textAnchor="middle"
-        letterSpacing="2"
-      >
-        INFORMATIKA
-      </text>
     </svg>
   );
 }
 
 /**
- * Geografiya Relief / Topographic Contour Lines Cover
- * Sage green organic palette with topographic elevation curves and elevation markers.
+ * Geografiya Teal Topographic Map Contour Lines Cover
+ * Rich dark-teal background with vivid teal elevation contour curves.
  */
-export function GeografiyaContourCover({ className = 'w-full h-full' }: CoverProps) {
+export function GeografiyaTealContourCover({ className = 'w-full h-full' }: CoverProps) {
   return (
     <svg
       viewBox="0 0 240 160"
@@ -257,103 +155,89 @@ export function GeografiyaContourCover({ className = 'w-full h-full' }: CoverPro
       className={className}
       preserveAspectRatio="xMidYMid slice"
       role="img"
-      aria-label="Geografiya fani muqovasi — relyef chiziqlari"
+      aria-label="Geografiya fani muqovasi — biaryo‘z xarita relyef chiziqlari"
     >
       <defs>
-        <linearGradient id="geo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#4A7A66" />
-          <stop offset="50%" stopColor="#3F6B58" />
-          <stop offset="100%" stopColor="#2E5243" />
+        <linearGradient id="geo-teal-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#0D3F3F" />
+          <stop offset="60%" stopColor="#0A3333" />
+          <stop offset="100%" stopColor="#062222" />
         </linearGradient>
 
-        <linearGradient id="geo-glow" x1="50%" y1="0%" x2="50%" y2="100%">
-          <stop offset="0%" stopColor="#A8D5BA" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#2E5243" stopOpacity="0" />
+        <linearGradient id="geo-teal-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#2DD4BF" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#062222" stopOpacity="0" />
         </linearGradient>
       </defs>
 
-      {/* Sage Green Base */}
-      <rect width="240" height="160" fill="url(#geo-bg)" />
-      <rect width="240" height="160" fill="url(#geo-glow)" />
+      {/* Dark Teal Base */}
+      <rect width="240" height="160" fill="url(#geo-teal-bg)" />
+      <rect width="240" height="160" fill="url(#geo-teal-glow)" />
 
-      {/* Topographic Contour Curves */}
-      {/* Outer subtle contours */}
+      {/* Topographic Contour Lines in Vivid Teal */}
       <path
-        d="M -20 140 C 30 110, 80 150, 140 120 C 190 95, 220 130, 260 105"
-        stroke="#E2F1E8"
-        strokeWidth="1"
-        strokeOpacity="0.25"
-      />
-      <path
-        d="M -15 110 C 35 85, 90 125, 145 95 C 195 70, 225 105, 255 80"
-        stroke="#E2F1E8"
+        d="M -20 145 C 30 115, 80 155, 140 125 C 190 100, 220 135, 260 110"
+        stroke="#2DD4BF"
         strokeWidth="1"
         strokeOpacity="0.3"
       />
       <path
-        d="M -10 80 C 40 60, 95 100, 150 70 C 195 45, 230 80, 255 55"
-        stroke="#E2F1E8"
-        strokeWidth="1.2"
-        strokeOpacity="0.4"
-      />
-
-      {/* Primary mountain elevation loops (Left Summit) */}
-      <path
-        d="M 20 100 C 40 40, 90 35, 110 70 C 120 90, 80 120, 50 115 C 30 110, 15 115, 20 100 Z"
-        stroke="#E2F1E8"
-        strokeWidth="1.2"
-        strokeOpacity="0.5"
-      />
-      <path
-        d="M 35 85 C 48 50, 82 46, 96 72 C 104 88, 75 105, 54 100 C 42 97, 32 95, 35 85 Z"
-        stroke="#E2F1E8"
-        strokeWidth="1.4"
-        strokeOpacity="0.65"
-      />
-      <path
-        d="M 48 74 C 56 58, 76 56, 84 72 C 90 82, 72 92, 60 88 C 52 86, 46 82, 48 74 Z"
-        stroke="#E2F1E8"
-        strokeWidth="1.5"
-        strokeOpacity="0.85"
-      />
-      <path
-        d="M 58 68 C 62 62, 71 61, 74 68 C 76 73, 68 77, 63 75 Z"
-        stroke="#FDFCF8"
-        strokeWidth="1.5"
-        strokeOpacity="0.95"
-        fill="#E2F1E8"
-        fillOpacity="0.25"
-      />
-      <circle cx="66" cy="69" r="1.5" fill="#FDFCF8" />
-
-      {/* Secondary Ridge (Right Summit) */}
-      <path
-        d="M 125 130 C 145 70, 205 60, 230 100 C 240 120, 210 145, 165 145 C 140 145, 120 140, 125 130 Z"
-        stroke="#E2F1E8"
+        d="M -15 115 C 35 90, 90 130, 145 100 C 195 75, 225 110, 255 85"
+        stroke="#2DD4BF"
         strokeWidth="1.2"
         strokeOpacity="0.45"
       />
       <path
-        d="M 145 115 C 160 80, 198 75, 214 102 C 220 116, 196 132, 172 130 C 156 128, 142 124, 145 115 Z"
-        stroke="#E2F1E8"
-        strokeWidth="1.4"
+        d="M -10 85 C 40 65, 95 105, 150 75 C 195 50, 230 85, 255 60"
+        stroke="#2DD4BF"
+        strokeWidth="1.3"
         strokeOpacity="0.6"
       />
+
+      {/* Primary Peak (Left) */}
       <path
-        d="M 162 104 C 172 88, 190 85, 198 102 C 202 110, 188 120, 178 118 C 170 116, 160 112, 162 104 Z"
-        stroke="#E2F1E8"
+        d="M 22 105 C 42 45, 92 40, 112 75 C 122 95, 82 125, 52 120 C 32 115, 17 120, 22 105 Z"
+        stroke="#2DD4BF"
+        strokeWidth="1.4"
+        strokeOpacity="0.75"
+      />
+      <path
+        d="M 37 90 C 50 55, 84 51, 98 77 C 106 93, 77 110, 56 105 C 44 102, 34 100, 37 90 Z"
+        stroke="#5EEAD4"
         strokeWidth="1.5"
+        strokeOpacity="0.9"
+      />
+      <path
+        d="M 50 78 C 58 62, 78 60, 86 76 C 92 86, 74 96, 62 92 C 54 90, 48 86, 50 78 Z"
+        stroke="#FDFCF8"
+        strokeWidth="1.6"
+        strokeOpacity="0.95"
+        fill="#2DD4BF"
+        fillOpacity="0.2"
+      />
+      <circle cx="68" cy="73" r="2" fill="#FDFCF8" />
+
+      {/* Secondary Peak (Right) */}
+      <path
+        d="M 125 135 C 145 75, 205 65, 230 105 C 240 125, 210 150, 165 150 C 140 150, 120 145, 125 135 Z"
+        stroke="#2DD4BF"
+        strokeWidth="1.3"
+        strokeOpacity="0.65"
+      />
+      <path
+        d="M 145 118 C 160 83, 198 78, 214 105 C 220 119, 196 135, 172 133 C 156 131, 142 127, 145 118 Z"
+        stroke="#5EEAD4"
+        strokeWidth="1.4"
         strokeOpacity="0.8"
       />
-      <circle cx="180" cy="103" r="1.5" fill="#FDFCF8" />
+      <circle cx="180" cy="106" r="1.5" fill="#FDFCF8" />
 
-      {/* Index elevation labels */}
+      {/* Elevation Text Tag */}
       <text
-        x="66"
-        y="53"
-        fill="#E2F1E8"
-        fillOpacity="0.75"
-        fontSize="6.5"
+        x="68"
+        y="56"
+        fill="#5EEAD4"
+        fontSize="7"
         fontFamily="sans-serif"
         fontWeight="bold"
         textAnchor="middle"
@@ -361,33 +245,21 @@ export function GeografiyaContourCover({ className = 'w-full h-full' }: CoverPro
         ▲ 2 450 m
       </text>
 
-      <text
-        x="180"
-        y="78"
-        fill="#E2F1E8"
-        fillOpacity="0.65"
-        fontSize="6"
-        fontFamily="sans-serif"
-        textAnchor="middle"
-      >
-        1 890 m
-      </text>
-
-      {/* Compass indicator top right */}
-      <g opacity="0.5" transform="translate(216, 22)">
-        <circle cx="0" cy="0" r="8" stroke="#E2F1E8" strokeWidth="0.8" />
-        <path d="M 0 -6 L 2.5 0 L 0 6 L -2.5 0 Z" fill="#E2F1E8" />
-        <text x="0" y="-8" fill="#E2F1E8" fontSize="5" fontWeight="bold" textAnchor="middle">N</text>
+      {/* Compass Rose */}
+      <g opacity="0.6" transform="translate(216, 24)">
+        <circle cx="0" cy="0" r="8" stroke="#2DD4BF" strokeWidth="0.8" />
+        <path d="M 0 -6 L 2.5 0 L 0 6 L -2.5 0 Z" fill="#2DD4BF" />
+        <text x="0" y="-8" fill="#5EEAD4" fontSize="5" fontWeight="bold" textAnchor="middle">N</text>
       </g>
     </svg>
   );
 }
 
 /**
- * Ona Tili va Adabiyot Terracotta Typography Cover
- * Terracotta rich palette with elegant serif letters "Aa" and literary styling.
+ * Ona Tili va Adabiyot Orange Tile Aa Cover
+ * Vibrant orange tile background with bold, modern Aa typography and accents.
  */
-export function OnaTiliTypographyCover({ className = 'w-full h-full' }: CoverProps) {
+export function OnaTiliOrangeTileCover({ className = 'w-full h-full' }: CoverProps) {
   return (
     <svg
       viewBox="0 0 240 160"
@@ -396,87 +268,76 @@ export function OnaTiliTypographyCover({ className = 'w-full h-full' }: CoverPro
       className={className}
       preserveAspectRatio="xMidYMid slice"
       role="img"
-      aria-label="Ona tili va adabiyot fani muqovasi — Aa harflari"
+      aria-label="Ona tili va adabiyot fani muqovasi — to‘q sariq Aa belgisi"
     >
       <defs>
-        <linearGradient id="ona-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#C45A3E" />
-          <stop offset="60%" stopColor="#B34B30" />
-          <stop offset="100%" stopColor="#8A341E" />
+        <linearGradient id="ona-orange-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FF7A00" />
+          <stop offset="60%" stopColor="#F56700" />
+          <stop offset="100%" stopColor="#D94E00" />
         </linearGradient>
 
-        <linearGradient id="ona-text" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#FFF9F5" />
-          <stop offset="100%" stopColor="#F9DFD2" />
+        <linearGradient id="ona-tile-cream" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FFFFFF" />
+          <stop offset="100%" stopColor="#FFF2E8" />
         </linearGradient>
       </defs>
 
-      {/* Terracotta Base */}
-      <rect width="240" height="160" fill="url(#ona-bg)" />
+      {/* Orange Tile Base */}
+      <rect width="240" height="160" fill="url(#ona-orange-bg)" />
 
-      {/* Subtle literary ruled lines in background */}
-      <line x1="20" y1="40" x2="220" y2="40" stroke="#FFF" strokeOpacity="0.12" strokeWidth="0.8" strokeDasharray="4 4" />
-      <line x1="20" y1="80" x2="220" y2="80" stroke="#FFF" strokeOpacity="0.12" strokeWidth="0.8" strokeDasharray="4 4" />
-      <line x1="20" y1="120" x2="220" y2="120" stroke="#FFF" strokeOpacity="0.15" strokeWidth="1" />
-      <line x1="20" y1="140" x2="220" y2="140" stroke="#FFF" strokeOpacity="0.08" strokeWidth="0.8" />
+      {/* Geometric Tile Grid Accents */}
+      <line x1="20" y1="40" x2="220" y2="40" stroke="#FFF" strokeOpacity="0.15" strokeWidth="1" strokeDasharray="6 6" />
+      <line x1="20" y1="80" x2="220" y2="80" stroke="#FFF" strokeOpacity="0.15" strokeWidth="1" strokeDasharray="6 6" />
+      <line x1="20" y1="120" x2="220" y2="120" stroke="#FFF" strokeOpacity="0.2" strokeWidth="1.2" />
 
-      {/* Elegant Stylized Large Serif Letter "A" */}
+      {/* Stylized Modern Capital Letter "A" */}
       <text
-        x="68"
-        y="120"
-        fill="url(#ona-text)"
-        fontSize="108"
-        fontFamily="'Playfair Display', Georgia, 'Times New Roman', serif"
+        x="72"
+        y="118"
+        fill="url(#ona-tile-cream)"
+        fontSize="98"
+        fontFamily="'Inter', ui-sans-serif, system-ui, sans-serif"
         fontWeight="900"
         textAnchor="middle"
-        letterSpacing="-4"
-        style={{ filter: 'drop-shadow(0 4px 12px rgba(80, 20, 10, 0.35))' }}
+        letterSpacing="-3"
+        style={{ filter: 'drop-shadow(0 4px 10px rgba(160, 40, 0, 0.35))' }}
       >
         A
       </text>
 
-      {/* Nestled Lowercase Serif Letter "a" */}
+      {/* Nestled Lowercase Letter "a" */}
       <text
-        x="138"
-        y="120"
-        fill="#F2B544"
-        fontSize="78"
-        fontFamily="'Playfair Display', Georgia, 'Times New Roman', serif"
-        fontStyle="italic"
-        fontWeight="700"
+        x="142"
+        y="118"
+        fill="#FFF9F5"
+        fontSize="72"
+        fontFamily="'Inter', ui-sans-serif, system-ui, sans-serif"
+        fontWeight="800"
         textAnchor="middle"
-        style={{ filter: 'drop-shadow(0 4px 8px rgba(80, 20, 10, 0.25))' }}
+        style={{ filter: 'drop-shadow(0 3px 6px rgba(160, 40, 0, 0.25))' }}
       >
         a
       </text>
 
-      {/* Decorative Apostrophe / Accent Mark (O‘zbek tili tutuq belgisi / urg‘u) */}
+      {/* Typographic Accent / Apostrophe (O‘zbek tili tutuq belgisi) */}
       <path
-        d="M 166 65 C 168 62, 172 61, 175 63 C 177 65, 177 68, 174 72 L 168 80 L 165 79 Z"
-        fill="#FFF9F5"
-        fillOpacity="0.85"
+        d="M 172 65 C 174 62, 178 61, 181 63 C 183 65, 183 68, 180 72 L 174 80 L 171 79 Z"
+        fill="#FFFFFF"
+        fillOpacity="0.9"
       />
 
-      {/* Feather pen / quill subtle contour flourish */}
-      <path
-        d="M 180 120 C 195 110, 215 85, 222 55 C 218 72, 205 92, 192 102"
-        stroke="#FFF"
-        strokeWidth="1.2"
-        strokeOpacity="0.3"
-        strokeLinecap="round"
-      />
-
-      {/* Subtitle label */}
+      {/* Subtitle tag */}
       <text
         x="120"
         y="142"
-        fill="#FFF9F5"
-        fillOpacity="0.5"
+        fill="#FFFFFF"
+        fillOpacity="0.75"
         fontSize="7.5"
-        fontWeight="600"
+        fontWeight="700"
         fontFamily="sans-serif"
         textAnchor="middle"
-        letterSpacing="2.5"
+        letterSpacing="2"
       >
         ONA TILI VA ADABIYOT
       </text>

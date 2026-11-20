@@ -14,7 +14,6 @@ import {
   ChevronRight,
   Clock,
   X,
-  Sparkles,
   Info
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -25,9 +24,9 @@ import { upcomingCourses, type UpcomingCourse } from '../data/upcomingCourses';
 import { Seo } from '../components/Seo';
 import { AppPage } from '../components/app/AppPage';
 import {
-  InformatikaPcbCover,
-  GeografiyaContourCover,
-  OnaTiliTypographyCover
+  InformatikaPosterArtSvg,
+  GeografiyaTealContourCover,
+  OnaTiliOrangeTileCover
 } from '../components/cabinet/CourseCovers';
 
 interface EnrolledItem {
@@ -140,13 +139,13 @@ export default function MyLearning() {
     return (
       <AppPage>
         {platformSeo}
-        <div className="max-w-2xl mx-auto py-12 text-center">
+        <div className="max-w-2xl mx-auto py-12 text-center font-sans">
           <div className="bg-surface border border-border-card rounded-2xl p-8 sm:p-12 shadow-xs space-y-6">
             <div className="w-16 h-16 mx-auto rounded-2xl bg-accent-blue/10 flex items-center justify-center border border-accent-blue/20">
               <GraduationCap className="w-8 h-8 text-accent-blue" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-2xl sm:text-3xl font-serif font-extrabold text-text-primary">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
                 Mening kurslarim
               </h1>
               <p className="text-text-secondary text-sm sm:text-base max-w-md mx-auto leading-relaxed">
@@ -182,13 +181,13 @@ export default function MyLearning() {
 
   /* ───────────── Ready (Cabinet with Courses) ───────────── */
   return (
-    <AppPage wide className="space-y-6 sm:space-y-8">
+    <AppPage wide className="space-y-6 sm:space-y-8 font-sans">
       {platformSeo}
 
       {/* 1. Compact Header Row: Title & Greeting (Left), "+ Kurs qo‘shish" (Right) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border-card/50">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-extrabold text-text-primary tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
             Mening kurslarim
           </h1>
           <p className="text-sm text-text-secondary mt-1">
@@ -208,12 +207,12 @@ export default function MyLearning() {
       {/* 2. Main Desktop Row (70/30) / Mobile Stack */}
       {items.length === 0 ? (
         /* Empty State */
-        <div className="bg-surface border border-dashed border-border-card rounded-2xl p-8 sm:p-12 text-center space-y-5">
+        <div className="bg-surface border border-dashed border-border-card rounded-2xl p-8 sm:p-12 text-center space-y-5 font-sans">
           <div className="w-16 h-16 mx-auto rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center border border-accent-blue/20">
             <BookOpen className="w-8 h-8" />
           </div>
           <div className="space-y-2">
-            <h2 className="text-xl sm:text-2xl font-serif font-bold text-text-primary">
+            <h2 className="text-xl sm:text-2xl font-bold text-text-primary">
               Hali kursga yozilmagansiz
             </h2>
             <p className="text-text-secondary text-sm max-w-md mx-auto leading-relaxed">
@@ -230,7 +229,7 @@ export default function MyLearning() {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 items-stretch">
-          {/* Active Courses: 70% width on desktop (7 of 10 columns) */}
+          {/* Active Courses: ~70% width on desktop (7 of 10 columns) */}
           <div className="lg:col-span-7 flex flex-col gap-4">
             {items.map(({ my, progress }) => {
               const href = courseHref(my);
@@ -240,117 +239,113 @@ export default function MyLearning() {
               return (
                 <div
                   key={my.course.id}
-                  className="rounded-2xl border border-border-card bg-surface p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:border-accent-blue/30 h-full"
+                  className="rounded-2xl border border-border-card bg-surface overflow-hidden shadow-xs flex flex-col justify-between transition-all hover:border-teal-500/30 h-full"
                 >
-                  {/* Top section: Cover (left) + Details (right) */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-5">
-                    {/* Course Cover with Link */}
-                    <Link
-                      to={href}
-                      className="w-full sm:w-44 md:w-48 h-32 sm:h-32 rounded-xl overflow-hidden shrink-0 relative block group shadow-xs border border-border-card/80 bg-slate-100 dark:bg-slate-800"
-                      aria-label={`${my.course.title} kursiga o‘tish`}
-                    >
+                  {/* Top Section: Wide Horizontal Dark-Teal Poster */}
+                  <div className="relative overflow-hidden bg-[#0A3333] dark:bg-[#072424] text-white p-6 sm:p-7 min-h-[190px] sm:min-h-[210px] flex items-center justify-between">
+                    {/* Left Poster Content (Normal HTML, wrapping freely) */}
+                    <div className="relative z-10 max-w-[70%] sm:max-w-[62%] md:max-w-[65%] space-y-2.5">
+                      {/* Tier Badge & Lesson Count */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span
+                          className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md border ${
+                            my.tier === 'pro'
+                              ? 'bg-amber-400/20 text-amber-300 border-amber-400/30'
+                              : 'bg-white/10 text-teal-100 border-white/15'
+                          }`}
+                        >
+                          {my.tier === 'pro' ? 'PRO' : 'FREE'}
+                        </span>
+                        <span className="text-xs font-semibold text-teal-200/90">
+                          {progress.completed} / {progress.total} dars
+                        </span>
+                      </div>
+
+                      {/* Course Title — normal HTML so long titles wrap freely */}
+                      <Link
+                        to={href}
+                        className="block font-sans font-extrabold text-xl sm:text-2xl lg:text-[26px] text-white hover:text-teal-200 transition-colors tracking-tight leading-tight break-words"
+                      >
+                        {my.course.title}
+                      </Link>
+
+                      {/* Teachers */}
+                      <p className="text-xs sm:text-sm text-teal-100/80">
+                        O‘qituvchilar:{' '}
+                        <span className="font-semibold text-white">{teacher}</span>
+                      </p>
+                    </div>
+
+                    {/* Right Decorative Poster SVG: Cream </>, Teal Geometric Ornament, Orange Square */}
+                    <div className="absolute top-0 right-0 bottom-0 w-44 sm:w-64 md:w-80 pointer-events-none select-none flex items-center justify-end overflow-hidden">
                       {isInformatika ? (
-                        <InformatikaPcbCover className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                      ) : my.course.cover_url ? (
-                        <img
-                          src={my.course.cover_url}
-                          alt={my.course.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
+                        <InformatikaPosterArtSvg className="w-full h-full object-cover object-right" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-accent-blue/50">
-                          <GraduationCap className="w-10 h-10" />
+                        <div className="w-full h-full flex items-center justify-center text-teal-400/20">
+                          <GraduationCap className="w-24 h-24" />
                         </div>
                       )}
-                    </Link>
-
-                    {/* Right Details */}
-                    <div className="flex-1 min-w-0 flex flex-col justify-between">
-                      <div>
-                        {/* Status badge + lesson count */}
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <span
-                            className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md border ${
-                              my.tier === 'pro'
-                                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-border-card'
-                            }`}
-                          >
-                            {my.tier === 'pro' ? 'PRO' : 'FREE'}
-                          </span>
-                          <span className="text-xs font-semibold text-text-secondary">
-                            {progress.completed} / {progress.total} dars
-                          </span>
-                        </div>
-
-                        {/* Course Title Link */}
-                        <Link
-                          to={href}
-                          className="font-serif font-bold text-lg sm:text-xl text-text-primary hover:text-accent-blue transition-colors block line-clamp-2 leading-snug"
-                        >
-                          {my.course.title}
-                        </Link>
-
-                        {/* Teachers */}
-                        <p className="text-xs text-text-secondary mt-1.5">
-                          O‘qituvchilar:{' '}
-                          <span className="font-medium text-text-primary">{teacher}</span>
-                        </p>
-                      </div>
                     </div>
                   </div>
 
-                  {/* Thin divider */}
-                  <div className="border-t border-border-card my-4" />
+                  {/* Bottom Section: White/Surface Actions Panel */}
+                  <div className="bg-surface p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 border-t border-border-card/60">
+                    <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                      {/* Primary Orange Action Button with Dark Text */}
+                      <Link
+                        to={href}
+                        className="inline-flex items-center justify-center gap-2 bg-[#FF7A00] hover:bg-[#F26F00] text-[#0B1D40] dark:text-slate-950 font-extrabold text-xs sm:text-sm px-6 py-2.5 rounded-xl shadow-xs transition-all active:scale-[0.98]"
+                      >
+                        <PlayCircle className="w-4 h-4 text-[#0B1D40] dark:text-slate-950" />
+                        <span>{progress.percent > 0 ? 'Davom ettirish' : 'O‘qishni boshlash'}</span>
+                      </Link>
 
-                  {/* Action buttons row */}
-                  <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-                    {/* Primary Action Button */}
+                      {/* Secondary Actions: Diagnostika & Natijalar */}
+                      {my.course.slug && (
+                        <>
+                          <Link
+                            to={coursePath(my.course.slug, 'diagnostika')}
+                            className="inline-flex items-center justify-center gap-1.5 border border-border-card bg-surface hover:bg-surface-hover text-text-primary font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-colors"
+                          >
+                            <Stethoscope className="w-4 h-4 text-purple-500" />
+                            <span>Diagnostika</span>
+                          </Link>
+
+                          <Link
+                            to={coursePath(my.course.slug, 'natija')}
+                            className="inline-flex items-center justify-center gap-1.5 border border-border-card bg-surface hover:bg-surface-hover text-text-primary font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-colors"
+                          >
+                            <Award className="w-4 h-4 text-emerald-500" />
+                            <span>Natijalar</span>
+                          </Link>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Course Link indicator on desktop */}
                     <Link
                       to={href}
-                      className="inline-flex items-center justify-center gap-2 bg-accent-blue hover:bg-accent-blue/90 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs transition-all active:scale-[0.98]"
+                      className="hidden sm:inline-flex items-center gap-1 text-xs font-bold text-text-secondary hover:text-accent-blue transition-colors"
                     >
-                      <PlayCircle className="w-4 h-4" />
-                      <span>{progress.percent > 0 ? 'Davom ettirish' : 'O‘qishni boshlash'}</span>
+                      <span>Kurs sahifasi</span>
+                      <ChevronRight className="w-4 h-4" />
                     </Link>
-
-                    {/* Secondary Actions: Diagnostika & Natijalar */}
-                    {my.course.slug && (
-                      <>
-                        <Link
-                          to={coursePath(my.course.slug, 'diagnostika')}
-                          className="inline-flex items-center justify-center gap-1.5 border border-border-card bg-surface hover:bg-surface-hover text-text-primary font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-colors"
-                        >
-                          <Stethoscope className="w-4 h-4 text-purple-500" />
-                          <span>Diagnostika</span>
-                        </Link>
-
-                        <Link
-                          to={coursePath(my.course.slug, 'natija')}
-                          className="inline-flex items-center justify-center gap-1.5 border border-border-card bg-surface hover:bg-surface-hover text-text-primary font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-colors"
-                        >
-                          <Award className="w-4 h-4 text-emerald-500" />
-                          <span>Natijalar</span>
-                        </Link>
-                      </>
-                    )}
                   </div>
                 </div>
               );
             })}
           </div>
 
-          {/* Progress Summary Card: 30% width on desktop (3 of 10 columns) */}
+          {/* Progress Summary Card: ~30% width on desktop (3 of 10 columns) */}
           <div className={`lg:col-span-3 ${items.length > 1 ? 'self-start' : 'h-full'}`}>
-            <div className="rounded-2xl border border-border-card bg-surface p-5 sm:p-6 shadow-xs flex flex-col justify-between h-full">
+            <div className="rounded-2xl border border-border-card bg-surface p-5 sm:p-6 shadow-xs flex flex-col justify-between h-full font-sans">
               <div>
-                <h2 className="font-serif font-bold text-base sm:text-lg text-text-primary">
+                <h2 className="font-bold text-base sm:text-lg text-text-primary">
                   Umumiy progress
                 </h2>
 
                 <div className="mt-4">
-                  <div className="font-serif font-extrabold text-3xl sm:text-4xl text-accent-blue tracking-tight">
+                  <div className="font-extrabold text-3xl sm:text-4xl text-accent-blue tracking-tight">
                     {overallPercent}%
                   </div>
 
@@ -385,9 +380,9 @@ export default function MyLearning() {
       )}
 
       {/* 3. Upcoming Courses: "Tayyorlanayotgan kurslar" & "Barchasini ko‘rish" */}
-      <div className="pt-6 sm:pt-8 border-t border-border-card/60 space-y-4">
+      <div className="pt-6 sm:pt-8 border-t border-border-card/60 space-y-4 font-sans">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg sm:text-xl font-serif font-bold text-text-primary">
+          <h2 className="text-lg sm:text-xl font-bold text-text-primary">
             Tayyorlanayotgan kurslar
           </h2>
           <Link
@@ -410,12 +405,12 @@ export default function MyLearning() {
                 key={c.id}
                 className="rounded-2xl border border-border-card bg-surface p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-4 transition-all hover:border-accent-blue/30"
               >
-                {/* Cover (Sage green for Geografiya, Terracotta for Ona tili) */}
+                {/* Cover (Teal map contour lines for Geografiya, Orange Aa tile for Ona tili) */}
                 <div className="w-full sm:w-32 md:w-36 h-28 sm:h-28 rounded-xl overflow-hidden shrink-0 border border-border-card/60 relative bg-slate-100 dark:bg-slate-800">
                   {isGeografiya ? (
-                    <GeografiyaContourCover className="w-full h-full object-cover" />
+                    <GeografiyaTealContourCover className="w-full h-full object-cover" />
                   ) : (
-                    <OnaTiliTypographyCover className="w-full h-full object-cover" />
+                    <OnaTiliOrangeTileCover className="w-full h-full object-cover" />
                   )}
                 </div>
 
@@ -428,7 +423,7 @@ export default function MyLearning() {
                       </span>
                     </div>
 
-                    <h3 className="font-serif font-bold text-base text-text-primary truncate">
+                    <h3 className="font-bold text-base text-text-primary truncate">
                       {c.title}
                     </h3>
 
@@ -462,7 +457,7 @@ export default function MyLearning() {
       {/* Upcoming Course Details Modal */}
       {selectedUpcoming && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200 font-sans"
           onClick={() => setSelectedUpcoming(null)}
           role="dialog"
           aria-modal="true"
@@ -484,9 +479,9 @@ export default function MyLearning() {
             {/* Modal Cover Header */}
             <div className="w-full h-36 rounded-xl overflow-hidden border border-border-card/60 relative">
               {selectedUpcoming.id === 'geografiya' ? (
-                <GeografiyaContourCover className="w-full h-full object-cover" />
+                <GeografiyaTealContourCover className="w-full h-full object-cover" />
               ) : (
-                <OnaTiliTypographyCover className="w-full h-full object-cover" />
+                <OnaTiliOrangeTileCover className="w-full h-full object-cover" />
               )}
             </div>
 
@@ -495,7 +490,7 @@ export default function MyLearning() {
                 <Clock className="w-3 h-3" /> {selectedUpcoming.badge}
               </span>
 
-              <h3 id="modal-course-title" className="font-serif font-bold text-xl text-text-primary">
+              <h3 id="modal-course-title" className="font-bold text-xl text-text-primary">
                 {selectedUpcoming.title}
               </h3>
 
