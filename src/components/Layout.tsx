@@ -56,7 +56,7 @@ export function Layout() {
 
       {/* Minimal Modern Full-Width Top Navigation */}
       <header className="bg-surface/95 border-b border-border-card sticky top-0 z-40 flex-shrink-0 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16 gap-4">
+        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16 gap-4">
 
           {/* Logo + primary nav (left) */}
           <div className="flex items-center gap-3 sm:gap-6 min-w-0">
@@ -124,7 +124,11 @@ export function Layout() {
                   {user && (
                     <Link
                       to="/dashboard"
-                      className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                      className={`px-3 py-1.5 text-xs font-semibold transition-all relative ${
+                        location.pathname === '/dashboard'
+                          ? 'text-accent-blue font-bold after:content-[""] after:absolute after:bottom-[-20px] after:left-1 after:right-1 after:h-[2px] after:bg-accent-blue after:rounded-full'
+                          : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover rounded-lg'
+                      }`}
                     >
                       Mening kurslarim
                     </Link>
@@ -330,7 +334,11 @@ export function Layout() {
                   <Link
                     to="/dashboard"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="px-3 py-2.5 rounded-xl text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                    className={`px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                      location.pathname === '/dashboard'
+                        ? 'text-accent-blue bg-accent-blue/5 font-bold border-l-2 border-accent-blue rounded-l-none'
+                        : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
+                    }`}
                   >
                     Mening kurslarim
                   </Link>
@@ -368,7 +376,7 @@ export function Layout() {
       {/* Layout Footer — rendered on subpages, omitted on landing to prevent double footer */}
       {!isLanding && (
         <footer className="border-t border-border-card bg-surface mt-auto text-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm">
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-text-secondary text-center sm:text-left">
               <p>© {new Date().getFullYear()} Nur Academy</p>
               <span className="hidden sm:inline text-text-secondary/40">•</span>
