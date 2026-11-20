@@ -1,0 +1,745 @@
+<title>Nur Academy Milliy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: ganch-white page framed by chapan stripes; Rishtan lagan medallion as the hero, every section opens with an islimi arch border. */
+:root{
+  --paper:#F7F3EA;        /* ganch / plaster */
+  --surface:#FFFDF7;
+  --surface-2:#EFE7D6;
+  --ink:#13203F;          /* lapis ink, close to brand navy */
+  --ink-soft:#4A5674;
+  --line:rgba(19,32,63,.14);
+  --lapis:#1E4FA3;        /* Rishtan cobalt */
+  --feruza:#178F9A;       /* Samarkand dome turquoise */
+  --oltin:#B9862A;        /* gold thread (zardo‘zi) */
+  --oltin-bright:#D9A63E;
+  --anor:#B0263A;         /* pomegranate / ikat red */
+  --binafsha:#6A2E6E;     /* ikat purple */
+  --yashil:#3F7D3A;       /* chapan green */
+  --ok:#2E7D4F;
+  --bad:#B0263A;
+  --on-accent:#FFFDF7;
+  --doppi:#15151B;        /* doppi stays black in both themes */
+  --doppi-ink:#F4F1EA;
+  --lagan-ground:#FBF6EA;
+  --shadow:0 1px 0 rgba(19,32,63,.04), 0 12px 32px -18px rgba(19,32,63,.35);
+  --f-display:'Philosopher', 'Georgia', 'Times New Roman', serif;
+  --f-body:'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1530; --surface:#132045; --surface-2:#1A2A55;
+    --ink:#F2EADB; --ink-soft:#B6BDD3; --line:rgba(242,234,219,.14);
+    --lapis:#7EA6F2; --feruza:#4CC3CB; --oltin:#E0B254; --oltin-bright:#F0C46A;
+    --anor:#EC6A7D; --binafsha:#C58ACB; --yashil:#7DBE6F; --ok:#5FCB8C; --bad:#F07A8A;
+    --on-accent:#0C1530; --lagan-ground:#F3EBDA;
+    --shadow:0 1px 0 rgba(0,0,0,.2), 0 16px 36px -20px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1530; --surface:#132045; --surface-2:#1A2A55;
+  --ink:#F2EADB; --ink-soft:#B6BDD3; --line:rgba(242,234,219,.14);
+  --lapis:#7EA6F2; --feruza:#4CC3CB; --oltin:#E0B254; --oltin-bright:#F0C46A;
+  --anor:#EC6A7D; --binafsha:#C58ACB; --yashil:#7DBE6F; --ok:#5FCB8C; --bad:#F07A8A;
+  --on-accent:#0C1530; --lagan-ground:#F3EBDA;
+  --shadow:0 1px 0 rgba(0,0,0,.2), 0 16px 36px -20px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{overflow-x:clip;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.1;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--oltin);outline-offset:3px;border-radius:6px}
+
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.eyebrow{font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--feruza)}
+
+/* Chapan stripe band */
+.chapan{height:10px;background:repeating-linear-gradient(90deg,
+  var(--anor) 0 16px, var(--oltin-bright) 16px 24px, var(--yashil) 24px 34px,
+  var(--lapis) 34px 46px, var(--oltin-bright) 46px 50px, var(--binafsha) 50px 62px,
+  var(--feruza) 62px 70px)}
+.chapan.thin{height:6px}
+
+/* Header */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:var(--surface)}
+header.top{position:sticky;top:env(safe-area-inset-top, 0px);z-index:9;background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:24px;padding-block:12px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo svg{width:40px;height:32px}
+.logo b{font-family:var(--f-display);font-size:1.4rem;letter-spacing:.01em}
+.logo span{color:var(--oltin)}
+.nav ul{display:flex;gap:22px;list-style:none;margin:0 0 0 12px;padding:0;font-weight:600;font-size:.94rem;color:var(--ink-soft)}
+.nav ul a{text-decoration:none}
+.nav ul a:hover{color:var(--ink)}
+.nav .sp{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:11px 20px;font-weight:700;font-size:.95rem;text-decoration:none;border:1.5px solid transparent;transition:transform .15s ease, background .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-gold{background:var(--oltin);color:var(--on-accent)}
+.btn-lapis{background:var(--lapis);color:var(--on-accent)}
+.btn-ghost{border-color:var(--line);background:transparent}
+.btn-ghost:hover{border-color:var(--ink-soft)}
+.theme-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:transparent;display:grid;place-items:center}
+.theme-btn svg{width:18px;height:18px}
+@media (max-width:920px){.nav ul{display:none}}
+@media (max-width:520px){.nav .btn-ghost{display:none}}
+
+/* Hero */
+.hero{position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;padding-block:56px 40px}
+.hero h1{font-size:clamp(2.3rem, 5vw, 4rem);letter-spacing:-.01em}
+.hero h1 em{font-style:italic;color:var(--oltin)}
+.hero .lead{font-size:1.1rem;color:var(--ink-soft);max-width:34rem;margin-top:20px}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.toifa{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;align-items:center}
+.toifa small{font-weight:700;color:var(--ink-soft);margin-right:4px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:600;font-size:.88rem}
+.chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.medallion{position:relative;aspect-ratio:1;max-width:520px;width:100%;justify-self:center}
+.medallion svg.lagan{width:100%;height:100%;display:block;filter:drop-shadow(0 24px 40px rgba(19,32,63,.18))}
+.spin{transform-origin:0 0;animation:spin 160s linear infinite}
+.spin-rev{transform-origin:0 0;animation:spin 220s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.float{position:absolute;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:12px 16px;font-size:.86rem;display:flex;gap:12px;align-items:center}
+.float b{display:block;font-size:1rem}
+.float .muted{color:var(--ink-soft)}
+.float.f1{left:-4%;bottom:12%}
+.float.f2{right:-2%;top:8%}
+.badge-ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex:none}
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr;padding-block:36px 24px}
+  .medallion{max-width:400px}
+  .float.f1{left:0}.float.f2{right:0}
+}
+
+/* Islimi arch divider */
+.arches{display:block;width:100%;height:22px;color:var(--oltin)}
+
+section{padding-block:72px}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:36px}
+.sec-head h2{font-size:clamp(1.8rem, 3.4vw, 2.6rem);margin-top:8px}
+.sec-head p{max-width:30rem;color:var(--ink-soft)}
+
+/* Paths */
+.paths{display:grid;grid-template-columns:repeat(3, 1fr);gap:20px}
+.path{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:22px 22px var(--r) var(--r);padding:28px 24px 24px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.path::before{content:"";position:absolute;inset:0 0 auto;height:7px;background:var(--c)}
+.path .ico{width:74px;height:62px}
+.path h3{font-size:1.5rem}
+.path p{color:var(--ink-soft);font-size:.96rem}
+.path ul{list-style:none;padding:0;margin:4px 0 0;display:grid;gap:8px;font-size:.92rem;font-weight:600}
+.path li{display:flex;gap:10px;align-items:center}
+.path li::before{content:"";width:8px;height:8px;transform:rotate(45deg);background:var(--c);flex:none}
+.path .more{margin-top:auto;padding-top:10px;font-weight:700;color:var(--c);text-decoration:none}
+@media (max-width:900px){.paths{grid-template-columns:1fr}}
+
+.subjects{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.subjects .chip{font-size:.92rem;padding:9px 16px}
+.subjects .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.subjects .chip .n{color:var(--ink-soft);font-weight:500}
+.subjects .chip.on .n{color:inherit;opacity:.7}
+
+/* Steps */
+.steps-band{background:var(--surface-2)}
+.steps{display:grid;grid-template-columns:repeat(4, 1fr);gap:18px;counter-reset:s}
+.step{position:relative;padding:22px 20px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.step .num{font-family:var(--f-display);font-size:2.6rem;color:var(--oltin);line-height:1}
+.step h3{font-size:1.25rem;margin:10px 0 8px}
+.step p{font-size:.93rem;color:var(--ink-soft)}
+.step .meta{display:inline-block;margin-top:12px;font-size:.78rem;font-weight:700;color:var(--feruza);letter-spacing:.06em;text-transform:uppercase}
+@media (max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+
+/* Exam preview */
+.exam{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
+.exam-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.exam-top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--line);font-size:.88rem;font-weight:600;color:var(--ink-soft)}
+.timer{font-variant-numeric:tabular-nums;font-weight:800;color:var(--ink);display:flex;gap:8px;align-items:center;background:var(--surface-2);padding:6px 12px;border-radius:999px}
+.bar{height:5px;background:var(--surface-2)}
+.bar span{display:block;height:100%;background:linear-gradient(90deg, var(--feruza), var(--lapis))}
+.q{padding:26px 22px 22px}
+.q .qn{font-size:.82rem;font-weight:700;color:var(--oltin);letter-spacing:.08em;text-transform:uppercase}
+.q h3{font-family:var(--f-body);font-weight:700;font-size:1.22rem;line-height:1.45;margin:8px 0 18px}
+.q code{font-family:ui-monospace, 'SFMono-Regular', Menlo, monospace;background:var(--surface-2);padding:2px 6px;border-radius:6px;font-size:.95em}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:14px;text-align:left;padding:13px 16px;border-radius:12px;border:1.5px solid var(--line);background:transparent;font-weight:600;transition:border-color .15s ease, background .15s ease}
+.opt:hover:not([disabled]){border-color:var(--lapis)}
+.opt .l{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:8px;background:var(--surface-2);font-weight:800;font-size:.9rem}
+.opt[disabled]{cursor:default}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb, var(--ok) 12%, transparent)}
+.opt.right .l{background:var(--ok);color:var(--on-accent)}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb, var(--bad) 10%, transparent)}
+.opt.wrong .l{background:var(--bad);color:var(--on-accent)}
+.explain{margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--surface-2);font-size:.93rem;border-left:4px solid var(--oltin)}
+.exam-foot{display:flex;justify-content:space-between;gap:12px;padding:0 22px 22px;flex-wrap:wrap}
+.side{display:grid;gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+.panel h4{margin:0 0 12px;font-size:.92rem}
+.grid50{display:grid;grid-template-columns:repeat(10, 1fr);gap:5px}
+.grid50 span{aspect-ratio:1;border-radius:6px;display:grid;place-items:center;font-size:.66rem;font-weight:700;background:var(--surface-2);color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.grid50 .a{background:var(--lapis);color:var(--on-accent)}
+.grid50 .f{background:var(--oltin);color:var(--on-accent)}
+.grid50 .c{outline:2px solid var(--anor);outline-offset:1px;color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:.78rem;color:var(--ink-soft)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+@media (max-width:900px){.exam{grid-template-columns:1fr}}
+
+/* Dashboard preview */
+.dash{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:20px}
+.dash .panel{padding:22px;border-radius:20px}
+.ring-wrap{display:flex;gap:18px;align-items:center}
+.ring-wrap svg{width:150px;height:150px;flex:none}
+.big{font-family:var(--f-display);font-size:2.8rem;line-height:1}
+.muted{color:var(--ink-soft)}
+.mod-list{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:6px;font-size:.86rem}
+.mod-list li{display:flex;justify-content:space-between;gap:10px}
+.scale{position:relative;margin:30px 4px 8px;height:12px;border-radius:999px;background:linear-gradient(90deg, var(--surface-2) 0 55%, color-mix(in srgb, var(--feruza) 35%, var(--surface-2)) 55% 70%, color-mix(in srgb, var(--lapis) 40%, var(--surface-2)) 70% 86%, color-mix(in srgb, var(--oltin) 55%, var(--surface-2)) 86%)}
+.tick{position:absolute;top:-24px;transform:translateX(-50%);font-size:.72rem;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+.tick::after{content:"";position:absolute;left:50%;top:20px;width:1px;height:20px;background:var(--ink-soft);opacity:.5}
+.you{position:absolute;top:-5px;width:22px;height:22px;transform:translateX(-50%) rotate(45deg);background:var(--anor);border:3px solid var(--surface);border-radius:4px}
+.weak{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.weak .row{display:flex;justify-content:space-between;font-size:.9rem;font-weight:600;margin-bottom:6px}
+.weak .track{height:8px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.weak .track span{display:block;height:100%;border-radius:999px}
+.countdown{display:flex;align-items:baseline;gap:8px;margin:6px 0 4px}
+@media (max-width:980px){.dash{grid-template-columns:1fr 1fr}.dash .panel:first-child{grid-column:1/-1}}
+@media (max-width:620px){.dash{grid-template-columns:1fr}.ring-wrap{flex-direction:column;align-items:flex-start}}
+
+/* Symbols gallery */
+.symbols{display:grid;grid-template-columns:repeat(5, 1fr);gap:16px}
+.sym{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:10px}
+.sym svg{width:100%;height:96px}
+.sym b{font-family:var(--f-display);font-size:1.15rem}
+.sym span{font-size:.85rem;color:var(--ink-soft)}
+.swatches{display:grid;grid-template-columns:repeat(6, 1fr);gap:12px;margin-top:20px}
+.sw{border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:var(--surface);font-size:.82rem}
+.sw div{height:64px}
+.sw p{padding:8px 12px}
+.sw p b{display:block}
+@media (max-width:980px){.symbols{grid-template-columns:repeat(3, 1fr)}.swatches{grid-template-columns:repeat(3, 1fr)}}
+@media (max-width:560px){.symbols{grid-template-columns:1fr 1fr}.swatches{grid-template-columns:1fr 1fr}}
+
+/* CTA */
+.cta-band{position:relative;background:#14275A;color:#F7F0E1;overflow:hidden}
+.cta-band svg.ikat{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+.cta-inner{position:relative;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding-block:64px}
+.cta-inner h2{font-size:clamp(1.8rem, 3.6vw, 2.8rem);color:#F7F0E1}
+.cta-inner p{color:#C9CFE3;margin-top:12px;max-width:34rem}
+.cta-inner .btn-gold{background:#D9A63E;color:#14275A;font-size:1.02rem;padding:14px 26px}
+@media (max-width:760px){.cta-inner{grid-template-columns:1fr}}
+
+footer{padding-block:36px 28px;font-size:.9rem;color:var(--ink-soft)}
+.foot{display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:center}
+.foot nav{display:flex;flex-wrap:wrap;gap:18px}
+.foot nav a{text-decoration:none}
+
+@media (prefers-reduced-motion: reduce){.spin,.spin-rev{animation:none}.btn:hover{transform:none}}
+</style>
+
+<!-- Shared symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- qalampir (paisley) used on the Chust doppi -->
+    <g id="qalampir" fill="none" stroke="var(--doppi-ink)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-14 18 C-26 10 -24 -10 -8 -16 C4 -20 14 -14 18 -24 C26 -10 22 8 8 16 C0 21 -8 21 -14 18 Z"/>
+      <path d="M-9 11 C-16 6 -15 -6 -5 -10 C3 -12 9 -9 12 -14 C15 -6 13 4 5 9 C0 12 -5 13 -9 11 Z" stroke-width="1.6"/>
+      <circle cx="-4" cy="2" r="4"/>
+      <circle cx="-4" cy="2" r="1.2" fill="var(--doppi-ink)"/>
+    </g>
+    <!-- Chust doppi, front view -->
+    <symbol id="doppi" viewBox="0 0 200 140">
+      <path d="M22 124 C24 100 26 80 31 62 Q66 40 100 22 Q134 40 169 62 C174 80 176 100 178 124 Z" fill="var(--doppi)"/>
+      <path d="M100 22 L100 124" stroke="#2C2C36" stroke-width="2"/>
+      <use href="#qalampir" transform="translate(64 74) rotate(-12)"/>
+      <use href="#qalampir" transform="translate(136 74) scale(-1 1) rotate(-12)"/>
+      <g fill="var(--doppi-ink)">
+        <circle cx="46" cy="96" r="1.8"/><circle cx="84" cy="52" r="1.8"/><circle cx="154" cy="96" r="1.8"/><circle cx="116" cy="52" r="1.8"/>
+      </g>
+      <rect x="22" y="104" width="156" height="20" fill="var(--doppi)"/>
+      <path d="M24 106 H176 M24 122 H176" stroke="var(--doppi-ink)" stroke-width="1.5"/>
+      <path d="M26 120 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0" fill="none" stroke="var(--doppi-ink)" stroke-width="1.4"/>
+    </symbol>
+    <!-- anor (pomegranate) -->
+    <symbol id="anor" viewBox="0 0 120 120">
+      <path d="M48 22 l4 -12 l8 9 l8 -9 l4 12 z" fill="var(--anor)"/>
+      <circle cx="60" cy="66" r="44" fill="var(--anor)"/>
+      <path d="M60 30 C88 36 96 70 84 94" fill="none" stroke="var(--surface)" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>
+      <path d="M36 62 Q60 40 84 62 Q60 92 36 62 Z" fill="var(--surface)" opacity=".92"/>
+      <g fill="var(--anor)">
+        <circle cx="50" cy="61" r="4"/><circle cx="60" cy="56" r="4"/><circle cx="70" cy="61" r="4"/>
+        <circle cx="55" cy="68" r="4"/><circle cx="65" cy="68" r="4"/><circle cx="60" cy="75" r="3.4"/>
+      </g>
+    </symbol>
+    <!-- islimi arch strip, like the jiyak band of a doppi -->
+    <pattern id="archpat" width="24" height="22" patternUnits="userSpaceOnUse">
+      <path d="M0 20 Q6 2 12 20 Q18 2 24 20" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <circle cx="12" cy="9" r="1.6" fill="currentColor"/>
+      <path d="M0 21 H24" stroke="currentColor" stroke-width="1"/>
+    </pattern>
+  </defs>
+</svg>
+
+<div class="chapan"></div>
+<header class="top">
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Nur Academy bosh sahifa">
+      <svg viewBox="0 0 200 140" aria-hidden="true"><use href="#doppi"/></svg>
+      <b>Nur <span>Academy</span></b>
+    </a>
+    <ul>
+      <li><a href="#yonalish">Yo‘nalishlar</a></li>
+      <li><a href="#test">Testlar</a></li>
+      <li><a href="#kabinet">Kabinet</a></li>
+      <li><a href="#ramzlar">Ramzlar</a></li>
+    </ul>
+    <div class="sp"></div>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Mavzuni almashtirish">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+    <a class="btn btn-ghost" href="#">Kirish</a>
+    <a class="btn btn-lapis" href="#">Ro‘yxatdan o‘tish</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">O‘qituvchilar uchun tayyorgarlik maskani</div>
+        <h1 style="margin-top:14px">Attestatsiyaga <em>ishonch</em> bilan tayyorlaning</h1>
+        <p class="lead">Attestatsiya, malaka oshirish va toifa sinovlariga haqiqiy imtihon formatidagi testlar, qisqa darslar va xatolar ustida ishlash bilan tayyorlaning. Ustoz uchun qulay, tushunarli, o‘zimizcha.</p>
+        <div class="cta">
+          <a class="btn btn-gold" href="#test">Bepul diagnostik test</a>
+          <a class="btn btn-ghost" href="#yonalish">Yo‘nalishni tanlash</a>
+        </div>
+        <div class="toifa">
+          <small>Maqsad:</small>
+          <span class="chip"><i style="background:var(--feruza)"></i>II toifa · 55%+</span>
+          <span class="chip"><i style="background:var(--lapis)"></i>I toifa · 70%+</span>
+          <span class="chip"><i style="background:var(--oltin)"></i>Oliy toifa · 86%+</span>
+        </div>
+      </div>
+      <div class="medallion">
+        <svg class="lagan" id="heroLagan" viewBox="-210 -210 420 420" role="img" aria-label="Rishton laganiga o‘xshash naqsh, markazida do‘ppi"></svg>
+        <div class="float f2">
+          <div class="badge-ico" style="background:color-mix(in srgb, var(--oltin) 18%, transparent)">
+            <svg viewBox="0 0 120 120" width="28" height="28"><use href="#anor"/></svg>
+          </div>
+          <div><b>20 ta savol</b><span class="muted">bugungi reja</span></div>
+        </div>
+        <div class="float f1">
+          <div class="badge-ico" style="background:color-mix(in srgb, var(--feruza) 18%, transparent);color:var(--feruza);font-weight:800">78%</div>
+          <div><b>Oxirgi mock imtihon</b><span class="muted">Oliy toifagacha 8%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <svg class="arches" aria-hidden="true"><rect width="100%" height="22" fill="url(#archpat)"/></svg>
+
+  <section id="yonalish">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow">Yo‘nalishlar</div>
+          <h2>Qaysi sinovga tayyorlanyapsiz?</h2>
+        </div>
+        <p>Har bir yo‘nalish rasmiy formatga mos: savollar soni, vaqt va baholash mezonlari imtihondagidek.</p>
+      </div>
+      <div class="paths">
+        <article class="path" style="--c:var(--lapis)">
+          <svg class="ico" viewBox="0 0 200 140" aria-hidden="true"><use href="#doppi"/></svg>
+          <h3>Attestatsiya</h3>
+          <p>Toifa olish yoki tasdiqlash uchun to‘liq tayyorgarlik: fan bo‘yicha va pedagogika-psixologiya bloklari.</p>
+          <ul><li>50 savol · 120 daqiqa</li><li>II, I va Oliy toifa mezonlari</li><li>Xatolar daftarchasi</li></ul>
+          <a class="more" href="#test">Testni boshlash →</a>
+        </article>
+        <article class="path" style="--c:var(--anor)">
+          <svg class="ico" viewBox="0 0 120 120" aria-hidden="true"><use href="#anor"/></svg>
+          <h3>Malaka oshirish</h3>
+          <p>Malaka oshirish kurslari yakunidagi test va suhbatga tayyorgarlik. Yangi standartlar va metodikalar bo‘yicha qisqa darslar.</p>
+          <ul><li>Mavzulashtirilgan darslar</li><li>Har dars ortidan mini-test</li><li>Konspektlar PDF holatida</li></ul>
+          <a class="more" href="#">Kurslarni ko‘rish →</a>
+        </article>
+        <article class="path" style="--c:var(--feruza)">
+          <svg class="ico" viewBox="-60 -60 120 120" aria-hidden="true" data-mini-lagan></svg>
+          <h3>Mock imtihonlar</h3>
+          <p>Haqiqiy imtihon sharoitida sinab ko‘ring: taymer, savollar navigatsiyasi va natija tahlili bloklar kesimida.</p>
+          <ul><li>Cheksiz urinishlar</li><li>Bloklar bo‘yicha natija</li><li>Zaif mavzular tavsiyasi</li></ul>
+          <a class="more" href="#kabinet">Natijani ko‘rish →</a>
+        </article>
+      </div>
+      <div class="subjects" role="list" aria-label="Fanlar">
+        <span class="chip on" role="listitem">Informatika <span class="n">· faol</span></span>
+        <span class="chip" role="listitem">Geografiya <span class="n">· faol</span></span>
+        <span class="chip" role="listitem">Ona tili va adabiyot <span class="n">· tez kunda</span></span>
+        <span class="chip" role="listitem">Matematika <span class="n">· tez kunda</span></span>
+        <span class="chip" role="listitem">Tarix <span class="n">· tez kunda</span></span>
+        <span class="chip" role="listitem">Boshlang‘ich ta’lim <span class="n">· tez kunda</span></span>
+        <span class="chip" role="listitem">Ingliz tili <span class="n">· tez kunda</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps-band">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow">Tayyorgarlik yo‘li</div>
+          <h2>To‘rt qadamda imtihonga</h2>
+        </div>
+        <p>Har bir ustoz o‘z darajasidan boshlaydi. Platforma bilmagan mavzularingizni topib, rejani shunga moslaydi.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><h3>Diagnostika</h3><p>15 daqiqalik test hozirgi darajangizni va zaif mavzularni aniqlaydi.</p><span class="meta">15 daqiqa</span></div>
+        <div class="step"><div class="num">2</div><h3>Shaxsiy reja</h3><p>Maqsad toifangiz va imtihon sanasiga qarab kunlik reja tuziladi.</p><span class="meta">Kuniga 30 daqiqa</span></div>
+        <div class="step"><div class="num">3</div><h3>Darslar va testlar</h3><p>Qisqa video, konspekt va har mavzu ortidan mini-test.</p><span class="meta">8 modul</span></div>
+        <div class="step"><div class="num">4</div><h3>Mock imtihon</h3><p>Haqiqiy format: 50 savol, 120 daqiqa. Natija toifa mezoni bilan solishtiriladi.</p><span class="meta">50 savol</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="test">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow">Test oynasi</div>
+          <h2>Imtihondagidek, lekin tushuntirish bilan</h2>
+        </div>
+        <p>Javobni tanlang: to‘g‘ri yoki noto‘g‘riligini va qisqa izohni darhol ko‘rasiz. Bu namunaviy savollar.</p>
+      </div>
+      <div class="exam">
+        <div class="exam-card">
+          <div class="exam-top">
+            <span>Informatika · Attestatsiya mock №3</span>
+            <span class="timer" aria-live="off">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>
+              <span id="timer">01:47:32</span>
+            </span>
+          </div>
+          <div class="bar"><span id="progressBar" style="width:24%"></span></div>
+          <div class="q">
+            <div class="qn" id="qNum">Savol 12 / 50</div>
+            <h3 id="qText"></h3>
+            <div class="opts" id="opts"></div>
+            <div class="explain" id="explain" hidden></div>
+          </div>
+          <div class="exam-foot">
+            <button class="btn btn-ghost" type="button" id="flagBtn">Belgilab qo‘yish</button>
+            <button class="btn btn-lapis" type="button" id="nextBtn">Keyingi savol →</button>
+          </div>
+        </div>
+        <div class="side">
+          <div class="panel">
+            <h4>Savollar</h4>
+            <div class="grid50" id="grid50"></div>
+            <div class="legend">
+              <span><i style="background:var(--lapis)"></i>Javob berilgan</span>
+              <span><i style="background:var(--oltin)"></i>Belgilangan</span>
+              <span><i style="background:var(--surface-2)"></i>Qolgan</span>
+            </div>
+          </div>
+          <div class="panel">
+            <h4>Ushbu urinish</h4>
+            <div style="display:flex;justify-content:space-between;font-size:.9rem"><span class="muted">To‘g‘ri javoblar</span><b id="scoreTxt">9 / 11</b></div>
+            <div style="display:flex;justify-content:space-between;font-size:.9rem;margin-top:6px"><span class="muted">O‘rtacha vaqt</span><b>1 daq 48 s</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <svg class="arches" aria-hidden="true"><rect width="100%" height="22" fill="url(#archpat)"/></svg>
+
+  <section id="kabinet">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow">Shaxsiy kabinet</div>
+          <h2>Ustozning tayyorgarlik daftari</h2>
+        </div>
+        <p>Lagan gullari modullarni bildiradi: har bir tugallangan modul bilan gul to‘ladi. Raqamlar namunaviy.</p>
+      </div>
+      <div class="dash">
+        <div class="panel">
+          <div class="ring-wrap">
+            <svg id="progressLagan" viewBox="-100 -100 200 200" role="img" aria-label="8 moduldan 5 tasi tugallangan"></svg>
+            <div>
+              <div class="eyebrow" style="color:var(--oltin)">Kurs progressi</div>
+              <div class="big">62%</div>
+              <p class="muted" style="font-size:.9rem;margin-top:6px">8 moduldan 5 tasi tugallandi. Hozir: 6-modul, «Ma’lumotlar bazasi».</p>
+            </div>
+          </div>
+          <ul class="mod-list">
+            <li><span>6. Ma’lumotlar bazasi</span><b style="color:var(--oltin)">davom etmoqda</b></li>
+            <li><span>7. Tarmoqlar va internet</span><span class="muted">keyingi</span></li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h4 style="margin:0">Maqsad: Oliy toifa</h4>
+          <p class="muted" style="font-size:.88rem">Oxirgi mock natijangiz shkalada</p>
+          <div class="scale" aria-label="Natija 78%, oliy toifa uchun 86% kerak">
+            <span class="tick" style="left:55%">55%</span>
+            <span class="tick" style="left:70%">70%</span>
+            <span class="tick" style="left:86%">86%</span>
+            <span class="you" style="left:78%"></span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-top:14px" class="muted"><span>II toifa</span><span>I toifa</span><span>Oliy</span></div>
+          <div class="countdown"><span class="big" style="font-size:2.2rem">23</span><span class="muted">kun imtihongacha</span></div>
+          <p style="font-size:.9rem">Kuniga 20 ta savol yechsangiz, maqsadga ulgurasiz.</p>
+        </div>
+        <div class="panel">
+          <h4>Zaif mavzular</h4>
+          <ul class="weak">
+            <li><div class="row"><span>SQL so‘rovlari</span><span class="muted">48%</span></div><div class="track"><span style="width:48%;background:var(--anor)"></span></div></li>
+            <li><div class="row"><span>Sanoq sistemalari</span><span class="muted">61%</span></div><div class="track"><span style="width:61%;background:var(--oltin)"></span></div></li>
+            <li><div class="row"><span>Pedagogik texnologiyalar</span><span class="muted">74%</span></div><div class="track"><span style="width:74%;background:var(--feruza)"></span></div></li>
+            <li><div class="row"><span>Algoritmlar</span><span class="muted">83%</span></div><div class="track"><span style="width:83%;background:var(--lapis)"></span></div></li>
+          </ul>
+          <a class="btn btn-ghost" href="#test" style="margin-top:18px;width:100%">Xatolar ustida ishlash</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ramzlar" class="steps-band">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow">Dizayn tizimi</div>
+          <h2>Ramzlar va ranglar</h2>
+        </div>
+        <p>Har bir naqsh interfeysda aniq vazifa bajaradi, bezak uchungina emas.</p>
+      </div>
+      <div class="symbols">
+        <div class="sym"><svg viewBox="0 0 200 140" aria-hidden="true"><use href="#doppi"/></svg><b>Chust do‘ppi</b><span>Logotip va attestatsiya yo‘nalishi. Qalampir naqshi.</span></div>
+        <div class="sym"><svg viewBox="-60 -60 120 120" aria-hidden="true" data-mini-lagan></svg><b>Rishton lagan</b><span>Progress va mock imtihon belgisi.</span></div>
+        <div class="sym"><svg viewBox="0 0 120 120" aria-hidden="true"><use href="#anor"/></svg><b>Anor</b><span>O‘sish, malaka oshirish, kunlik reja.</span></div>
+        <div class="sym"><svg viewBox="0 0 200 96" aria-hidden="true"><rect y="10" width="200" height="76" rx="10" fill="url(#chapanpat)"/></svg><b>Chopon yo‘llari</b><span>Sahifa chegaralari va sarlavha tasmasi.</span></div>
+        <div class="sym"><svg viewBox="0 0 200 96" aria-hidden="true" style="color:var(--oltin)"><rect y="30" width="200" height="22" fill="url(#archpat)"/><rect y="56" width="200" height="22" fill="url(#archpat)" style="color:var(--feruza)"/></svg><b>Islimiy kamar</b><span>Bo‘limlar orasidagi ajratgich.</span></div>
+      </div>
+      <div class="swatches">
+        <div class="sw"><div style="background:var(--lapis)"></div><p><b>Rishton ko‘ki</b>Asosiy tugmalar</p></div>
+        <div class="sw"><div style="background:var(--feruza)"></div><p><b>Feruza</b>Registon gumbazi</p></div>
+        <div class="sw"><div style="background:var(--oltin)"></div><p><b>Zardo‘zi oltini</b>Maqsad va urg‘u</p></div>
+        <div class="sw"><div style="background:var(--anor)"></div><p><b>Anor qizili</b>Xato, ogohlantirish</p></div>
+        <div class="sw"><div style="background:var(--binafsha)"></div><p><b>Atlas binafsha</b>Ikkinchi darajali</p></div>
+        <div class="sw"><div style="background:var(--paper)"></div><p><b>Ganch oqi</b>Fon</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-band">
+    <svg class="ikat" aria-hidden="true">
+      <defs>
+        <pattern id="ikat" width="80" height="120" patternUnits="userSpaceOnUse">
+          <path d="M40 6 L48 18 L44 18 L56 34 L52 34 L70 60 L52 86 L56 86 L44 102 L48 102 L40 114 L32 102 L36 102 L24 86 L28 86 L10 60 L28 34 L24 34 L36 18 L32 18 Z" fill="#B0263A" opacity=".55"/>
+          <path d="M40 30 L52 46 L48 46 L58 60 L48 74 L52 74 L40 90 L28 74 L32 74 L22 60 L32 46 L28 46 Z" fill="#D9A63E" opacity=".7"/>
+          <path d="M40 50 L48 60 L40 70 L32 60 Z" fill="#178F9A"/>
+          <path d="M0 0 L6 8 L0 16 Z M80 0 L74 8 L80 16 Z M0 104 L6 112 L0 120 Z M80 104 L74 112 L80 120 Z" fill="#6A2E6E" opacity=".7"/>
+        </pattern>
+        <linearGradient id="ikatFade" x1="0" x2="1">
+          <stop offset="0" stop-color="#14275A" stop-opacity="1"/>
+          <stop offset=".55" stop-color="#14275A" stop-opacity=".85"/>
+          <stop offset="1" stop-color="#14275A" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#ikat)"/>
+      <rect width="100%" height="100%" fill="url(#ikatFade)"/>
+    </svg>
+    <div class="wrap cta-inner">
+      <div>
+        <h2>Birinchi qadam: 15 daqiqalik diagnostik test</h2>
+        <p>Bepul. Natijada qaysi mavzularni takrorlash kerakligi va maqsad toifangizga qancha qolgani ko‘rinadi.</p>
+      </div>
+      <a class="btn btn-gold" href="#test">Testni boshlash</a>
+    </div>
+  </div>
+</main>
+
+<div class="chapan thin"></div>
+<footer>
+  <div class="wrap foot">
+    <a class="logo" href="#top"><svg viewBox="0 0 200 140" aria-hidden="true"><use href="#doppi"/></svg><b>Nur <span>Academy</span></b></a>
+    <nav><a href="#yonalish">Yo‘nalishlar</a><a href="#test">Testlar</a><a href="#kabinet">Kabinet</a><a href="#">Narxlar</a><a href="#">Bog‘lanish</a></nav>
+    <span>© 2026 Nur Academy · Toshkent</span>
+  </div>
+</footer>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="chapanpat" width="70" height="10" patternUnits="userSpaceOnUse">
+      <rect width="16" height="10" fill="var(--anor)"/><rect x="16" width="8" height="10" fill="var(--oltin-bright)"/>
+      <rect x="24" width="10" height="10" fill="var(--yashil)"/><rect x="34" width="12" height="10" fill="var(--lapis)"/>
+      <rect x="46" width="4" height="10" fill="var(--oltin-bright)"/><rect x="50" width="12" height="10" fill="var(--binafsha)"/>
+      <rect x="62" width="8" height="10" fill="var(--feruza)"/>
+    </pattern>
+  </defs>
+</svg>
+
+<script>
+(function(){
+  var NS = 'http://www.w3.org/2000/svg';
+  function petal(r1, r2, w, deg, fill, extra){
+    var rm = (r1 + r2) / 2;
+    return '<path d="M' + r1 + ' 0 Q' + rm + ' ' + w + ' ' + r2 + ' 0 Q' + rm + ' ' + (-w) + ' ' + r1 + ' 0 Z" transform="rotate(' + deg + ')" fill="' + fill + '"' + (extra || '') + '/>';
+  }
+  function ring(n, r1, r2, w, fill, offset, extra){
+    var s = '';
+    for (var i = 0; i < n; i++) s += petal(r1, r2, w, i * 360 / n + (offset || 0), fill, extra);
+    return s;
+  }
+  function dots(n, r, size, fill, offset){
+    var s = '';
+    for (var i = 0; i < n; i++){
+      var a = (i * 360 / n + (offset || 0)) * Math.PI / 180;
+      s += '<circle cx="' + (Math.cos(a) * r).toFixed(2) + '" cy="' + (Math.sin(a) * r).toFixed(2) + '" r="' + size + '" fill="' + fill + '"/>';
+    }
+    return s;
+  }
+  function star8(r, fill){
+    var s = '';
+    [0, 45].forEach(function(d){ s += '<rect x="' + (-r * .7071) + '" y="' + (-r * .7071) + '" width="' + (r * 1.4142) + '" height="' + (r * 1.4142) + '" transform="rotate(' + d + ')" fill="' + fill + '"/>'; });
+    return s;
+  }
+
+  // Hero lagan (Rishtan plate)
+  var hero = document.getElementById('heroLagan');
+  if (hero){
+    hero.innerHTML =
+      '<circle r="206" fill="var(--lagan-ground)"/>' +
+      '<circle r="204" fill="none" stroke="#1E4FA3" stroke-width="4"/>' +
+      '<g class="spin">' +
+        dots(60, 192, 6, '#178F9A') + dots(60, 192, 2.2, '#FBF6EA') +
+        ring(30, 118, 180, 13, '#1E4FA3') +
+        ring(30, 132, 170, 5, '#D9A63E') +
+        ring(30, 150, 178, 6, '#178F9A', 6) +
+      '</g>' +
+      '<circle r="116" fill="#FBF6EA"/>' +
+      '<g class="spin-rev">' +
+        ring(16, 66, 114, 15, '#178F9A') +
+        ring(16, 78, 108, 6, '#FBF6EA') +
+        ring(16, 72, 112, 9, '#B0263A', 11.25) +
+        dots(32, 112, 3, '#D9A63E', 5.6) +
+      '</g>' +
+      star8(70, '#1E4FA3') +
+      '<circle r="62" fill="#D9A63E"/>' +
+      '<circle r="56" fill="#FBF6EA"/>' +
+      '<circle r="56" fill="none" stroke="#1E4FA3" stroke-width="1.5" stroke-dasharray="3 4"/>' +
+      '<use href="#doppi" x="-46" y="-36" width="92" height="66"/>';
+  }
+
+  // Mini lagan icons
+  document.querySelectorAll('[data-mini-lagan]').forEach(function(svg){
+    svg.innerHTML =
+      '<circle r="56" fill="var(--lagan-ground)" stroke="#1E4FA3" stroke-width="2"/>' +
+      ring(12, 18, 52, 7, '#1E4FA3') +
+      ring(12, 26, 46, 5, '#178F9A', 15) +
+      star8(16, '#D9A63E') +
+      '<circle r="9" fill="#B0263A"/>' + '<circle r="4" fill="#FBF6EA"/>';
+  });
+
+  // Progress lagan: 8 petals = 8 modules
+  var prog = document.getElementById('progressLagan');
+  if (prog){
+    var done = 5, total = 8, s = '<circle r="96" fill="var(--surface-2)"/>';
+    for (var i = 0; i < total; i++){
+      var deg = i * 45 - 90, fill, extra = '';
+      if (i < done) fill = 'var(--lapis)';
+      else if (i === done){ fill = 'var(--oltin)'; }
+      else { fill = 'none'; extra = ' stroke="var(--ink-soft)" stroke-opacity=".35" stroke-width="1.5" stroke-dasharray="3 3"'; }
+      s += petal(28, 92, 24, deg, fill, extra);
+    }
+    s += dots(8, 70, 3, 'var(--surface)', -90) + star8(20, 'var(--oltin)') + '<circle r="16" fill="var(--surface)"/>' +
+         '<text y="5" text-anchor="middle" font-family="Philosopher, Georgia, serif" font-weight="700" font-size="15" fill="var(--ink)">5/8</text>';
+    prog.innerHTML = s;
+  }
+
+  // Exam preview
+  var Q = [
+    { t: 'Python tilida <code>len([3, 7, 1, 9])</code> ifodasining natijasi nimaga teng?',
+      o: ['3', '4', '9', '20'], a: 1,
+      e: '<b>len()</b> ro‘yxatdagi elementlar sonini qaytaradi. Ro‘yxatda 4 ta element bor, ularning qiymati ahamiyatsiz.' },
+    { t: 'Ikkilik sanoq sistemasidagi <code>1011</code> soni o‘nlik sanoq sistemasida nechaga teng?',
+      o: ['9', '10', '11', '13'], a: 2,
+      e: '1·2³ + 0·2² + 1·2¹ + 1·2⁰ = 8 + 0 + 2 + 1 = <b>11</b>.' },
+    { t: '«Klaster» metodi darsda asosan nima uchun qo‘llaniladi?',
+      o: ['Uy vazifasini tekshirish uchun', 'Tushunchalar orasidagi bog‘lanishlarni tarmoqlab ko‘rsatish uchun', 'O‘quvchilarni guruhlarga bo‘lish uchun', 'Yakuniy baho qo‘yish uchun'], a: 1,
+      e: 'Klaster (g‘uncha) markaziy tushunchadan tarmoqlar chiqarib, bilimlarni tizimlashtirish va o‘zaro bog‘lashga xizmat qiladi.' },
+    { t: 'SQL tilida jadvaldagi yozuvlarni saralash uchun qaysi kalit so‘z ishlatiladi?',
+      o: ['GROUP BY', 'ORDER BY', 'SORT', 'WHERE'], a: 1,
+      e: '<b>ORDER BY</b> natijani bir yoki bir nechta ustun bo‘yicha o‘sish (ASC) yoki kamayish (DESC) tartibida saralaydi.' }
+  ];
+  var qi = 0, num = 12, correct = 9, answered = 11;
+  var flagged = { 5: 1, 9: 1 };
+  var optsEl = document.getElementById('opts'), explainEl = document.getElementById('explain');
+
+  function renderGrid(){
+    var g = document.getElementById('grid50'), s = '';
+    for (var i = 1; i <= 50; i++){
+      var c = i === num ? 'c' : flagged[i] ? 'f' : i < num ? 'a' : '';
+      s += '<span class="' + c + '">' + i + '</span>';
+    }
+    g.innerHTML = s;
+  }
+  function render(){
+    var q = Q[qi];
+    document.getElementById('qNum').textContent = 'Savol ' + num + ' / 50';
+    document.getElementById('qText').innerHTML = q.t;
+    document.getElementById('progressBar').style.width = (num / 50 * 100) + '%';
+    explainEl.hidden = true;
+    optsEl.innerHTML = '';
+    q.o.forEach(function(text, i){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt'; b.id = 'opt-' + i;
+      b.innerHTML = '<span class="l">' + 'ABCD'[i] + '</span><span>' + text + '</span>';
+      b.addEventListener('click', function(){ choose(i); });
+      optsEl.appendChild(b);
+    });
+    renderGrid();
+  }
+  function choose(i){
+    var q = Q[qi], btns = optsEl.querySelectorAll('.opt');
+    btns.forEach(function(b){ b.disabled = true; });
+    btns[q.a].classList.add('right');
+    if (i !== q.a) btns[i].classList.add('wrong'); else correct++;
+    answered++;
+    document.getElementById('scoreTxt').textContent = correct + ' / ' + answered;
+    explainEl.innerHTML = (i === q.a ? '<b style="color:var(--ok)">To‘g‘ri!</b> ' : '<b style="color:var(--bad)">Noto‘g‘ri.</b> ') + q.e;
+    explainEl.hidden = false;
+  }
+  document.getElementById('nextBtn').addEventListener('click', function(){
+    qi = (qi + 1) % Q.length; num = num < 50 ? num + 1 : 1; render();
+  });
+  document.getElementById('flagBtn').addEventListener('click', function(){
+    if (flagged[num]) delete flagged[num]; else flagged[num] = 1; renderGrid();
+  });
+  render();
+
+  // Timer
+  var left = 1 * 3600 + 47 * 60 + 32, tEl = document.getElementById('timer');
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  setInterval(function(){
+    if (left > 0) left--;
+    tEl.textContent = pad(Math.floor(left / 3600)) + ':' + pad(Math.floor(left % 3600 / 60)) + ':' + pad(left % 60);
+  }, 1000);
+
+  // Theme toggle
+  var root = document.documentElement;
+  try { var saved = localStorage.getItem('nur-theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+  document.getElementById('themeBtn').addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('nur-theme', next); } catch (e) {}
+  });
+})();
+</script>
