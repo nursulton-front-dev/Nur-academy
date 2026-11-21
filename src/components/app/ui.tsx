@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Home, Loader2, X } from 'lucide-react';
+import { TileCorner } from '../brand/Ornaments';
 
 /**
  * Shared internal-app UI primitives. These keep every course page on one visual
@@ -198,23 +199,24 @@ interface EmptyStateProps {
 /** Premium empty/zero-data state for pages like the error notebook. */
 export function EmptyState({ icon, title, description, accent = 'blue', children }: EmptyStateProps) {
   return (
-    <div className="bg-surface border border-border-card rounded-3xl px-6 py-12 sm:py-16 text-center">
+    <div className="relative overflow-hidden bg-surface-muted border border-border-card rounded-[18px] px-6 py-12 sm:py-16 text-center">
+      <TileCorner className="h-[120px] w-[132px]" />
       <div
-        className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto ${ACCENT_SOFT_BG[accent]} ${ACCENT_TEXT[accent]}`}
+        className={`relative w-16 h-16 rounded-2xl flex items-center justify-center mx-auto ${ACCENT_SOFT_BG[accent]} ${ACCENT_TEXT[accent]}`}
       >
         {icon}
       </div>
-      <h3 className="mt-5 font-serif font-extrabold text-lg text-text-primary">{title}</h3>
+      <h3 className="relative mt-5 font-serif font-extrabold text-xl text-text-primary">{title}</h3>
       {description && (
-        <p className="mt-2 text-sm text-text-secondary max-w-md mx-auto leading-relaxed">{description}</p>
+        <p className="relative mt-2 text-[15px] text-text-secondary max-w-md mx-auto leading-relaxed">{description}</p>
       )}
-      {children && <div className="mt-6">{children}</div>}
+      {children && <div className="relative mt-6">{children}</div>}
     </div>
   );
 }
 
 interface AppButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  variant?: 'primary' | 'cta' | 'secondary' | 'outline' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   icon?: React.ReactNode;
@@ -242,6 +244,8 @@ export function AppButton({
   const variantStyles = {
     primary:
       'bg-accent-blue text-white hover:bg-accent-blue/90 shadow-sm active:scale-[0.98] border border-transparent',
+    cta:
+      'bg-cta text-on-cta hover:bg-cta-hover active:scale-[0.98] border border-transparent',
     secondary:
       'bg-surface-hover text-text-primary hover:bg-surface-muted border border-border-card active:scale-[0.98]',
     outline:

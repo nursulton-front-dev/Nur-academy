@@ -40,7 +40,7 @@ interface DiagnosticResultViewProps {
 // Domain bar color by performance band.
 function barColor(percentage: number): string {
   if (percentage >= 70) return '#4CAF82'; // green
-  if (percentage >= 40) return '#3B7DD8'; // blue
+  if (percentage >= 40) return '#0E7A62'; // blue
   return '#E0735C'; // terracotta
 }
 
@@ -136,7 +136,7 @@ export default function DiagnosticResultView({
         {/* Legend */}
         <div className="flex flex-wrap gap-x-4 gap-y-1.5 pt-2 text-[10px] font-semibold text-text-secondary">
           <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#4CAF82' }} /> ≥ 70% kuchli</span>
-          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#3B7DD8' }} /> 40–70% oʻrtacha</span>
+          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#0E7A62' }} /> 40–70% oʻrtacha</span>
           <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#E0735C' }} /> &lt; 40% zaif</span>
         </div>
       </div>

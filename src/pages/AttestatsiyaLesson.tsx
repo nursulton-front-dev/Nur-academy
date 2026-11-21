@@ -298,7 +298,7 @@ function LegacyLesson() {
             {/* Play Button */}
             <button 
               onClick={() => setIsPlaying(true)}
-              className="z-10 w-16 h-16 sm:w-20 sm:h-20 bg-[#3B7DD8] hover:bg-opacity-95 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform duration-200"
+              className="z-10 w-16 h-16 sm:w-20 sm:h-20 bg-[#0E7A62] hover:bg-opacity-95 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform duration-200"
             >
               <Play className="w-8 h-8 sm:w-10 sm:h-10 fill-white translate-x-0.5" />
             </button>
@@ -315,7 +315,7 @@ function LegacyLesson() {
       {/* Text Synopsis (Markdown renderer simulator) */}
       <div className="bg-surface rounded-xl border border-border-card p-6 space-y-4">
         <div className="flex items-center space-x-2 pb-3 border-b border-border-card/50 mb-4">
-          <FileText className="w-5 h-5 text-[#3B7DD8]" />
+          <FileText className="w-5 h-5 text-[#0E7A62]" />
           <h2 className="font-serif font-bold text-lg text-text-primary">Dars konspekti</h2>
         </div>
 
@@ -328,7 +328,7 @@ function LegacyLesson() {
       <div className="bg-surface rounded-xl border border-border-card p-6 shadow-sm space-y-6">
         <div className="flex items-center justify-between pb-3 border-b border-border-card/50">
           <div className="flex items-center space-x-2.5">
-            <div className="p-2 bg-[#eff6ff] dark:bg-[#1e293b] rounded-xl text-[#3B7DD8]">
+            <div className="p-2 bg-[#eff6ff] dark:bg-[#1e293b] rounded-xl text-[#0E7A62]">
               <HelpCircle className="w-5 h-5" />
             </div>
             <div className="text-left">
@@ -336,7 +336,7 @@ function LegacyLesson() {
               <p className="text-xs text-text-secondary">Ushbu dars bo'yicha kichik savol-javob</p>
             </div>
           </div>
-          <div className="bg-[#eff6ff] text-[#3B7DD8] dark:bg-[#1e293b] text-xs font-bold px-3 py-1.5 rounded-full flex items-center space-x-1">
+          <div className="bg-[#eff6ff] text-[#0E7A62] dark:bg-[#1e293b] text-xs font-bold px-3 py-1.5 rounded-full flex items-center space-x-1">
             <span>Ball:</span>
             <span className="font-mono text-xs font-extrabold">+10 ball / savol</span>
           </div>
@@ -362,7 +362,7 @@ function LegacyLesson() {
               </div>
               <div className="h-2 bg-primary-bg rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-[#3B7DD8] transition-all duration-300"
+                  className="h-full bg-[#0E7A62] transition-all duration-300"
                   style={{ width: `${((currentQuizIndex) / quizQuestions.length) * 100}%` }}
                 />
               </div>
@@ -393,7 +393,7 @@ function LegacyLesson() {
                 } else if (locked) {
                   optionStyle = "border-border-card opacity-50 text-text-secondary bg-surface";
                 } else if (isSelected) {
-                  optionStyle = "border-[#3B7DD8] bg-[#eff6ff] dark:bg-[#1e293b] text-[#3B7DD8] font-semibold";
+                  optionStyle = "border-[#0E7A62] bg-[#eff6ff] dark:bg-[#1e293b] text-[#0E7A62] font-semibold";
                 }
 
                 const disabled = locked || isWrongPick;
@@ -440,7 +440,7 @@ function LegacyLesson() {
                 <div className="flex justify-end">
                   <button
                     onClick={handleNextQuiz}
-                    className="inline-flex items-center space-x-2 bg-[#3B7DD8] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all cursor-pointer"
+                    className="inline-flex items-center space-x-2 bg-[#0E7A62] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all cursor-pointer"
                   >
                     <span>Tushundim, davom etish</span>
                     <ArrowRight className="w-4 h-4" />
@@ -464,7 +464,7 @@ function LegacyLesson() {
         {prevLesson ? (
           <Link
             to={coursePath(slug, `dars/${prevLesson.id}`)}
-            className="inline-flex items-center space-x-2 text-sm font-semibold text-[#3B7DD8] hover:underline"
+            className="inline-flex items-center space-x-2 text-sm font-semibold text-[#0E7A62] hover:underline"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Orqaga</span>
@@ -477,7 +477,7 @@ function LegacyLesson() {
           isQuizPassed ? (
             <Link
               to={coursePath(slug, `dars/${nextLesson.id}`)}
-              className="inline-flex items-center space-x-2 bg-[#3B7DD8] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all"
+              className="inline-flex items-center space-x-2 bg-[#0E7A62] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all"
             >
               <span>Keyingi dars</span>
               <ArrowRight className="w-4 h-4" />

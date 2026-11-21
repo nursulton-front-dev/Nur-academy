@@ -53,7 +53,7 @@ export default function AppTopbar({ onMenuClick, homeHref = '/attestatsiya' }: A
   };
 
   return (
-    <header className="bg-surface border-b border-border-card sticky top-0 z-40 flex-shrink-0 backdrop-blur-md bg-opacity-95 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+    <header className="bg-[color-mix(in_srgb,var(--theme-surface)_60%,var(--theme-primary-bg))] border-b border-border-card sticky top-0 z-40 flex-shrink-0 backdrop-blur-md bg-opacity-95 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
       <div className="w-full px-4 sm:px-6 flex items-center h-16 gap-4">
         {/* Left: mobile menu + logo */}
         <div className="flex items-center gap-2 min-w-0 shrink-0">
@@ -68,21 +68,22 @@ export default function AppTopbar({ onMenuClick, homeHref = '/attestatsiya' }: A
           )}
           <Link to={homeHref} className="flex items-center space-x-2.5 flex-shrink-0 group">
             <BrandLogo size="md" showText={false} imgClassName="group-hover:scale-105 transition-transform" />
-            <span className="font-serif font-extrabold text-xl tracking-tight text-text-primary hidden sm:inline">Nur Academy</span>
+            <span className="font-sans font-extrabold text-[22px] tracking-tight text-text-primary hidden sm:inline">Nur Academy</span>
           </Link>
+          <span className="hidden md:block h-8 w-px bg-border-card ml-4" aria-hidden />
         </div>
 
         {/* Center: search */}
-        <div className="hidden md:flex flex-1 justify-center">
-          <form onSubmit={handleSearch} className="relative w-full max-w-md">
+        <div className="hidden md:flex flex-1 justify-start">
+          <form onSubmit={handleSearch} className="relative w-full max-w-[522px]">
             <Search className="w-4 h-4 text-text-secondary absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchVal}
               onChange={(e) => setSearchVal(e.target.value)}
-              placeholder="Kurslar va mavzularni qidirish..."
+              placeholder="Kurslar va mavzularni qidiring..."
               aria-label="Qidirish"
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-primary-bg border border-border-card text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue/50 transition-all"
+              className="w-full h-10 pl-10 pr-3 rounded-xl bg-surface border border-border-card text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue/50 transition-all"
             />
           </form>
         </div>
@@ -152,10 +153,10 @@ export default function AppTopbar({ onMenuClick, homeHref = '/attestatsiya' }: A
                 setProfileOpen((v) => !v);
                 setNotificationsOpen(false);
               }}
-              className="w-9 h-9 rounded-full bg-accent-blue/10 border border-accent-blue/30 flex items-center justify-center relative overflow-hidden cursor-pointer hover:border-accent-blue/80 transition-colors"
+              className="w-[38px] h-[38px] rounded-full bg-mint-strong flex items-center justify-center relative overflow-hidden cursor-pointer ring-accent-blue/40 hover:ring-2 transition"
               aria-label="Profil"
             >
-              <span className="text-accent-blue font-bold text-xs">{appUser.initials}</span>
+              <span className="text-on-mint font-bold text-sm">{appUser.initials}</span>
             </button>
 
             {profileOpen && (

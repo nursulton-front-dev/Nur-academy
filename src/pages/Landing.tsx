@@ -12,6 +12,7 @@ import {
   FaqSection
 } from './LandingSections';
 import { BrandLogo } from '../components/BrandLogo';
+import { IslimiCorner, NumberBadge, SectionChip } from '../components/brand/Ornaments';
 import {
   Sparkles,
   ArrowRight,
@@ -71,180 +72,71 @@ export default function Landing() {
       />
 
       {/* ─────────────────────────────────────────────────────────────────────────
-          1. HERO SECTION (MODERN, HIGH-CONVERTING, MASCOT-FREE WITH REAL UI PREVIEW)
+          1. HERO — deep emerald card with islimi ornament + "what's inside" list
       ───────────────────────────────────────────────────────────────────────── */}
-      <section className="relative bg-surface border-b border-border-card min-h-[calc(100svh-4rem)] flex items-center overflow-hidden transition-colors duration-200">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            
-            {/* Left 7 cols: Positioning, heading, actions, highlights */}
-            <div className="lg:col-span-7 max-w-2xl">
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-blue/10 text-accent-blue text-xs font-bold uppercase tracking-wider mb-6">
-                <Sparkles className="w-3.5 h-3.5 text-accent-blue" />
-                Pedagoglar uchun ta’lim platformasi
-              </span>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-extrabold text-text-primary mb-6 leading-[1.12] tracking-tight">
-                Attestatsiyaga <span className="text-accent-blue">Nur Academy bilan</span> ishonch bilan tayyorlaning
+      <section className="w-full max-w-[1280px] mx-auto px-4 sm:px-8 pt-10 pb-14 sm:pt-12 sm:pb-20">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+          <div className="flex min-w-0 flex-col overflow-hidden rounded-[18px] border border-border-card bg-cream lg:flex-[1.15]">
+            <div className="relative overflow-hidden bg-deep px-6 pb-10 pt-9 text-white sm:px-10">
+              <IslimiCorner className="h-[142px] w-[260px] opacity-90" />
+              <div className="relative">
+                <SectionChip icon={<Sparkles className="h-4 w-4" />}>Oʻqituvchilar uchun</SectionChip>
+              </div>
+              <h1 className="relative mt-4 max-w-[560px] text-[34px] leading-[1.1] text-white sm:text-[46px] sm:pr-10">
+                Attestatsiyaga Nur Academy bilan ishonch bilan tayyorlaning
               </h1>
-
-              <p className="text-lg sm:text-xl text-text-secondary leading-relaxed mb-8 max-w-xl">
-                Oʻqituvchilar uchun fan dasturi boʻyicha bilimlarni mustahkamlash, mashq qilish va attestatsiyaga tizimli tayyorlanish platformasi.
+              <p className="relative mt-5 max-w-[560px] text-lg leading-relaxed sm:text-xl">
+                Fan dasturi boʻyicha bilimlarni mustahkamlash, mashq qilish va attestatsiyaga tizimli tayyorlanish platformasi.
               </p>
-
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-3.5 mb-10">
+              <div className="relative mt-8 flex flex-col gap-3 text-base font-bold sm:flex-row sm:flex-wrap sm:items-center sm:gap-0 sm:text-lg">
+                <span className="inline-flex items-center gap-2.5 pr-5"><PlayCircle className="h-[22px] w-[22px]" />Video darslar</span>
+                <span className="hidden sm:block h-10 w-px bg-white/30" aria-hidden />
+                <span className="inline-flex items-center gap-2.5 sm:px-5"><Layers className="h-[22px] w-[22px]" />Mavzu testlari</span>
+                <span className="hidden sm:block h-10 w-px bg-white/30" aria-hidden />
+                <span className="inline-flex items-center gap-2.5 sm:pl-5"><Timer className="h-[22px] w-[22px]" />Mock imtihonlar</span>
+              </div>
+            </div>
+            <div className="flex flex-1 flex-col justify-end gap-4 px-5 pb-6 pt-8 sm:px-7">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <Link
                   to="/signup"
-                  className="inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-8 py-4 rounded-xl font-bold text-base hover:bg-accent-hover transition-colors shadow-sm active:scale-98 focus-visible:outline-2 focus-visible:outline-accent-blue"
+                  className="inline-flex h-[60px] flex-1 items-center justify-center gap-3 rounded-xl bg-cta text-xl font-semibold text-on-cta transition-colors hover:bg-cta-hover"
                 >
-                  <span>Bepul boshlash</span>
-                  <ArrowRight className="w-5 h-5" />
+                  Bepul boshlash
+                  <ArrowRight className="h-6 w-6" strokeWidth={2.2} />
                 </Link>
                 <a
                   href="#platform-showcase"
-                  className="inline-flex items-center justify-center gap-2 border border-border-card bg-surface text-text-primary px-8 py-4 rounded-xl font-bold text-base hover:bg-surface-hover transition-colors focus-visible:outline-2 focus-visible:outline-accent-blue"
+                  className="inline-flex h-[60px] items-center justify-center gap-2 rounded-xl border border-border-card bg-surface px-7 text-lg font-bold text-text-primary transition-colors hover:bg-surface-hover"
                 >
-                  <span>Platformani ko‘rish</span>
-                  <ChevronRight className="w-5 h-5 text-text-secondary" />
+                  Platformani koʻrish
+                  <ChevronRight className="h-5 w-5 text-text-secondary" />
                 </a>
               </div>
-
-              {/* Three key feature highlights */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-border-card/60">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-accent-blue/10 text-accent-blue flex items-center justify-center shrink-0">
-                    <Layers className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-semibold text-text-primary leading-tight">
-                    10 bo‘limli davlat standarti
-                  </span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                    <Brain className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-semibold text-text-primary leading-tight">
-                    24/7 AI Mentor yordamchisi
-                  </span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                    <Timer className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-semibold text-text-primary leading-tight">
-                    Haqiqiy sinov simulyatori
-                  </span>
-                </div>
-              </div>
             </div>
+          </div>
 
-            {/* Right 5 cols: Authentic Interactive-Grade Platform UI Preview */}
-            <div className="lg:col-span-5 relative flex justify-center items-center">
-              <div className="w-full max-w-lg bg-surface border border-border-card rounded-3xl p-5 sm:p-6 shadow-xl relative overflow-hidden text-left">
-                
-                {/* Browser window top bar */}
-                <div className="flex items-center justify-between pb-4 mb-4 border-b border-border-card/70">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700" />
-                    <span className="text-[10px] font-mono text-text-secondary ml-2">nuracademy.uz / platforma</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
-                    <Flame className="w-3 h-3" />
-                    <span>7 kun seriya</span>
-                  </div>
-                </div>
-
-                {/* Course Overview Card */}
-                <div className="bg-primary-bg border border-border-card rounded-2xl p-4 mb-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-accent-blue">Faol o‘quv rejasi</span>
-                      <h4 className="font-serif font-bold text-base text-text-primary mt-0.5">Informatika attestatsiyasi</h4>
-                    </div>
-                    <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
-                      68% tugallandi
-                    </span>
-                  </div>
-
-                  {/* Progress bar */}
-                  <div className="w-full bg-surface h-2 rounded-full overflow-hidden border border-border-card/40">
-                    <div className="bg-accent-blue h-full rounded-full transition-all duration-300" style={{ width: '68%' }} />
-                  </div>
-
-                  {/* Next Lesson Action */}
-                  <div className="pt-1 flex items-center justify-between text-xs">
-                    <span className="text-text-secondary flex items-center gap-1.5">
-                      <PlayCircle className="w-3.5 h-3.5 text-accent-blue" />
-                      <span>5-modul. Algoritmlash</span>
-                    </span>
-                    <Link
-                      to="/kurs/attestatsiya"
-                      className="text-accent-blue font-bold hover:underline inline-flex items-center gap-1"
-                    >
-                      <span>Davom ettirish</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </Link>
-                  </div>
-                </div>
-
-                {/* 2-Column Live Widgets in Hero Preview */}
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  
-                  {/* Widget 1: Diagnostika */}
-                  <div className="p-3.5 rounded-2xl bg-surface border border-border-card flex flex-col justify-between">
-                    <div className="flex items-center gap-1.5 text-text-secondary text-xs">
-                      <Activity className="w-3.5 h-3.5 text-emerald-500" />
-                      <span className="text-[11px] font-semibold">Diagnostika</span>
-                    </div>
-                    <div className="my-2">
-                      <div className="font-serif font-extrabold text-2xl font-mono text-emerald-600 dark:text-emerald-400">
-                        84 / 100
-                      </div>
-                      <div className="text-[10px] text-text-secondary">Yuqori tayyorgarlik</div>
-                    </div>
-                    <div className="text-[9px] text-emerald-600 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded text-center">
-                      50/50 topshirildi
-                    </div>
-                  </div>
-
-                  {/* Widget 2: Mock Imtihon */}
-                  <div className="p-3.5 rounded-2xl bg-surface border border-border-card flex flex-col justify-between">
-                    <div className="flex items-center gap-1.5 text-text-secondary text-xs">
-                      <Timer className="w-3.5 h-3.5 text-accent-blue" />
-                      <span className="text-[11px] font-semibold">Mock imtihon</span>
-                    </div>
-                    <div className="my-2">
-                      <div className="font-serif font-extrabold text-2xl font-mono text-text-primary">
-                        120 daq
-                      </div>
-                      <div className="text-[10px] text-text-secondary">Vaqt nazorati ostida</div>
-                    </div>
-                    <div className="text-[9px] text-accent-blue font-bold bg-accent-blue/10 px-1.5 py-0.5 rounded text-center">
-                      Davlat talabi
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* AI Mentor Insight Tip */}
-                <div className="p-3 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 border border-accent-blue/20 flex items-start gap-2.5 text-xs">
-                  <div className="w-6 h-6 rounded-lg bg-accent-blue/10 text-accent-blue flex items-center justify-center shrink-0 mt-0.5">
-                    <Brain className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <span className="font-bold text-text-primary">AI Mentor:</span>
-                    <p className="text-text-secondary mt-0.5 leading-snug">
-                      "Sanoq sistemalari bo‘yicha 2 ta mashq yetarli bo‘lmadi. 10 ta amaliy test tavsiya etiladi."
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
+          <div className="min-w-0 rounded-[18px] border border-border-card bg-surface px-5 pb-6 pt-8 sm:pl-6 sm:pr-5 lg:flex-1">
+            <h2 className="mb-5 ml-0.5 text-[32px] text-text-primary sm:text-[40px]">Platformada</h2>
+            <ol className="flex flex-col gap-2">
+              {[
+                ['Diagnostika testi', '50 savol'],
+                ['Video darslar va konspektlar', '8 modul'],
+                ['Mavzu testlari', 'har dars ortidan'],
+                ['Mock imtihonlar', '120 daqiqa'],
+                ['Xatolar daftari', 'takrorlash'],
+                ['AI Mentor tavsiyalari', '24/7'],
+              ].map(([title, meta], idx) => (
+                <li
+                  key={title}
+                  className="flex min-h-12 items-center gap-5 rounded-[10px] border border-row-border bg-row py-2 pl-2.5 pr-4"
+                >
+                  <NumberBadge n={idx + 1} />
+                  <span className="min-w-0 flex-1 text-base font-semibold text-text-primary sm:text-[17px]">{title}</span>
+                  <span className="shrink-0 text-[15px] text-text-secondary">{meta}</span>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </section>
@@ -410,7 +302,7 @@ export default function Landing() {
       {/* ─────────────────────────────────────────────────────────────────────────
           9. FINAL CALL TO ACTION (TYPOGRAPHIC & CLEAN COMPOSITION)
       ───────────────────────────────────────────────────────────────────────── */}
-      <section className="py-20 sm:py-24 bg-[#1262F5] text-white relative overflow-hidden transition-colors duration-200">
+      <section className="py-20 sm:py-24 bg-[#0E7A62] text-white relative overflow-hidden transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <div className="max-w-3xl mx-auto space-y-6">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/15 text-white text-xs font-semibold uppercase tracking-wider">
@@ -422,14 +314,14 @@ export default function Landing() {
               Attestatsiyaga tayyorgarlikni bugun boshlang!
             </h2>
 
-            <p className="text-base sm:text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-emerald-100 max-w-2xl mx-auto leading-relaxed">
               O‘z fani bo‘yicha bilimlarni tizimlashtiring, zaif mavzularni aniqlang va sinov imtihonlarida ishonch qozoning.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center pt-2">
               <Link
                 to="/signup"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-[#1262F5] px-9 py-4 rounded-xl font-bold text-base hover:bg-slate-100 transition-colors shadow-lg active:scale-98"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-[#0E7A62] px-9 py-4 rounded-xl font-bold text-base hover:bg-slate-100 transition-colors shadow-lg active:scale-98"
               >
                 <span>Bepul boshlash</span>
                 <ArrowRight className="w-5 h-5" />

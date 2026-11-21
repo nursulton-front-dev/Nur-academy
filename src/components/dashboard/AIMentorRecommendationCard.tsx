@@ -102,8 +102,8 @@ export default function AIMentorRecommendationCard({ currentLesson }: AIMentorRe
       <MentorShell badge={<Badge label="PRO" />}>
         <div className="relative rounded-xl bg-white/60 dark:bg-white/[0.04] border border-[#DDD6FE]/60 dark:border-white/[0.05] p-4">
           <div className="flex flex-col items-center text-center gap-2.5 py-2">
-            <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/50 dark:border-indigo-500/20 flex items-center justify-center shrink-0">
-              <Lock className="w-4.5 h-4.5 text-indigo-500" />
+            <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/50 dark:border-emerald-500/20 flex items-center justify-center shrink-0">
+              <Lock className="w-4.5 h-4.5 text-emerald-500" />
             </div>
             <p className="text-xs font-semibold text-[#1A2E2E] dark:text-[#EAEAFF] leading-snug max-w-[260px]">
               AI Mentor natijangizni tahlil qilib, har kuni shaxsiy reja tuzadi
@@ -112,7 +112,7 @@ export default function AIMentorRecommendationCard({ currentLesson }: AIMentorRe
         </div>
         <Link
           to="/attestatsiya/obuna"
-          className="mt-auto w-full inline-flex items-center justify-center gap-1.5 bg-indigo-500 hover:bg-indigo-400 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-colors shadow-sm shadow-indigo-500/20"
+          className="mt-auto w-full inline-flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-colors shadow-sm shadow-emerald-500/20"
         >
           Pro tarifga o‘tish
           <ArrowRight className="w-3.5 h-3.5" />
@@ -133,7 +133,7 @@ export default function AIMentorRecommendationCard({ currentLesson }: AIMentorRe
             </p>
             <button
               onClick={load}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-500 hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-500 hover:underline cursor-pointer"
             >
               <RefreshCw className="w-3 h-3" />
               Qayta urinish
@@ -171,8 +171,8 @@ export default function AIMentorRecommendationCard({ currentLesson }: AIMentorRe
               to={link.href}
               className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${
                 i === 0
-                  ? 'bg-indigo-500 hover:bg-indigo-400 text-white shadow-sm shadow-indigo-500/20'
-                  : 'bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400'
+                  ? 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-sm shadow-emerald-500/20'
+                  : 'bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
               }`}
             >
               {link.label}

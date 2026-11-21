@@ -121,8 +121,8 @@ export function estimatePasswordStrength(password: string): PasswordStrengthResu
       break;
     case 3:
       labelUz = 'Kuchli';
-      colorClass = 'text-blue-500 dark:text-blue-400';
-      barColor = 'bg-blue-500';
+      colorClass = 'text-emerald-500 dark:text-emerald-400';
+      barColor = 'bg-emerald-500';
       feedbackUz = 'Kuchli parol! Uni eslab qoling yoki xavfsiz joyda saqlang.';
       break;
     case 4:

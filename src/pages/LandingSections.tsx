@@ -89,7 +89,7 @@ export function PlatformShowcase() {
                     Yorug‘ rejim · Kunduzgi mashg‘ulot
                   </span>
                 </div>
-                <span className="text-[11px] font-semibold text-[#1262F5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
+                <span className="text-[11px] font-semibold text-[#0E7A62] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
                   Faol interfeys
                 </span>
               </div>
@@ -116,14 +116,14 @@ export function PlatformShowcase() {
                       <div key={item.name} className="bg-[#F8FAFD] p-3.5 rounded-xl border border-[#E8EEF8]">
                         <div className="flex justify-between items-center text-xs font-bold mb-1.5">
                           <span className="text-[#0B1D40]">{item.name}</span>
-                          <span className={item.val >= 80 ? 'text-emerald-600' : item.val >= 60 ? 'text-[#1262F5]' : 'text-amber-600'}>
+                          <span className={item.val >= 80 ? 'text-emerald-600' : item.val >= 60 ? 'text-[#0E7A62]' : 'text-amber-600'}>
                             {item.val}% · {item.status}
                           </span>
                         </div>
                         <div className="w-full bg-[#E8EEF8] h-2 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${
-                              item.val >= 80 ? 'bg-emerald-500' : item.val >= 60 ? 'bg-[#1262F5]' : 'bg-amber-500'
+                              item.val >= 80 ? 'bg-emerald-500' : item.val >= 60 ? 'bg-[#0E7A62]' : 'bg-amber-500'
                             }`}
                             style={{ width: `${item.val}%` }}
                           />
@@ -141,7 +141,7 @@ export function PlatformShowcase() {
                       <h3 className="font-serif font-extrabold text-xl text-[#0B1D40]">Modullar va darslar</h3>
                       <p className="text-xs text-[#4D5E80] mt-1">Davlat attestatsiyasi talablari asosida</p>
                     </div>
-                    <span className="text-xs font-bold text-[#1262F5] bg-blue-50 px-2.5 py-1 rounded-lg">
+                    <span className="text-xs font-bold text-[#0E7A62] bg-emerald-50 px-2.5 py-1 rounded-lg">
                       8 ta modul
                     </span>
                   </div>
@@ -156,13 +156,13 @@ export function PlatformShowcase() {
                         key={m.num}
                         className={`p-3.5 rounded-xl border flex items-center justify-between text-xs ${
                           m.active
-                            ? 'bg-blue-50/60 border-[#1262F5] font-semibold text-[#0B1D40]'
+                            ? 'bg-emerald-50/60 border-[#0E7A62] font-semibold text-[#0B1D40]'
                             : 'bg-[#F8FAFD] border-[#E8EEF8] text-[#4D5E80]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <span className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-[11px] ${
-                            m.active ? 'bg-[#1262F5] text-white' : m.done ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
+                            m.active ? 'bg-[#0E7A62] text-white' : m.done ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
                           }`}>
                             {m.done ? '✓' : m.num}
                           </span>
@@ -194,7 +194,7 @@ export function PlatformShowcase() {
                     </p>
                     <div className="pt-2 border-t border-[#E8EEF8] flex items-center justify-between text-[11px]">
                       <span className="text-emerald-600 font-semibold">Tushunarli konspekt yaratildi</span>
-                      <span className="text-[#1262F5] font-bold">Takrorlashga qo‘shildi</span>
+                      <span className="text-[#0E7A62] font-bold">Takrorlashga qo‘shildi</span>
                     </div>
                   </div>
                 </div>
@@ -218,14 +218,14 @@ export function PlatformShowcase() {
                       <span className="font-mono font-bold text-[#0B1D40]">01:24:18 qoldi</span>
                     </div>
                     <div className="w-full bg-[#E8EEF8] h-2 rounded-full overflow-hidden">
-                      <div className="bg-[#1262F5] h-full w-[48%]" />
+                      <div className="bg-[#0E7A62] h-full w-[48%]" />
                     </div>
                     <p className="text-xs font-medium text-[#0B1D40] pt-1">
                       Algoritmik blok-sxemada romb shakli qaysi amalni bildiradi?
                     </p>
                     <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
                       <div className="p-2.5 rounded-lg border border-[#E8EEF8] bg-white text-[#4D5E80]">A) Boshlanish/Tugash</div>
-                      <div className="p-2.5 rounded-lg border border-[#1262F5] bg-blue-50 font-semibold text-[#1262F5]">B) Shartni tekshirish</div>
+                      <div className="p-2.5 rounded-lg border border-[#0E7A62] bg-emerald-50 font-semibold text-[#0E7A62]">B) Shartni tekshirish</div>
                     </div>
                   </div>
                 </div>
@@ -234,7 +234,7 @@ export function PlatformShowcase() {
 
             <div className="mt-6 pt-4 border-t border-[#E8EEF8] flex items-center justify-between text-xs text-[#4D5E80]">
               <span>Real vaqtda sinxronizatsiya</span>
-              <span className="text-[#1262F5] font-semibold">Nur Academy Engine</span>
+              <span className="text-[#0E7A62] font-semibold">Nur Academy Engine</span>
             </div>
           </div>
 
@@ -251,7 +251,7 @@ export function PlatformShowcase() {
                     Qorong‘i rejim · Kechki tayyorgarlik
                   </span>
                 </div>
-                <span className="text-[11px] font-semibold text-[#60A5FA] bg-blue-950/80 px-2.5 py-1 rounded-full border border-blue-800">
+                <span className="text-[11px] font-semibold text-[#5FD3AF] bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-800">
                   Ko‘zga qulay
                 </span>
               </div>
@@ -278,14 +278,14 @@ export function PlatformShowcase() {
                       <div key={item.name} className="bg-[#0A101D] p-3.5 rounded-xl border border-[#1D2A44]">
                         <div className="flex justify-between items-center text-xs font-bold mb-1.5">
                           <span className="text-[#F1F5F9]">{item.name}</span>
-                          <span className={item.val >= 80 ? 'text-emerald-400' : item.val >= 60 ? 'text-[#60A5FA]' : 'text-amber-400'}>
+                          <span className={item.val >= 80 ? 'text-emerald-400' : item.val >= 60 ? 'text-[#5FD3AF]' : 'text-amber-400'}>
                             {item.val}% · {item.status}
                           </span>
                         </div>
                         <div className="w-full bg-[#1D2A44] h-2 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${
-                              item.val >= 80 ? 'bg-emerald-500' : item.val >= 60 ? 'bg-[#2563EB]' : 'bg-amber-500'
+                              item.val >= 80 ? 'bg-emerald-500' : item.val >= 60 ? 'bg-[#0E7A62]' : 'bg-amber-500'
                             }`}
                             style={{ width: `${item.val}%` }}
                           />
@@ -303,7 +303,7 @@ export function PlatformShowcase() {
                       <h3 className="font-serif font-extrabold text-xl text-[#F1F5F9]">Modullar va darslar</h3>
                       <p className="text-xs text-[#94A3B8] mt-1">Davlat attestatsiyasi talablari asosida</p>
                     </div>
-                    <span className="text-xs font-bold text-[#60A5FA] bg-blue-950/70 px-2.5 py-1 rounded-lg border border-blue-900">
+                    <span className="text-xs font-bold text-[#5FD3AF] bg-emerald-950/70 px-2.5 py-1 rounded-lg border border-emerald-900">
                       8 ta modul
                     </span>
                   </div>
@@ -318,13 +318,13 @@ export function PlatformShowcase() {
                         key={m.num}
                         className={`p-3.5 rounded-xl border flex items-center justify-between text-xs ${
                           m.active
-                            ? 'bg-blue-950/40 border-[#2563EB] font-semibold text-white'
+                            ? 'bg-emerald-950/40 border-[#0E7A62] font-semibold text-white'
                             : 'bg-[#0A101D] border-[#1D2A44] text-[#94A3B8]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <span className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-[11px] ${
-                            m.active ? 'bg-[#2563EB] text-white' : m.done ? 'bg-emerald-950 text-emerald-400' : 'bg-slate-800 text-slate-400'
+                            m.active ? 'bg-[#0E7A62] text-white' : m.done ? 'bg-emerald-950 text-emerald-400' : 'bg-slate-800 text-slate-400'
                           }`}>
                             {m.done ? '✓' : m.num}
                           </span>
@@ -346,7 +346,7 @@ export function PlatformShowcase() {
 
                   <div className="bg-[#0A101D] border border-[#1D2A44] rounded-2xl p-4 space-y-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-blue-500/20 text-[#60A5FA] flex items-center justify-center font-bold">
+                      <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-[#5FD3AF] flex items-center justify-center font-bold">
                         <Brain className="w-4 h-4" />
                       </div>
                       <span className="text-xs font-bold text-[#F1F5F9]">AI Mentor tavsiyasi:</span>
@@ -356,7 +356,7 @@ export function PlatformShowcase() {
                     </p>
                     <div className="pt-2 border-t border-[#1D2A44] flex items-center justify-between text-[11px]">
                       <span className="text-emerald-400 font-semibold">Tushunarli konspekt yaratildi</span>
-                      <span className="text-[#60A5FA] font-bold">Takrorlashga qo‘shildi</span>
+                      <span className="text-[#5FD3AF] font-bold">Takrorlashga qo‘shildi</span>
                     </div>
                   </div>
                 </div>
@@ -380,14 +380,14 @@ export function PlatformShowcase() {
                       <span className="font-mono font-bold text-[#F1F5F9]">01:24:18 qoldi</span>
                     </div>
                     <div className="w-full bg-[#1D2A44] h-2 rounded-full overflow-hidden">
-                      <div className="bg-[#2563EB] h-full w-[48%]" />
+                      <div className="bg-[#0E7A62] h-full w-[48%]" />
                     </div>
                     <p className="text-xs font-medium text-[#F1F5F9] pt-1">
                       Algoritmik blok-sxemada romb shakli qaysi amalni bildiradi?
                     </p>
                     <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
                       <div className="p-2.5 rounded-lg border border-[#1D2A44] bg-[#111A2E] text-[#94A3B8]">A) Boshlanish/Tugash</div>
-                      <div className="p-2.5 rounded-lg border border-[#2563EB] bg-blue-950/60 font-semibold text-[#60A5FA]">B) Shartni tekshirish</div>
+                      <div className="p-2.5 rounded-lg border border-[#0E7A62] bg-emerald-950/60 font-semibold text-[#5FD3AF]">B) Shartni tekshirish</div>
                     </div>
                   </div>
                 </div>
@@ -396,7 +396,7 @@ export function PlatformShowcase() {
 
             <div className="mt-6 pt-4 border-t border-[#1D2A44] flex items-center justify-between text-xs text-[#94A3B8]">
               <span>Avtomatik saqlash faol</span>
-              <span className="text-[#60A5FA] font-semibold">Tungi rejim</span>
+              <span className="text-[#5FD3AF] font-semibold">Tungi rejim</span>
             </div>
           </div>
 
@@ -802,7 +802,7 @@ export function StatisticsSection() {
   ];
 
   return (
-    <section className="py-20 sm:py-24 bg-[#0B1D40] text-white relative overflow-hidden transition-colors duration-200">
+    <section className="py-20 sm:py-24 bg-deep text-white relative overflow-hidden transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         <div className="text-center max-w-2xl mx-auto mb-14">
@@ -822,7 +822,7 @@ export function StatisticsSection() {
           {stats.map((st) => (
             <div
               key={st.label}
-              className="bg-[#112347] border border-blue-800/40 rounded-2xl p-6 text-center hover:border-amber-400/40 transition-colors duration-200"
+              className="bg-[#112347] border border-emerald-800/40 rounded-2xl p-6 text-center hover:border-amber-400/40 transition-colors duration-200"
             >
               <div className="font-serif font-extrabold text-4xl sm:text-5xl text-[#F2B544] mb-2 font-mono">
                 {st.num}

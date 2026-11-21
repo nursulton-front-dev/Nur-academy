@@ -43,7 +43,7 @@ export default function ReviewQueueCard() {
               <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded shrink-0 ${
                 record.difficulty === 'hard' ? 'bg-rose-500/10 text-rose-500' :
                 record.difficulty === 'medium' ? 'bg-orange-500/10 text-orange-500' :
-                'bg-blue-500/10 text-blue-500'
+                'bg-emerald-500/10 text-emerald-500'
               }`}>
                 {record.difficulty}
               </span>

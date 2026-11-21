@@ -43,10 +43,11 @@ function NavItem({ to, icon, label, active, badge, onNavigate }: NavItemProps) {
     <Link
       to={to}
       onClick={onNavigate}
-      className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all ${
+      aria-current={active ? 'page' : undefined}
+      className={`relative flex items-center gap-3 px-3.5 min-h-11 rounded-lg text-[14px] transition-colors ${
         active
-          ? 'bg-accent-blue/10 text-accent-blue font-semibold'
-          : 'text-text-primary hover:bg-surface-hover'
+          ? 'bg-mint text-on-mint font-semibold before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:rounded before:bg-accent-blue'
+          : 'text-text-primary font-medium hover:bg-surface-hover'
       }`}
     >
       <span className="shrink-0">{icon}</span>

@@ -36,7 +36,7 @@ export function BrandLogo({
       />
       {showText && (
         <span
-          className={`font-serif font-extrabold tracking-tight text-text-primary ${config.text} ${textClassName}`}
+          className={`font-brand font-extrabold tracking-tight text-text-primary ${config.text} ${textClassName}`}
         >
           Nur Academy
         </span>

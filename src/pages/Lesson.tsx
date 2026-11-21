@@ -271,7 +271,7 @@ export default function Lesson() {
                       icon = <div className="w-5 h-5 rounded-full border border-gray-300"></div>;
                     }
                   } else {
-                    btnClass += " border-border-card hover:border-accent-blue hover:bg-blue-50/30 text-text-secondary group";
+                    btnClass += " border-border-card hover:border-accent-blue hover:bg-emerald-50/30 text-text-secondary group";
                     icon = <div className="w-5 h-5 rounded-full border border-gray-300 group-hover:border-accent-blue transition-colors"></div>;
                   }
 

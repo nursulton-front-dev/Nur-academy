@@ -314,7 +314,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
             </button>
             <button
               onClick={() => onComplete(false)}
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-[#3B7DD8] hover:bg-[#3B7DD8]/95 text-white py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer"
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-[#0E7A62] hover:bg-[#0E7A62]/95 text-white py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer"
             >
               Davom etish <ArrowRight className="w-4 h-4" />
             </button>
@@ -343,7 +343,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
               <span
                 key={qq.id}
                 className={`h-2.5 rounded-full transition-all duration-300 ${
-                  isCurrent ? 'w-6 bg-[#3B7DD8]' : 'w-2.5'
+                  isCurrent ? 'w-6 bg-[#0E7A62]' : 'w-2.5'
                 } ${
                   done === true ? 'bg-[#4CAF82]' : done === false ? 'bg-[#E0735C]' : !isCurrent ? 'bg-border-card/80' : ''
                 }`}
@@ -372,14 +372,14 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
                 ? 'border-[#4CAF82] bg-[#4CAF82]/[0.06] text-[#4CAF82] font-semibold'
                 : phase === 'hint' || phase === 'explanation'
                 ? 'border-[#E0735C] bg-[#E0735C]/[0.06] text-[#E0735C] font-semibold'
-                : 'border-border-card focus:border-[#3B7DD8] focus:ring-2 focus:ring-[#3B7DD8]/20'
+                : 'border-border-card focus:border-[#0E7A62] focus:ring-2 focus:ring-[#0E7A62]/20'
             } ${phase !== 'answering' ? 'cursor-default' : ''}`}
           />
           {phase === 'answering' && (
             <button
               onClick={handleCheckInput}
               disabled={!inputValue.trim() || checking}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#3B7DD8] hover:bg-[#3B7DD8]/95 disabled:opacity-40 disabled:cursor-not-allowed text-white px-7 py-3.5 rounded-xl text-sm font-bold shadow-md shadow-[#3B7DD8]/15 transition-all active:scale-[0.98] cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#0E7A62] hover:bg-[#0E7A62]/95 disabled:opacity-40 disabled:cursor-not-allowed text-white px-7 py-3.5 rounded-xl text-sm font-bold shadow-md shadow-[#0E7A62]/15 transition-all active:scale-[0.98] cursor-pointer"
             >
               {checking ? <Loader2 className="w-4.5 h-4.5 animate-spin" /> : <Check className="w-4.5 h-4.5 stroke-[2.5]" />} Tekshirish
             </button>
@@ -399,7 +399,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
             const revealCorrect = phase === 'explanation' || phase === 'correct';
             const locked = phase !== 'answering' || checking;
 
-            let style = 'border-border-card hover:border-[#3B7DD8]/30 hover:bg-surface-hover/50 text-text-primary bg-surface';
+            let style = 'border-border-card hover:border-[#0E7A62]/30 hover:bg-surface-hover/50 text-text-primary bg-surface';
             let badgeStyle = 'bg-surface-muted text-text-secondary border-border-card';
             
             if (revealCorrect && isCorrectOpt) {
@@ -412,8 +412,8 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
               style = 'border-border-card opacity-50 text-text-secondary bg-surface';
               badgeStyle = 'bg-surface-muted/50 text-text-secondary/50 border-border-card/50';
             } else if (isSelected) {
-              style = 'border-[#3B7DD8] bg-[#3B7DD8]/[0.06] text-[#3B7DD8] font-semibold shadow-sm shadow-[#3B7DD8]/5';
-              badgeStyle = 'bg-[#3B7DD8] text-white border-transparent';
+              style = 'border-[#0E7A62] bg-[#0E7A62]/[0.06] text-[#0E7A62] font-semibold shadow-sm shadow-[#0E7A62]/5';
+              badgeStyle = 'bg-[#0E7A62] text-white border-transparent';
             }
 
             const disabled = locked || isWrongPick;

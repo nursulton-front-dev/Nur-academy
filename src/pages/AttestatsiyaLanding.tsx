@@ -164,7 +164,7 @@ export default function AttestatsiyaLanding() {
   if (courseLoading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500" />
       </div>
     );
   }
@@ -176,7 +176,7 @@ export default function AttestatsiyaLanding() {
         <p className="text-sm text-slate-500 dark:text-slate-400">{courseError}</p>
         <button
           onClick={() => window.location.reload()}
-          className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-colors"
+          className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-colors"
         >
           Qayta urinish
         </button>
@@ -190,14 +190,14 @@ export default function AttestatsiyaLanding() {
       <div className="flex-1 min-w-0 space-y-6">
         {/* 1. HERO */}
         <section
-          className="rounded-2xl border px-8 py-10 relative overflow-hidden flex flex-col justify-center min-h-[320px] lg:min-h-[360px] bg-gradient-to-br from-blue-50 to-white dark:from-[#101B2D] dark:via-[#0E1A2A] dark:to-[#08111F] border-blue-100 dark:border-white/10 shadow-sm dark:shadow-none"
+          className="rounded-2xl border px-8 py-10 relative overflow-hidden flex flex-col justify-center min-h-[320px] lg:min-h-[360px] bg-gradient-to-br from-emerald-50 to-white dark:from-[#111F1C] dark:via-[#0F1C19] dark:to-[#0B1513] border-emerald-100 dark:border-white/10 shadow-sm dark:shadow-none"
         >
-          <div className="absolute right-0 bottom-0 w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-[100px] pointer-events-none z-0 hidden dark:block" />
+          <div className="absolute right-0 bottom-0 w-[400px] h-[400px] bg-emerald-500/20 rounded-full blur-[100px] pointer-events-none z-0 hidden dark:block" />
           <img src="/images/hero-education-tech.png" alt="" className="absolute right-4 bottom-0 w-[460px] max-w-[50%] object-contain hidden lg:block z-0" />
           
           <div className="relative z-10 w-full lg:w-[65%] space-y-5">
             <span
-              className="inline-flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wide bg-blue-50 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400"
+              className="inline-flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wide bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
             >
               <ShieldCheck className="w-4 h-4" />
               Attestatsiya dasturi asosida
@@ -212,7 +212,7 @@ export default function AttestatsiyaLanding() {
             <button
               onClick={() => handleEnterCourse(continueLessonId)}
               disabled={entering}
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm transition-all cursor-pointer disabled:opacity-60 bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm transition-all cursor-pointer disabled:opacity-60 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-500/20"
             >
               <span>{entering ? 'Yuklanmoqda...' : hasProgress ? 'Davom etish' : 'Boshlash'}</span>
               <ArrowRight className="w-4 h-4" />
@@ -223,10 +223,10 @@ export default function AttestatsiyaLanding() {
         {/* 2. METRICS STRIP (5 cards) */}
         <section className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-5 gap-4">
           {/* Qoldi */}
-          <div className="bg-white dark:bg-[#101B2D] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none flex flex-col gap-2 relative overflow-hidden h-[112px]">
+          <div className="bg-white dark:bg-[#111F1C] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none flex flex-col gap-2 relative overflow-hidden h-[112px]">
              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-blue-100 dark:bg-blue-500/15">
-                   <Target className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-emerald-100 dark:bg-emerald-500/15">
+                   <Target className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <span className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 font-semibold truncate">Qoldi</span>
              </div>
@@ -239,7 +239,7 @@ export default function AttestatsiyaLanding() {
           </div>
 
           {/* Zaif mavzu */}
-          <div className="bg-white dark:bg-[#101B2D] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none flex flex-col gap-2 relative overflow-hidden h-[112px]">
+          <div className="bg-white dark:bg-[#111F1C] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none flex flex-col gap-2 relative overflow-hidden h-[112px]">
              <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-red-100 dark:bg-red-500/15">
                    <LineChart className="w-4 h-4 text-red-600 dark:text-red-400" />
@@ -255,7 +255,7 @@ export default function AttestatsiyaLanding() {
           </div>
 
           {/* Kunlik seriya */}
-          <div className="bg-white dark:bg-[#101B2D] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none flex flex-col gap-2 relative overflow-hidden h-[112px]">
+          <div className="bg-white dark:bg-[#111F1C] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none flex flex-col gap-2 relative overflow-hidden h-[112px]">
              <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-amber-100 dark:bg-amber-500/15">
                    <Flame className="w-4 h-4 text-amber-600 dark:text-amber-400" />
@@ -271,7 +271,7 @@ export default function AttestatsiyaLanding() {
           </div>
 
           {/* Haftalik progress */}
-          <div className="bg-white dark:bg-[#101B2D] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none flex flex-col gap-2 relative overflow-hidden h-[112px]">
+          <div className="bg-white dark:bg-[#111F1C] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none flex flex-col gap-2 relative overflow-hidden h-[112px]">
              <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-emerald-100 dark:bg-emerald-500/15">
                    <CalendarDays className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -287,7 +287,7 @@ export default function AttestatsiyaLanding() {
           </div>
 
           {/* Keyingi yutuq */}
-          <div className="bg-white dark:bg-[#101B2D] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none flex flex-col gap-2 relative overflow-hidden h-[112px]">
+          <div className="bg-white dark:bg-[#111F1C] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none flex flex-col gap-2 relative overflow-hidden h-[112px]">
              <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-purple-100 dark:bg-purple-500/15">
                    <Trophy className="w-4 h-4 text-purple-600 dark:text-purple-400" />
@@ -308,9 +308,9 @@ export default function AttestatsiyaLanding() {
         {/* 3. CARDS: Davom Eting + AI Mentor */}
         <section className={`grid grid-cols-1 ${hasProgress ? 'lg:grid-cols-[1.05fr_0.95fr]' : ''} gap-5 items-stretch`}>
           {hasProgress && (
-            <div className="bg-white dark:bg-[#101B2D] border border-slate-200 dark:border-white/5 rounded-2xl p-6 shadow-sm dark:shadow-none flex flex-col h-full min-h-[220px]">
+            <div className="bg-white dark:bg-[#111F1C] border border-slate-200 dark:border-white/5 rounded-2xl p-6 shadow-sm dark:shadow-none flex flex-col h-full min-h-[220px]">
               <div className="flex flex-col gap-1 mb-2">
-                 <p className="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Davom eting</p>
+                 <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Davom eting</p>
                  <p className="text-sm text-slate-600 dark:text-slate-400 truncate">{continueModuleTitle}</p>
               </div>
               <h2 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white leading-snug mb-4 line-clamp-2">
@@ -325,7 +325,7 @@ export default function AttestatsiyaLanding() {
                 </div>
                 <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
                   <div
-                    className="bg-blue-600 dark:bg-blue-500 h-full rounded-full transition-all duration-500"
+                    className="bg-emerald-600 dark:bg-emerald-500 h-full rounded-full transition-all duration-500"
                     style={{ width: `${activePercent}%` }}
                   />
                 </div>
@@ -333,7 +333,7 @@ export default function AttestatsiyaLanding() {
               <button
                 onClick={() => handleEnterCourse(continueLessonId)}
                 disabled={entering}
-                className="w-full inline-flex justify-center items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm transition-all cursor-pointer disabled:opacity-60 bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20"
+                className="w-full inline-flex justify-center items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm transition-all cursor-pointer disabled:opacity-60 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-500/20"
               >
                 <span>Darsni davom ettirish</span>
                 <ArrowRight className="w-4 h-4" />
@@ -361,19 +361,19 @@ export default function AttestatsiyaLanding() {
                   key={mod.id}
                   className={`flex items-center gap-4 px-5 py-4 rounded-2xl border transition-all ${
                     isLocked
-                      ? 'bg-slate-50 dark:bg-[#101B2D]/50 border-slate-200 dark:border-white/5 opacity-60'
+                      ? 'bg-slate-50 dark:bg-[#111F1C]/50 border-slate-200 dark:border-white/5 opacity-60'
                       : isCurrent
-                        ? 'bg-white dark:bg-[#101B2D] border-blue-200 dark:border-blue-500/30 shadow-sm'
+                        ? 'bg-white dark:bg-[#111F1C] border-emerald-200 dark:border-emerald-500/30 shadow-sm'
                         : isCompleted
-                          ? 'bg-white dark:bg-[#101B2D] border-emerald-200 dark:border-emerald-500/30'
-                          : 'bg-white dark:bg-[#101B2D] border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-600'
+                          ? 'bg-white dark:bg-[#111F1C] border-emerald-200 dark:border-emerald-500/30'
+                          : 'bg-white dark:bg-[#111F1C] border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-600'
                   }`}
                 >
                   <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-slate-100 dark:bg-slate-800">
                     {isCompleted ? (
                       <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                     ) : isCurrent ? (
-                      <span className="w-3 h-3 rounded-full animate-pulse bg-blue-600 dark:bg-blue-400" />
+                      <span className="w-3 h-3 rounded-full animate-pulse bg-emerald-600 dark:bg-emerald-400" />
                     ) : (
                       <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500" />
                     )}
@@ -393,7 +393,7 @@ export default function AttestatsiyaLanding() {
                     </p>
                   </div>
                   {isCurrent ? (
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wide bg-blue-100 dark:bg-blue-500/15 text-blue-700 dark:text-blue-400">
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wide bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400">
                       Hozirgi
                     </span>
                   ) : !isLocked ? (
@@ -412,22 +412,22 @@ export default function AttestatsiyaLanding() {
           <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide px-1">Holat</h3>
           
           {/* 1. Maqsadgacha Progress */}
-          <div className="bg-white dark:bg-[#0E1A2A] border border-slate-200 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4">
+          <div className="bg-white dark:bg-[#0F1C19] border border-slate-200 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4">
              <div className="flex items-center gap-2">
-               <Target className="w-4 h-4 text-blue-500" />
+               <Target className="w-4 h-4 text-emerald-500" />
                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Maqsadgacha</span>
              </div>
              <div>
                <p className="text-lg font-bold text-slate-900 dark:text-white mb-2">{remaining ?? '-'} ball qoldi</p>
                <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2">{stat.score ?? 0}/{stat.goal}</p>
                <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500 rounded-full transition-all duration-500" style={{ width: `${goalPercent}%` }} />
+                  <div className="h-full bg-emerald-500 rounded-full transition-all duration-500" style={{ width: `${goalPercent}%` }} />
                </div>
              </div>
           </div>
 
           {/* 2. Kunlik seriya Status */}
-          <div className="bg-white dark:bg-[#0E1A2A] border border-slate-200 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-2">
+          <div className="bg-white dark:bg-[#0F1C19] border border-slate-200 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-2">
              <div className="flex items-center gap-2 mb-2">
                <Flame className="w-4 h-4 text-amber-500" />
                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Kunlik seriya</p>
@@ -436,7 +436,7 @@ export default function AttestatsiyaLanding() {
           </div>
 
           {/* 3. Haftalik yutuq */}
-          <div className="bg-white dark:bg-[#0E1A2A] border border-slate-200 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4">
+          <div className="bg-white dark:bg-[#0F1C19] border border-slate-200 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4">
              <div className="flex items-center gap-2">
                <Trophy className="w-4 h-4 text-amber-400" />
                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Haftalik yutuq</span>
@@ -450,7 +450,7 @@ export default function AttestatsiyaLanding() {
           </div>
 
           {/* 4. Bu hafta (Dars progress) */}
-          <div className="bg-white dark:bg-[#0E1A2A] border border-slate-200 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4">
+          <div className="bg-white dark:bg-[#0F1C19] border border-slate-200 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4">
              <div className="flex items-center gap-2">
                <CalendarDays className="w-4 h-4 text-emerald-500" />
                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Bu hafta</span>
@@ -464,7 +464,7 @@ export default function AttestatsiyaLanding() {
           </div>
 
           {/* 5. Keyingi yutuq */}
-          <div className="bg-white dark:bg-[#0E1A2A] border border-slate-200 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4">
+          <div className="bg-white dark:bg-[#0F1C19] border border-slate-200 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4">
              <div className="flex items-center gap-2">
                <Hexagon className="w-4 h-4 text-purple-500" />
                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Keyingi yutuq</span>
@@ -479,8 +479,8 @@ export default function AttestatsiyaLanding() {
 
           {/* Diagnostic link if needed */}
           {stat.score == null && (
-             <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-2xl p-4 text-center mt-2">
-                <Link to="/attestatsiya/diagnostika" className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline">
+             <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-2xl p-4 text-center mt-2">
+                <Link to="/attestatsiya/diagnostika" className="text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
                   Diagnostikadan o‘tish →
                 </Link>
              </div>
@@ -489,7 +489,7 @@ export default function AttestatsiyaLanding() {
           <div className="pt-2">
             <Link
               to="/attestatsiya/natija"
-              className="flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
+              className="flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
             >
               Batafsil natija va tahlil <ArrowRight className="w-3 h-3" />
             </Link>
@@ -504,7 +504,7 @@ export default function AttestatsiyaLanding() {
 
 function RailProgressCard({ title, value, percent, colorClass }: { title: string; value: string; percent: number; colorClass: string }) {
   return (
-    <div className="bg-white dark:bg-[#0E1A2A] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none space-y-3">
+    <div className="bg-white dark:bg-[#0F1C19] border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm dark:shadow-none space-y-3">
       <div className="flex justify-between items-center gap-2">
          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide truncate">{title}</span>
          <span className="text-sm font-semibold text-slate-900 dark:text-white shrink-0">{value}</span>

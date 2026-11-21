@@ -102,7 +102,7 @@ export default function XpIndicator() {
                 <span>{xp}/{next_level_xp} XP</span>
               </div>
               <div className="w-full h-2 bg-border-card/50 rounded-full overflow-hidden">
-                <div className="h-full rounded-full bg-gradient-to-r from-accent-blue to-blue-400 transition-all duration-700" style={{ width: `${pct}%` }} />
+                <div className="h-full rounded-full bg-gradient-to-r from-accent-blue to-emerald-400 transition-all duration-700" style={{ width: `${pct}%` }} />
               </div>
             </div>
 

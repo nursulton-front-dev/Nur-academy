@@ -13,12 +13,12 @@ export function LessonIntroIllustration({ variant = "strategy" }: Props) {
       case "strategy":
         return {
           icon: Target,
-          colors: "from-blue-500/20 to-indigo-500/20 dark:from-blue-500/30 dark:to-indigo-500/30",
-          iconColor: "text-blue-500",
-          bg: "bg-blue-50 dark:bg-blue-900/20",
+          colors: "from-emerald-500/20 to-emerald-500/20 dark:from-emerald-500/30 dark:to-emerald-500/30",
+          iconColor: "text-emerald-500",
+          bg: "bg-emerald-50 dark:bg-emerald-900/20",
           shapes: [
-            "top-4 right-8 w-16 h-16 bg-blue-400/20 rounded-full",
-            "bottom-8 left-6 w-24 h-24 bg-indigo-400/20 rounded-xl rotate-12"
+            "top-4 right-8 w-16 h-16 bg-emerald-400/20 rounded-full",
+            "bottom-8 left-6 w-24 h-24 bg-emerald-400/20 rounded-xl rotate-12"
           ]
         };
       case "pedagogy":
@@ -35,12 +35,12 @@ export function LessonIntroIllustration({ variant = "strategy" }: Props) {
       case "informatics":
         return {
           icon: MonitorPlay,
-          colors: "from-cyan-500/20 to-blue-500/20 dark:from-cyan-500/30 dark:to-blue-500/30",
+          colors: "from-cyan-500/20 to-emerald-500/20 dark:from-cyan-500/30 dark:to-emerald-500/30",
           iconColor: "text-cyan-500",
           bg: "bg-cyan-50 dark:bg-cyan-900/20",
           shapes: [
             "top-8 right-12 w-24 h-24 bg-cyan-400/20 rounded-lg rotate-45",
-            "bottom-6 left-8 w-14 h-14 bg-blue-400/20 rounded-full"
+            "bottom-6 left-8 w-14 h-14 bg-emerald-400/20 rounded-full"
           ]
         };
       case "logic":

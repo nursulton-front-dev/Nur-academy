@@ -227,7 +227,7 @@ export default function DevStatus() {
               ].map((item, idx) => {
                 let badgeStyle = "bg-rose-500/10 text-rose-600";
                 if (item.priority === "P1") badgeStyle = "bg-orange-500/10 text-orange-600";
-                if (item.priority === "P2") badgeStyle = "bg-blue-500/10 text-blue-600";
+                if (item.priority === "P2") badgeStyle = "bg-emerald-500/10 text-emerald-600";
 
                 return (
                   <tr key={idx} className="hover:bg-primary-bg/25 transition-colors">

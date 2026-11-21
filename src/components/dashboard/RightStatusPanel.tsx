@@ -57,14 +57,14 @@ export default function RightStatusPanel({
     <div className="space-y-3">
       {/* Maqsadgacha */}
       <StatusCard>
-        <CardLabel icon={<Target className="w-4 h-4 text-[#3B7DD8]" />} tint="bg-blue-500/10 dark:bg-[#3B7DD8]/15">
+        <CardLabel icon={<Target className="w-4 h-4 text-[#0E7A62]" />} tint="bg-emerald-500/10 dark:bg-[#0E7A62]/15">
           Maqsadgacha
         </CardLabel>
         <div className="space-y-2">
           <p className="text-xl font-serif font-extrabold text-slate-900 dark:text-white">
             {pointsLeft} <span className="text-sm font-sans font-semibold text-slate-500 dark:text-[#8B9CB3]">ball qoldi</span>
           </p>
-          <ProgressBar value={currentScore} max={goalScore} color="bg-[#3B7DD8]" />
+          <ProgressBar value={currentScore} max={goalScore} color="bg-[#0E7A62]" />
           <p className="text-[11px] font-bold text-slate-400 dark:text-[#8B9CB3]">{currentScore}/{goalScore}</p>
         </div>
       </StatusCard>

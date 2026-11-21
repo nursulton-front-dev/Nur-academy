@@ -11,9 +11,9 @@ type CalloutVariant = 'info' | 'success' | 'warning' | 'danger' | 'neutral';
 const CALLOUTS: Record<CalloutVariant, { wrap: string; iconBg: string; icon: string; Icon: LucideIcon }> = {
   // Misol / 💡 → blue · ✅ → green · Eslatma / ⚠️ → amber · ❌ → red · else gray
   info: {
-    wrap: 'bg-[#3B7DD8]/[0.03] dark:bg-[#3B7DD8]/10 border-[#3B7DD8]',
-    iconBg: 'bg-[#3B7DD8]',
-    icon: 'text-white shadow-sm shadow-[#3B7DD8]/20',
+    wrap: 'bg-[#0E7A62]/[0.03] dark:bg-[#0E7A62]/10 border-[#0E7A62]',
+    iconBg: 'bg-[#0E7A62]',
+    icon: 'text-white shadow-sm shadow-[#0E7A62]/20',
     Icon: Lightbulb,
   },
   success: {
@@ -78,7 +78,7 @@ export function renderMarkdown(content: string) {
           return (
             <code
               key={j}
-              className="bg-primary-bg/80 border border-border-card text-[#3B7DD8] px-1.5 py-0.5 rounded font-mono text-[0.85em]"
+              className="bg-primary-bg/80 border border-border-card text-[#0E7A62] px-1.5 py-0.5 rounded font-mono text-[0.85em]"
             >
               {subPart}
             </code>
@@ -103,7 +103,7 @@ export function renderMarkdown(content: string) {
         <ul key={key} className="my-4 space-y-3">
           {items.map((item, idx) => (
             <li key={idx} className="flex gap-3.5 text-text-secondary leading-relaxed text-[15px]">
-              <span className="mt-[0.6em] w-2 h-2 rounded bg-[#3B7DD8] shrink-0 transform rotate-45 shadow-sm" />
+              <span className="mt-[0.6em] w-2 h-2 rounded bg-[#0E7A62] shrink-0 transform rotate-45 shadow-sm" />
               <span className="min-w-0">{renderInline(item)}</span>
             </li>
           ))}
@@ -114,7 +114,7 @@ export function renderMarkdown(content: string) {
       <ol key={key} className="my-4 space-y-3">
         {items.map((item, idx) => (
           <li key={idx} className="flex gap-3.5 text-text-secondary leading-relaxed text-[15px]">
-            <span className="shrink-0 mt-0.5 w-6 h-6 rounded-lg bg-[#3B7DD8]/10 text-[#3B7DD8] text-xs font-extrabold flex items-center justify-center">
+            <span className="shrink-0 mt-0.5 w-6 h-6 rounded-lg bg-[#0E7A62]/10 text-[#0E7A62] text-xs font-extrabold flex items-center justify-center">
               {idx + 1}
             </span>
             <span className="min-w-0">{renderInline(item)}</span>
@@ -132,7 +132,7 @@ export function renderMarkdown(content: string) {
       <div key={key} className="overflow-x-auto my-6 border border-border-card rounded-2xl shadow-sm overflow-hidden">
         <table className="min-w-full text-sm border-collapse">
           <thead>
-            <tr className="bg-[#3B7DD8]/[0.06] dark:bg-[#3B7DD8]/10">
+            <tr className="bg-[#0E7A62]/[0.06] dark:bg-[#0E7A62]/10">
               {headers.map((h, idx) => (
                 <th
                   key={idx}
@@ -147,7 +147,7 @@ export function renderMarkdown(content: string) {
             {rows.map((row, rIdx) => (
               <tr
                 key={rIdx}
-                className={`${rIdx % 2 === 1 ? 'bg-surface-muted/20 dark:bg-white/[0.01]' : 'bg-surface'} hover:bg-[#3B7DD8]/[0.03] transition-colors`}
+                className={`${rIdx % 2 === 1 ? 'bg-surface-muted/20 dark:bg-white/[0.01]' : 'bg-surface'} hover:bg-[#0E7A62]/[0.03] transition-colors`}
               >
                 {row.map((cell, cIdx) => (
                   <td key={cIdx} className="px-5 py-4 text-text-secondary align-top border-b border-border-card/50">
@@ -238,7 +238,7 @@ export function renderMarkdown(content: string) {
       } else if (line.startsWith('## ')) {
         elements.push(
           <h2 key={`h2_${i}`} className="flex items-center gap-2.5 text-xl sm:text-2xl font-serif font-bold text-text-primary mt-8 mb-3 first:mt-0">
-            <span className="w-1 h-6 rounded-full bg-[#3B7DD8] shrink-0" />
+            <span className="w-1 h-6 rounded-full bg-[#0E7A62] shrink-0" />
             {renderInline(line.substring(3))}
           </h2>
         );
@@ -315,16 +315,16 @@ export function renderMarkdown(content: string) {
       elements.push(
         <div
           key={`pf_${i}`}
-          className="my-6 rounded-2xl border border-border-card bg-[#3B7DD8]/[0.02] dark:bg-[#3B7DD8]/[0.05] p-6 space-y-4 shadow-sm animate-fade-in"
+          className="my-6 rounded-2xl border border-border-card bg-[#0E7A62]/[0.02] dark:bg-[#0E7A62]/[0.05] p-6 space-y-4 shadow-sm animate-fade-in"
         >
           {flowSegments.map((seg, idx) => (
             <div key={idx} className="relative flex gap-4">
               {/* Connecting line */}
               {idx < flowSegments.length - 1 && (
-                <span className="absolute left-4.5 top-9 bottom-[-20px] w-0.5 bg-gradient-to-b from-[#3B7DD8] to-border-card/50" />
+                <span className="absolute left-4.5 top-9 bottom-[-20px] w-0.5 bg-gradient-to-b from-[#0E7A62] to-border-card/50" />
               )}
               {/* Step number badge */}
-              <div className="w-9 h-9 rounded-xl bg-[#3B7DD8] text-white text-sm font-bold flex items-center justify-center shrink-0 shadow-md shadow-[#3B7DD8]/20 relative z-10">
+              <div className="w-9 h-9 rounded-xl bg-[#0E7A62] text-white text-sm font-bold flex items-center justify-center shrink-0 shadow-md shadow-[#0E7A62]/20 relative z-10">
                 {idx + 1}
               </div>
               {/* Step content */}

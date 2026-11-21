@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PlayCircle, ListChecks, Clock, Layers, Loader2, AlertTriangle, Maximize2 } from 'lucide-react';
+import { ListChecks, Clock, Layers, Loader2, AlertTriangle, ArrowRight } from 'lucide-react';
+import { IslimiCorner, NumberBadge, SectionChip } from '../components/brand/Ornaments';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { enrollmentService } from '../lib/enrollmentService';
@@ -276,99 +277,73 @@ export default function Diagnostic() {
 
   /* ───────────── STATE A: INTRO ───────────── */
   return (
-    <div className="space-y-8 max-w-4xl mx-auto py-8 px-4 text-left font-sans">
-      <div className="bg-surface border border-border-card rounded-[32px] p-6 sm:p-10 shadow-sm relative overflow-hidden space-y-8">
-        <div className="absolute -top-16 -right-16 w-64 h-64 bg-accent-blue/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="space-y-4 relative z-10">
-          <span className="inline-flex items-center gap-1.5 text-[10px] bg-accent-blue/10 text-accent-blue px-3 py-1 rounded-full font-bold uppercase tracking-wider">
-            <ListChecks className="w-3.5 h-3.5" />
-            Diagnostika
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary tracking-tight">
-            Diagnostika testi
-          </h1>
-          <p className="text-text-secondary text-sm sm:text-base leading-relaxed max-w-2xl">
-            50 ta savol, 8 ta modul, 120 daqiqa. Diagnostika orqali boshlang‘ich bilimingizni tahlil qilib, o‘rganish rejangizni tuzib olasiz.
-          </p>
-        </div>
-
-        {/* Meta chips */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-y border-border-card/45 py-6 relative z-10">
-          <div className="flex items-center gap-3">
-            <ListChecks className="w-5 h-5 text-accent-blue shrink-0" />
-            <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Savollar</p>
-              <p className="text-base font-serif font-extrabold text-text-primary">50 ta</p>
+    <div className="mx-auto w-full max-w-[1280px] px-4 py-8 sm:px-8 sm:py-11 text-left font-sans">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+        {/* Left: deep emerald summary + start */}
+        <section className="flex min-w-0 flex-col overflow-hidden rounded-[18px] border border-border-card bg-cream lg:flex-[1.08]">
+          <div className="relative overflow-hidden bg-deep px-6 pb-9 pt-8 text-white sm:px-10">
+            <IslimiCorner className="h-[120px] w-[220px] opacity-90" />
+            <div className="relative">
+              <SectionChip icon={<ListChecks className="h-[18px] w-[18px]" />}>Diagnostika</SectionChip>
+            </div>
+            <h1 className="relative mt-3.5 text-[38px] leading-[1.1] text-white sm:text-[52px]">Diagnostika testi</h1>
+            <p className="relative mt-4 max-w-[540px] text-lg leading-relaxed sm:text-xl">
+              50 ta savol, 8 ta modul, 120 daqiqa. Diagnostika orqali boshlang‘ich bilimingizni tahlil qilib, o‘rganish rejangizni tuzib olasiz.
+            </p>
+            <div className="relative mt-7 flex flex-col gap-3 text-lg font-bold sm:flex-row sm:flex-wrap sm:items-center sm:gap-0 sm:text-xl">
+              <span className="inline-flex items-center gap-3 pr-6">
+                <ListChecks className="h-6 w-6" />50 ta savol
+              </span>
+              <span className="hidden sm:block h-11 w-px bg-white/30" aria-hidden />
+              <span className="inline-flex items-center gap-3 sm:px-6">
+                <Layers className="h-6 w-6" />8 ta modul
+              </span>
+              <span className="hidden sm:block h-11 w-px bg-white/30" aria-hidden />
+              <span className="inline-flex items-center gap-3 sm:pl-6">
+                <Clock className="h-6 w-6" />120 daqiqa
+              </span>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Layers className="w-5 h-5 text-accent-blue shrink-0" />
-            <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Mavzular</p>
-              <p className="text-base font-serif font-extrabold text-text-primary">8 ta</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-accent-blue shrink-0" />
-            <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Vaqt</p>
-              <p className="text-base font-serif font-extrabold text-text-primary">120 daqiqa</p>
-            </div>
-          </div>
-        </div>
 
-        {/* Domain list */}
-        <div className="space-y-2.5 relative z-10">
-          <h3 className="text-xs font-bold text-text-secondary uppercase tracking-widest">Test tarkibi</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div className="flex flex-1 flex-col justify-end gap-8 px-5 pb-6 pt-8 sm:px-7">
+            <div className="flex items-center gap-4 rounded-xl border border-warn-border bg-warn-bg px-5 py-4">
+              <AlertTriangle className="h-8 w-8 shrink-0 text-warn-icon" strokeWidth={1.9} />
+              <p className="text-base leading-relaxed text-text-primary sm:text-[17px]">
+                Vaqt sahifadan chiqqaningizda ham davom etadi.
+                <br />
+                Test to‘liq ekran rejimida ochiladi.
+              </p>
+            </div>
+            <button
+              onClick={startTest}
+              disabled={starting}
+              className="inline-flex h-[60px] w-full cursor-pointer items-center justify-center gap-3.5 rounded-xl bg-cta text-xl font-semibold text-on-cta transition-colors hover:bg-cta-hover disabled:cursor-not-allowed disabled:opacity-60 sm:text-2xl"
+            >
+              {starting ? <Loader2 className="h-6 w-6 animate-spin" /> : null}
+              <span>{starting ? 'Yuklanmoqda...' : 'Diagnostikani boshlash'}</span>
+              {!starting && <ArrowRight className="h-6 w-6" strokeWidth={2.2} />}
+            </button>
+          </div>
+        </section>
+
+        {/* Right: composition of the test */}
+        <section className="min-w-0 rounded-[18px] border border-border-card bg-surface px-5 pb-6 pt-8 sm:pl-6 sm:pr-5 lg:flex-1">
+          <h2 className="mb-5 ml-0.5 text-[34px] text-text-primary sm:text-[40px]">Test tarkibi</h2>
+          <ol className="flex flex-col gap-2">
             {domainCounts.map((domain, idx) => (
-              <div
+              <li
                 key={domain.domain}
-                className="flex items-center justify-between bg-primary-bg/60 border border-border-card/50 rounded-2xl px-4 py-3"
+                className="flex min-h-12 items-center gap-5 rounded-[10px] border border-row-border bg-row py-2 pl-2.5 pr-4"
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="w-6 h-6 rounded-lg bg-accent-blue/10 text-accent-blue text-[11px] font-bold flex items-center justify-center shrink-0">
-                    {idx + 1}
-                  </span>
-                  <span className="text-xs font-semibold text-text-primary truncate">{domainLabel(domain.domain)}</span>
-                </div>
-                <span className="text-[10px] font-bold text-text-secondary shrink-0 ml-2">
-                  {domain.count} savol
+                <NumberBadge n={idx + 1} />
+                <span className="min-w-0 flex-1 text-base font-semibold text-text-primary sm:text-[17px]">
+                  {domainLabel(domain.domain)}
                 </span>
-              </div>
+                <span className="shrink-0 text-[15px] text-text-primary tabular-nums sm:text-base">{domain.count} savol</span>
+              </li>
             ))}
-          </div>
-        </div>
-
-        {/* Pre-test warning — matches the mock exam UX */}
-        <div className="relative z-10 bg-amber-500/[0.07] border border-amber-500/25 rounded-2xl p-4 space-y-2.5">
-          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
-            <AlertTriangle className="w-4.5 h-4.5 shrink-0" />
-            <p className="text-xs font-bold uppercase tracking-wider">Boshlashdan oldin</p>
-          </div>
-          <ul className="space-y-1.5 text-sm text-text-secondary">
-            <li className="flex items-start gap-2.5">
-              <Clock className="w-4 h-4 shrink-0 mt-0.5 text-accent-blue" />
-              <span>Test vaqti — <strong className="text-text-primary">120 daqiqa</strong>. Sahifani yopmang, vaqt to‘xtamaydi.</span>
-            </li>
-            <li className="flex items-start gap-2.5">
-              <Maximize2 className="w-4 h-4 shrink-0 mt-0.5 text-accent-blue" />
-              <span>Test qulaylik uchun <strong className="text-text-primary">to‘liq ekran</strong> rejimida ochiladi.</span>
-            </li>
-          </ul>
-        </div>
-
-        <div className="relative z-10">
-          <button
-            onClick={startTest}
-            disabled={starting}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-accent-blue text-white px-8 py-4 rounded-xl font-bold text-sm hover:bg-accent-blue/95 transition-all shadow-md shadow-accent-blue/20 active:scale-97 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
-          >
-            {starting ? <Loader2 className="w-5 h-5 animate-spin" /> : <PlayCircle className="w-5 h-5" />}
-            <span>{starting ? 'Yuklanmoqda...' : 'Diagnostikani boshlash'}</span>
-          </button>
-        </div>
+          </ol>
+        </section>
       </div>
     </div>
   );

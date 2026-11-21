@@ -31,9 +31,9 @@ const getModuleIcon = (id: string, index: number) => {
     case 'm4':
       return <Keyboard {...iconProps} className="w-4 h-4 text-emerald-500" />;
     case 'm5':
-      return <Globe {...iconProps} className="w-4 h-4 text-blue-500" />;
+      return <Globe {...iconProps} className="w-4 h-4 text-emerald-500" />;
     case 'm6':
-      return <Network {...iconProps} className="w-4 h-4 text-indigo-500" />;
+      return <Network {...iconProps} className="w-4 h-4 text-emerald-500" />;
     case 'm7':
       return <ShieldCheck {...iconProps} className="w-4 h-4 text-rose-500" />;
     case 'm8':

@@ -1,16 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import {
-  NotebookPen,
-  Pencil,
-  ArrowRight,
-  Check,
-  X,
-  Loader2,
-  BookOpen,
-  Sparkles,
-  LogIn,
-} from 'lucide-react';
+import { NotebookPen, Pencil, ArrowRight, Check, X, Loader2, BookOpen, Sparkles, LogIn } from 'lucide-react';
+import { NotesIllustration, TileCorner } from '../components/brand/Ornaments';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchAttestatsiyaCourse } from '../lib/attestatsiyaCourse';
 import { coursePath } from '../lib/courses';
@@ -138,7 +129,7 @@ export default function Konspektlar() {
     <AppPage className="text-left font-sans">
       <PageHeader
         title="Mening konspektlarim"
-        description="Darslarda yozgan eng muhim 3 ta faktingiz — imtihon oldidan tez takrorlash uchun bir joyda."
+        description="Darslarda yozgan eng muhim 3 ta fikringiz — imtihon oldidan tez takrorlash uchun bir joyda."
         action={
           totalNotes > 0 ? (
             <span
@@ -160,42 +151,40 @@ export default function Konspektlar() {
 
         {/* Empty state */}
         {!error && totalNotes === 0 && (
-          <div className="rounded-2xl border border-border-card bg-surface p-10 sm:p-14 text-center shadow-xs">
-            <div className="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center bg-amber-500/10 text-amber-600 dark:text-amber-400 mb-4">
-              <NotebookPen className="w-7 h-7" />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary">
-              Hali konspekt yoʻq
-            </h2>
-            <p className="mt-2 text-sm text-text-secondary max-w-md mx-auto leading-relaxed">
-              Darslarni oʻrganib, eng muhim 3 ta faktni yozing! Ular shu yerda toʻplanib boradi va
-              imtihon oldidan takrorlashga yordam beradi.
-            </p>
-
-            {!user && (
-              <p className="mt-3 text-xs text-text-secondary inline-flex items-center gap-1.5">
-                <LogIn className="w-3.5 h-3.5" />
-                Konspektlaringizni saqlash uchun tizimga kiring.
-              </p>
-            )}
-
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                to={coursePath(slug)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold text-white bg-accent-blue hover:bg-accent-hover shadow-sm transition-all active:scale-[0.98]"
-              >
-                <BookOpen className="w-4 h-4" />
-                Darslarga oʻtish
-              </Link>
-              {!user && (
-                <button
-                  onClick={() => navigate('/login')}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold border border-border-card text-text-primary hover:bg-surface-hover transition-colors"
-                >
-                  <LogIn className="w-4 h-4" />
-                  Kirish
-                </button>
-              )}
+          <div className="relative overflow-hidden rounded-[18px] border border-border-card bg-surface-muted px-6 py-10 sm:pl-[88px] sm:pr-12">
+            <TileCorner className="h-[156px] w-[172px]" />
+            <div className="relative flex flex-wrap items-center gap-10">
+              <NotesIllustration className="h-auto w-[360px] max-w-full flex-[0_1_360px]" />
+              <div className="flex min-w-0 flex-[1_1_320px] flex-col items-start">
+                <h2 className="text-[30px] text-text-primary sm:text-[37px]">Hali konspekt yoʻq</h2>
+                <p className="mt-4 max-w-[450px] text-lg leading-relaxed text-text-primary">
+                  Dars davomida uchta muhim fikrni yozib qoʻying. Ular shu yerda saqlanadi.
+                </p>
+                {!user && (
+                  <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-text-secondary">
+                    <LogIn className="h-4 w-4" />
+                    Konspektlaringizni saqlash uchun tizimga kiring.
+                  </p>
+                )}
+                <div className="mt-10 flex flex-wrap items-center gap-3">
+                  <Link
+                    to={coursePath(slug)}
+                    className="inline-flex h-[58px] items-center gap-4 rounded-[10px] bg-accent-blue px-7 text-[19px] font-bold text-white transition-colors hover:bg-accent-hover"
+                  >
+                    Darslarga oʻtish
+                    <ArrowRight className="h-5 w-5" strokeWidth={2.4} />
+                  </Link>
+                  {!user && (
+                    <button
+                      onClick={() => navigate('/login')}
+                      className="inline-flex h-[58px] items-center gap-2 rounded-[10px] border border-border-card bg-surface px-6 text-base font-bold text-text-primary transition-colors hover:bg-surface-hover"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      Kirish
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         )}

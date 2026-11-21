@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 /* Drive Tailwind's `dark:` variant from the `.dark` class toggled by
@@ -9,55 +9,95 @@
   :root {
     /* Brand Canonical Palette */
     --nur-navy: #0B1D40;
-    --nur-brand: #1262F5;
-    --nur-royal: #1262F5;
-    --nur-blue: #1262F5;
+    --nur-brand: #0E7A62;
+    --nur-royal: #0E7A62;
+    --nur-blue: #0E7A62;
     --nur-gold: #F2B544;
     --nur-bg: #F8FAFD;
     --nur-surface: #FFFFFF;
     --nur-border: #E8EEF8;
 
-    /* Semantic Theme Tokens (Light Mode) */
-    --theme-primary-bg: #F8FAFD;
+    /* Semantic Theme Tokens (Light Mode) — "Milliy zamonaviy":
+       emerald + ganch cream + orange call-to-action, Uzbek ornament accents. */
+    --theme-primary-bg: #F6F4EF;
     --theme-surface: #FFFFFF;
-    --theme-surface-hover: #F1F5FB;
-    --theme-surface-muted: #EBF1FA;
+    --theme-surface-hover: #EFEDE6;
+    --theme-surface-muted: #F7F3EA;
     --theme-surface-elevated: #FFFFFF;
-    --theme-text-primary: #0B1D40;
-    --theme-text-secondary: #4D5E80;
-    --theme-text-muted: #8292AD;
-    --theme-border-card: #E8EEF8;
-    --theme-accent-blue: #1262F5;
-    --theme-accent-hover: #0E52D2;
-    --theme-accent-bright: #3B82F6;
+    --theme-text-primary: #10201E;
+    --theme-text-secondary: #4B5654;
+    --theme-text-muted: #7C8582;
+    --theme-border-card: #E6E2D8;
+    /* "accent-blue" is the historic token name; it now carries the emerald action colour. */
+    --theme-accent-blue: #0E7A62;
+    --theme-accent-hover: #0B6652;
+    --theme-accent-bright: #13A07F;
     --theme-gold-accent: #F2B544;
     --theme-success-green: #10B981;
     --theme-warning-amber: #F59E0B;
     --theme-error-red: #EF4444;
-    --theme-blue-glow: rgba(18, 98, 245, 0.12);
+    --theme-blue-glow: rgba(14, 122, 98, 0.12);
     --theme-gold-glow: rgba(242, 181, 68, 0.18);
+
+    --theme-cta: #F7892B;
+    --theme-cta-hover: #EA7A1A;
+    --theme-on-cta: #1D1A14;
+    --theme-deep: #0E5446;
+    --theme-mint: #D7F0E6;
+    --theme-mint-strong: #CFF0E4;
+    --theme-on-mint: #0E5446;
+    --theme-cream: #FBF7EE;
+    --theme-row: #FCFBF8;
+    --theme-row-border: #E4E1D9;
+    --theme-warn-bg: #FDF1E3;
+    --theme-warn-border: #F5CB9C;
+    --theme-warn-icon: #EE7A24;
+    --theme-ornament: #C9AE7E;
+    --theme-ornament-leaf: #4D8F77;
+    --theme-ornament-stem: #2E7A68;
+    --theme-tile: #DCE9E5;
+    --theme-tile-line: #B9D2CB;
   }
 
   .dark {
     /* Semantic Theme Tokens (Dark Mode) */
-    --theme-primary-bg: #0A101D;
-    --theme-surface: #111A2E;
-    --theme-surface-hover: #18243E;
-    --theme-surface-muted: #152038;
-    --theme-surface-elevated: #16223B;
-    --theme-text-primary: #F1F5F9;
-    --theme-text-secondary: #94A3B8;
-    --theme-text-muted: #64748B;
-    --theme-border-card: #1D2A44;
-    --theme-accent-blue: #2563EB;
-    --theme-accent-hover: #3B82F6;
-    --theme-accent-bright: #60A5FA;
+    --theme-primary-bg: #0B1513;
+    --theme-surface: #111F1C;
+    --theme-surface-hover: #182B27;
+    --theme-surface-muted: #15241F;
+    --theme-surface-elevated: #16261F;
+    --theme-text-primary: #EEF1EC;
+    --theme-text-secondary: #A7B4AF;
+    --theme-text-muted: #6F7C77;
+    --theme-border-card: #22352F;
+    --theme-accent-blue: #1F9677;
+    --theme-accent-hover: #27AD8A;
+    --theme-accent-bright: #5FD3AF;
     --theme-gold-accent: #F2B544;
     --theme-success-green: #10B981;
     --theme-warning-amber: #F59E0B;
     --theme-error-red: #EF4444;
-    --theme-blue-glow: rgba(37, 99, 235, 0.22);
+    --theme-blue-glow: rgba(31, 150, 119, 0.22);
     --theme-gold-glow: rgba(242, 181, 68, 0.22);
+
+    --theme-cta: #F7892B;
+    --theme-cta-hover: #FF9A40;
+    --theme-on-cta: #1D1A14;
+    --theme-deep: #0C4A3D;
+    --theme-mint: #173A31;
+    --theme-mint-strong: #1C4A3E;
+    --theme-on-mint: #9FE3C9;
+    --theme-cream: #14221E;
+    --theme-row: #142420;
+    --theme-row-border: #22352F;
+    --theme-warn-bg: #2A1F14;
+    --theme-warn-border: #6B4524;
+    --theme-warn-icon: #F7892B;
+    --theme-ornament: #C9AE7E;
+    --theme-ornament-leaf: #4D8F77;
+    --theme-ornament-stem: #2E7A68;
+    --theme-tile: #1A2E29;
+    --theme-tile-line: #2C4A42;
   }
 
   body {
@@ -71,7 +111,8 @@
   
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif);
-    letter-spacing: -0.018em;
+    font-weight: 800;
+    letter-spacing: -0.012em;
   }
 }
 
@@ -102,8 +143,24 @@
   --color-surface-muted: var(--theme-surface-muted);
   --color-surface-elevated: var(--theme-surface-elevated);
 
-  --font-sans: 'Inter', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Fraunces', 'Playfair Display', Georgia, serif;
+  --color-cta: var(--theme-cta);
+  --color-cta-hover: var(--theme-cta-hover);
+  --color-on-cta: var(--theme-on-cta);
+  --color-deep: var(--theme-deep);
+  --color-mint: var(--theme-mint);
+  --color-mint-strong: var(--theme-mint-strong);
+  --color-on-mint: var(--theme-on-mint);
+  --color-cream: var(--theme-cream);
+  --color-row: var(--theme-row);
+  --color-row-border: var(--theme-row-border);
+  --color-warn-bg: var(--theme-warn-bg);
+  --color-warn-border: var(--theme-warn-border);
+  --color-warn-icon: var(--theme-warn-icon);
+
+  --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Headings use heavy Manrope (as in the design); the serif is kept only for the wordmark. */
+  --font-serif: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-brand: 'Fraunces', Georgia, serif;
 }
 
 /* Subtle Uzbek Geometric Motif Accent (Clean & Vector) */
@@ -115,30 +172,30 @@
 
 /* Crisp Clean Surfaces & Shadows */
 .premium-shadow {
-  box-shadow: 0 4px 20px -2px rgba(11, 29, 64, 0.05), 0 2px 6px -1px rgba(11, 29, 64, 0.03);
+  box-shadow: 0 4px 20px -2px rgba(16, 32, 30, 0.05), 0 2px 6px -1px rgba(16, 32, 30, 0.03);
 }
 
 .dark .premium-shadow {
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4), 0 0 1px 1px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4), 0 0 1px 1px rgba(31, 150, 119, 0.15);
 }
 
 .premium-card {
   background-color: var(--theme-surface);
   border: 1px solid var(--theme-border-card);
   border-radius: 20px;
-  box-shadow: 0 2px 10px -1px rgba(11, 29, 64, 0.03);
+  box-shadow: 0 2px 10px -1px rgba(16, 32, 30, 0.03);
   transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .premium-card:hover {
-  box-shadow: 0 10px 25px -4px rgba(11, 29, 64, 0.08);
-  border-color: rgba(18, 98, 245, 0.35);
+  box-shadow: 0 10px 25px -4px rgba(16, 32, 30, 0.08);
+  border-color: rgba(14, 122, 98, 0.35);
   transform: translateY(-1px);
 }
 
 .dark .premium-card:hover {
-  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.5), 0 0 12px rgba(37, 99, 235, 0.18);
-  border-color: rgba(37, 99, 235, 0.4);
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.5), 0 0 12px rgba(31, 150, 119, 0.18);
+  border-color: rgba(31, 150, 119, 0.4);
 }
 
 /* Custom Scrollbar for App Shell & Sidebar */

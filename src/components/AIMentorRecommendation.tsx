@@ -104,23 +104,23 @@ export function AIMentorRecommendation({ currentLesson }: { currentLesson?: stri
         <div className="relative rounded-xl overflow-hidden mt-auto mb-auto h-[96px]">
           <p
             aria-hidden
-            className="text-sm leading-relaxed text-indigo-900/50 dark:text-indigo-200/50 select-none blur-[4px] pointer-events-none px-1"
+            className="text-sm leading-relaxed text-emerald-900/50 dark:text-emerald-200/50 select-none blur-[4px] pointer-events-none px-1"
           >
             Diagnostika natijangizga koʻra bugun "Dasturlash asoslari" mavzusini takrorlang.
             Soʻngra 10 ta savoldan iborat mavzu testini ishlab, natijangizni mustahkamlang.
           </p>
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center gap-2 px-3 bg-white/40 dark:bg-[#16122A]/60 backdrop-blur-sm">
-            <div className="w-8 h-8 rounded-full bg-indigo-600/10 dark:bg-indigo-500/20 flex items-center justify-center shrink-0">
-              <Lock className="w-4 h-4 text-indigo-600 dark:text-indigo-300" />
+            <div className="w-8 h-8 rounded-full bg-emerald-600/10 dark:bg-emerald-500/20 flex items-center justify-center shrink-0">
+              <Lock className="w-4 h-4 text-emerald-600 dark:text-emerald-300" />
             </div>
-            <p className="text-xs font-semibold text-indigo-900 dark:text-indigo-100 leading-snug max-w-[280px]">
+            <p className="text-xs font-semibold text-emerald-900 dark:text-emerald-100 leading-snug max-w-[280px]">
               AI Mentor natijangizni tahlil qilib, kunlik reja tuzadi
             </p>
           </div>
         </div>
         <Link
           to="/attestatsiya/obuna"
-          className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-xl text-sm font-bold transition-colors shadow-md shadow-indigo-500/20"
+          className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl text-sm font-bold transition-colors shadow-md shadow-emerald-500/20"
         >
           Pro tarifga oʻtish
           <ArrowRight className="w-4 h-4" />
@@ -135,12 +135,12 @@ export function AIMentorRecommendation({ currentLesson }: { currentLesson?: stri
         <div className="flex items-start gap-3 mt-auto mb-auto">
           <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
           <div className="space-y-2">
-            <p className="text-sm text-indigo-900 dark:text-indigo-100">
+            <p className="text-sm text-emerald-900 dark:text-emerald-100">
               AI Mentor hozir tavsiya bera olmayapti. Keyinroq qayta urinib koʻring.
             </p>
             <button
               onClick={load}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
             >
               <RefreshCw className="w-3 h-3" />
               Qayta urinish
@@ -155,9 +155,9 @@ export function AIMentorRecommendation({ currentLesson }: { currentLesson?: stri
     return (
       <MentorShell badge={<Badge label="BUGUN" />}>
         <div className="space-y-3 mt-2" aria-hidden>
-          <div className="h-3 rounded-full animate-pulse bg-indigo-200 dark:bg-indigo-500/20 w-full" />
-          <div className="h-3 rounded-full animate-pulse bg-indigo-200 dark:bg-indigo-500/20 w-4/5" />
-          <div className="h-3 rounded-full animate-pulse bg-indigo-200 dark:bg-indigo-500/20 w-3/5" />
+          <div className="h-3 rounded-full animate-pulse bg-emerald-200 dark:bg-emerald-500/20 w-full" />
+          <div className="h-3 rounded-full animate-pulse bg-emerald-200 dark:bg-emerald-500/20 w-4/5" />
+          <div className="h-3 rounded-full animate-pulse bg-emerald-200 dark:bg-emerald-500/20 w-3/5" />
         </div>
       </MentorShell>
     );

@@ -35,7 +35,7 @@ function ContinueButton({ label, onClick, tone = 'blue' }: { label: string; onCl
       ? 'bg-[#4CAF82] hover:bg-[#429a72] shadow-[#4CAF82]/15'
       : tone === 'red'
       ? 'bg-[#E0735C] hover:bg-[#cf6450] shadow-[#E0735C]/15'
-      : 'bg-[#3B7DD8] hover:bg-[#3570c4] shadow-[#3B7DD8]/15';
+      : 'bg-[#0E7A62] hover:bg-[#3570c4] shadow-[#0E7A62]/15';
   return (
     <button
       onClick={onClick}
@@ -54,7 +54,7 @@ export function TextStep({ step, onComplete, isFirstStep }: StepProps) {
         <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-10 lg:gap-14 items-center">
           {/* Left Column: Content */}
           <div className="space-y-6">
-            <StepEyebrow icon={Sparkles} label="Kirish" color="#3B7DD8" />
+            <StepEyebrow icon={Sparkles} label="Kirish" color="#0E7A62" />
             
             {step.title && (
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-extrabold text-text-primary leading-[1.15] tracking-tight">
@@ -67,16 +67,16 @@ export function TextStep({ step, onComplete, isFirstStep }: StepProps) {
             </div>
 
             {/* Goals / Motivational block */}
-            <div className="bg-gradient-to-br from-[#3B7DD8]/[0.04] to-[#3B7DD8]/[0.01] dark:from-[#3B7DD8]/[0.08] dark:to-transparent border border-[#3B7DD8]/20 rounded-3xl p-6 sm:p-8 shadow-sm flex gap-4 items-start mt-8">
-              <div className="p-3 bg-[#3B7DD8] text-white rounded-2xl shrink-0 shadow-md shadow-[#3B7DD8]/20">
+            <div className="bg-gradient-to-br from-[#0E7A62]/[0.04] to-[#0E7A62]/[0.01] dark:from-[#0E7A62]/[0.08] dark:to-transparent border border-[#0E7A62]/20 rounded-3xl p-6 sm:p-8 shadow-sm flex gap-4 items-start mt-8">
+              <div className="p-3 bg-[#0E7A62] text-white rounded-2xl shrink-0 shadow-md shadow-[#0E7A62]/20">
                 <BookOpen className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-base sm:text-lg font-bold text-text-primary mb-3">Bu darsda oʻrganasiz</h3>
-                <div className="flex flex-wrap gap-2 text-[13px] font-semibold text-[#3B7DD8]">
-                  <span className="px-3.5 py-1.5 rounded-full bg-[#3B7DD8]/10 dark:bg-[#3B7DD8]/15 border border-[#3B7DD8]/10">✓ Nazariy tushunchalar</span>
-                  <span className="px-3.5 py-1.5 rounded-full bg-[#3B7DD8]/10 dark:bg-[#3B7DD8]/15 border border-[#3B7DD8]/10">✓ Kiber-kviz orqali bilimni tekshirish</span>
-                  <span className="px-3.5 py-1.5 rounded-full bg-[#3B7DD8]/10 dark:bg-[#3B7DD8]/15 border border-[#3B7DD8]/10">✓ AI Mentor tahlili</span>
+                <div className="flex flex-wrap gap-2 text-[13px] font-semibold text-[#0E7A62]">
+                  <span className="px-3.5 py-1.5 rounded-full bg-[#0E7A62]/10 dark:bg-[#0E7A62]/15 border border-[#0E7A62]/10">✓ Nazariy tushunchalar</span>
+                  <span className="px-3.5 py-1.5 rounded-full bg-[#0E7A62]/10 dark:bg-[#0E7A62]/15 border border-[#0E7A62]/10">✓ Kiber-kviz orqali bilimni tekshirish</span>
+                  <span className="px-3.5 py-1.5 rounded-full bg-[#0E7A62]/10 dark:bg-[#0E7A62]/15 border border-[#0E7A62]/10">✓ AI Mentor tahlili</span>
                 </div>
               </div>
             </div>
@@ -100,9 +100,9 @@ export function TextStep({ step, onComplete, isFirstStep }: StepProps) {
 
   return (
     <div className="w-full space-y-8">
-      <StepEyebrow icon={BookOpen} label="Nazariya" color="#3B7DD8" />
+      <StepEyebrow icon={BookOpen} label="Nazariya" color="#0E7A62" />
       {step.title && (
-        <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary mb-6 leading-tight border-l-4 border-[#3B7DD8] pl-5">
+        <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary mb-6 leading-tight border-l-4 border-[#0E7A62] pl-5">
           {step.title}
         </h2>
       )}
@@ -191,9 +191,9 @@ export function VideoStep({ step, onComplete, videoUrl }: StepProps) {
   const embed = url ? youtubeEmbed(url) : null;
   return (
     <div className="w-full space-y-8">
-      <StepEyebrow icon={PlayCircle} label="Videodars" color="#3B7DD8" />
+      <StepEyebrow icon={PlayCircle} label="Videodars" color="#0E7A62" />
       {step.title && (
-        <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary border-l-4 border-[#3B7DD8] pl-5 mb-6">
+        <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary border-l-4 border-[#0E7A62] pl-5 mb-6">
           {step.title}
         </h2>
       )}
@@ -208,7 +208,7 @@ export function VideoStep({ step, onComplete, videoUrl }: StepProps) {
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center text-text-secondary gap-3 bg-surface-muted/30">
-            <PlayCircle className="w-12 h-12 text-[#3B7DD8] animate-pulse" />
+            <PlayCircle className="w-12 h-12 text-[#0E7A62] animate-pulse" />
             <span className="text-sm font-semibold">Video havola yuklanmoqda yoki mavjud emas</span>
           </div>
         )}

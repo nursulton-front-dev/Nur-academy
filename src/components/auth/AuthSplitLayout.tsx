@@ -15,7 +15,7 @@ export function AuthSplitLayout({ children, title, subtitle }: AuthSplitLayoutPr
     <div className="min-h-screen flex flex-col lg:flex-row bg-primary-bg text-text-primary font-sans antialiased transition-colors duration-200">
       
       {/* ── LEFT DESKTOP HERO COLUMN (~52%) ── */}
-      <div className="hidden lg:flex lg:w-[48%] xl:w-[50%] bg-[#0B1D40] text-white p-10 xl:p-14 flex-col justify-between relative overflow-hidden shrink-0">
+      <div className="hidden lg:flex lg:w-[48%] xl:w-[50%] bg-deep text-white p-10 xl:p-14 flex-col justify-between relative overflow-hidden shrink-0">
         
         {/* Top: Brand Header */}
         <div className="relative z-10">
@@ -30,8 +30,8 @@ export function AuthSplitLayout({ children, title, subtitle }: AuthSplitLayoutPr
         {/* Center: Clean Educational Platform Showcase Card */}
         <div className="relative z-10 my-auto py-8 flex flex-col items-center">
           
-          <div className="w-full max-w-[420px] bg-[#112347] border border-blue-800/40 rounded-3xl p-6 shadow-xl space-y-4 mb-8 text-left">
-            <div className="flex items-center justify-between pb-3 border-b border-blue-800/50">
+          <div className="w-full max-w-[420px] bg-[#112347] border border-emerald-800/40 rounded-3xl p-6 shadow-xl space-y-4 mb-8 text-left">
+            <div className="flex items-center justify-between pb-3 border-b border-emerald-800/50">
               <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 Pedagogik attestatsiya
@@ -42,7 +42,7 @@ export function AuthSplitLayout({ children, title, subtitle }: AuthSplitLayoutPr
             </div>
 
             <div className="space-y-3">
-              <div className="p-3 rounded-xl bg-[#09152F] border border-blue-900/60 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-[#09152F] border border-emerald-900/60 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
                     <Activity className="w-4 h-4" />
@@ -55,9 +55,9 @@ export function AuthSplitLayout({ children, title, subtitle }: AuthSplitLayoutPr
                 <span className="text-xs font-bold font-mono text-emerald-400">84 ball</span>
               </div>
 
-              <div className="p-3 rounded-xl bg-[#09152F] border border-blue-900/60 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-[#09152F] border border-emerald-900/60 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
                     <Timer className="w-4 h-4" />
                   </div>
                   <div>
@@ -65,10 +65,10 @@ export function AuthSplitLayout({ children, title, subtitle }: AuthSplitLayoutPr
                     <div className="text-[10px] text-slate-300">Haqiqiy attestatsiya talabida</div>
                   </div>
                 </div>
-                <span className="text-xs font-bold text-blue-400">120 daq</span>
+                <span className="text-xs font-bold text-emerald-400">120 daq</span>
               </div>
 
-              <div className="p-3 rounded-xl bg-[#09152F] border border-blue-900/60 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-[#09152F] border border-emerald-900/60 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
                     <Brain className="w-4 h-4" />
@@ -99,13 +99,13 @@ export function AuthSplitLayout({ children, title, subtitle }: AuthSplitLayoutPr
         </div>
 
         {/* Bottom Highlights */}
-        <div className="relative z-10 pt-6 border-t border-blue-900/60 grid grid-cols-3 gap-3 text-center text-xs text-slate-300">
+        <div className="relative z-10 pt-6 border-t border-emerald-900/60 grid grid-cols-3 gap-3 text-center text-xs text-slate-300">
           <div className="flex flex-col items-center gap-1">
             <span className="font-bold text-amber-400 text-sm font-mono">10 ta</span>
             <span>Standart bo‘lim</span>
           </div>
           <div className="flex flex-col items-center gap-1">
-            <span className="font-bold text-blue-400 text-sm font-mono">50+</span>
+            <span className="font-bold text-emerald-400 text-sm font-mono">50+</span>
             <span>Video/matn darslar</span>
           </div>
           <div className="flex flex-col items-center gap-1">

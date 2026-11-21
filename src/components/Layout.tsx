@@ -55,54 +55,54 @@ export function Layout() {
     <div className="min-h-dvh flex flex-col font-sans text-text-primary bg-primary-bg transition-colors duration-300">
 
       {/* Minimal Modern Full-Width Top Navigation */}
-      <header className="bg-surface/95 border-b border-border-card sticky top-0 z-40 flex-shrink-0 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+      <header className="bg-[color-mix(in_srgb,var(--theme-surface)_60%,var(--theme-primary-bg))] border-b border-border-card sticky top-0 z-40 flex-shrink-0 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
         <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16 gap-4">
 
           {/* Logo + primary nav (left) */}
           <div className="flex items-center gap-3 sm:gap-6 min-w-0">
             <Link to="/" className="flex items-center space-x-2.5 flex-shrink-0 group">
               <BrandLogo size="md" showText={false} imgClassName="group-hover:scale-105 transition-transform" />
-              <span className={`font-serif font-extrabold tracking-tight text-text-primary ${isLanding ? "text-base sm:text-xl" : "text-xl hidden sm:inline"}`}>
+              <span className={`font-brand font-extrabold tracking-tight text-text-primary ${isLanding ? "text-lg sm:text-[25px]" : "text-[25px] hidden sm:inline"}`}>
                 Nur Academy
               </span>
             </Link>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden md:flex items-center gap-1 lg:gap-4 md:ml-6">
               {isLanding ? (
                 <>
                   <a
                     href="#kurslar"
                     onClick={(e) => scrollToSection(e, 'kurslar')}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-[15px] font-semibold text-text-primary hover:text-accent-blue hover:bg-surface-hover transition-colors"
                   >
                     Kurslar
                   </a>
                   <a
                     href="#afzalliklar"
                     onClick={(e) => scrollToSection(e, 'afzalliklar')}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-[15px] font-semibold text-text-primary hover:text-accent-blue hover:bg-surface-hover transition-colors"
                   >
                     Afzalliklar
                   </a>
                   <a
                     href="#bosqichlar"
                     onClick={(e) => scrollToSection(e, 'bosqichlar')}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-[15px] font-semibold text-text-primary hover:text-accent-blue hover:bg-surface-hover transition-colors"
                   >
                     Qanday ishlaydi
                   </a>
                   <a
                     href="#tariflar"
                     onClick={(e) => scrollToSection(e, 'tariflar')}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-[15px] font-semibold text-text-primary hover:text-accent-blue hover:bg-surface-hover transition-colors"
                   >
                     Tariflar
                   </a>
                   <a
                     href="#savollar"
                     onClick={(e) => scrollToSection(e, 'savollar')}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-[15px] font-semibold text-text-primary hover:text-accent-blue hover:bg-surface-hover transition-colors"
                   >
                     Savol-javoblar
                   </a>
@@ -111,23 +111,23 @@ export function Layout() {
                 <>
                   <Link
                     to="/courses"
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-[15px] font-semibold text-text-primary hover:text-accent-blue hover:bg-surface-hover transition-colors"
                   >
                     Kurslar
                   </Link>
                   <Link
                     to="/pricing"
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-[15px] font-semibold text-text-primary hover:text-accent-blue hover:bg-surface-hover transition-colors"
                   >
                     Tariflar
                   </Link>
                   {user && (
                     <Link
                       to="/dashboard"
-                      className={`px-3 py-1.5 text-xs font-semibold transition-all relative ${
+                      className={`px-3 py-1.5 text-[15px] font-semibold transition-all relative ${
                         location.pathname === '/dashboard'
                           ? 'text-accent-blue font-bold after:content-[""] after:absolute after:bottom-[-20px] after:left-1 after:right-1 after:h-[2px] after:bg-accent-blue after:rounded-full'
-                          : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover rounded-lg'
+                          : 'text-text-primary hover:text-accent-blue hover:bg-surface-hover rounded-lg'
                       }`}
                     >
                       Mening kurslarim
@@ -189,9 +189,9 @@ export function Layout() {
                       setProfileOpen(!profileOpen);
                       setNotificationsOpen(false);
                     }}
-                    className="w-9 h-9 rounded-full bg-accent-blue/10 border border-accent-blue/30 flex items-center justify-center relative overflow-hidden cursor-pointer hover:border-accent-blue/80 transition-colors"
+                    className="w-[38px] h-[38px] rounded-full bg-mint-strong flex items-center justify-center relative overflow-hidden cursor-pointer ring-accent-blue/40 hover:ring-2 transition"
                   >
-                    <span className="text-accent-blue font-bold text-xs">{initialLetters}</span>
+                    <span className="text-on-mint font-bold text-sm">{initialLetters}</span>
                   </button>
 
                   {profileOpen && (
@@ -237,7 +237,7 @@ export function Layout() {
                 </Link>
                 <Link
                   to="/signup"
-                  className="hidden xs:inline-flex px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold bg-accent-blue text-white hover:bg-accent-blue/95 shadow-sm shadow-accent-blue/20 transition-all active:scale-97"
+                  className="hidden xs:inline-flex px-3.5 sm:px-4 py-2 rounded-[10px] text-sm font-bold bg-cta text-on-cta hover:bg-cta-hover transition-all active:scale-97"
                 >
                   Bepul boshlash
                 </Link>
@@ -358,7 +358,7 @@ export function Layout() {
                 <Link
                   to="/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2.5 rounded-xl text-sm font-bold bg-accent-blue text-white hover:bg-accent-blue/95 transition-all shadow-sm"
+                  className="w-full text-center py-2.5 rounded-xl text-sm font-bold bg-cta text-on-cta hover:bg-cta-hover transition-all shadow-sm"
                 >
                   Bepul boshlash
                 </Link>

@@ -20,11 +20,11 @@ interface StepLessonProps {
 }
 
 const TYPE_STRIP: Record<StepType, string> = {
-  text: '#1262F5',
+  text: '#0E7A62',
   quiz: '#F2B544',
   common_mistakes: '#EF4444',
   summary: '#10B981',
-  video: '#1262F5'
+  video: '#0E7A62'
 };
 
 const TYPE_LABEL: Record<StepType, string> = {
