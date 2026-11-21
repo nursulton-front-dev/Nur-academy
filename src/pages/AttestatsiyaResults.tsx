@@ -15,8 +15,10 @@ import { mockModules, mockTopicTests } from '../data/attestatsiyaMocks';
 import {
   Target, AlertTriangle, Flame, BookOpen, ArrowRight, Brain,
   Clock, Trophy, Star, BarChart3, Award, LogIn, UserPlus, Eye, RefreshCw, Inbox,
+  Zap,
 } from 'lucide-react';
 import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
+import { HeroPanel, ListRow, ctaClass } from '../components/brand/Ornaments';
 
 // Hard ceiling so a hung request can never leave the page spinning forever.
 const FETCH_TIMEOUT_MS = 10000;
@@ -48,7 +50,7 @@ function ScoreRing({ score, size = 140, stroke = 9 }: { score: number; size?: nu
       </svg>
       <div className="absolute text-center">
         <p className="text-3xl font-serif font-extrabold text-text-primary">{score}</p>
-        <p className="text-[9px] font-bold text-text-secondary uppercase">/ 100</p>
+        <p className="text-[13px] font-bold text-text-secondary uppercase">/ 100</p>
       </div>
     </div>
   );
@@ -163,7 +165,7 @@ export default function AttestatsiyaResults() {
             </p>
           </div>
           <div className="flex flex-col gap-2.5">
-            <Link to="/login" className="inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-accent-blue/95 transition-all">
+            <Link to="/login" className="inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-accent-blue/95 transition-all">
               <LogIn className="w-4 h-4" /> Kirish
             </Link>
             <Link to="/signup" className="inline-flex items-center justify-center gap-2 bg-surface border border-border-card text-text-primary px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-surface-hover transition-all">
@@ -198,7 +200,7 @@ export default function AttestatsiyaResults() {
           </div>
           <button
             onClick={() => loadResults()}
-            className="inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-accent-blue/95 transition-all cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-accent-blue/95 transition-all cursor-pointer"
           >
             <RefreshCw className="w-4 h-4" /> Qayta urinish
           </button>
@@ -227,7 +229,7 @@ export default function AttestatsiyaResults() {
               </p>
             </div>
             <div className="flex flex-wrap gap-2 shrink-0">
-              <Link to={coursePath(slug, 'diagnostika')} className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-accent-blue/95 transition-all">
+              <Link to={coursePath(slug, 'diagnostika')} className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-accent-blue/95 transition-all">
                 Diagnostikani boshlash <ArrowRight className="w-3.5 h-3.5" />
               </Link>
               <Link to={coursePath(slug, 'testlar')} className="inline-flex items-center gap-1.5 bg-surface border border-border-card text-text-primary px-4 py-2 rounded-xl text-xs font-bold hover:bg-surface-hover transition-all">
@@ -238,63 +240,51 @@ export default function AttestatsiyaResults() {
         )}
 
       {/* ───── BLOK 1: Umumiy holat ───── */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Score forecast */}
-        <div className="bg-surface border border-border-card rounded-2xl p-5 flex flex-col items-center justify-center text-center space-y-3">
-          <h3 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Prognoz ball</h3>
-          {score != null ? (
-            <>
-              <ScoreRing score={score} />
-              <p className="text-xs text-text-secondary">
-                Hozir <span className="font-bold text-text-primary">{score}/100</span>
-                {goal != null && (
-                  <>
-                    {' · '}Maqsad <span className="font-bold text-text-primary">{goal}</span>
-                  </>
-                )}
-              </p>
-              {goal != null && (
-                <p className={`text-xs font-bold ${score >= goal ? 'text-success-green' : 'text-warning-amber'}`}>
-                  {score >= goal ? '✓ Maqsadga yetdingiz!' : `${goal - score} ball qoldi`}
-                </p>
+      <section className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+        <HeroPanel
+          className="lg:flex-[1.2]"
+          chip="Prognoz ball"
+          chipIcon={<Target className="h-4 w-4" />}
+          title={score != null ? `${score} / 100` : 'Diagnostika topshirilmagan'}
+          description={
+            score != null
+              ? goal != null
+                ? score >= goal
+                  ? `Maqsad ${goal} ballga yetdingiz!`
+                  : `Maqsad — ${goal} ball. Yana ${goal - score} ball qoldi.`
+                : 'Diagnostika va testlar asosidagi taxminiy natija.'
+              : 'Diagnostikani topshiring — prognoz ball va zaif mavzular shu yerda koʻrinadi.'
+          }
+          stats={[
+            { icon: <BookOpen className="h-[22px] w-[22px]" />, label: `${completedLessons}/${totalLessons} dars` },
+            { icon: <Flame className="h-[22px] w-[22px]" />, label: `${streak} kun seriya` },
+            { icon: <Zap className="h-[22px] w-[22px]" />, label: `${xp} XP · ${level}-daraja` },
+          ]}
+          footer={
+            <div className="space-y-2">
+              <div className="flex items-end justify-between">
+                <span className="text-base font-bold text-text-primary">Kurs progressi</span>
+                <span className="text-2xl font-extrabold text-text-primary tabular-nums">{courseProgress}%</span>
+              </div>
+              <div className="h-3 w-full overflow-hidden rounded-full bg-surface-hover">
+                <div className="h-full rounded-full bg-accent-blue transition-all duration-500" style={{ width: `${courseProgress}%` }} />
+              </div>
+              {score == null && (
+                <Link to={coursePath(slug, 'diagnostika')} className={`${ctaClass} mt-4 w-full`}>
+                  Diagnostikani boshlash <ArrowRight className="h-5 w-5" />
+                </Link>
               )}
-            </>
-          ) : (
-            <div className="py-6 space-y-2">
-              <p className="text-xs text-text-secondary">Diagnostika topshirilmagan</p>
-              <Link to={coursePath(slug, 'diagnostika')} className="text-xs font-bold text-accent-blue hover:underline">
-                Topshirish →
-              </Link>
             </div>
-          )}
-        </div>
-
-        {/* Course progress + XP */}
-        <div className="bg-surface border border-border-card rounded-2xl p-5 space-y-4">
-          <h3 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Kurs progressi</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between items-end">
-              <p className="text-2xl font-serif font-extrabold text-text-primary">{courseProgress}%</p>
-              <p className="text-[11px] text-text-secondary">{completedLessons}/{totalLessons} dars</p>
-            </div>
-            <div className="w-full bg-primary-bg h-2.5 rounded-full overflow-hidden border border-border-card/30">
-              <div className="bg-accent-blue h-full rounded-full transition-all duration-500" style={{ width: `${courseProgress}%` }} />
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-2 pt-1">
-            <Metric value={streak} label="Seriya" />
-            <Metric value={xp} label="XP" />
-            <Metric value={level} label="Daraja" />
-          </div>
-        </div>
-
-        {/* Quick metrics */}
-        <div className="bg-surface border border-border-card rounded-2xl p-5 space-y-3">
-          <h3 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Ko‘rsatkichlar</h3>
-          <MetricRow icon={<BookOpen className="w-3.5 h-3.5" />} label="Darslar" value={`${completedLessons}/${totalLessons}`} />
-          <MetricRow icon={<Target className="w-3.5 h-3.5" />} label="Testlar" value={`${completedTests}/${mockTopicTests.length}`} />
-          <MetricRow icon={<Brain className="w-3.5 h-3.5" />} label="Xatolar" value={errors} />
-          <MetricRow icon={<Clock className="w-3.5 h-3.5" />} label="Takrorlash" value={reviewCount} />
+          }
+        />
+        <div className="min-w-0 rounded-[18px] border border-border-card bg-surface px-5 pb-6 pt-7 sm:pl-6 lg:flex-1">
+          <h2 className="mb-4 text-[28px] text-text-primary">Koʻrsatkichlar</h2>
+          <ol className="flex flex-col gap-2">
+            <ListRow n={1} title="Darslar" meta={`${completedLessons}/${totalLessons}`} />
+            <ListRow n={2} title="Mavzu testlari" meta={`${completedTests}/${mockTopicTests.length}`} />
+            <ListRow n={3} title="Xatolar daftarida" meta={errors} />
+            <ListRow n={4} title="Takrorlash navbati" meta={reviewCount} />
+          </ol>
         </div>
       </section>
 
@@ -372,8 +362,8 @@ export default function AttestatsiyaResults() {
               >
                 <badge.icon className="w-4 h-4" />
               </div>
-              <p className="text-[11px] font-bold text-text-primary">{badge.label}</p>
-              <p className="text-[9px] text-text-secondary">{badge.desc}</p>
+              <p className="text-[13px] font-bold text-text-primary">{badge.label}</p>
+              <p className="text-[13px] text-text-secondary">{badge.desc}</p>
             </div>
           ))}
         </div>
@@ -389,7 +379,7 @@ export default function AttestatsiyaResults() {
 
       {/* Quick actions */}
       <div className="flex flex-wrap gap-3">
-        <Link to={coursePath(slug, 'imtihon')} className="inline-flex items-center gap-2 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-accent-blue/95 shadow-md transition-all">
+        <Link to={coursePath(slug, 'imtihon')} className="inline-flex items-center gap-2 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-accent-blue/95 transition-all">
           <Target className="w-4 h-4" /> Mock imtihon
         </Link>
         <Link to={coursePath(slug, 'xatolar')} className="inline-flex items-center gap-2 bg-surface border border-border-card px-5 py-2.5 rounded-xl text-xs font-bold text-text-primary hover:bg-surface-hover transition-all">
@@ -408,7 +398,7 @@ function Metric({ value, label }: { value: number; label: string }) {
   return (
     <div className="text-center">
       <p className="text-sm font-serif font-extrabold text-text-primary">{value}</p>
-      <p className="text-[9px] font-bold text-text-secondary uppercase">{label}</p>
+      <p className="text-[13px] font-bold text-text-secondary uppercase">{label}</p>
     </div>
   );
 }
@@ -426,7 +416,7 @@ function MetricCard({ label, value }: { label: string; value: string | number })
   return (
     <div className="bg-surface border border-border-card rounded-2xl p-4 text-center space-y-1">
       <p className="text-lg font-serif font-extrabold text-text-primary">{value}</p>
-      <p className="text-[9px] font-bold text-text-secondary uppercase tracking-widest">{label}</p>
+      <p className="text-[13px] font-bold text-text-secondary uppercase tracking-widest">{label}</p>
     </div>
   );
 }

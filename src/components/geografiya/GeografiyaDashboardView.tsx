@@ -74,7 +74,7 @@ export default function GeografiyaDashboardView() {
       </div>
 
       {/* Hero Card */}
-      <div className="bg-surface border border-border-card rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="bg-surface border border-border-card rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="space-y-2 max-w-xl">
           <div className="flex items-center gap-2 text-xs font-bold text-accent-blue uppercase tracking-wider">
             <Compass className="w-4 h-4" />
@@ -91,7 +91,7 @@ export default function GeografiyaDashboardView() {
               Kuzatilgan oraliq: {readiness.observedRange.min} – {readiness.observedRange.max} ball
             </p>
           )}
-          <p className="text-[10px] text-text-secondary italic">
+          <p className="text-xs text-text-secondary italic">
             {readiness?.disclaimer}
           </p>
         </div>
@@ -99,7 +99,7 @@ export default function GeografiyaDashboardView() {
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <button
             onClick={() => navigate(coursePath(GEOGRAFIYA_SLUG, 'imtihon/A'))}
-            className="px-6 py-3.5 rounded-xl bg-accent-blue text-white text-xs font-bold hover:bg-accent-blue/90 shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="px-6 py-3.5 rounded-xl bg-accent-blue text-white text-sm font-bold hover:bg-accent-blue/90 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <PlayCircle className="w-4 h-4" />
             Diagnostikadan boshlash (A)
@@ -119,27 +119,27 @@ export default function GeografiyaDashboardView() {
       {/* Progress & Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="bg-surface border border-border-card rounded-2xl p-4 space-y-1">
-          <p className="text-[10px] uppercase font-bold text-text-secondary">O‘zlashtirish</p>
+          <p className="text-xs uppercase font-bold text-text-secondary">O‘zlashtirish</p>
           <p className="text-2xl font-serif font-extrabold text-accent-blue">{progressPercent}%</p>
-          <p className="text-[11px] text-text-secondary">{doneCount} / {totalLessons} dars yakunlangan</p>
+          <p className="text-[13px] text-text-secondary">{doneCount} / {totalLessons} dars yakunlangan</p>
         </div>
 
         <div className="bg-surface border border-border-card rounded-2xl p-4 space-y-1">
-          <p className="text-[10px] uppercase font-bold text-text-secondary">Modullar</p>
+          <p className="text-xs uppercase font-bold text-text-secondary">Modullar</p>
           <p className="text-2xl font-serif font-extrabold text-emerald-500">8 ta</p>
-          <p className="text-[11px] text-text-secondary">O‘quv rejasi to‘liq</p>
+          <p className="text-[13px] text-text-secondary">O‘quv rejasi to‘liq</p>
         </div>
 
         <div className="bg-surface border border-border-card rounded-2xl p-4 space-y-1">
-          <p className="text-[10px] uppercase font-bold text-text-secondary">Oddiy mocklar</p>
+          <p className="text-xs uppercase font-bold text-text-secondary">Oddiy mocklar</p>
           <p className="text-2xl font-serif font-extrabold text-purple-500">4 ta</p>
-          <p className="text-[11px] text-text-secondary">Har 2 moduldan so‘ng</p>
+          <p className="text-[13px] text-text-secondary">Har 2 moduldan so‘ng</p>
         </div>
 
         <div className="bg-surface border border-border-card rounded-2xl p-4 space-y-1">
-          <p className="text-[10px] uppercase font-bold text-text-secondary">Real mocklar</p>
+          <p className="text-xs uppercase font-bold text-text-secondary">Real mocklar</p>
           <p className="text-2xl font-serif font-extrabold text-amber-500">A / B / C</p>
-          <p className="text-[11px] text-text-secondary">50 savol / 90 daqiqa</p>
+          <p className="text-[13px] text-text-secondary">50 savol / 90 daqiqa</p>
         </div>
       </div>
 
@@ -172,7 +172,7 @@ export default function GeografiyaDashboardView() {
                       className={`w-7 h-7 rounded-lg flex items-center justify-center font-mono text-xs font-bold ${
                         isCompleted
                           ? 'bg-emerald-500/15 text-emerald-500'
-                          : 'bg-accent-blue/10 text-accent-blue'
+                          : 'bg-mint text-on-mint'
                       }`}
                     >
                       {mod.id}
@@ -199,7 +199,7 @@ export default function GeografiyaDashboardView() {
                             : 'bg-primary-bg/60 border-border-card text-text-secondary hover:border-accent-blue/40 hover:text-text-primary'
                         }`}
                       >
-                        <div className="flex items-center justify-between text-[10px] font-mono font-bold">
+                        <div className="flex items-center justify-between text-xs font-mono font-bold">
                           <span>{l.id}</span>
                           {isLessonDone && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
                         </div>

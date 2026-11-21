@@ -1,3 +1,4 @@
+import { HeroPanel, WarnNote } from './brand/Ornaments';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, Target, Lightbulb, ArrowRight, RefreshCw, BookOpen, XCircle, CheckCircle2, ListChecks, ChevronDown } from 'lucide-react';
@@ -39,8 +40,8 @@ interface DiagnosticResultViewProps {
 
 // Domain bar color by performance band.
 function barColor(percentage: number): string {
-  if (percentage >= 70) return '#4CAF82'; // green
-  if (percentage >= 40) return '#0E7A62'; // blue
+  if (percentage >= 70) return '#0E7A62'; // green
+  if (percentage >= 40) return '#F7892B'; // orange
   return '#E0735C'; // terracotta
 }
 
@@ -72,47 +73,31 @@ export default function DiagnosticResultView({
   return (
     <div className="space-y-8 max-w-4xl mx-auto py-8 px-4 text-left font-sans">
       {/* Score banner */}
-      <div className="bg-gradient-to-br from-accent-blue/15 via-accent-blue/5 to-surface border border-border-card rounded-[32px] p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-center gap-6 shadow-sm relative overflow-hidden">
-        <div className="absolute -top-16 -right-16 w-56 h-56 bg-accent-blue/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="space-y-3 text-center sm:text-left relative z-10">
-          <span className="inline-flex items-center gap-1.5 text-[9px] bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full font-bold border border-emerald-500/20 uppercase tracking-widest w-fit mx-auto sm:mx-0">
-            <Sparkles className="w-3.5 h-3.5" />
-            Diagnostika yakunlandi
-          </span>
-          <h1 className="font-serif font-extrabold text-2xl sm:text-3xl text-text-primary">Sizning natijangiz</h1>
-          {finishedAt && (
-            <p className="text-xs text-text-secondary">
-              Topshirilgan sana: {new Date(finishedAt).toLocaleDateString('uz-UZ')}
-            </p>
-          )}
-          {/* Goal prognosis */}
-          <div className="space-y-1.5 pt-1">
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue bg-accent-blue/10 px-3 py-1.5 rounded-full">
-              <Target className="w-3.5 h-3.5" />
-              <span>Erishish mumkin: {achievableLevel(totalScore)}</span>
-            </div>
-            {goalScore != null && (
-              <p className={`text-sm font-bold ${meetsGoal ? 'text-emerald-600' : 'text-orange-500'}`}>
-                {meetsGoal
-                  ? 'Maqsadingizga erishdingiz!'
-                  : `Maqsadingizgacha ${pointsToGoal} ball qoldi`}
-              </p>
-            )}
-          </div>
+      <HeroPanel
+        chip="Diagnostika yakunlandi"
+        chipIcon={<Sparkles className="h-4 w-4" />}
+        title="Sizning natijangiz"
+        description={finishedAt ? `Topshirilgan sana: ${new Date(finishedAt).toLocaleDateString('uz-UZ')}` : undefined}
+        stats={[
+          { icon: <Target className="h-[22px] w-[22px]" />, label: `Erishish mumkin: ${achievableLevel(totalScore)}` },
+        ]}
+        footer={
+          goalScore != null ? (
+            <WarnNote icon={<Target className="h-7 w-7" strokeWidth={1.9} />}>
+              {meetsGoal ? 'Maqsadingizga erishdingiz!' : `Maqsadingiz — ${goalScore} ball. Yana ${pointsToGoal} ball qoldi.`}
+            </WarnNote>
+          ) : undefined
+        }
+      >
+        <div className="flex items-end gap-3">
+          <span className="text-[64px] font-extrabold leading-[0.9] tabular-nums">{totalScore}</span>
+          <span className="pb-2 text-lg font-semibold text-white/90">/ 100 ball</span>
         </div>
-
-        <div className="w-32 h-32 rounded-full border-4 border-accent-blue flex flex-col items-center justify-center bg-surface shadow-md shrink-0 relative z-10">
-          <span className="text-4xl font-serif font-extrabold text-text-primary">{totalScore}</span>
-          <span className="text-[10px] font-bold text-text-secondary uppercase border-t border-border-card pt-1 mt-1">/ 100 ball</span>
-        </div>
-      </div>
+      </HeroPanel>
 
       {/* Domain breakdown */}
-      <div className="bg-surface border border-border-card rounded-[28px] p-6 sm:p-8 shadow-sm text-left space-y-5">
-        <div className="flex items-center space-x-2 pb-3 border-b border-border-card/50">
-          <BookOpen className="w-5 h-5 text-accent-blue" />
-          <h3 className="font-serif font-bold text-lg text-text-primary">Bo‘limlar bo‘yicha tahlil</h3>
-        </div>
+      <div className="bg-surface border border-border-card rounded-[18px] p-6 sm:p-8 text-left space-y-5">
+        <h3 className="text-[26px] text-text-primary">Boʻlimlar boʻyicha tahlil</h3>
 
         <div className="space-y-4">
           {domainResults.map((d) => (
@@ -123,7 +108,7 @@ export default function DiagnosticResultView({
                   {d.correct} / {d.total} · <span className="text-text-primary">{d.percentage}%</span>
                 </span>
               </div>
-              <div className="w-full h-2.5 bg-border-card/40 rounded-full overflow-hidden">
+              <div className="w-full h-2.5 bg-surface-hover rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-700 ease-out"
                   style={{ width: `${Math.max(3, d.percentage)}%`, backgroundColor: barColor(d.percentage) }}
@@ -134,17 +119,17 @@ export default function DiagnosticResultView({
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap gap-x-4 gap-y-1.5 pt-2 text-[10px] font-semibold text-text-secondary">
-          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#4CAF82' }} /> ≥ 70% kuchli</span>
-          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#0E7A62' }} /> 40–70% oʻrtacha</span>
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5 pt-2 text-xs font-semibold text-text-secondary">
+          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#0E7A62' }} /> ≥ 70% kuchli</span>
+          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#F7892B' }} /> 40–70% oʻrtacha</span>
           <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#E0735C' }} /> &lt; 40% zaif</span>
         </div>
       </div>
 
       {/* Recommendation — accent-blue tint (#EAF1FB/#C5DAF5 equivalent, theme-safe) */}
-      <div className="bg-accent-blue/[0.06] border border-accent-blue/25 rounded-[24px] p-6 shadow-sm text-left space-y-3">
+      <div className="bg-warn-bg border border-warn-border rounded-[18px] p-6 text-left space-y-3">
         <div className="flex items-center space-x-2">
-          <Lightbulb className="w-5 h-5 text-accent-blue" />
+          <Lightbulb className="w-5 h-5 text-warn-icon" />
           <h3 className="font-serif font-bold text-base text-text-primary">Tavsiya</h3>
         </div>
         <p className="text-sm text-text-secondary leading-relaxed">{recommendation}</p>
@@ -152,7 +137,7 @@ export default function DiagnosticResultView({
 
       {/* Wrong-answer review with AI Mentor (fresh completion only) */}
       {wrongAnswers && wrongAnswers.length > 0 && (
-        <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm text-left space-y-4">
+        <div className="bg-surface border border-border-card rounded-[18px] p-6 text-left space-y-4">
           <div className="flex items-center space-x-2">
             <XCircle className="w-5 h-5 text-rose-500" />
             <h3 className="font-serif font-bold text-base text-text-primary">Xatolar ustida ishlash</h3>
@@ -170,7 +155,7 @@ export default function DiagnosticResultView({
 
       {/* Full per-question answer review (collapsible) */}
       {answerReview && answerReview.length > 0 && (
-        <div className="bg-surface border border-border-card rounded-[24px] shadow-sm text-left overflow-hidden">
+        <div className="bg-surface border border-border-card rounded-[18px] text-left overflow-hidden">
           <button
             onClick={() => setReviewOpen((v) => !v)}
             className="w-full flex items-center justify-between gap-3 p-6 cursor-pointer hover:bg-surface-hover transition-colors"
@@ -219,7 +204,7 @@ export default function DiagnosticResultView({
                         else if (isUserOpt && !q.isCorrect) cls = 'border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 font-semibold';
                         return (
                           <div key={oi} className={`flex items-center gap-2.5 text-sm px-3 py-2 rounded-lg border ${cls}`}>
-                            <span className="text-[10px] font-bold uppercase shrink-0">{String.fromCharCode(65 + oi)}</span>
+                            <span className="text-xs font-bold uppercase shrink-0">{String.fromCharCode(65 + oi)}</span>
                             <span className="leading-snug">{opt}</span>
                             {isCorrectOpt && <CheckCircle2 className="w-4 h-4 ml-auto shrink-0 text-emerald-500" />}
                             {isUserOpt && !q.isCorrect && <XCircle className="w-4 h-4 ml-auto shrink-0 text-rose-500" />}
@@ -261,7 +246,7 @@ export default function DiagnosticResultView({
 
         <Link
           to="/attestatsiya"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent-blue hover:bg-accent-blue/95 text-white px-8 py-3.5 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/20 transition-all active:scale-97 cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent-blue hover:bg-accent-blue/95 text-white px-8 py-3.5 rounded-xl text-sm font-bold transition-all active:scale-97 cursor-pointer"
         >
           <span>Darslarga o‘tish</span>
           <ArrowRight className="w-4 h-4" />

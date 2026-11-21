@@ -17,12 +17,12 @@ function StepEyebrow({ icon: Icon, label, color }: { icon: LucideIcon; label: st
   return (
     <div className="flex items-center gap-2.5 mb-5">
       <span
-        className="inline-flex items-center justify-center w-8 h-8 rounded-xl shrink-0 shadow-sm shadow-black/[0.02]"
+        className="inline-flex items-center justify-center w-8 h-8 rounded-xl shrink-0 shadow-black/[0.02]"
         style={{ backgroundColor: `${color}15`, color }}
       >
         <Icon className="w-4 h-4" />
       </span>
-      <span className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color }}>
+      <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color }}>
         {label}
       </span>
     </div>
@@ -32,14 +32,14 @@ function StepEyebrow({ icon: Icon, label, color }: { icon: LucideIcon; label: st
 function ContinueButton({ label, onClick, tone = 'blue' }: { label: string; onClick: () => void; tone?: 'blue' | 'green' | 'red' }) {
   const cls =
     tone === 'green'
-      ? 'bg-[#4CAF82] hover:bg-[#429a72] shadow-[#4CAF82]/15'
+      ? 'bg-[#0E7A62] hover:bg-[#429a72]'
       : tone === 'red'
-      ? 'bg-[#E0735C] hover:bg-[#cf6450] shadow-[#E0735C]/15'
-      : 'bg-[#0E7A62] hover:bg-[#3570c4] shadow-[#0E7A62]/15';
+      ? 'bg-[#E0735C] hover:bg-[#cf6450]'
+      : 'bg-[#0E7A62] hover:bg-[#3570c4]';
   return (
     <button
       onClick={onClick}
-      className={`inline-flex w-full sm:w-auto items-center justify-center gap-2 ${cls} text-white px-7 py-4 rounded-xl text-sm font-bold shadow-md transition-all active:scale-[0.98] cursor-pointer`}
+      className={`inline-flex w-full sm:w-auto items-center justify-center gap-2 ${cls} text-white px-7 py-4 rounded-xl text-sm font-bold transition-all active:scale-[0.98] cursor-pointer`}
     >
       {label} <ArrowRight className="w-4 h-4 stroke-[2.5]" />
     </button>
@@ -67,8 +67,8 @@ export function TextStep({ step, onComplete, isFirstStep }: StepProps) {
             </div>
 
             {/* Goals / Motivational block */}
-            <div className="bg-gradient-to-br from-[#0E7A62]/[0.04] to-[#0E7A62]/[0.01] dark:from-[#0E7A62]/[0.08] dark:to-transparent border border-[#0E7A62]/20 rounded-3xl p-6 sm:p-8 shadow-sm flex gap-4 items-start mt-8">
-              <div className="p-3 bg-[#0E7A62] text-white rounded-2xl shrink-0 shadow-md shadow-[#0E7A62]/20">
+            <div className="bg-gradient-to-br from-[#0E7A62]/[0.04] to-[#0E7A62]/[0.01] dark:from-[#0E7A62]/[0.08] dark:to-transparent border border-[#0E7A62]/20 rounded-3xl p-6 sm:p-8 flex gap-4 items-start mt-8">
+              <div className="p-3 bg-[#0E7A62] text-white rounded-2xl shrink-0">
                 <BookOpen className="w-5 h-5" />
               </div>
               <div>
@@ -120,12 +120,11 @@ export function CommonMistakesStep({ step, onComplete }: StepProps) {
   return (
     <div className="w-full space-y-8">
       <StepEyebrow icon={AlertTriangle} label="Xatolar tahlili" color="#E0735C" />
-      <div className="w-full rounded-3xl border-2 p-8 sm:p-10 bg-[#E0735C]/[0.03] dark:bg-[#E0735C]/[0.08] border-[#E0735C]/20 shadow-sm relative overflow-hidden">
+      <div className="w-full rounded-3xl border-2 p-8 sm:p-10 bg-[#E0735C]/[0.03] dark:bg-[#E0735C]/[0.08] border-[#E0735C]/20 relative overflow-hidden">
         {/* Subtle background light */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#E0735C]/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-8 relative z-10">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-[#E0735C] text-white shadow-md shadow-[#E0735C]/20">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-[#E0735C] text-white">
             <AlertTriangle className="w-6 h-6" />
           </div>
           <div>
@@ -149,13 +148,12 @@ export function CommonMistakesStep({ step, onComplete }: StepProps) {
 export function SummaryStep({ step, onComplete, isLastLesson }: StepProps) {
   return (
     <div className="w-full space-y-8">
-      <StepEyebrow icon={Target} label="Dars yakuni" color="#4CAF82" />
-      <div className="w-full rounded-3xl border-2 p-8 sm:p-10 bg-[#4CAF82]/[0.03] dark:bg-[#4CAF82]/[0.08] border-[#4CAF82]/20 shadow-sm relative overflow-hidden">
+      <StepEyebrow icon={Target} label="Dars yakuni" color="#0E7A62" />
+      <div className="w-full rounded-3xl border-2 p-8 sm:p-10 bg-[#0E7A62]/[0.03] dark:bg-[#0E7A62]/[0.08] border-[#0E7A62]/20 relative overflow-hidden">
         {/* Subtle background light */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#4CAF82]/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-8 relative z-10">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-[#4CAF82] text-white shadow-md shadow-[#4CAF82]/20">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-[#0E7A62] text-white">
             <Target className="w-6 h-6" />
           </div>
           <div>
@@ -197,7 +195,7 @@ export function VideoStep({ step, onComplete, videoUrl }: StepProps) {
           {step.title}
         </h2>
       )}
-      <div className="w-full max-w-[1080px] mx-auto aspect-video rounded-3xl overflow-hidden border border-border-card bg-black shadow-lg relative group">
+      <div className="w-full max-w-[1080px] mx-auto aspect-video rounded-3xl overflow-hidden border border-border-card bg-black relative group">
         {embed ? (
           <iframe
             className="w-full h-full border-none"

@@ -55,7 +55,7 @@ export default function FeedbackModal({ campaign, courseId, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="bg-surface border border-border-card rounded-[24px] w-full max-w-md shadow-2xl overflow-hidden">
+      <div className="bg-surface border border-border-card rounded-[18px] w-full max-w-md shadow-2xl overflow-hidden">
 
         {/* Header */}
         <div className="flex items-start justify-between px-6 pt-6 pb-4">
@@ -114,7 +114,7 @@ export default function FeedbackModal({ campaign, courseId, onClose }: Props) {
                   onClick={() => setType(t)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                     type === t
-                      ? 'bg-accent-blue/10 border-accent-blue text-accent-blue'
+                      ? 'bg-mint border-accent-blue text-accent-blue'
                       : 'border-border-card text-text-secondary hover:border-accent-blue/50'
                   }`}
                 >

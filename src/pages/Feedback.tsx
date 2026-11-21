@@ -73,8 +73,8 @@ export default function Feedback() {
   if (!user) {
     return (
       <Shell>
-        <div className="bg-surface border border-border-card rounded-2xl p-8 sm:p-10 text-center space-y-5 shadow-xs">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center">
+        <div className="bg-surface border border-border-card rounded-2xl p-8 sm:p-10 text-center space-y-5">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-mint text-on-mint flex items-center justify-center">
             <MessageSquare className="w-7 h-7" />
           </div>
           <div className="space-y-2">
@@ -85,7 +85,7 @@ export default function Feedback() {
           </div>
           <Link
             to="/login?next=/feedback"
-            className="inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-hover text-white px-6 py-3 rounded-xl text-xs font-bold transition-all shadow-xs"
+            className="inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-hover text-white px-6 py-3 rounded-xl text-sm font-bold transition-all"
           >
             <LogIn className="w-4 h-4" />
             Kirish
@@ -98,7 +98,7 @@ export default function Feedback() {
   if (done) {
     return (
       <Shell>
-        <div className="bg-surface border border-border-card rounded-2xl p-8 sm:p-10 text-center space-y-4 shadow-xs">
+        <div className="bg-surface border border-border-card rounded-2xl p-8 sm:p-10 text-center space-y-4">
           <div className="w-14 h-14 mx-auto rounded-full bg-success-green/10 flex items-center justify-center">
             <CheckCircle2 className="w-7 h-7 text-success-green" />
           </div>
@@ -108,7 +108,7 @@ export default function Feedback() {
           </div>
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-2 mt-2 px-6 py-2.5 bg-accent-blue hover:bg-accent-hover text-white rounded-xl text-xs font-bold transition-colors shadow-xs"
+            className="inline-flex items-center gap-2 mt-2 px-6 py-2.5 bg-accent-blue hover:bg-accent-hover text-white rounded-xl text-sm font-bold transition-colors"
           >
             Mening kurslarim
           </Link>
@@ -119,7 +119,7 @@ export default function Feedback() {
 
   return (
     <Shell>
-      <div className="bg-surface border border-border-card rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs">
+      <div className="bg-surface border border-border-card rounded-2xl p-6 sm:p-8 space-y-6">
         <div className="space-y-1">
           <h1 className="text-2xl font-serif font-extrabold text-text-primary">Fikr bildirish</h1>
           <p className="text-sm text-text-secondary">
@@ -137,7 +137,7 @@ export default function Feedback() {
                 onClick={() => setType(t)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                   type === t
-                    ? 'bg-accent-blue/10 border-accent-blue text-accent-blue'
+                    ? 'bg-mint border-accent-blue text-accent-blue'
                     : 'border-border-card text-text-secondary hover:border-accent-blue/50'
                 }`}
               >

@@ -13,25 +13,25 @@ const CALLOUTS: Record<CalloutVariant, { wrap: string; iconBg: string; icon: str
   info: {
     wrap: 'bg-[#0E7A62]/[0.03] dark:bg-[#0E7A62]/10 border-[#0E7A62]',
     iconBg: 'bg-[#0E7A62]',
-    icon: 'text-white shadow-sm shadow-[#0E7A62]/20',
+    icon: 'text-white',
     Icon: Lightbulb,
   },
   success: {
-    wrap: 'bg-[#4CAF82]/[0.03] dark:bg-[#4CAF82]/10 border-[#4CAF82]',
-    iconBg: 'bg-[#4CAF82]',
-    icon: 'text-white shadow-sm shadow-[#4CAF82]/20',
+    wrap: 'bg-[#0E7A62]/[0.03] dark:bg-[#0E7A62]/10 border-[#0E7A62]',
+    iconBg: 'bg-[#0E7A62]',
+    icon: 'text-white',
     Icon: CheckCircle2,
   },
   warning: {
     wrap: 'bg-[#F59E0B]/[0.03] dark:bg-[#F59E0B]/10 border-[#F59E0B]',
     iconBg: 'bg-[#F59E0B]',
-    icon: 'text-white shadow-sm shadow-[#F59E0B]/20',
+    icon: 'text-white',
     Icon: AlertTriangle,
   },
   danger: {
     wrap: 'bg-[#E0735C]/[0.03] dark:bg-[#E0735C]/10 border-[#E0735C]',
     iconBg: 'bg-[#E0735C]',
-    icon: 'text-white shadow-sm shadow-[#E0735C]/20',
+    icon: 'text-white',
     Icon: XCircle,
   },
   neutral: {
@@ -103,7 +103,7 @@ export function renderMarkdown(content: string) {
         <ul key={key} className="my-4 space-y-3">
           {items.map((item, idx) => (
             <li key={idx} className="flex gap-3.5 text-text-secondary leading-relaxed text-[15px]">
-              <span className="mt-[0.6em] w-2 h-2 rounded bg-[#0E7A62] shrink-0 transform rotate-45 shadow-sm" />
+              <span className="mt-[0.6em] w-2 h-2 rounded bg-[#0E7A62] shrink-0 transform rotate-45" />
               <span className="min-w-0">{renderInline(item)}</span>
             </li>
           ))}
@@ -129,7 +129,7 @@ export function renderMarkdown(content: string) {
     const { headers, rows } = currentTable;
     currentTable = null;
     return (
-      <div key={key} className="overflow-x-auto my-6 border border-border-card rounded-2xl shadow-sm overflow-hidden">
+      <div key={key} className="overflow-x-auto my-6 border border-border-card rounded-2xl overflow-hidden">
         <table className="min-w-full text-sm border-collapse">
           <thead>
             <tr className="bg-[#0E7A62]/[0.06] dark:bg-[#0E7A62]/10">
@@ -170,7 +170,7 @@ export function renderMarkdown(content: string) {
     const bodyLines = [firstCleaned, ...currentQuote.slice(1)];
     currentQuote = [];
     return (
-      <div key={key} className={`my-5 flex gap-4 rounded-2xl border-l-4 p-5 shadow-sm ${cfg.wrap}`}>
+      <div key={key} className={`my-5 flex gap-4 rounded-2xl border-l-4 p-5 ${cfg.wrap}`}>
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${cfg.iconBg} ${cfg.icon}`}>
           <Icon className="w-5 h-5" />
         </div>
@@ -315,7 +315,7 @@ export function renderMarkdown(content: string) {
       elements.push(
         <div
           key={`pf_${i}`}
-          className="my-6 rounded-2xl border border-border-card bg-[#0E7A62]/[0.02] dark:bg-[#0E7A62]/[0.05] p-6 space-y-4 shadow-sm animate-fade-in"
+          className="my-6 rounded-2xl border border-border-card bg-[#0E7A62]/[0.02] dark:bg-[#0E7A62]/[0.05] p-6 space-y-4 animate-fade-in"
         >
           {flowSegments.map((seg, idx) => (
             <div key={idx} className="relative flex gap-4">
@@ -324,11 +324,11 @@ export function renderMarkdown(content: string) {
                 <span className="absolute left-4.5 top-9 bottom-[-20px] w-0.5 bg-gradient-to-b from-[#0E7A62] to-border-card/50" />
               )}
               {/* Step number badge */}
-              <div className="w-9 h-9 rounded-xl bg-[#0E7A62] text-white text-sm font-bold flex items-center justify-center shrink-0 shadow-md shadow-[#0E7A62]/20 relative z-10">
+              <div className="w-9 h-9 rounded-xl bg-[#0E7A62] text-white text-sm font-bold flex items-center justify-center shrink-0 relative z-10">
                 {idx + 1}
               </div>
               {/* Step content */}
-              <div className="flex-1 bg-surface border border-border-card/60 rounded-2xl p-4 shadow-sm min-w-0">
+              <div className="flex-1 bg-surface border border-border-card/60 rounded-2xl p-4 min-w-0">
                 <span className="text-sm sm:text-[15px] font-semibold text-text-primary">
                   {renderInline(seg)}
                 </span>

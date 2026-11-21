@@ -100,7 +100,7 @@ export default function AppTopbar({ onMenuClick, homeHref = '/attestatsiya' }: A
                 <Flame className="w-3.5 h-3.5" />
                 {appUser.streak} kun
               </span>
-              <span className="inline-flex items-center gap-1 bg-accent-blue/10 text-accent-blue rounded-full pl-2 pr-2.5 py-1.5 text-xs font-bold">
+              <span className="inline-flex items-center gap-1 bg-mint text-on-mint rounded-full pl-2 pr-2.5 py-1.5 text-xs font-bold">
                 <Zap className="w-3.5 h-3.5" />
                 Lv.{appUser.level}
                 <span className="text-text-secondary font-semibold">· {appUser.xp}</span>

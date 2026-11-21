@@ -163,7 +163,7 @@ export default function Dashboard() {
         <p className="text-sm text-text-secondary">{courseError}</p>
         <button
           onClick={() => window.location.reload()}
-          className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-accent-blue/95 transition-colors"
+          className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-accent-blue/95 transition-colors"
         >
           Qayta urinish
         </button>

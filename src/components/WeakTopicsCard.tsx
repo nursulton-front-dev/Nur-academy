@@ -18,7 +18,7 @@ export default function WeakTopicsCard() {
 
   if (showTopics.length === 0) {
     return (
-      <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm text-left space-y-3">
+      <div className="bg-surface border border-border-card rounded-[18px] p-6 text-left space-y-3">
         <div className="flex items-center space-x-2">
           <TrendingDown className="w-5 h-5 text-rose-500" />
           <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">Zaif bo'limlar</h3>
@@ -38,7 +38,7 @@ export default function WeakTopicsCard() {
   }
 
   return (
-    <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow text-left space-y-4">
+    <div className="bg-surface border border-border-card rounded-[18px] p-6 transition-shadow text-left space-y-4">
       <div className="flex items-center justify-between pb-1">
         <div className="flex items-center space-x-2">
           <TrendingDown className="w-5 h-5 text-rose-500" />
@@ -46,7 +46,7 @@ export default function WeakTopicsCard() {
         </div>
         <Link
           to="/attestatsiya/diagnostika"
-          className="text-[9px] font-bold text-accent-blue hover:underline"
+          className="text-[13px] font-bold text-accent-blue hover:underline"
         >
           Yangilash
         </Link>
@@ -58,7 +58,7 @@ export default function WeakTopicsCard() {
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-text-primary truncate max-w-[160px]">{item.topic}</span>
               {item.pct !== null && (
-                <span className="text-[10px] font-bold text-rose-500">{item.pct}%</span>
+                <span className="text-xs font-bold text-rose-500">{item.pct}%</span>
               )}
             </div>
             {item.pct !== null && (
@@ -75,7 +75,7 @@ export default function WeakTopicsCard() {
 
       <Link
         to="/attestatsiya/diagnostika"
-        className="inline-flex items-center gap-1.5 text-[10px] font-bold text-text-secondary hover:text-accent-blue transition-colors mt-2"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-text-secondary hover:text-accent-blue transition-colors mt-2"
       >
         <BookOpen className="w-3 h-3" />
         <span>Zaif mavzularni kuchaytirish uchun diagnostika</span>

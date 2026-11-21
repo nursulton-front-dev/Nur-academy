@@ -201,7 +201,7 @@ export default function Konspektlar() {
                 <h2 className="text-base sm:text-lg font-serif font-extrabold text-text-primary">
                   {group.title}
                 </h2>
-                <span className="text-[11px] font-bold text-text-secondary bg-primary-bg border border-border-card px-2 py-0.5 rounded-md">
+                <span className="text-[13px] font-bold text-text-secondary bg-primary-bg border border-border-card px-2 py-0.5 rounded-md">
                   {group.lessons.length}
                 </span>
               </div>
@@ -218,7 +218,7 @@ export default function Konspektlar() {
                   return (
                     <article
                       key={lessonId}
-                      className="rounded-2xl border border-border-card bg-surface p-5 sm:p-6 shadow-xs hover:border-accent-blue/30 transition-all flex flex-col"
+                      className="rounded-2xl border border-border-card bg-surface p-5 sm:p-6 hover:border-accent-blue/30 transition-all flex flex-col"
                     >
                       {/* Card header */}
                       <div className="flex items-start justify-between gap-3 mb-4">
@@ -231,7 +231,7 @@ export default function Konspektlar() {
                               {title}
                             </h3>
                             {updated && (
-                              <p className="text-[11px] text-text-secondary mt-0.5">
+                              <p className="text-[13px] text-text-secondary mt-0.5">
                                 Yangilangan: {updated}
                               </p>
                             )}
@@ -244,7 +244,7 @@ export default function Konspektlar() {
                         <div className="space-y-3">
                           {FACT_KEYS.map((key, i) => (
                             <div key={key} className="flex gap-3 items-start">
-                              <span className="mt-2 w-6 h-6 shrink-0 rounded-lg bg-accent-blue/10 text-accent-blue text-xs font-bold flex items-center justify-center">
+                              <span className="mt-2 w-6 h-6 shrink-0 rounded-lg bg-mint text-on-mint text-xs font-bold flex items-center justify-center">
                                 {i + 1}
                               </span>
                               <textarea
@@ -262,7 +262,7 @@ export default function Konspektlar() {
                             <button
                               onClick={() => saveEdit(lessonId)}
                               disabled={isSaving}
-                              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-accent-blue hover:bg-accent-hover shadow-xs transition-all active:scale-[0.98] disabled:opacity-50"
+                              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-white bg-accent-blue hover:bg-accent-hover transition-all active:scale-[0.98] disabled:opacity-50"
                             >
                               {isSaving ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />

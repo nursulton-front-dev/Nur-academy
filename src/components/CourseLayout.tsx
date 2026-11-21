@@ -53,7 +53,7 @@ function NavItem({ to, icon, label, active, badge, onNavigate }: NavItemProps) {
       <span className="shrink-0">{icon}</span>
       <span className="flex-1 truncate">{label}</span>
       {badge != null && badge > 0 && (
-        <span className="text-[9px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-full shrink-0">
+        <span className="text-[13px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-full shrink-0">
           {badge}
         </span>
       )}
@@ -123,7 +123,7 @@ export default function CourseLayout() {
     <nav className="flex flex-col gap-5 p-3 font-sans">
       {/* KURS */}
       <div>
-        <p className="px-3 text-[9px] font-bold text-text-secondary uppercase tracking-widest mb-1.5">
+        <p className="px-3 text-[13px] font-bold text-text-secondary uppercase tracking-widest mb-1.5">
           Kurs
         </p>
         {/* Course title from DB */}
@@ -152,9 +152,9 @@ export default function CourseLayout() {
 
       {/* MODULLAR */}
       <div>
-        <p className="px-3 text-[9px] font-bold text-text-secondary uppercase tracking-widest mb-1.5 flex justify-between items-center">
+        <p className="px-3 text-[13px] font-bold text-text-secondary uppercase tracking-widest mb-1.5 flex justify-between items-center">
           <span>Modullar</span>
-          <span className="text-[8px] bg-accent-blue/10 text-accent-blue px-1.5 py-0.5 rounded-full">
+          <span className="text-[8px] bg-mint text-on-mint px-1.5 py-0.5 rounded-full">
             {modulesLoading ? '…' : courseModules.length}
           </span>
         </p>
@@ -170,7 +170,7 @@ export default function CourseLayout() {
 
         {/* Error */}
         {!modulesLoading && modulesError && (
-          <p className="px-3 py-2 text-[11px] font-medium text-error-red leading-snug">
+          <p className="px-3 py-2 text-[13px] font-medium text-error-red leading-snug">
             {modulesError}
           </p>
         )}
@@ -186,7 +186,7 @@ export default function CourseLayout() {
               let itemClass = 'hover:bg-surface-hover text-text-primary';
               let badgeClass = 'bg-primary-bg text-text-secondary border border-border-card';
               if (isCurrent) {
-                itemClass = 'bg-accent-blue text-white font-semibold shadow-sm';
+                itemClass = 'bg-accent-blue text-white font-semibold';
                 badgeClass = 'bg-white/20 text-white';
               } else if (isLocked) {
                 itemClass = 'opacity-60 cursor-not-allowed text-text-secondary';
@@ -249,9 +249,9 @@ export default function CourseLayout() {
                               if (lessonLocked) e.preventDefault();
                               else closeMobile();
                             }}
-                            className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] font-medium transition-all ${
+                            className={`flex items-center gap-1.5 px-2 py-1 rounded text-[13px] font-medium transition-all ${
                               lessonActive
-                                ? 'bg-accent-blue/15 text-accent-blue font-semibold'
+                                ? 'bg-mint text-on-mint font-semibold'
                                 : lessonLocked
                                   ? 'opacity-60 cursor-not-allowed text-text-secondary'
                                   : 'hover:bg-surface-hover text-text-primary'
@@ -275,7 +275,7 @@ export default function CourseLayout() {
 
       {/* AMALIYOT VA SINOV */}
       <div>
-        <p className="px-3 text-[9px] font-bold text-text-secondary uppercase tracking-widest mb-1.5">
+        <p className="px-3 text-[13px] font-bold text-text-secondary uppercase tracking-widest mb-1.5">
           Amaliyot va sinov
         </p>
         <div className="space-y-0.5">

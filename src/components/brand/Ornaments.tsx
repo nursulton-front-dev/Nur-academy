@@ -111,3 +111,113 @@ export function SectionChip({ icon, children }: { icon?: React.ReactNode; childr
     </span>
   );
 }
+
+export interface HeroStat {
+  icon?: React.ReactNode;
+  label: React.ReactNode;
+}
+
+interface HeroPanelProps {
+  chip?: React.ReactNode;
+  chipIcon?: React.ReactNode;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  stats?: HeroStat[];
+  /** Extra content inside the emerald area (progress bars, badges…). */
+  children?: React.ReactNode;
+  /** Optional cream footer under the emerald area (warnings, main action). */
+  footer?: React.ReactNode;
+  className?: string;
+  size?: 'md' | 'lg';
+}
+
+/**
+ * The signature block of the design: a deep emerald card with an islimi ornament,
+ * mint chip, heavy title, icon stats separated by hairlines and an optional cream footer.
+ */
+export function HeroPanel({
+  chip,
+  chipIcon,
+  title,
+  description,
+  stats,
+  children,
+  footer,
+  className = '',
+  size = 'md',
+}: HeroPanelProps) {
+  return (
+    <section className={`flex min-w-0 flex-col overflow-hidden rounded-[18px] border border-border-card bg-cream ${className}`}>
+      <div className={`relative overflow-hidden bg-deep text-white ${size === 'lg' ? 'px-6 pb-9 pt-8 sm:px-10' : 'px-6 pb-7 pt-7 sm:px-8'}`}>
+        <IslimiCorner className="h-[120px] w-[220px] opacity-90" />
+        {chip && (
+          <div className="relative">
+            <SectionChip icon={chipIcon}>{chip}</SectionChip>
+          </div>
+        )}
+        <h1
+          className={`relative mt-3.5 max-w-[640px] pr-10 text-white leading-[1.1] ${
+            size === 'lg' ? 'text-[34px] sm:text-[52px]' : 'text-[28px] sm:text-[38px]'
+          }`}
+        >
+          {title}
+        </h1>
+        {description && (
+          <p className={`relative mt-3.5 max-w-[600px] leading-relaxed text-white/95 ${size === 'lg' ? 'text-lg sm:text-xl' : 'text-base sm:text-lg'}`}>
+            {description}
+          </p>
+        )}
+        {stats && stats.length > 0 && (
+          <div className="relative mt-6 flex flex-col gap-3 text-base font-bold sm:flex-row sm:flex-wrap sm:items-center sm:gap-0 sm:text-lg">
+            {stats.map((st, i) => (
+              <React.Fragment key={i}>
+                {i > 0 && <span className="hidden h-10 w-px bg-white/30 sm:block" aria-hidden />}
+                <span className={`inline-flex items-center gap-2.5 ${i > 0 ? 'sm:pl-6' : ''} ${i < stats.length - 1 ? 'sm:pr-6' : ''}`}>
+                  {st.icon}
+                  {st.label}
+                </span>
+              </React.Fragment>
+            ))}
+          </div>
+        )}
+        {children && <div className="relative mt-6">{children}</div>}
+      </div>
+      {footer && <div className="flex flex-1 flex-col justify-end gap-5 px-5 pb-6 pt-6 sm:px-7">{footer}</div>}
+    </section>
+  );
+}
+
+/** Bordered list row with a mint number badge, used for modules, steps, topics. */
+export function ListRow({
+  n,
+  title,
+  meta,
+  className = '',
+}: {
+  n: number | string;
+  title: React.ReactNode;
+  meta?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <li className={`flex min-h-12 items-center gap-4 rounded-[10px] border border-row-border bg-row py-2 pl-2.5 pr-4 sm:gap-5 ${className}`}>
+      <NumberBadge n={n} />
+      <span className="min-w-0 flex-1 text-base font-semibold text-text-primary">{title}</span>
+      {meta != null && <span className="shrink-0 text-[15px] text-text-primary tabular-nums">{meta}</span>}
+    </li>
+  );
+}
+
+/** Soft orange notice box from the design. */
+export function WarnNote({ icon, children }: { icon?: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-4 rounded-xl border border-warn-border bg-warn-bg px-5 py-4 text-base leading-relaxed text-text-primary">
+      {icon && <span className="shrink-0 text-warn-icon">{icon}</span>}
+      <div className="min-w-0">{children}</div>
+    </div>
+  );
+}
+
+/** Big orange primary action. */
+export const ctaClass =
+  'inline-flex h-14 items-center justify-center gap-3 rounded-xl bg-cta px-7 text-lg font-bold text-on-cta transition-colors hover:bg-cta-hover disabled:cursor-not-allowed disabled:opacity-60';

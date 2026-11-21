@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Compass, Home } from 'lucide-react';
+import { TileCorner } from '../components/brand/Ornaments';
 import { Seo } from '../components/Seo';
 import { BrandLogo } from '../components/BrandLogo';
 
@@ -14,16 +15,15 @@ export default function NotFound() {
 
       <div className="relative w-full max-w-lg">
         {/* Ambient halos */}
-        <div className="absolute -top-20 -left-16 w-72 h-72 bg-accent-blue/10 rounded-full blur-3xl -z-10 pointer-events-none" />
-        <div className="absolute -bottom-24 -right-12 w-72 h-72 bg-success-green/10 rounded-full blur-3xl -z-10 pointer-events-none" />
 
-        <div className="bg-surface border border-border-card rounded-[32px] p-8 sm:p-12 text-center space-y-6 shadow-sm">
-          <div className="flex justify-center">
+        <div className="relative overflow-hidden bg-surface-muted border border-border-card rounded-[18px] p-8 sm:p-12 text-center space-y-6">
+          <TileCorner className="h-[130px] w-[143px]" />
+          <div className="relative flex justify-center">
             <BrandLogo size="lg" />
           </div>
 
           <div className="space-y-1">
-            <p className="text-7xl sm:text-8xl font-serif font-extrabold leading-none bg-gradient-to-br from-accent-blue to-success-green bg-clip-text text-transparent">
+            <p className="text-7xl sm:text-8xl font-serif font-extrabold leading-none text-deep dark:text-accent-bright">
               404
             </p>
           </div>
@@ -38,7 +38,7 @@ export default function NotFound() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
             <Link
               to="/"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-accent-blue/95 transition-all active:scale-[0.98]"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-cta text-on-cta px-6 py-3 rounded-xl text-base font-bold hover:bg-cta-hover transition-all active:scale-[0.98]"
             >
               <Home className="w-4.5 h-4.5" />
               Bosh sahifaga

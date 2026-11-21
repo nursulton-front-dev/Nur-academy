@@ -38,7 +38,7 @@ export default function TestExitGuard({ when }: TestExitGuardProps) {
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-surface border border-border-card rounded-[24px] max-w-md w-full p-8 shadow-2xl space-y-6 text-left">
+      <div className="bg-surface border border-border-card rounded-[18px] max-w-md w-full p-8 shadow-2xl space-y-6 text-left">
         <div className="flex items-center space-x-3.5">
           <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center shrink-0">
             <AlertTriangle className="w-6 h-6 text-rose-500" />
@@ -56,7 +56,7 @@ export default function TestExitGuard({ when }: TestExitGuardProps) {
         <div className="flex space-x-3 pt-1">
           <button
             onClick={() => blocker.reset?.()}
-            className="flex-1 bg-accent-blue hover:bg-accent-blue/95 text-white py-3.5 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/15 transition-all active:scale-98 cursor-pointer"
+            className="flex-1 bg-accent-blue hover:bg-accent-blue/95 text-white py-3.5 rounded-xl text-sm font-bold transition-all active:scale-98 cursor-pointer"
           >
             Davom etish
           </button>

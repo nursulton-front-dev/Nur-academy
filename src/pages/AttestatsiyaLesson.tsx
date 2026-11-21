@@ -298,7 +298,7 @@ function LegacyLesson() {
             {/* Play Button */}
             <button 
               onClick={() => setIsPlaying(true)}
-              className="z-10 w-16 h-16 sm:w-20 sm:h-20 bg-[#0E7A62] hover:bg-opacity-95 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform duration-200"
+              className="z-10 w-16 h-16 sm:w-20 sm:h-20 bg-[#0E7A62] hover:bg-opacity-95 text-white rounded-full flex items-center justify-center active:scale-95 transition-transform duration-200"
             >
               <Play className="w-8 h-8 sm:w-10 sm:h-10 fill-white translate-x-0.5" />
             </button>
@@ -325,7 +325,7 @@ function LegacyLesson() {
       </div>
 
       {/* Quiz Block */}
-      <div className="bg-surface rounded-xl border border-border-card p-6 shadow-sm space-y-6">
+      <div className="bg-surface rounded-xl border border-border-card p-6 space-y-6">
         <div className="flex items-center justify-between pb-3 border-b border-border-card/50">
           <div className="flex items-center space-x-2.5">
             <div className="p-2 bg-[#eff6ff] dark:bg-[#1e293b] rounded-xl text-[#0E7A62]">
@@ -344,7 +344,7 @@ function LegacyLesson() {
 
         {isQuizPassed ? (
           <div className="bg-green-500/10 border border-green-500/20 p-5 rounded-2xl flex flex-col items-center text-center space-y-3">
-            <div className="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center shadow-md shadow-green-500/20">
+            <div className="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center shadow-green-500/20">
               <Check className="w-6 h-6 stroke-[3]" />
             </div>
             <div>
@@ -387,9 +387,9 @@ function LegacyLesson() {
                 let optionStyle = "border-border-card hover:bg-primary-bg/30 text-text-secondary bg-surface";
 
                 if (revealCorrect && isCorrectOpt) {
-                  optionStyle = "border-green-500 bg-green-500/10 text-green-700 dark:text-green-400 font-semibold shadow-sm";
+                  optionStyle = "border-green-500 bg-green-500/10 text-green-700 dark:text-green-400 font-semibold";
                 } else if (isWrongPick) {
-                  optionStyle = "border-red-500 bg-red-500/10 text-red-700 dark:text-red-400 font-semibold shadow-sm";
+                  optionStyle = "border-red-500 bg-red-500/10 text-red-700 dark:text-red-400 font-semibold";
                 } else if (locked) {
                   optionStyle = "border-border-card opacity-50 text-text-secondary bg-surface";
                 } else if (isSelected) {
@@ -407,10 +407,10 @@ function LegacyLesson() {
                   >
                     <span>{option}</span>
                     {revealCorrect && isCorrectOpt && (
-                      <span className="w-5 h-5 bg-green-500 text-white rounded-full flex items-center justify-center text-xs shadow-sm"><Check className="w-3.5 h-3.5 stroke-[3]" /></span>
+                      <span className="w-5 h-5 bg-green-500 text-white rounded-full flex items-center justify-center text-xs"><Check className="w-3.5 h-3.5 stroke-[3]" /></span>
                     )}
                     {isWrongPick && (
-                      <span className="w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow-sm"><X className="w-3.5 h-3.5 stroke-[3]" /></span>
+                      <span className="w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs"><X className="w-3.5 h-3.5 stroke-[3]" /></span>
                     )}
                   </button>
                 );
@@ -424,7 +424,7 @@ function LegacyLesson() {
                 <div className="flex justify-end">
                   <button
                     onClick={handleRetryQuestion}
-                    className="inline-flex items-center space-x-2 bg-amber-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-amber-600 shadow-sm active:scale-95 transition-all cursor-pointer"
+                    className="inline-flex items-center space-x-2 bg-amber-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-amber-600 active:scale-95 transition-all cursor-pointer"
                   >
                     <RefreshCw className="w-4 h-4" />
                     <span>Qayta urinish</span>
@@ -440,7 +440,7 @@ function LegacyLesson() {
                 <div className="flex justify-end">
                   <button
                     onClick={handleNextQuiz}
-                    className="inline-flex items-center space-x-2 bg-[#0E7A62] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all cursor-pointer"
+                    className="inline-flex items-center space-x-2 bg-[#0E7A62] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 active:scale-95 transition-all cursor-pointer"
                   >
                     <span>Tushundim, davom etish</span>
                     <ArrowRight className="w-4 h-4" />
@@ -477,7 +477,7 @@ function LegacyLesson() {
           isQuizPassed ? (
             <Link
               to={coursePath(slug, `dars/${nextLesson.id}`)}
-              className="inline-flex items-center space-x-2 bg-[#0E7A62] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all"
+              className="inline-flex items-center space-x-2 bg-[#0E7A62] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 active:scale-95 transition-all"
             >
               <span>Keyingi dars</span>
               <ArrowRight className="w-4 h-4" />
@@ -495,7 +495,7 @@ function LegacyLesson() {
           isQuizPassed ? (
             <Link
               to={coursePath(slug, 'testlar')}
-              className="inline-flex items-center space-x-2 bg-[#4CAF82] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 shadow-sm active:scale-95 transition-all"
+              className="inline-flex items-center space-x-2 bg-[#0E7A62] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-opacity-95 active:scale-95 transition-all"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>Testlarni boshlash</span>

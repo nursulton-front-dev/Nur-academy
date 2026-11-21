@@ -172,7 +172,7 @@ export default function Landing() {
       <section id="tariflar" className="py-20 sm:py-28 bg-surface border-t border-border-card scroll-mt-16 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-accent-blue/10 text-accent-blue text-xs font-bold uppercase tracking-wider mb-3">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-mint text-on-mint text-xs font-bold uppercase tracking-wider mb-3">
               <Award className="w-3.5 h-3.5" />
               Qulay shartlar
             </span>
@@ -237,8 +237,8 @@ export default function Landing() {
             </div>
 
             {/* Pro Plan Card */}
-            <div className="premium-card p-8 flex flex-col justify-between border-accent-blue shadow-md relative">
-              <div className="absolute top-4 right-6 bg-accent-blue text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            <div className="premium-card p-8 flex flex-col justify-between border-accent-blue relative">
+              <div className="absolute top-4 right-6 bg-accent-blue text-white text-sm font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                 Tavsiya etiladi
               </div>
 
@@ -283,7 +283,7 @@ export default function Landing() {
               <div className="mt-8 pt-6 border-t border-border-card">
                 <Link
                   to="/pricing"
-                  className="w-full inline-flex items-center justify-center gap-2 bg-accent-blue hover:bg-accent-hover text-white py-3.5 rounded-xl font-bold text-sm transition-colors shadow-sm"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-accent-blue hover:bg-accent-hover text-white py-3.5 rounded-xl font-bold text-sm transition-colors"
                 >
                   Pro tarif haqida
                 </Link>
@@ -302,7 +302,8 @@ export default function Landing() {
       {/* ─────────────────────────────────────────────────────────────────────────
           9. FINAL CALL TO ACTION (TYPOGRAPHIC & CLEAN COMPOSITION)
       ───────────────────────────────────────────────────────────────────────── */}
-      <section className="py-20 sm:py-24 bg-[#0E7A62] text-white relative overflow-hidden transition-colors duration-200">
+      <section className="py-20 sm:py-24 bg-deep text-white relative overflow-hidden transition-colors duration-200">
+        <IslimiCorner className="h-[180px] w-[330px] opacity-90" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <div className="max-w-3xl mx-auto space-y-6">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/15 text-white text-xs font-semibold uppercase tracking-wider">
@@ -321,7 +322,7 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center pt-2">
               <Link
                 to="/signup"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-[#0E7A62] px-9 py-4 rounded-xl font-bold text-base hover:bg-slate-100 transition-colors shadow-lg active:scale-98"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-cta text-on-cta px-9 py-4 rounded-xl font-bold text-lg hover:bg-cta-hover transition-colors"
               >
                 <span>Bepul boshlash</span>
                 <ArrowRight className="w-5 h-5" />
@@ -385,12 +386,12 @@ export default function Landing() {
               <div className="flex flex-col space-y-2 text-text-secondary text-sm">
                 <Link to="/kurs/attestatsiya" className="hover:text-text-primary font-medium transition-colors flex items-center justify-between">
                   <span>Informatika</span>
-                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full">Faol</span>
+                  <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full">Faol</span>
                 </Link>
                 {['Tarix', 'Geografiya', 'Ona tili'].map((subject) => (
                   <div key={subject} className="flex flex-wrap gap-2 items-center justify-between text-text-secondary">
                     <span>{subject}</span>
-                    <span className="text-[10px] font-bold bg-surface-muted px-2 py-0.5 rounded-full">Tayyorlanmoqda</span>
+                    <span className="text-xs font-bold bg-surface-muted px-2 py-0.5 rounded-full">Tayyorlanmoqda</span>
                   </div>
                 ))}
               </div>

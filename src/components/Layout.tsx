@@ -260,7 +260,7 @@ export function Layout() {
 
         {/* Mobile slide-down navigation drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-border-card bg-surface px-4 py-4 space-y-3 animate-fadeIn shadow-lg">
+          <div className="md:hidden border-t border-border-card bg-surface px-4 py-4 space-y-3 animate-fadeIn">
             {isLanding ? (
               <nav className="flex flex-col space-y-1">
                 <a
@@ -358,7 +358,7 @@ export function Layout() {
                 <Link
                   to="/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2.5 rounded-xl text-sm font-bold bg-cta text-on-cta hover:bg-cta-hover transition-all shadow-sm"
+                  className="w-full text-center py-2.5 rounded-xl text-sm font-bold bg-cta text-on-cta hover:bg-cta-hover transition-all"
                 >
                   Bepul boshlash
                 </Link>

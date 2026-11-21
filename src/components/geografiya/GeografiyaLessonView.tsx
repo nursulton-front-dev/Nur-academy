@@ -57,7 +57,7 @@ export default function GeografiyaLessonView({ lessonId }: GeografiyaLessonViewP
         <p className="text-xs text-text-secondary">Ushbu dars Geografiya kursi dasturida mavjud emas.</p>
         <button
           onClick={() => navigate(coursePath(GEOGRAFIYA_SLUG))}
-          className="px-5 py-2.5 rounded-xl bg-accent-blue text-white text-xs font-bold"
+          className="px-5 py-2.5 rounded-xl bg-accent-blue text-white text-sm font-bold"
         >
           Kurs bosh sahifasiga qaytish
         </button>
@@ -106,7 +106,7 @@ export default function GeografiyaLessonView({ lessonId }: GeografiyaLessonViewP
         </button>
 
         <div className="flex items-center gap-3">
-          <span className="text-[11px] font-bold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+          <span className="text-[13px] font-bold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
             Qoralama (Draft) ko‘rinishi
           </span>
           <span className="text-xs text-text-secondary font-mono">
@@ -170,7 +170,7 @@ export default function GeografiyaLessonView({ lessonId }: GeografiyaLessonViewP
 
                 <div>
                   <p className="text-xs font-bold text-text-primary">{asset.title}</p>
-                  <p className="text-[10px] text-text-secondary mt-0.5 line-clamp-1">{asset.altText}</p>
+                  <p className="text-xs text-text-secondary mt-0.5 line-clamp-1">{asset.altText}</p>
                 </div>
               </div>
             ))}
@@ -217,11 +217,11 @@ export default function GeografiyaLessonView({ lessonId }: GeografiyaLessonViewP
                   <button
                     key={q.id}
                     onClick={() => setCurrentQuestionIdx(idx)}
-                    className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center ${
+                    className={`w-8 h-8 rounded-lg text-sm font-bold transition-all cursor-pointer flex items-center justify-center ${
                       isCurrent
                         ? 'bg-accent-blue text-white ring-2 ring-accent-blue/30'
                         : isAnswered
-                          ? 'bg-accent-blue/15 text-accent-blue border border-accent-blue/30'
+                          ? 'bg-mint text-on-mint border border-accent-blue/30'
                           : 'bg-primary-bg text-text-secondary border border-border-card hover:bg-surface-hover'
                     }`}
                   >
@@ -233,7 +233,7 @@ export default function GeografiyaLessonView({ lessonId }: GeografiyaLessonViewP
 
             {/* Question Stem */}
             <div className="p-4 rounded-xl bg-primary-bg border border-border-card space-y-2">
-              <div className="flex justify-between items-center text-[10px] font-bold text-text-secondary uppercase">
+              <div className="flex justify-between items-center text-xs font-bold text-text-secondary uppercase">
                 <span>Savol #{currentQuestionIdx + 1} ({currentQ.source_id})</span>
                 <span className="px-2 py-0.5 rounded bg-surface border border-border-card text-accent-blue">
                   {currentQ.cognitive}
@@ -255,12 +255,12 @@ export default function GeografiyaLessonView({ lessonId }: GeografiyaLessonViewP
                     disabled={submitted}
                     className={`w-full text-left p-3.5 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
                       isSelected
-                        ? 'bg-accent-blue/10 border-accent-blue text-text-primary ring-1 ring-accent-blue/50'
+                        ? 'bg-mint border-accent-blue text-text-primary ring-1 ring-accent-blue/50'
                         : 'bg-surface border-border-card text-text-secondary hover:border-text-secondary/40'
                     }`}
                   >
                     <span
-                      className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold transition-colors ${
+                      className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-sm font-bold transition-colors ${
                         isSelected
                           ? 'bg-accent-blue text-white'
                           : 'bg-primary-bg text-text-secondary border border-border-card'
@@ -297,7 +297,7 @@ export default function GeografiyaLessonView({ lessonId }: GeografiyaLessonViewP
                 <button
                   onClick={handleGradeExercise}
                   disabled={answeredCount < questions.length || grading}
-                  className="px-6 py-2.5 rounded-xl bg-accent-blue text-white text-xs font-bold hover:bg-accent-blue/90 disabled:opacity-40 transition-all cursor-pointer"
+                  className="px-6 py-2.5 rounded-xl bg-accent-blue text-white text-sm font-bold hover:bg-accent-blue/90 disabled:opacity-40 transition-all cursor-pointer"
                 >
                   {grading ? 'Tekshirilmoqda...' : 'Mashqni tekshirish'}
                 </button>
@@ -335,7 +335,7 @@ export default function GeografiyaLessonView({ lessonId }: GeografiyaLessonViewP
                   </div>
                 </div>
 
-                <div className="text-[11px] text-text-secondary pt-1">
+                <div className="text-[13px] text-text-secondary pt-1">
                   Yangi rezerv mashqlar mavjud emas: mashq qoralamadagi 10 ta shablon savoldan iborat. Qayta topshirish `Takroriy urinish` sifatida belgilanadi.
                 </div>
 
@@ -343,7 +343,7 @@ export default function GeografiyaLessonView({ lessonId }: GeografiyaLessonViewP
                   <div className="pt-2">
                     <button
                       onClick={() => navigate(coursePath(GEOGRAFIYA_SLUG, `dars/${nextLesson.id}`))}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent-blue text-white text-xs font-bold hover:bg-accent-blue/90 transition-all cursor-pointer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent-blue text-white text-sm font-bold hover:bg-accent-blue/90 transition-all cursor-pointer"
                     >
                       Keyingi darsga o‘tish: {nextLesson.id}
                       <ArrowRight className="w-4 h-4" />
@@ -414,7 +414,7 @@ export default function GeografiyaLessonView({ lessonId }: GeografiyaLessonViewP
 
             <div className="text-xs text-text-secondary space-y-1">
               <p><strong>Izoh:</strong> {zoomAsset.altText}</p>
-              <p className="text-[10px] text-amber-500"><strong>Litsenziya:</strong> {zoomAsset.licenseStatus}</p>
+              <p className="text-xs text-amber-500"><strong>Litsenziya:</strong> {zoomAsset.licenseStatus}</p>
             </div>
           </div>
         </div>

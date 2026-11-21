@@ -77,7 +77,7 @@ export default function ForgotPassword() {
 
           <Link
             to="/login"
-            className="w-full inline-flex items-center justify-center gap-2 border border-border-card bg-surface hover:bg-surface-hover text-text-primary py-3.5 rounded-xl font-bold text-sm transition-all shadow-xs"
+            className="w-full inline-flex items-center justify-center gap-2 border border-border-card bg-surface hover:bg-surface-hover text-text-primary py-3.5 rounded-xl font-bold text-sm transition-all"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Kirish sahifasiga qaytish</span>
@@ -104,7 +104,7 @@ export default function ForgotPassword() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-accent-blue hover:bg-accent-blue/95 text-white py-3.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-accent-blue/20 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:hover:translate-y-0 flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full bg-cta hover:bg-cta-hover text-on-cta h-[54px] rounded-xl font-bold text-base transition-colors disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? (
               <>

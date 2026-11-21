@@ -268,16 +268,16 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
   if (showSummary) {
     return (
       <div className="max-w-[500px] mx-auto w-full space-y-6 py-4">
-        <div className={`rounded-3xl border-2 p-8 text-center space-y-4 shadow-sm relative overflow-hidden ${
+        <div className={`rounded-3xl border-2 p-8 text-center space-y-4 relative overflow-hidden ${
           passed 
-            ? 'bg-[#4CAF82]/[0.03] dark:bg-[#4CAF82]/[0.08] border-[#4CAF82]/20' 
+            ? 'bg-[#0E7A62]/[0.03] dark:bg-[#0E7A62]/[0.08] border-[#0E7A62]/20' 
             : 'bg-[#E0735C]/[0.03] dark:bg-[#E0735C]/[0.08] border-[#E0735C]/20'
         }`}>
           {/* Decorative light effect */}
-          <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl pointer-events-none ${passed ? 'bg-[#4CAF82]/10' : 'bg-[#E0735C]/10'}`} />
+          <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl pointer-events-none ${passed ? 'bg-[#0E7A62]/10' : 'bg-[#E0735C]/10'}`} />
 
-          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto shadow-md ${
-            passed ? 'bg-[#4CAF82] text-white shadow-[#4CAF82]/20' : 'bg-[#E0735C] text-white shadow-[#E0735C]/20'
+          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto ${
+            passed ? 'bg-[#0E7A62] text-white' : 'bg-[#E0735C] text-white'
           }`}>
             {passed ? <CheckCircle2 className="w-8 h-8 stroke-[2.5]" /> : <AlertTriangle className="w-8 h-8 stroke-[2.5]" />}
           </div>
@@ -300,7 +300,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
         {passed ? (
           <button
             onClick={() => onComplete(true)}
-            className="w-full inline-flex items-center justify-center gap-2 bg-[#4CAF82] hover:bg-[#4CAF82]/90 text-white py-4 rounded-xl text-sm font-bold shadow-md shadow-[#4CAF82]/15 transition-all active:scale-[0.98] cursor-pointer"
+            className="w-full inline-flex items-center justify-center gap-2 bg-[#0E7A62] hover:bg-[#0E7A62]/90 text-white py-4 rounded-xl text-sm font-bold transition-all active:scale-[0.98] cursor-pointer"
           >
             Tushundim, keyingi qadam <ArrowRight className="w-4 h-4" />
           </button>
@@ -329,7 +329,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
     <div className="w-full space-y-8">
       {/* Mini progress */}
       <div className="flex items-center justify-between gap-3">
-        <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#E8B43C]">
+        <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#E8B43C]">
           <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-[#E8B43C]/10 text-[#E8B43C] dark:text-[#f3c251]">
             <CheckCircle2 className="w-4 h-4" />
           </span>
@@ -345,7 +345,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
                 className={`h-2.5 rounded-full transition-all duration-300 ${
                   isCurrent ? 'w-6 bg-[#0E7A62]' : 'w-2.5'
                 } ${
-                  done === true ? 'bg-[#4CAF82]' : done === false ? 'bg-[#E0735C]' : !isCurrent ? 'bg-border-card/80' : ''
+                  done === true ? 'bg-[#0E7A62]' : done === false ? 'bg-[#E0735C]' : !isCurrent ? 'bg-border-card/80' : ''
                 }`}
               />
             );
@@ -369,7 +369,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
             autoComplete="off"
             className={`w-full p-4 rounded-xl border text-sm bg-surface text-text-primary outline-none transition-all ${
               phase === 'correct'
-                ? 'border-[#4CAF82] bg-[#4CAF82]/[0.06] text-[#4CAF82] font-semibold'
+                ? 'border-[#0E7A62] bg-[#0E7A62]/[0.06] text-[#0E7A62] font-semibold'
                 : phase === 'hint' || phase === 'explanation'
                 ? 'border-[#E0735C] bg-[#E0735C]/[0.06] text-[#E0735C] font-semibold'
                 : 'border-border-card focus:border-[#0E7A62] focus:ring-2 focus:ring-[#0E7A62]/20'
@@ -379,13 +379,13 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
             <button
               onClick={handleCheckInput}
               disabled={!inputValue.trim() || checking}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#0E7A62] hover:bg-[#0E7A62]/95 disabled:opacity-40 disabled:cursor-not-allowed text-white px-7 py-3.5 rounded-xl text-sm font-bold shadow-md shadow-[#0E7A62]/15 transition-all active:scale-[0.98] cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#0E7A62] hover:bg-[#0E7A62]/95 disabled:opacity-40 disabled:cursor-not-allowed text-white px-7 py-3.5 rounded-xl text-sm font-bold transition-all active:scale-[0.98] cursor-pointer"
             >
               {checking ? <Loader2 className="w-4.5 h-4.5 animate-spin" /> : <Check className="w-4.5 h-4.5 stroke-[2.5]" />} Tekshirish
             </button>
           )}
           {phase === 'explanation' && (
-            <p className="text-xs font-semibold text-[#4CAF82]">
+            <p className="text-xs font-semibold text-[#0E7A62]">
               Toʻgʻri javob: <span className="font-bold">{correctText}</span>
             </p>
           )}
@@ -403,16 +403,16 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
             let badgeStyle = 'bg-surface-muted text-text-secondary border-border-card';
             
             if (revealCorrect && isCorrectOpt) {
-              style = 'border-[#4CAF82] bg-[#4CAF82]/[0.06] text-[#4CAF82] font-semibold shadow-sm shadow-[#4CAF82]/5';
-              badgeStyle = 'bg-[#4CAF82] text-white border-transparent';
+              style = 'border-[#0E7A62] bg-[#0E7A62]/[0.06] text-[#0E7A62] font-semibold';
+              badgeStyle = 'bg-[#0E7A62] text-white border-transparent';
             } else if (isWrongPick) {
-              style = 'border-[#E0735C] bg-[#E0735C]/[0.06] text-[#E0735C] font-semibold shadow-sm shadow-[#E0735C]/5';
+              style = 'border-[#E0735C] bg-[#E0735C]/[0.06] text-[#E0735C] font-semibold';
               badgeStyle = 'bg-[#E0735C] text-white border-transparent';
             } else if (locked) {
               style = 'border-border-card opacity-50 text-text-secondary bg-surface';
               badgeStyle = 'bg-surface-muted/50 text-text-secondary/50 border-border-card/50';
             } else if (isSelected) {
-              style = 'border-[#0E7A62] bg-[#0E7A62]/[0.06] text-[#0E7A62] font-semibold shadow-sm shadow-[#0E7A62]/5';
+              style = 'border-[#0E7A62] bg-[#0E7A62]/[0.06] text-[#0E7A62] font-semibold';
               badgeStyle = 'bg-[#0E7A62] text-white border-transparent';
             }
 
@@ -428,7 +428,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
                   {String.fromCharCode(65 + optIdx)}
                 </span>
                 <span className="flex-1 text-sm sm:text-base font-medium">{option}</span>
-                {revealCorrect && isCorrectOpt && <Check className="w-6 h-6 text-[#4CAF82] shrink-0 stroke-[3]" />}
+                {revealCorrect && isCorrectOpt && <Check className="w-6 h-6 text-[#0E7A62] shrink-0 stroke-[3]" />}
                 {isWrongPick && <X className="w-6 h-6 text-[#E0735C] shrink-0 stroke-[3]" />}
               </button>
             );
@@ -474,7 +474,7 @@ export default function QuizStep({ step, onComplete }: QuizStepProps) {
       )}
 
       {phase === 'correct' && (
-        <p className="text-xs text-[#4CAF82] font-semibold text-right">
+        <p className="text-xs text-[#0E7A62] font-semibold text-right">
           {secondTryMap[q.id] ? 'Toʻgʻri! (ikkinchi urinishda) Keyingi savolga oʻtilmoqda…' : 'Toʻgʻri! Keyingi savolga oʻtilmoqda…'}
         </p>
       )}

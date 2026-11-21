@@ -11,7 +11,8 @@ import {
   ListChecks,
 } from 'lucide-react';
 import { mockTopicTests, mockModules } from '../data/attestatsiyaMocks';
-import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
+import { AppPage, PageContent } from '../components/app/AppPage';
+import { HeroPanel } from '../components/brand/Ornaments';
 import { MetricCard, StatusBadge } from '../components/app/ui';
 
 export default function AttestatsiyaTests() {
@@ -29,18 +30,18 @@ export default function AttestatsiyaTests() {
 
   return (
     <AppPage className="text-left font-sans">
-      <PageHeader
-        title="Mavzu testlari"
-        description="Har bir modul bo‘yicha bilimlaringizni sinab ko‘ring va o‘zlashtirish darajangizni baholang."
-      />
       <PageContent className="space-y-8">
-        {/* Summary metrics */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <MetricCard icon={<FileText className="w-5 h-5" />} label="Jami testlar" value={total} accent="blue" />
-          <MetricCard icon={<Unlock className="w-5 h-5" />} label="Ochilgan" value={open} accent="green" hint="modul" />
-          <MetricCard icon={<Lock className="w-5 h-5" />} label="Yopiq" value={locked} accent="amber" hint="modul" />
-          <MetricCard icon={<ListChecks className="w-5 h-5" />} label="Jami savollar" value={totalQuestions} accent="purple" />
-        </div>
+        <HeroPanel
+          chip="Mavzu testlari"
+          chipIcon={<FileText className="h-4 w-4" />}
+          title="Mavzu testlari"
+          description="Har bir modul boʻyicha bilimlaringizni sinab koʻring va oʻzlashtirish darajangizni baholang."
+          stats={[
+            { icon: <FileText className="h-[22px] w-[22px]" />, label: `${total} ta test` },
+            { icon: <Unlock className="h-[22px] w-[22px]" />, label: `${open} ta ochiq` },
+            { icon: <ListChecks className="h-[22px] w-[22px]" />, label: `${totalQuestions} ta savol` },
+          ]}
+        />
 
         {/* Test cards */}
         <div className="space-y-4">
@@ -63,17 +64,13 @@ export default function AttestatsiyaTests() {
                   className={`group relative rounded-2xl border p-5 flex flex-col transition-all duration-200 ${
                     isLocked
                       ? 'bg-surface/60 border-border-card'
-                      : 'bg-surface border-border-card hover:border-accent-blue/50 hover:shadow-xs'
+                      : 'bg-surface border-border-card hover:border-accent-blue/50'
                   }`}
                 >
-                  {/* Accent rail on active cards */}
-                  {!isLocked && (
-                    <span className="absolute left-0 top-5 bottom-5 w-1 rounded-full bg-accent-blue/60" />
-                  )}
 
                   <div className={`flex flex-col h-full ${isLocked ? 'opacity-60' : ''} ${!isLocked ? 'pl-2' : ''}`}>
                     <div className="flex items-start justify-between gap-3 mb-2">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-text-secondary bg-surface-muted px-2 py-0.5 rounded-md">
+                      <span className="text-xs uppercase font-bold tracking-wider text-text-secondary bg-surface-muted px-2 py-0.5 rounded-md">
                         Mavzu testi
                       </span>
                       {isCompleted && (
@@ -101,11 +98,11 @@ export default function AttestatsiyaTests() {
                         {test.questionsCount} ta savol
                       </span>
                       {isLocked ? (
-                        <span className="text-[11px] text-text-secondary">Oldingi modul yakunlangach ochiladi</span>
+                        <span className="text-[13px] text-text-secondary">Oldingi modul yakunlangach ochiladi</span>
                       ) : (
                         <button
                           onClick={() => handleStartExam(test.id)}
-                          className="inline-flex items-center gap-1 bg-accent-blue/10 hover:bg-accent-blue/15 text-accent-blue font-bold text-xs px-3.5 py-1.5 rounded-lg transition-all active:scale-95"
+                          className="inline-flex items-center gap-1 bg-accent-blue/10 hover:bg-mint text-on-mint font-bold text-xs px-3.5 py-1.5 rounded-lg transition-all active:scale-95"
                         >
                           <span>{isCompleted ? 'Qayta topshirish' : 'Boshlash'}</span>
                           <ArrowRight className="w-3.5 h-3.5" />

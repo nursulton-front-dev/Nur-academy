@@ -9,10 +9,12 @@ import {
   ListChecks,
   Unlock,
   FileCheck2,
+  AlertTriangle,
 } from 'lucide-react';
 import { mockExams } from '../data/attestatsiyaMocks';
-import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
-import { MetricCard, StatusBadge } from '../components/app/ui';
+import { AppPage, PageContent } from '../components/app/AppPage';
+import { StatusBadge } from '../components/app/ui';
+import { HeroPanel, WarnNote } from '../components/brand/Ornaments';
 import GeografiyaMockExamsView from '../components/geografiya/GeografiyaMockExamsView';
 import { GEOGRAFIYA_SLUG } from '../lib/courses';
 
@@ -43,17 +45,23 @@ export default function AttestatsiyaMockExams() {
 
   return (
     <AppPage className="text-left font-sans">
-      <PageHeader
-        title="Mock imtihonlar"
-        description="Haqiqiy attestatsiya talablariga mos 50 ta savolli sinov imtihonlari. Davomiyligi: 120 daqiqa."
-      />
       <PageContent className="space-y-8">
-        {/* Summary metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <MetricCard icon={<Unlock className="w-5 h-5" />} label="Mavjud imtihonlar" value={`${available} ta`} accent="green" />
-          <MetricCard icon={<Lock className="w-5 h-5" />} label="Yopiq imtihonlar" value={`${locked} ta`} accent="amber" />
-          <MetricCard icon={<Clock className="w-5 h-5" />} label="Davomiyligi" value={`${EXAM_DURATION_MIN} daq`} accent="blue" hint="har bir imtihon" />
-        </div>
+        <HeroPanel
+          chip="Mock imtihon"
+          chipIcon={<Award className="h-4 w-4" />}
+          title="Mock imtihonlar"
+          description="Haqiqiy attestatsiya talablariga mos 50 ta savolli sinov imtihonlari."
+          stats={[
+            { icon: <ListChecks className="h-[22px] w-[22px]" />, label: '50 ta savol' },
+            { icon: <Clock className="h-[22px] w-[22px]" />, label: `${EXAM_DURATION_MIN} daqiqa` },
+            { icon: <Unlock className="h-[22px] w-[22px]" />, label: `${available} ta mavjud` },
+          ]}
+          footer={
+            <WarnNote icon={<AlertTriangle className="h-7 w-7" strokeWidth={1.9} />}>
+              Vaqt sahifadan chiqqaningizda ham davom etadi. Imtihon toʻliq ekran rejimida ochiladi.
+            </WarnNote>
+          }
+        />
 
         {/* Exam list */}
         <div className="space-y-3">
@@ -68,20 +76,16 @@ export default function AttestatsiyaMockExams() {
                 className={`relative rounded-2xl border bg-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
                   isLocked
                     ? 'border-border-card'
-                    : 'border-border-card hover:border-accent-blue/50 hover:shadow-xs'
+                    : 'border-border-card hover:border-accent-blue/50'
                 }`}
               >
-                {/* Left accent rail for open exams */}
-                {!isLocked && (
-                  <span className="hidden sm:block absolute left-0 top-5 bottom-5 w-1 rounded-full bg-accent-blue/60" />
-                )}
 
                 {/* Number badge */}
                 <div
                   className={`w-11 h-11 rounded-2xl shrink-0 flex items-center justify-center font-serif font-extrabold text-base sm:ml-2 ${
                     isLocked
                       ? 'bg-surface-muted text-text-secondary'
-                      : 'bg-accent-blue/10 text-accent-blue'
+                      : 'bg-mint text-on-mint'
                   }`}
                 >
                   {index + 1}
@@ -102,10 +106,10 @@ export default function AttestatsiyaMockExams() {
                     )}
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-text-secondary bg-surface-muted px-2 py-1 rounded-lg">
+                    <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-text-secondary bg-surface-muted px-2 py-1 rounded-lg">
                       <Clock className="w-3 h-3" /> {EXAM_DURATION_MIN} daqiqa
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-text-secondary bg-surface-muted px-2 py-1 rounded-lg">
+                    <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-text-secondary bg-surface-muted px-2 py-1 rounded-lg">
                       <ListChecks className="w-3 h-3" /> {exam.questionsCount} ta savol
                     </span>
                     {!isLocked && <StatusBadge variant={diff.variant} label={diff.label} />}
@@ -133,7 +137,7 @@ export default function AttestatsiyaMockExams() {
                       </button>
                       <button
                         onClick={() => handleStartExam(exam.id)}
-                        className="flex-1 sm:flex-none inline-flex items-center justify-center bg-accent-blue hover:bg-accent-blue/95 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-sm"
+                        className="flex-1 sm:flex-none inline-flex items-center justify-center bg-accent-blue hover:bg-accent-blue/95 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95"
                       >
                         Qayta topshirish
                       </button>
@@ -141,7 +145,7 @@ export default function AttestatsiyaMockExams() {
                   ) : (
                     <button
                       onClick={() => handleStartExam(exam.id)}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 bg-accent-blue hover:bg-accent-blue/95 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-sm shadow-accent-blue/20"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 bg-accent-blue hover:bg-accent-blue/95 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95"
                     >
                       <PlayCircle className="w-4 h-4" />
                       <span>Imtihonni boshlash</span>
@@ -153,7 +157,7 @@ export default function AttestatsiyaMockExams() {
           })}
         </div>
 
-        <p className="text-center text-[11px] text-text-secondary">
+        <p className="text-center text-[13px] text-text-secondary">
           Har bir sinov imtihoni haqiqiy attestatsiya talablariga mos: {EXAM_DURATION_MIN} daqiqa, 50 ta savol.
         </p>
       </PageContent>

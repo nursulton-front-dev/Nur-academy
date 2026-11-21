@@ -203,7 +203,7 @@ export default function Lesson() {
 
   return (
     <div className="bg-primary-bg pb-20">
-      <div className="bg-surface border-b border-border-card sticky top-16 z-10 shadow-sm">
+      <div className="bg-surface border-b border-border-card sticky top-16 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center space-x-4">
           <Link to={`/courses/${lesson.course_id}`} className="text-text-secondary hover:text-text-primary p-2 border border-border-card rounded-lg hover:bg-surface-hover transition-colors">
             <ArrowLeft className="w-5 h-5" />
@@ -215,7 +215,7 @@ export default function Lesson() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Video Player */}
         {ytId ? (
-          <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-lg mb-8 outline outline-1 outline-border-card">
+          <div className="aspect-video bg-black rounded-xl overflow-hidden mb-8 outline outline-1 outline-border-card">
             <iframe
               className="w-full h-full"
               src={`https://www.youtube.com/embed/${ytId}`}
@@ -294,7 +294,7 @@ export default function Lesson() {
               <div className="flex justify-end border-t border-border-card pt-6">
                 <button
                   onClick={handleNextQuestion}
-                  className="bg-accent-blue text-white px-8 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all shadow-sm"
+                  className="bg-accent-blue text-white px-8 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all"
                 >
                   Keyingisi
                 </button>
@@ -317,7 +317,7 @@ export default function Lesson() {
             <button
               disabled={savingProgress}
               onClick={() => navigate(`/courses/${lesson?.course_id}`)}
-              className="bg-success-green text-white px-8 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all shadow-sm disabled:opacity-70 inline-flex items-center space-x-2"
+              className="bg-success-green text-white px-8 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all disabled:opacity-70 inline-flex items-center space-x-2"
             >
               <CheckCircle2 className="w-5 h-5" />
               <span>{savingProgress ? 'Saqlanmoqda...' : 'Kursga qaytish'}</span>
@@ -331,7 +331,7 @@ export default function Lesson() {
             <button
               onClick={finishWithoutQuiz}
               disabled={savingProgress}
-              className="bg-accent-blue text-white px-8 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all shadow-sm disabled:opacity-70 inline-flex items-center space-x-2"
+              className="bg-accent-blue text-white px-8 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all disabled:opacity-70 inline-flex items-center space-x-2"
             >
               <span>{savingProgress ? 'Saqlanmoqda...' : 'Darsni tugatish'}</span>
               <CheckCircle2 className="w-5 h-5" />

@@ -14,6 +14,7 @@ import { subscriptionService, SubscriptionTier } from '../lib/subscription';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
+import { IslimiCorner } from '../components/brand/Ornaments';
 
 export default function Pricing() {
   const navigate = useNavigate();
@@ -89,79 +90,67 @@ export default function Pricing() {
       <PageContent className="space-y-8">
 
       {/* Grid containing the cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
         {plans.map((plan) => {
           const isCurrent = plan.id === currentTier;
           
           return (
-            <div 
+            <div
               key={plan.id}
-              className={`bg-surface border rounded-2xl p-6 flex flex-col justify-between transition-all duration-200 relative overflow-hidden ${
-                isCurrent 
-                  ? 'border-accent-blue shadow-sm bg-accent-blue/5' 
-                  : plan.popular 
-                    ? 'border-accent-blue bg-surface shadow-sm'
-                    : 'border-border-card hover:border-accent-blue/40 shadow-xs'
+              className={`flex flex-col overflow-hidden rounded-[18px] border bg-surface ${
+                plan.popular || isCurrent ? 'border-accent-blue/50' : 'border-border-card'
               }`}
             >
-              {plan.popular && (
-                <span className="absolute top-3 right-3 text-[8px] bg-accent-blue text-white font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-0.5">
-                  <Sparkles className="w-2.5 h-2.5" />
-                  <span>Tavsiya</span>
-                </span>
-              )}
-
-              {isCurrent && (
-                <span className="absolute top-3 right-3 text-[8px] bg-emerald-500 text-white font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  Faol
-                </span>
-              )}
-
-              <div className="space-y-4">
-                <div className="space-y-1">
-                  <h3 className="font-serif font-extrabold text-lg text-text-primary">{plan.title}</h3>
-                  <p className="text-xs text-text-secondary leading-snug min-h-[36px]">{plan.desc}</p>
+              <div className={`relative overflow-hidden px-6 pb-6 pt-6 ${plan.popular ? 'bg-deep text-white' : 'bg-cream text-text-primary'}`}>
+                {plan.popular && <IslimiCorner className="h-[90px] w-[165px] opacity-90" />}
+                <div className="relative flex items-center gap-2">
+                  <h3 className={`text-2xl ${plan.popular ? 'text-white' : 'text-text-primary'}`}>{plan.title}</h3>
+                  {plan.popular && !isCurrent && (
+                    <span className="inline-flex items-center gap-1 rounded-lg bg-mint-strong px-2.5 py-1 text-xs font-extrabold uppercase tracking-[0.04em] text-on-mint">
+                      <Sparkles className="h-3.5 w-3.5" /> Tavsiya
+                    </span>
+                  )}
+                  {isCurrent && (
+                    <span className="rounded-lg bg-mint-strong px-2.5 py-1 text-xs font-extrabold uppercase tracking-[0.04em] text-on-mint">Faol</span>
+                  )}
                 </div>
+                <p className={`relative mt-2 min-h-[44px] pr-20 text-[15px] leading-snug ${plan.popular ? 'text-white/90' : 'text-text-secondary'}`}>{plan.desc}</p>
+                <p className="relative mt-4 text-[34px] font-extrabold leading-none tabular-nums">{plan.price}</p>
+                <p className={`relative mt-1 text-sm ${plan.popular ? 'text-white/80' : 'text-text-secondary'}`}>bir oylik toʻlov</p>
+              </div>
 
-                <div className="py-2">
-                  <p className="text-2xl font-serif font-extrabold text-text-primary">{plan.price}</p>
-                  <p className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">bir oylik to‘lov</p>
-                </div>
-
-                <div className="space-y-2.5 pt-2 border-t border-border-card/50">
+              <div className="flex flex-1 flex-col px-6 pb-6 pt-5">
+                <ul className="space-y-2.5">
                   {plan.features.map((f, idx) => (
-                    <div key={idx} className="flex items-start space-x-2 text-xs">
-                      <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                      <span className="text-text-secondary font-medium leading-normal">{f}</span>
-                    </div>
+                    <li key={idx} className="flex items-start gap-2.5 text-[15px]">
+                      <Check className="mt-0.5 h-[18px] w-[18px] shrink-0 text-accent-blue" strokeWidth={2.4} />
+                      <span className="text-text-primary">{f}</span>
+                    </li>
                   ))}
-                  
                   {plan.missing.map((m, idx) => (
-                    <div key={idx} className="flex items-start space-x-2 text-xs opacity-50">
-                      <X className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" />
-                      <span className="text-text-secondary font-medium leading-normal line-through">{m}</span>
-                    </div>
+                    <li key={`m${idx}`} className="flex items-start gap-2.5 text-[15px] opacity-50">
+                      <X className="mt-0.5 h-[18px] w-[18px] shrink-0 text-text-secondary" />
+                      <span className="text-text-secondary line-through">{m}</span>
+                    </li>
                   ))}
+                </ul>
+                <div className="mt-auto pt-6">
+                  <button
+                    disabled={isCurrent}
+                    onClick={() => handleCheckoutOpen(plan)}
+                    className={`flex h-[52px] w-full cursor-pointer items-center justify-center gap-2 rounded-xl text-base font-bold transition-colors ${
+                      isCurrent
+                        ? 'cursor-not-allowed bg-mint text-on-mint'
+                        : plan.popular
+                          ? 'bg-cta text-on-cta hover:bg-cta-hover'
+                          : 'border border-accent-blue text-accent-blue hover:bg-mint'
+                    }`}
+                  >
+                    <span>{plan.btnText}</span>
+                    {!isCurrent && <ArrowRight className="h-4 w-4" />}
+                  </button>
                 </div>
               </div>
-
-              <div className="pt-6">
-                <button
-                  disabled={isCurrent}
-                  onClick={() => handleCheckoutOpen(plan)}
-                  className={`w-full py-3 rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer ${
-                    isCurrent 
-                      ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 cursor-not-allowed'
-                      : plan.popular
-                        ? 'bg-accent-blue text-white hover:bg-accent-blue/95 shadow-md shadow-accent-blue/10 active:scale-97'
-                        : 'bg-primary-bg hover:bg-surface-hover text-text-primary border border-border-card active:scale-97'
-                  }`}
-                >
-                  <span>{plan.btnText}</span>
-                  {!isCurrent && <ArrowRight className="w-3 h-3" />}
-                </button>
-              </div>
-
             </div>
           );
         })}
@@ -179,7 +168,7 @@ export default function Pricing() {
                 </div>
                 <div>
                   <h3 className="font-serif font-extrabold text-base text-text-primary">Pro tarif haqida ma’lumot</h3>
-                  <p className="text-[10px] text-text-secondary">Onlayn to‘lov tizimlari ulanmoqda</p>
+                  <p className="text-xs text-text-secondary">Onlayn to‘lov tizimlari ulanmoqda</p>
                 </div>
               </div>
               <button 
@@ -194,7 +183,7 @@ export default function Pricing() {
               <div className="bg-primary-bg p-4 rounded-2xl border border-border-card/50 flex justify-between items-center text-xs">
                 <div>
                   <p className="font-bold text-text-primary">Tarif: {selectedPlan.title}</p>
-                  <p className="text-[10px] text-text-secondary mt-0.5">To‘liq attestatsiya paketi</p>
+                  <p className="text-xs text-text-secondary mt-0.5">To‘liq attestatsiya paketi</p>
                 </div>
                 <span className="font-serif font-extrabold text-text-primary text-sm">{selectedPlan.price}</span>
               </div>
@@ -224,7 +213,7 @@ export default function Pricing() {
                     setSelectedPlan(null);
                     navigate('/feedback');
                   }}
-                  className="flex-1 bg-accent-blue hover:bg-accent-blue/95 text-white py-3 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/15 transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="flex-1 bg-accent-blue hover:bg-accent-blue/95 text-white py-3 rounded-xl text-sm font-bold transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <span>Murojaat qilish</span>
                   <ArrowRight className="w-4 h-4" />

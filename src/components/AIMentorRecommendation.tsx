@@ -14,7 +14,7 @@ type State = 'loading' | 'pro' | 'locked' | 'error';
 
 function MentorShell({ badge, children }: { badge: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-[#DDD6FE] dark:border-white/5 p-6 bg-[#F5F3FF] dark:bg-gradient-to-br dark:from-[#251B46] dark:via-[#20173A] dark:to-[#16122A] shadow-sm dark:shadow-none min-h-[220px] h-full flex flex-col">
+    <div className="rounded-2xl border border-[#DDD6FE] dark:border-white/5 p-6 bg-[#F5F3FF] dark:bg-gradient-to-br dark:from-[#251B46] dark:via-[#20173A] dark:to-[#16122A] dark:shadow-none min-h-[220px] h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
           <div
@@ -37,7 +37,7 @@ function MentorShell({ badge, children }: { badge: React.ReactNode; children: Re
 function Badge({ label }: { label: string }) {
   return (
     <span
-      className="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-purple-500 dark:bg-purple-500/20 text-white dark:text-purple-300 shadow-sm"
+      className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-purple-500 dark:bg-purple-500/20 text-white dark:text-purple-300"
     >
       {label}
     </span>
@@ -120,7 +120,7 @@ export function AIMentorRecommendation({ currentLesson }: { currentLesson?: stri
         </div>
         <Link
           to="/attestatsiya/obuna"
-          className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl text-sm font-bold transition-colors shadow-md shadow-emerald-500/20"
+          className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl text-sm font-bold transition-colors"
         >
           Pro tarifga oʻtish
           <ArrowRight className="w-4 h-4" />
@@ -176,7 +176,7 @@ export function AIMentorRecommendation({ currentLesson }: { currentLesson?: stri
               to={link.href}
               className={`inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all w-full sm:w-auto ${
                 i === 0
-                  ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-500/20'
+                  ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-purple-500/20'
                   : 'bg-white border border-purple-200 hover:bg-purple-50 text-purple-700 dark:bg-transparent dark:border-purple-500/30 dark:hover:bg-purple-500/10 dark:text-purple-300'
               }`}
             >

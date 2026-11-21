@@ -37,7 +37,7 @@ export default function CampaignBanner({ campaign, onCtaClick }: Props) {
       {/* CTA */}
       <button
         onClick={onCtaClick}
-        className="shrink-0 inline-flex items-center gap-1.5 bg-accent-blue text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-accent-blue/90 transition-colors cursor-pointer"
+        className="shrink-0 inline-flex items-center gap-1.5 bg-accent-blue text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-accent-blue/90 transition-colors cursor-pointer"
       >
         <Zap className="w-3.5 h-3.5" />
         Bonusni bilish

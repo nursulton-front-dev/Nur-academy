@@ -20,8 +20,8 @@ export default function ThemeToggle() {
       <span
         className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-200 ease-out ${
           isDark
-            ? 'translate-x-6 bg-accent-blue text-white shadow-sm'
-            : 'translate-x-0 bg-white text-amber-500 shadow-sm border border-slate-200/60'
+            ? 'translate-x-6 bg-accent-blue text-white'
+            : 'translate-x-0 bg-white text-amber-500 border border-slate-200/60'
         }`}
       >
         {isDark ? (

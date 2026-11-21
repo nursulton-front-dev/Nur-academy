@@ -135,7 +135,7 @@ export default function ResetPassword() {
           </div>
           <Link
             to="/forgot-password"
-            className="w-full inline-flex items-center justify-center gap-2 bg-accent-blue text-white py-3.5 rounded-xl font-bold text-sm shadow-md shadow-accent-blue/20"
+            className="w-full inline-flex items-center justify-center gap-2 bg-accent-blue text-white py-3.5 rounded-xl font-bold text-sm"
           >
             <span>Yangi tiklash so‘rovi yuborish</span>
             <ArrowRight className="w-4 h-4" />
@@ -211,7 +211,7 @@ export default function ResetPassword() {
                 ))}
               </div>
 
-              <p className="text-[11px] text-text-secondary leading-snug">
+              <p className="text-[13px] text-text-secondary leading-snug">
                 {strength.feedbackUz}
               </p>
             </div>
@@ -270,7 +270,7 @@ export default function ResetPassword() {
         <button
           type="submit"
           disabled={loading || (confirmPassword.length > 0 && passwordsMatch === false)}
-          className="w-full bg-accent-blue hover:bg-accent-blue/95 text-white py-3.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-accent-blue/20 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:hover:translate-y-0 flex items-center justify-center gap-2 cursor-pointer mt-2"
+          className="w-full bg-cta hover:bg-cta-hover text-on-cta h-[54px] rounded-xl font-bold text-base transition-colors disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer mt-2"
         >
           {loading ? (
             <>

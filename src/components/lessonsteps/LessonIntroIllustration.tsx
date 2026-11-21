@@ -101,7 +101,7 @@ export function LessonIntroIllustration({ variant = "strategy" }: Props) {
       ))}
       
       {/* Central icon container */}
-      <div className={`relative z-10 w-32 h-32 md:w-40 md:h-40 rounded-full ${config.bg} shadow-xl shadow-black/5 flex items-center justify-center backdrop-blur-sm border border-white/20 dark:border-white/5`}>
+      <div className={`relative z-10 w-32 h-32 md:w-40 md:h-40 rounded-full ${config.bg} shadow-xl flex items-center justify-center backdrop-blur-sm border border-white/20 dark:border-white/5`}>
         <Icon className={`w-16 h-16 md:w-20 md:h-20 ${config.iconColor}`} strokeWidth={1.5} />
       </div>
     </div>

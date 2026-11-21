@@ -140,7 +140,7 @@ export default function MyLearning() {
       <AppPage>
         {platformSeo}
         <div className="max-w-2xl mx-auto py-12 text-center font-sans">
-          <div className="bg-surface border border-border-card rounded-2xl p-8 sm:p-12 shadow-xs space-y-6">
+          <div className="bg-surface border border-border-card rounded-2xl p-8 sm:p-12 space-y-6">
             <div className="w-16 h-16 mx-auto rounded-2xl bg-accent-blue/10 flex items-center justify-center border border-accent-blue/20">
               <GraduationCap className="w-8 h-8 text-accent-blue" />
             </div>
@@ -155,7 +155,7 @@ export default function MyLearning() {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 bg-accent-blue text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-accent-blue/90 transition-all shadow-xs active:scale-[0.98]"
+                className="inline-flex items-center gap-2 bg-accent-blue text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-accent-blue/90 transition-all active:scale-[0.98]"
               >
                 <LogIn className="w-4 h-4" />
                 Kirish
@@ -208,7 +208,7 @@ export default function MyLearning() {
       {items.length === 0 ? (
         /* Empty State */
         <div className="bg-surface border border-dashed border-border-card rounded-2xl p-8 sm:p-12 text-center space-y-5 font-sans">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center border border-accent-blue/20">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-mint text-on-mint flex items-center justify-center border border-accent-blue/20">
             <BookOpen className="w-8 h-8" />
           </div>
           <div className="space-y-2">
@@ -221,7 +221,7 @@ export default function MyLearning() {
           </div>
           <Link
             to="/courses"
-            className="inline-flex items-center gap-2 bg-accent-blue text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-accent-blue/90 transition-all shadow-xs active:scale-[0.98]"
+            className="inline-flex items-center gap-2 bg-accent-blue text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-accent-blue/90 transition-all active:scale-[0.98]"
           >
             <Compass className="w-4 h-4" />
             Kurslar katalogiga o‘tish
@@ -239,16 +239,16 @@ export default function MyLearning() {
               return (
                 <div
                   key={my.course.id}
-                  className="rounded-2xl border border-border-card bg-surface overflow-hidden shadow-xs flex flex-col justify-between transition-all hover:border-teal-500/30 h-full"
+                  className="rounded-2xl border border-border-card bg-surface overflow-hidden flex flex-col justify-between transition-all hover:border-teal-500/30 h-full"
                 >
                   {/* Top Section: Wide Horizontal Dark-Teal Poster */}
-                  <div className="relative overflow-hidden bg-[#0A3333] dark:bg-[#072424] text-white p-6 sm:p-7 min-h-[190px] sm:min-h-[210px] flex items-center justify-between">
+                  <div className="relative overflow-hidden bg-deep  text-white p-6 sm:p-7 min-h-[190px] sm:min-h-[210px] flex items-center justify-between">
                     {/* Left Poster Content (Normal HTML, wrapping freely) */}
                     <div className="relative z-10 max-w-[70%] sm:max-w-[62%] md:max-w-[65%] space-y-2.5">
                       {/* Tier Badge & Lesson Count */}
                       <div className="flex items-center gap-2 flex-wrap">
                         <span
-                          className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md border ${
+                          className={`text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md border ${
                             my.tier === 'pro'
                               ? 'bg-amber-400/20 text-amber-300 border-amber-400/30'
                               : 'bg-white/10 text-teal-100 border-white/15'
@@ -294,9 +294,9 @@ export default function MyLearning() {
                       {/* Primary Orange Action Button with Dark Text */}
                       <Link
                         to={href}
-                        className="inline-flex items-center justify-center gap-2 bg-[#FF7A00] hover:bg-[#F26F00] text-[#0B1D40] dark:text-slate-950 font-extrabold text-xs sm:text-sm px-6 py-2.5 rounded-xl shadow-xs transition-all active:scale-[0.98]"
+                        className="inline-flex items-center justify-center gap-2 bg-cta hover:bg-cta-hover text-on-cta font-extrabold text-xs sm:text-sm px-6 py-2.5 rounded-xl transition-all active:scale-[0.98]"
                       >
-                        <PlayCircle className="w-4 h-4 text-[#0B1D40] dark:text-slate-950" />
+                        <PlayCircle className="w-4 h-4 text-on-cta" />
                         <span>{progress.percent > 0 ? 'Davom ettirish' : 'O‘qishni boshlash'}</span>
                       </Link>
 
@@ -338,7 +338,7 @@ export default function MyLearning() {
 
           {/* Progress Summary Card: ~30% width on desktop (3 of 10 columns) */}
           <div className={`lg:col-span-3 ${items.length > 1 ? 'self-start' : 'h-full'}`}>
-            <div className="rounded-2xl border border-border-card bg-surface p-5 sm:p-6 shadow-xs flex flex-col justify-between h-full font-sans">
+            <div className="rounded-2xl border border-border-card bg-surface p-5 sm:p-6 flex flex-col justify-between h-full font-sans">
               <div>
                 <h2 className="font-bold text-base sm:text-lg text-text-primary">
                   Umumiy progress
@@ -403,7 +403,7 @@ export default function MyLearning() {
             return (
               <div
                 key={c.id}
-                className="rounded-2xl border border-border-card bg-surface p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-4 transition-all hover:border-accent-blue/30"
+                className="rounded-2xl border border-border-card bg-surface p-4 sm:p-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 transition-all hover:border-accent-blue/30"
               >
                 {/* Cover (Teal map contour lines for Geografiya, Orange Aa tile for Ona tili) */}
                 <div className="w-full sm:w-32 md:w-36 h-28 sm:h-28 rounded-xl overflow-hidden shrink-0 border border-border-card/60 relative bg-slate-100 dark:bg-slate-800">
@@ -418,7 +418,7 @@ export default function MyLearning() {
                 <div className="flex-1 min-w-0 flex flex-col justify-between h-full space-y-2">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-md">
                         {c.badge}
                       </span>
                     </div>
@@ -433,7 +433,7 @@ export default function MyLearning() {
                   </div>
 
                   <div className="flex items-center justify-between pt-1 border-t border-border-card/40">
-                    <span className="text-[11px] text-text-secondary font-medium">
+                    <span className="text-[13px] text-text-secondary font-medium">
                       {author}
                     </span>
 
@@ -486,7 +486,7 @@ export default function MyLearning() {
             </div>
 
             <div className="space-y-2">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                 <Clock className="w-3 h-3" /> {selectedUpcoming.badge}
               </span>
 
@@ -523,7 +523,7 @@ export default function MyLearning() {
               <Link
                 to="/courses"
                 onClick={() => setSelectedUpcoming(null)}
-                className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-5 py-2 rounded-xl text-xs font-bold hover:bg-accent-blue/90 transition-all shadow-xs"
+                className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-accent-blue/90 transition-all"
               >
                 <span>Barcha kurslar katalogi</span>
                 <ArrowRight className="w-3.5 h-3.5" />

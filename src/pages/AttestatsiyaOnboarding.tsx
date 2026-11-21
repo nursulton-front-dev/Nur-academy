@@ -79,9 +79,9 @@ export default function AttestatsiyaOnboarding() {
           {[1, 2].map((s) => (
             <div key={s} className="flex items-center gap-3">
               <span
-                className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold transition-all ${
+                className={`flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold transition-all ${
                   step >= s
-                    ? 'bg-accent-blue text-white shadow-sm shadow-accent-blue/30'
+                    ? 'bg-accent-blue text-white'
                     : 'bg-surface border border-border-card text-text-secondary'
                 }`}
               >
@@ -96,11 +96,10 @@ export default function AttestatsiyaOnboarding() {
 
         {/* ───────────── STEP 1: GOAL SELECTION ───────────── */}
         {step === 1 && (
-          <div className="bg-surface border border-border-card rounded-[32px] p-6 sm:p-10 shadow-sm relative overflow-hidden space-y-8">
-            <div className="absolute -top-16 -right-16 w-56 h-56 bg-accent-blue/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="bg-surface border border-border-card rounded-[18px] p-6 sm:p-10 relative overflow-hidden space-y-8">
 
             <div className="space-y-3 relative z-10">
-              <span className="inline-flex items-center gap-1.5 text-[10px] bg-accent-blue/10 text-accent-blue px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1.5 text-xs bg-mint-strong text-on-mint px-3.5 py-1.5 rounded-[10px] font-bold uppercase tracking-wider">
                 <Target className="w-3.5 h-3.5" />
                 Onboarding
               </span>
@@ -123,7 +122,7 @@ export default function AttestatsiyaOnboarding() {
                     onClick={() => setSelectedGoal(option.value)}
                     className={`group text-left p-5 rounded-2xl border transition-all flex items-start gap-4 cursor-pointer ${
                       isSelected
-                        ? 'bg-accent-blue/10 border-accent-blue shadow-[0_0_14px_rgba(59,130,246,0.14)]'
+                        ? 'bg-mint border-accent-blue'
                         : 'bg-primary-bg/50 border-border-card hover:bg-surface-hover hover:border-accent-blue/35'
                     }`}
                   >
@@ -131,7 +130,7 @@ export default function AttestatsiyaOnboarding() {
                       className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
                         isSelected
                           ? 'bg-accent-blue text-white'
-                          : 'bg-accent-blue/10 text-accent-blue group-hover:bg-accent-blue/15'
+                          : 'bg-mint text-on-mint group-hover:bg-accent-blue/15'
                       }`}
                     >
                       <Icon className="w-5.5 h-5.5" />
@@ -152,7 +151,7 @@ export default function AttestatsiyaOnboarding() {
                 type="button"
                 onClick={handleContinue}
                 disabled={selectedGoal === null || saving}
-                className="inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-8 py-3.5 rounded-xl font-bold text-sm hover:bg-accent-blue/95 shadow-md shadow-accent-blue/20 transition-all active:scale-97 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-8 py-3.5 rounded-xl font-bold text-sm hover:bg-accent-blue/95 transition-all active:scale-97 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
               >
                 <span>{saving ? 'Saqlanmoqda...' : 'Davom etish'}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -163,11 +162,10 @@ export default function AttestatsiyaOnboarding() {
 
         {/* ───────────── STEP 2: DIAGNOSTIC OFFER ───────────── */}
         {step === 2 && (
-          <div className="bg-surface border border-border-card rounded-[32px] p-6 sm:p-10 shadow-sm relative overflow-hidden space-y-8">
-            <div className="absolute -top-16 -left-16 w-56 h-56 bg-emerald-500/8 rounded-full blur-3xl pointer-events-none" />
+          <div className="bg-surface border border-border-card rounded-[18px] p-6 sm:p-10 relative overflow-hidden space-y-8">
 
             <div className="space-y-3 relative z-10">
-              <span className="inline-flex items-center gap-1.5 text-[10px] bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1.5 text-xs bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full font-bold uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5" />
                 Diagnostika
               </span>
@@ -184,14 +182,14 @@ export default function AttestatsiyaOnboarding() {
                 <ListChecks className="w-5 h-5 text-accent-blue shrink-0" />
                 <div>
                   <p className="text-sm font-bold text-text-primary">50 ta savol</p>
-                  <p className="text-[11px] text-text-secondary">Barcha 8 ta modul bo‘yicha</p>
+                  <p className="text-[13px] text-text-secondary">Barcha 8 ta modul bo‘yicha</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-primary-bg/60 border border-border-card/50 rounded-2xl p-4">
                 <Clock className="w-5 h-5 text-accent-blue shrink-0" />
                 <div>
                   <p className="text-sm font-bold text-text-primary">120 daqiqa</p>
-                  <p className="text-[11px] text-text-secondary">Haqiqiy attestatsiya vaqti bilan bir xil</p>
+                  <p className="text-[13px] text-text-secondary">Haqiqiy attestatsiya vaqti bilan bir xil</p>
                 </div>
               </div>
             </div>
@@ -201,7 +199,7 @@ export default function AttestatsiyaOnboarding() {
                 type="button"
                 onClick={() => finishOnboarding('/attestatsiya/diagnostika')}
                 disabled={saving}
-                className="flex-1 inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-6 py-4 rounded-xl font-bold text-sm hover:bg-accent-blue/95 shadow-md shadow-accent-blue/20 transition-all active:scale-97 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-accent-blue text-white px-6 py-4 rounded-xl font-bold text-sm hover:bg-accent-blue/95 transition-all active:scale-97 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 <PlayCircle className="w-5 h-5" />
                 <span>Diagnostikani boshlash</span>

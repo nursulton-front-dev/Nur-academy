@@ -61,7 +61,7 @@ export default function XpIndicator() {
         className="flex items-center gap-1.5 cursor-pointer"
         aria-label="Progress"
       >
-        <span className="inline-flex items-center gap-1 bg-accent-blue/10 text-accent-blue rounded-full pl-2 pr-2.5 py-1.5 text-xs font-bold">
+        <span className="inline-flex items-center gap-1 bg-mint text-on-mint rounded-full pl-2 pr-2.5 py-1.5 text-xs font-bold">
           <Zap className="w-3.5 h-3.5" />
           Lv.{level}
           <span className="text-text-secondary font-semibold">· {xp}</span>
@@ -85,7 +85,7 @@ export default function XpIndicator() {
                 </div>
                 <div>
                   <p className="text-sm font-serif font-extrabold text-text-primary leading-none">{level}-daraja</p>
-                  <p className="text-[11px] text-text-secondary mt-0.5">{xp} XP</p>
+                  <p className="text-[13px] text-text-secondary mt-0.5">{xp} XP</p>
                 </div>
               </div>
               {streak_days > 0 && (
@@ -97,7 +97,7 @@ export default function XpIndicator() {
             </div>
 
             <div className="space-y-1.5 mb-3">
-              <div className="flex justify-between text-[10px] font-bold text-text-secondary">
+              <div className="flex justify-between text-xs font-bold text-text-secondary">
                 <span>Keyingi darajagacha</span>
                 <span>{xp}/{next_level_xp} XP</span>
               </div>
@@ -111,7 +111,7 @@ export default function XpIndicator() {
                 <p className="text-xs text-text-secondary italic">Hali XP harakatlari yoʻq.</p>
               ) : (
                 events.map((ev) => (
-                  <div key={ev.id} className="flex items-center gap-2 text-[11px]">
+                  <div key={ev.id} className="flex items-center gap-2 text-[13px]">
                     <TrendingUp className="w-3 h-3 text-emerald-500 shrink-0" />
                     <span className="font-bold text-emerald-600">+{ev.xp_amount}</span>
                     <span className="text-text-primary truncate">{EVENT_LABELS[ev.event_type] ?? ev.event_type}</span>

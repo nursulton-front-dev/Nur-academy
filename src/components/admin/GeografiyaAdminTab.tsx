@@ -136,7 +136,7 @@ export default function GeografiyaAdminTab() {
   return (
     <div className="space-y-6 text-left">
       {/* Header Banner */}
-      <div className="bg-surface border border-border-card rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="bg-surface border border-border-card rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
@@ -156,11 +156,11 @@ export default function GeografiyaAdminTab() {
 
         <div className="flex gap-2">
           <div className="px-4 py-2 rounded-xl bg-primary-bg border border-border-card text-center">
-            <p className="text-[10px] uppercase font-bold text-text-secondary">P0/P1 Muammolar</p>
+            <p className="text-xs uppercase font-bold text-text-secondary">P0/P1 Muammolar</p>
             <p className="text-lg font-bold text-red-500">{CONTENT_ISSUES.length} ta</p>
           </div>
           <div className="px-4 py-2 rounded-xl bg-primary-bg border border-border-card text-center">
-            <p className="text-[10px] uppercase font-bold text-text-secondary">Sifat holati</p>
+            <p className="text-xs uppercase font-bold text-text-secondary">Sifat holati</p>
             <p className="text-lg font-bold text-amber-500">0% Ready</p>
           </div>
         </div>
@@ -236,7 +236,7 @@ export default function GeografiyaAdminTab() {
                   <tr key={issue.issue_id} className="hover:bg-primary-bg/30 transition-colors">
                     <td className="py-3 px-4">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                        className={`px-2 py-0.5 rounded text-xs font-bold ${
                           issue.severity === 'P0'
                             ? 'bg-red-500/15 text-red-500 border border-red-500/30'
                             : 'bg-amber-500/15 text-amber-500 border border-amber-500/30'
@@ -247,7 +247,7 @@ export default function GeografiyaAdminTab() {
                     </td>
                     <td className="py-3 px-4">
                       <p className="font-bold text-text-primary">{issue.error_code}</p>
-                      <p className="text-[10px] text-text-secondary font-mono">{issue.issue_id}</p>
+                      <p className="text-xs text-text-secondary font-mono">{issue.issue_id}</p>
                     </td>
                     <td className="py-3 px-4 font-mono text-text-secondary">
                       {issue.entity_id}
@@ -320,11 +320,11 @@ export default function GeografiyaAdminTab() {
                     <span className="font-mono text-xs font-bold text-accent-blue bg-accent-blue/10 px-2 py-0.5 rounded">
                       {q.source_id}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary">
+                    <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
                       {q.pool} • Var: {q.variant} • Bo‘lim: S{q.section} • Dars: {q.lesson_id}
                     </span>
                   </div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                  <span className="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
                     Needs correction
                   </span>
                 </div>
@@ -337,7 +337,7 @@ export default function GeografiyaAdminTab() {
                   {q.options.map((opt: any) => (
                     <div
                       key={opt.code}
-                      className="px-3 py-1.5 rounded-lg bg-primary-bg/70 border border-border-card/40 text-[11px] text-text-secondary flex gap-2"
+                      className="px-3 py-1.5 rounded-lg bg-primary-bg/70 border border-border-card/40 text-[13px] text-text-secondary flex gap-2"
                     >
                       <span className="font-bold text-text-primary">{opt.code})</span>
                       <span>{opt.text}</span>
@@ -370,11 +370,11 @@ export default function GeografiyaAdminTab() {
                       {a.asset_id}
                     </span>
                     <h4 className="text-sm font-bold text-text-primary mt-1">{a.title}</h4>
-                    <p className="text-[10px] text-text-secondary mt-0.5">
+                    <p className="text-xs text-text-secondary mt-0.5">
                       Darslar: <span className="font-mono font-bold text-text-primary">{a.target_lessons.join(', ')}</span>
                     </p>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-primary-bg text-text-secondary border border-border-card">
+                  <span className="text-xs px-2 py-0.5 rounded bg-primary-bg text-text-secondary border border-border-card">
                     {a.method}
                   </span>
                 </div>
@@ -393,9 +393,9 @@ export default function GeografiyaAdminTab() {
                   />
                 </div>
 
-                <div className="text-[11px] space-y-1 text-text-secondary">
+                <div className="text-[13px] space-y-1 text-text-secondary">
                   <p><strong>Alt matn:</strong> {a.alt_text}</p>
-                  <p className="text-[10px] text-amber-500"><strong>Litsenziya:</strong> {a.license_status}</p>
+                  <p className="text-xs text-amber-500"><strong>Litsenziya:</strong> {a.license_status}</p>
                 </div>
               </div>
             ))}
@@ -419,7 +419,7 @@ export default function GeografiyaAdminTab() {
                 <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-bold text-red-500">Barcha 560 savol metodik tekshiruvdan o‘tmagan</p>
-                  <p className="text-text-secondary text-[11px]">Hozirgi holat: 0/560 Tekshirilgan (Ready). 560 ta savol "Needs correction" holatida.</p>
+                  <p className="text-text-secondary text-[13px]">Hozirgi holat: 0/560 Tekshirilgan (Ready). 560 ta savol "Needs correction" holatida.</p>
                 </div>
               </div>
 
@@ -427,7 +427,7 @@ export default function GeografiyaAdminTab() {
                 <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-bold text-red-500">330 ta Mashq savollarida shablon javoblar mavjud</p>
-                  <p className="text-text-secondary text-[11px]">Barcha dars mashqlari bitta javob kombinatsiyasidan iborat bo‘lib, sifatli o‘quv trenajyorini ta’minlamaydi.</p>
+                  <p className="text-text-secondary text-[13px]">Barcha dars mashqlari bitta javob kombinatsiyasidan iborat bo‘lib, sifatli o‘quv trenajyorini ta’minlamaydi.</p>
                 </div>
               </div>
 
@@ -435,7 +435,7 @@ export default function GeografiyaAdminTab() {
                 <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-bold text-red-500">Pullararo klon (RM-A-30 / O-O3-009 / O-O4-008)</p>
-                  <p className="text-text-secondary text-[11px]">Real mock va Oddiy mock bir xil savolga ega, mustaqil baholash buziladi.</p>
+                  <p className="text-text-secondary text-[13px]">Real mock va Oddiy mock bir xil savolga ega, mustaqil baholash buziladi.</p>
                 </div>
               </div>
 
@@ -443,7 +443,7 @@ export default function GeografiyaAdminTab() {
                 <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-bold text-amber-500">R-05 va R-06 xaritalari Antarktida konturiga ega emas</p>
-                  <p className="text-text-secondary text-[11px]">60° janubiy kenglik chegarasi va Yevrosiyo terminologiyasini muvofiqlashtirish talab qilinadi.</p>
+                  <p className="text-text-secondary text-[13px]">60° janubiy kenglik chegarasi va Yevrosiyo terminologiyasini muvofiqlashtirish talab qilinadi.</p>
                 </div>
               </div>
             </div>
@@ -451,7 +451,7 @@ export default function GeografiyaAdminTab() {
             <div className="pt-4 border-t border-border-card flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold text-text-primary">Nashr qilish holati: BLOKLANGAN</p>
-                <p className="text-[10px] text-text-secondary">Kurs qoralama (draft) holatida xavfsiz saqlanadi.</p>
+                <p className="text-xs text-text-secondary">Kurs qoralama (draft) holatida xavfsiz saqlanadi.</p>
               </div>
 
               <button

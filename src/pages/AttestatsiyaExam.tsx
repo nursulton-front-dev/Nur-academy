@@ -59,15 +59,15 @@ function CustomExamModal({
         {stats && (
           <div className="bg-primary-bg p-3.5 rounded-xl border border-border-card grid grid-cols-3 gap-2 text-center">
             <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Javob berilgan</p>
+              <p className="text-xs uppercase font-bold text-text-secondary">Javob berilgan</p>
               <p className="text-lg font-serif font-extrabold text-success-green">{stats.answered}</p>
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Javob berilmagan</p>
+              <p className="text-xs uppercase font-bold text-text-secondary">Javob berilmagan</p>
               <p className="text-lg font-serif font-extrabold text-text-secondary">{stats.unanswered}</p>
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Belgilangan</p>
+              <p className="text-xs uppercase font-bold text-text-secondary">Belgilangan</p>
               <p className="text-lg font-serif font-extrabold text-amber-500">{stats.flagged}</p>
             </div>
           </div>
@@ -84,7 +84,7 @@ function CustomExamModal({
           <button
             type="button"
             onClick={onConfirm}
-            className={`flex-1 text-white py-3 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-98 cursor-pointer ${confirmBtnStyle}`}
+            className={`flex-1 text-white py-3 rounded-xl text-xs font-bold transition-all active:scale-98 cursor-pointer ${confirmBtnStyle}`}
           >
             {confirmText}
           </button>
@@ -376,7 +376,7 @@ export default function AttestatsiyaExam() {
 
           <button
             onClick={handleStart}
-            className="w-full bg-accent-blue hover:bg-accent-hover text-white py-3.5 rounded-xl text-sm font-bold shadow-sm transition-colors active:scale-98 cursor-pointer"
+            className="w-full bg-accent-blue hover:bg-accent-hover text-white py-3.5 rounded-xl text-sm font-bold transition-colors active:scale-98 cursor-pointer"
           >
             Imtihonni boshlash
           </button>
@@ -438,7 +438,7 @@ export default function AttestatsiyaExam() {
 
           <button
             onClick={() => setShowSubmitModal(true)}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 sm:px-5 py-2 rounded-xl text-xs font-bold shadow-sm transition-colors active:scale-98 cursor-pointer shrink-0 flex items-center gap-1.5"
+            className="bg-cta hover:bg-cta-hover text-on-cta px-5 sm:px-6 py-2.5 rounded-[10px] text-sm font-bold transition-colors cursor-pointer shrink-0 flex items-center gap-1.5"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>Yakunlash</span>
@@ -467,16 +467,16 @@ export default function AttestatsiyaExam() {
         <aside className="hidden lg:flex w-[290px] shrink-0 flex-col gap-4 min-h-0">
           
           {/* Progress & Time Card */}
-          <div className="bg-surface border border-border-card rounded-2xl p-5 shadow-xs space-y-4">
+          <div className="bg-surface border border-border-card rounded-2xl p-5 space-y-4">
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Qolgan vaqt</p>
+                <p className="text-xs font-bold text-text-secondary uppercase tracking-widest">Qolgan vaqt</p>
                 <div className={`text-2xl font-serif font-extrabold font-mono mt-0.5 ${isTimeCritical ? 'text-rose-500 animate-pulse' : 'text-text-primary'}`}>
                   {formatTime(timeLeft)}
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Progress</p>
+                <p className="text-xs font-bold text-text-secondary uppercase tracking-widest">Progress</p>
                 <p className="text-base font-serif font-extrabold text-accent-blue mt-0.5">
                   {answeredCount} <span className="text-xs font-normal text-text-secondary">/ {questions.length}</span>
                 </p>
@@ -494,25 +494,25 @@ export default function AttestatsiyaExam() {
             {/* Stats row */}
             <div className="pt-2 border-t border-border-card grid grid-cols-3 gap-1 text-center text-xs">
               <div>
-                <p className="text-[10px] font-bold text-text-secondary">Javob</p>
+                <p className="text-xs font-bold text-text-secondary">Javob</p>
                 <p className="font-serif font-bold text-success-green">{answeredCount}</p>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-text-secondary">Belgi</p>
+                <p className="text-xs font-bold text-text-secondary">Belgi</p>
                 <p className="font-serif font-bold text-amber-500">{flaggedCount}</p>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-text-secondary">Qolgan</p>
+                <p className="text-xs font-bold text-text-secondary">Qolgan</p>
                 <p className="font-serif font-bold text-text-secondary">{remainingCount}</p>
               </div>
             </div>
           </div>
 
           {/* Question Navigator Grid */}
-          <div className="bg-surface border border-border-card rounded-2xl p-5 shadow-xs flex flex-col flex-1 min-h-0">
+          <div className="bg-surface border border-border-card rounded-2xl p-5 flex flex-col flex-1 min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[11px] font-bold text-text-primary uppercase tracking-wider">Savollar navigatori</h4>
-              <span className="text-[10px] text-text-secondary font-mono">{questions.length} ta savol</span>
+              <h4 className="text-[13px] font-bold text-text-primary uppercase tracking-wider">Savollar navigatori</h4>
+              <span className="text-xs text-text-secondary font-mono">{questions.length} ta savol</span>
             </div>
 
             <div className="flex-1 overflow-y-auto pr-1">
@@ -524,11 +524,11 @@ export default function AttestatsiyaExam() {
 
                   let btnStyle = "bg-primary-bg text-text-secondary border-border-card hover:bg-surface-hover";
                   if (isCurrent) {
-                    btnStyle = "bg-accent-blue text-white border-accent-blue font-bold shadow-sm ring-2 ring-accent-blue/30";
+                    btnStyle = "bg-surface text-text-primary border-2 border-text-primary font-bold";
                   } else if (isFl) {
-                    btnStyle = "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40 font-semibold ring-1 ring-amber-500/30";
+                    btnStyle = "bg-warn-bg text-warn-icon border-warn-border font-semibold ring-1 ring-amber-500/30";
                   } else if (isAnswered) {
-                    btnStyle = "bg-success-green/15 text-success-green border-success-green/30 font-semibold";
+                    btnStyle = "bg-accent-blue text-white border-accent-blue font-bold";
                   }
 
                   return (
@@ -546,7 +546,7 @@ export default function AttestatsiyaExam() {
             </div>
 
             {/* Legend */}
-            <div className="border-t border-border-card mt-3 pt-3 grid grid-cols-2 gap-x-2 gap-y-1.5 text-[10px] text-text-secondary">
+            <div className="border-t border-border-card mt-3 pt-3 grid grid-cols-2 gap-x-2 gap-y-1.5 text-xs text-text-secondary">
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded bg-accent-blue" />
                 <span>Joriy</span>
@@ -569,7 +569,7 @@ export default function AttestatsiyaExam() {
         </aside>
 
         {/* ── MAIN EXAM AREA ── */}
-        <main className="flex-1 h-full bg-surface border border-border-card rounded-2xl p-5 sm:p-8 flex flex-col shadow-xs overflow-hidden text-left transition-colors duration-200">
+        <main className="flex-1 h-full bg-surface border border-border-card rounded-2xl p-5 sm:p-8 flex flex-col overflow-hidden text-left transition-colors duration-200">
           
           <div className="flex-1 min-h-0 overflow-y-auto">
             <div className="max-w-2xl mx-auto w-full space-y-6">
@@ -593,7 +593,7 @@ export default function AttestatsiyaExam() {
                   onClick={toggleFlag}
                   className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors border cursor-pointer ${
                     isFlagged
-                      ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40 ring-1 ring-amber-500/30'
+                      ? 'bg-warn-bg text-warn-icon border-warn-border ring-1 ring-amber-500/30'
                       : 'bg-primary-bg text-text-secondary border-border-card hover:bg-surface-hover'
                   }`}
                 >
@@ -610,7 +610,7 @@ export default function AttestatsiyaExam() {
               {/* Answers area */}
               {isInputQuestion ? (
                 <div className="space-y-2 pt-2">
-                  <label className="text-[11px] font-bold text-text-secondary uppercase tracking-widest">
+                  <label className="text-[13px] font-bold text-text-secondary uppercase tracking-widest">
                     Javobingizni kiriting
                   </label>
                   <input
@@ -632,26 +632,18 @@ export default function AttestatsiyaExam() {
                         key={idx}
                         type="button"
                         onClick={() => handleSelectOption(idx)}
-                        className={`w-full flex items-center text-left min-h-[50px] px-4 py-3.5 rounded-xl border transition-all duration-150 cursor-pointer group ${
-                          isSelected
-                            ? 'bg-accent-blue/10 border-accent-blue shadow-xs font-semibold'
-                            : 'bg-surface border-border-card hover:bg-surface-hover hover:border-accent-blue/40'
+                        className={`w-full flex items-center gap-4 sm:gap-5 text-left min-h-[56px] pl-2.5 pr-4 py-2 rounded-[10px] border-[1.5px] transition-colors cursor-pointer ${
+                          isSelected ? 'bg-mint border-accent-blue' : 'bg-row border-row-border hover:border-accent-blue/50'
                         }`}
                       >
-                        <div
-                          className={`w-6 h-6 rounded-full border flex items-center justify-center mr-3.5 shrink-0 transition-colors ${
-                            isSelected
-                              ? 'border-accent-blue bg-accent-blue text-white'
-                              : 'border-border-card group-hover:border-accent-blue/40 text-text-secondary'
+                        <span
+                          className={`w-10 h-[30px] rounded-md grid place-items-center shrink-0 text-[15px] font-bold transition-colors ${
+                            isSelected ? 'bg-accent-blue text-white' : 'bg-mint text-on-mint'
                           }`}
                         >
-                          {isSelected ? (
-                            <div className="w-2 h-2 rounded-full bg-white" />
-                          ) : (
-                            <span className="text-[11px] font-bold">{String.fromCharCode(65 + idx)}</span>
-                          )}
-                        </div>
-                        <span className={`text-sm leading-relaxed ${isSelected ? 'text-text-primary' : 'text-text-secondary group-hover:text-text-primary'}`}>
+                          {String.fromCharCode(65 + idx)}
+                        </span>
+                        <span className="text-base sm:text-[17px] font-semibold leading-relaxed text-text-primary">
                           {option}
                         </span>
                       </button>
@@ -689,15 +681,15 @@ export default function AttestatsiyaExam() {
                 <span>Belgi</span>
               </button>
 
-              <div className="hidden md:flex items-center gap-1.5 text-[10px] text-text-secondary">
+              <div className="hidden md:flex items-center gap-1.5 text-xs text-text-secondary">
                 {['A', 'B', 'C', 'D'].map(k => (
-                  <kbd key={k} className="px-1.5 py-0.5 bg-primary-bg border border-border-card rounded text-[9px] font-bold font-mono">
+                  <kbd key={k} className="px-1.5 py-0.5 bg-primary-bg border border-border-card rounded text-[13px] font-bold font-mono">
                     {k}
                   </kbd>
                 ))}
                 <span>javob</span>
                 <span className="text-border-card mx-1">|</span>
-                <kbd className="px-1.5 py-0.5 bg-primary-bg border border-border-card rounded text-[9px] font-bold font-mono">F</kbd>
+                <kbd className="px-1.5 py-0.5 bg-primary-bg border border-border-card rounded text-[13px] font-bold font-mono">F</kbd>
                 <span>belgilash</span>
               </div>
             </div>
@@ -719,7 +711,7 @@ export default function AttestatsiyaExam() {
                     handleNext();
                   }
                 }}
-                className="inline-flex items-center gap-1.5 bg-accent-blue hover:bg-accent-hover text-white px-5 sm:px-6 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 bg-accent-blue hover:bg-accent-hover text-white px-5 sm:px-6 py-2.5 rounded-xl text-sm font-bold transition-colors cursor-pointer"
               >
                 <span>{currentQuestionIndex === questions.length - 1 ? "Yakunlash" : "Keyingi"}</span>
                 {currentQuestionIndex < questions.length - 1 && <ChevronRight className="w-4 h-4" />}
@@ -759,11 +751,11 @@ export default function AttestatsiyaExam() {
 
                   let btnStyle = "bg-primary-bg text-text-secondary border-border-card";
                   if (isCurrent) {
-                    btnStyle = "bg-accent-blue text-white border-accent-blue font-bold ring-2 ring-accent-blue/30";
+                    btnStyle = "bg-surface text-text-primary border-2 border-text-primary font-bold";
                   } else if (isFl) {
                     btnStyle = "bg-amber-500/20 text-amber-600 border-amber-500/40 font-semibold";
                   } else if (isAnswered) {
-                    btnStyle = "bg-success-green/15 text-success-green border-success-green/30 font-semibold";
+                    btnStyle = "bg-accent-blue text-white border-accent-blue font-bold";
                   }
 
                   return (

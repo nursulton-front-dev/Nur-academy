@@ -1,3 +1,4 @@
+import { IslimiCorner } from '../components/brand/Ornaments';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -37,7 +38,7 @@ export function PlatformShowcase() {
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-accent-blue/10 text-accent-blue text-xs font-bold uppercase tracking-wider mb-4">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-mint text-on-mint text-xs font-bold uppercase tracking-wider mb-4">
             <Sparkles className="w-3.5 h-3.5 text-accent-blue" />
             Barcha tayyorgarlik vositalari — bir joyda
           </span>
@@ -60,9 +61,9 @@ export function PlatformShowcase() {
                 key={id}
                 type="button"
                 onClick={() => setActiveTab(id as any)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
                   activeTab === id
-                    ? 'bg-accent-blue text-white shadow-sm'
+                    ? 'bg-accent-blue text-white'
                     : 'text-text-secondary hover:text-text-primary hover:bg-surface'
                 }`}
               >
@@ -77,19 +78,19 @@ export function PlatformShowcase() {
         <div className="grid lg:grid-cols-2 gap-8 items-stretch">
 
           {/* ── LEFT PANE: LIGHT ENVIRONMENT ── */}
-          <div className="bg-[#FFFFFF] text-[#0B1D40] border border-[#E8EEF8] rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-sm relative overflow-hidden transition-all duration-200">
+          <div className="bg-[#FFFFFF] text-[#10201E] border border-[#E6E2D8] rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-200">
             <div>
               {/* Window Header */}
-              <div className="flex items-center justify-between pb-4 mb-6 border-b border-[#E8EEF8]">
+              <div className="flex items-center justify-between pb-4 mb-6 border-b border-[#E6E2D8]">
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full bg-rose-400/80" />
                   <span className="w-3 h-3 rounded-full bg-amber-400/80" />
                   <span className="w-3 h-3 rounded-full bg-emerald-400/80" />
-                  <span className="text-xs font-bold text-[#4D5E80] ml-2">
+                  <span className="text-xs font-bold text-[#4B5654] ml-2">
                     Yorug‘ rejim · Kunduzgi mashg‘ulot
                   </span>
                 </div>
-                <span className="text-[11px] font-semibold text-[#0E7A62] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
+                <span className="text-[13px] font-semibold text-[#0E7A62] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
                   Faol interfeys
                 </span>
               </div>
@@ -99,8 +100,8 @@ export function PlatformShowcase() {
                 <div className="space-y-4 animate-fadeIn">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-serif font-extrabold text-xl text-[#0B1D40]">Diagnostika tahlili</h3>
-                      <p className="text-xs text-[#4D5E80] mt-1">50 savolli boshlang‘ich sinov natijalari</p>
+                      <h3 className="font-serif font-extrabold text-xl text-[#10201E]">Diagnostika tahlili</h3>
+                      <p className="text-xs text-[#4B5654] mt-1">50 savolli boshlang‘ich sinov natijalari</p>
                     </div>
                     <span className="text-xl font-bold font-mono text-emerald-600 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200">
                       84 ball
@@ -113,14 +114,14 @@ export function PlatformShowcase() {
                       { name: 'Sanoq sistemalari & axborot', val: 56, status: 'Takrorlash lozim' },
                       { name: 'Algoritmlar & dasturlash', val: 74, status: 'O‘rta' },
                     ].map((item) => (
-                      <div key={item.name} className="bg-[#F8FAFD] p-3.5 rounded-xl border border-[#E8EEF8]">
+                      <div key={item.name} className="bg-[#F6F4EF] p-3.5 rounded-xl border border-[#E6E2D8]">
                         <div className="flex justify-between items-center text-xs font-bold mb-1.5">
-                          <span className="text-[#0B1D40]">{item.name}</span>
+                          <span className="text-[#10201E]">{item.name}</span>
                           <span className={item.val >= 80 ? 'text-emerald-600' : item.val >= 60 ? 'text-[#0E7A62]' : 'text-amber-600'}>
                             {item.val}% · {item.status}
                           </span>
                         </div>
-                        <div className="w-full bg-[#E8EEF8] h-2 rounded-full overflow-hidden">
+                        <div className="w-full bg-[#E6E2D8] h-2 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${
                               item.val >= 80 ? 'bg-emerald-500' : item.val >= 60 ? 'bg-[#0E7A62]' : 'bg-amber-500'
@@ -138,8 +139,8 @@ export function PlatformShowcase() {
                 <div className="space-y-4 animate-fadeIn">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-serif font-extrabold text-xl text-[#0B1D40]">Modullar va darslar</h3>
-                      <p className="text-xs text-[#4D5E80] mt-1">Davlat attestatsiyasi talablari asosida</p>
+                      <h3 className="font-serif font-extrabold text-xl text-[#10201E]">Modullar va darslar</h3>
+                      <p className="text-xs text-[#4B5654] mt-1">Davlat attestatsiyasi talablari asosida</p>
                     </div>
                     <span className="text-xs font-bold text-[#0E7A62] bg-emerald-50 px-2.5 py-1 rounded-lg">
                       8 ta modul
@@ -156,19 +157,19 @@ export function PlatformShowcase() {
                         key={m.num}
                         className={`p-3.5 rounded-xl border flex items-center justify-between text-xs ${
                           m.active
-                            ? 'bg-emerald-50/60 border-[#0E7A62] font-semibold text-[#0B1D40]'
-                            : 'bg-[#F8FAFD] border-[#E8EEF8] text-[#4D5E80]'
+                            ? 'bg-emerald-50/60 border-[#0E7A62] font-semibold text-[#10201E]'
+                            : 'bg-[#F6F4EF] border-[#E6E2D8] text-[#4B5654]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <span className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-[11px] ${
+                          <span className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-[13px] ${
                             m.active ? 'bg-[#0E7A62] text-white' : m.done ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
                           }`}>
                             {m.done ? '✓' : m.num}
                           </span>
                           <span>{m.title}</span>
                         </div>
-                        <span className="text-[11px] text-[#4D5E80]">{m.count}</span>
+                        <span className="text-[13px] text-[#4B5654]">{m.count}</span>
                       </div>
                     ))}
                   </div>
@@ -178,21 +179,21 @@ export function PlatformShowcase() {
               {activeTab === 'mentor' && (
                 <div className="space-y-4 animate-fadeIn">
                   <div>
-                    <h3 className="font-serif font-extrabold text-xl text-[#0B1D40]">AI Mentor tushuntirishi</h3>
-                    <p className="text-xs text-[#4D5E80] mt-1">Har bir xato test savoli bo‘yicha individual tahlil</p>
+                    <h3 className="font-serif font-extrabold text-xl text-[#10201E]">AI Mentor tushuntirishi</h3>
+                    <p className="text-xs text-[#4B5654] mt-1">Har bir xato test savoli bo‘yicha individual tahlil</p>
                   </div>
 
-                  <div className="bg-[#F8FAFD] border border-[#E8EEF8] rounded-2xl p-4 space-y-3">
+                  <div className="bg-[#F6F4EF] border border-[#E6E2D8] rounded-2xl p-4 space-y-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-accent-blue/10 text-accent-blue flex items-center justify-center font-bold">
+                      <div className="w-7 h-7 rounded-lg bg-mint text-on-mint flex items-center justify-center font-bold">
                         <Brain className="w-4 h-4" />
                       </div>
-                      <span className="text-xs font-bold text-[#0B1D40]">AI Mentor tavsiyasi:</span>
+                      <span className="text-xs font-bold text-[#10201E]">AI Mentor tavsiyasi:</span>
                     </div>
-                    <p className="text-xs text-[#4D5E80] leading-relaxed">
+                    <p className="text-xs text-[#4B5654] leading-relaxed">
                       "16-lik sanoq sistemasidan 2-likka o‘tishda har bir raqamni to‘rtta bit (tetrada) bilan almashtiring. Masalan: A₁₆ = 1010₂. Shunda xatolik yuz bermaydi."
                     </p>
-                    <div className="pt-2 border-t border-[#E8EEF8] flex items-center justify-between text-[11px]">
+                    <div className="pt-2 border-t border-[#E6E2D8] flex items-center justify-between text-[13px]">
                       <span className="text-emerald-600 font-semibold">Tushunarli konspekt yaratildi</span>
                       <span className="text-[#0E7A62] font-bold">Takrorlashga qo‘shildi</span>
                     </div>
@@ -204,27 +205,27 @@ export function PlatformShowcase() {
                 <div className="space-y-4 animate-fadeIn">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-serif font-extrabold text-xl text-[#0B1D40]">Mock imtihon simulyatori</h3>
-                      <p className="text-xs text-[#4D5E80] mt-1">Rasmiy attestatsiya sharoitida</p>
+                      <h3 className="font-serif font-extrabold text-xl text-[#10201E]">Mock imtihon simulyatori</h3>
+                      <p className="text-xs text-[#4B5654] mt-1">Rasmiy attestatsiya sharoitida</p>
                     </div>
                     <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
                       120 daqiqa
                     </span>
                   </div>
 
-                  <div className="bg-[#F8FAFD] border border-[#E8EEF8] rounded-2xl p-4 space-y-3">
+                  <div className="bg-[#F6F4EF] border border-[#E6E2D8] rounded-2xl p-4 space-y-3">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-[#4D5E80]">Savol 24 / 50</span>
-                      <span className="font-mono font-bold text-[#0B1D40]">01:24:18 qoldi</span>
+                      <span className="text-[#4B5654]">Savol 24 / 50</span>
+                      <span className="font-mono font-bold text-[#10201E]">01:24:18 qoldi</span>
                     </div>
-                    <div className="w-full bg-[#E8EEF8] h-2 rounded-full overflow-hidden">
+                    <div className="w-full bg-[#E6E2D8] h-2 rounded-full overflow-hidden">
                       <div className="bg-[#0E7A62] h-full w-[48%]" />
                     </div>
-                    <p className="text-xs font-medium text-[#0B1D40] pt-1">
+                    <p className="text-xs font-medium text-[#10201E] pt-1">
                       Algoritmik blok-sxemada romb shakli qaysi amalni bildiradi?
                     </p>
                     <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
-                      <div className="p-2.5 rounded-lg border border-[#E8EEF8] bg-white text-[#4D5E80]">A) Boshlanish/Tugash</div>
+                      <div className="p-2.5 rounded-lg border border-[#E6E2D8] bg-white text-[#4B5654]">A) Boshlanish/Tugash</div>
                       <div className="p-2.5 rounded-lg border border-[#0E7A62] bg-emerald-50 font-semibold text-[#0E7A62]">B) Shartni tekshirish</div>
                     </div>
                   </div>
@@ -232,17 +233,17 @@ export function PlatformShowcase() {
               )}
             </div>
 
-            <div className="mt-6 pt-4 border-t border-[#E8EEF8] flex items-center justify-between text-xs text-[#4D5E80]">
+            <div className="mt-6 pt-4 border-t border-[#E6E2D8] flex items-center justify-between text-xs text-[#4B5654]">
               <span>Real vaqtda sinxronizatsiya</span>
               <span className="text-[#0E7A62] font-semibold">Nur Academy Engine</span>
             </div>
           </div>
 
           {/* ── RIGHT PANE: DARK ENVIRONMENT ── */}
-          <div className="bg-[#111A2E] text-[#F1F5F9] border border-[#1D2A44] rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-sm relative overflow-hidden transition-all duration-200">
+          <div className="bg-[#111A2E] text-[#F1F5F9] border border-[#22352F] rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-200">
             <div>
               {/* Window Header */}
-              <div className="flex items-center justify-between pb-4 mb-6 border-b border-[#1D2A44]">
+              <div className="flex items-center justify-between pb-4 mb-6 border-b border-[#22352F]">
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full bg-rose-500/80" />
                   <span className="w-3 h-3 rounded-full bg-amber-500/80" />
@@ -251,7 +252,7 @@ export function PlatformShowcase() {
                     Qorong‘i rejim · Kechki tayyorgarlik
                   </span>
                 </div>
-                <span className="text-[11px] font-semibold text-[#5FD3AF] bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-800">
+                <span className="text-[13px] font-semibold text-[#5FD3AF] bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-800">
                   Ko‘zga qulay
                 </span>
               </div>
@@ -275,14 +276,14 @@ export function PlatformShowcase() {
                       { name: 'Sanoq sistemalari & axborot', val: 56, status: 'Takrorlash lozim' },
                       { name: 'Algoritmlar & dasturlash', val: 74, status: 'O‘rta' },
                     ].map((item) => (
-                      <div key={item.name} className="bg-[#0A101D] p-3.5 rounded-xl border border-[#1D2A44]">
+                      <div key={item.name} className="bg-[#0A101D] p-3.5 rounded-xl border border-[#22352F]">
                         <div className="flex justify-between items-center text-xs font-bold mb-1.5">
                           <span className="text-[#F1F5F9]">{item.name}</span>
                           <span className={item.val >= 80 ? 'text-emerald-400' : item.val >= 60 ? 'text-[#5FD3AF]' : 'text-amber-400'}>
                             {item.val}% · {item.status}
                           </span>
                         </div>
-                        <div className="w-full bg-[#1D2A44] h-2 rounded-full overflow-hidden">
+                        <div className="w-full bg-[#22352F] h-2 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${
                               item.val >= 80 ? 'bg-emerald-500' : item.val >= 60 ? 'bg-[#0E7A62]' : 'bg-amber-500'
@@ -319,18 +320,18 @@ export function PlatformShowcase() {
                         className={`p-3.5 rounded-xl border flex items-center justify-between text-xs ${
                           m.active
                             ? 'bg-emerald-950/40 border-[#0E7A62] font-semibold text-white'
-                            : 'bg-[#0A101D] border-[#1D2A44] text-[#94A3B8]'
+                            : 'bg-[#0A101D] border-[#22352F] text-[#94A3B8]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <span className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-[11px] ${
+                          <span className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-[13px] ${
                             m.active ? 'bg-[#0E7A62] text-white' : m.done ? 'bg-emerald-950 text-emerald-400' : 'bg-slate-800 text-slate-400'
                           }`}>
                             {m.done ? '✓' : m.num}
                           </span>
                           <span>{m.title}</span>
                         </div>
-                        <span className="text-[11px] text-[#94A3B8]">{m.count}</span>
+                        <span className="text-[13px] text-[#94A3B8]">{m.count}</span>
                       </div>
                     ))}
                   </div>
@@ -344,7 +345,7 @@ export function PlatformShowcase() {
                     <p className="text-xs text-[#94A3B8] mt-1">Har bir xato test savoli bo‘yicha individual tahlil</p>
                   </div>
 
-                  <div className="bg-[#0A101D] border border-[#1D2A44] rounded-2xl p-4 space-y-3">
+                  <div className="bg-[#0A101D] border border-[#22352F] rounded-2xl p-4 space-y-3">
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-[#5FD3AF] flex items-center justify-center font-bold">
                         <Brain className="w-4 h-4" />
@@ -354,7 +355,7 @@ export function PlatformShowcase() {
                     <p className="text-xs text-[#94A3B8] leading-relaxed">
                       "16-lik sanoq sistemasidan 2-likka o‘tishda har bir raqamni to‘rtta bit (tetrada) bilan almashtiring. Masalan: A₁₆ = 1010₂. Shunda xatolik yuz bermaydi."
                     </p>
-                    <div className="pt-2 border-t border-[#1D2A44] flex items-center justify-between text-[11px]">
+                    <div className="pt-2 border-t border-[#22352F] flex items-center justify-between text-[13px]">
                       <span className="text-emerald-400 font-semibold">Tushunarli konspekt yaratildi</span>
                       <span className="text-[#5FD3AF] font-bold">Takrorlashga qo‘shildi</span>
                     </div>
@@ -374,19 +375,19 @@ export function PlatformShowcase() {
                     </span>
                   </div>
 
-                  <div className="bg-[#0A101D] border border-[#1D2A44] rounded-2xl p-4 space-y-3">
+                  <div className="bg-[#0A101D] border border-[#22352F] rounded-2xl p-4 space-y-3">
                     <div className="flex justify-between items-center text-xs">
                       <span className="text-[#94A3B8]">Savol 24 / 50</span>
                       <span className="font-mono font-bold text-[#F1F5F9]">01:24:18 qoldi</span>
                     </div>
-                    <div className="w-full bg-[#1D2A44] h-2 rounded-full overflow-hidden">
+                    <div className="w-full bg-[#22352F] h-2 rounded-full overflow-hidden">
                       <div className="bg-[#0E7A62] h-full w-[48%]" />
                     </div>
                     <p className="text-xs font-medium text-[#F1F5F9] pt-1">
                       Algoritmik blok-sxemada romb shakli qaysi amalni bildiradi?
                     </p>
                     <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
-                      <div className="p-2.5 rounded-lg border border-[#1D2A44] bg-[#111A2E] text-[#94A3B8]">A) Boshlanish/Tugash</div>
+                      <div className="p-2.5 rounded-lg border border-[#22352F] bg-[#111A2E] text-[#94A3B8]">A) Boshlanish/Tugash</div>
                       <div className="p-2.5 rounded-lg border border-[#0E7A62] bg-emerald-950/60 font-semibold text-[#5FD3AF]">B) Shartni tekshirish</div>
                     </div>
                   </div>
@@ -394,7 +395,7 @@ export function PlatformShowcase() {
               )}
             </div>
 
-            <div className="mt-6 pt-4 border-t border-[#1D2A44] flex items-center justify-between text-xs text-[#94A3B8]">
+            <div className="mt-6 pt-4 border-t border-[#22352F] flex items-center justify-between text-xs text-[#94A3B8]">
               <span>Avtomatik saqlash faol</span>
               <span className="text-[#5FD3AF] font-semibold">Tungi rejim</span>
             </div>
@@ -448,7 +449,7 @@ export function BenefitsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-blue/10 text-accent-blue text-xs font-bold uppercase tracking-wider mb-3">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-mint text-on-mint text-xs font-bold uppercase tracking-wider mb-3">
             <ShieldCheck className="w-3.5 h-3.5" />
             Metodik afzalliklar
           </span>
@@ -469,11 +470,11 @@ export function BenefitsSection() {
                 className="premium-card p-6 sm:p-7 flex flex-col justify-between group"
               >
                 <div>
-                  <div className="w-12 h-12 rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 rounded-2xl bg-mint text-on-mint flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-200">
                     <Icon className="w-6 h-6" />
                   </div>
 
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-muted text-text-secondary text-[11px] font-bold uppercase tracking-wider mb-3">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-muted text-text-secondary text-[13px] font-bold uppercase tracking-wider mb-3">
                     {b.badge}
                   </span>
 
@@ -541,7 +542,7 @@ export function HowItWorksSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-blue/10 text-accent-blue text-xs font-bold uppercase tracking-wider mb-3">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-mint text-on-mint text-xs font-bold uppercase tracking-wider mb-3">
             <Layers className="w-3.5 h-3.5" />
             Oddiy va tizimli bosqichlar
           </span>
@@ -566,12 +567,12 @@ export function HowItWorksSection() {
                     <span className="font-serif font-extrabold text-2xl font-mono text-accent-blue">
                       {s.num}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider bg-surface-muted text-text-secondary px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-bold uppercase tracking-wider bg-surface-muted text-text-secondary px-2.5 py-1 rounded-full">
                       {s.badge}
                     </span>
                   </div>
 
-                  <div className="w-10 h-10 rounded-xl bg-accent-blue/10 text-accent-blue flex items-center justify-center mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-mint text-on-mint flex items-center justify-center mb-4">
                     <Icon className="w-5 h-5" />
                   </div>
 
@@ -608,7 +609,7 @@ export function CourseSection({ course }: { course?: CourseMeta }) {
         
         <div className="flex flex-wrap justify-between items-end gap-4 mb-12">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-blue/10 text-accent-blue text-xs font-bold uppercase tracking-wider mb-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-mint text-on-mint text-xs font-bold uppercase tracking-wider mb-3">
               <BookOpen className="w-3.5 h-3.5" />
               Ta’lim yo‘nalishlari
             </span>
@@ -641,7 +642,7 @@ export function CourseSection({ course }: { course?: CourseMeta }) {
                 loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
               />
-              <span className="absolute top-4 right-4 text-xs font-bold uppercase tracking-wider text-white bg-accent-blue px-3 py-1 rounded-full shadow-sm">
+              <span className="absolute top-4 right-4 text-sm font-bold uppercase tracking-wider text-white bg-accent-blue px-3 py-1 rounded-full">
                 Faol kurs
               </span>
             </div>
@@ -669,7 +670,7 @@ export function CourseSection({ course }: { course?: CourseMeta }) {
                 <div className="flex flex-wrap gap-3 pt-5 border-t border-border-card">
                   <Link
                     to="/kurs/attestatsiya"
-                    className="inline-flex justify-center items-center gap-2 bg-accent-blue text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-accent-hover transition-colors shadow-sm"
+                    className="inline-flex justify-center items-center gap-2 bg-accent-blue text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-accent-hover transition-colors"
                   >
                     Kursga kirish <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -699,7 +700,7 @@ export function CourseSection({ course }: { course?: CourseMeta }) {
                 loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
               />
-              <span className="absolute top-4 right-4 text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-400 px-3 py-1 rounded-full shadow-sm">
+              <span className="absolute top-4 right-4 text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-400 px-3 py-1 rounded-full">
                 Tez kunda
               </span>
             </div>
@@ -751,7 +752,7 @@ export function CourseSection({ course }: { course?: CourseMeta }) {
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
                 />
-                <span className="absolute top-4 right-4 text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-400 px-3 py-1 rounded-full shadow-sm">
+                <span className="absolute top-4 right-4 text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-400 px-3 py-1 rounded-full">
                   {item.badge}
                 </span>
               </div>
@@ -803,6 +804,7 @@ export function StatisticsSection() {
 
   return (
     <section className="py-20 sm:py-24 bg-deep text-white relative overflow-hidden transition-colors duration-200">
+      <IslimiCorner className="h-[180px] w-[330px] opacity-90" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         <div className="text-center max-w-2xl mx-auto mb-14">
@@ -822,7 +824,7 @@ export function StatisticsSection() {
           {stats.map((st) => (
             <div
               key={st.label}
-              className="bg-[#112347] border border-emerald-800/40 rounded-2xl p-6 text-center hover:border-amber-400/40 transition-colors duration-200"
+              className="bg-[#0A4237] border border-emerald-800/40 rounded-2xl p-6 text-center hover:border-amber-400/40 transition-colors duration-200"
             >
               <div className="font-serif font-extrabold text-4xl sm:text-5xl text-[#F2B544] mb-2 font-mono">
                 {st.num}
@@ -906,7 +908,7 @@ export function FaqSection() {
 
           {/* Left Column: Heading and Support card */}
           <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-blue/10 text-accent-blue text-xs font-bold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-mint text-on-mint text-xs font-bold uppercase tracking-wider">
               <HelpCircle className="w-3.5 h-3.5" />
               Savol-javoblar
             </span>
@@ -919,7 +921,7 @@ export function FaqSection() {
 
             {/* Assistance Card instead of mascot */}
             <div className="rounded-2xl bg-primary-bg p-5 border border-border-card space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-accent-blue/10 text-accent-blue flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-mint text-on-mint flex items-center justify-center font-bold">
                 <MessageSquare className="w-5 h-5" />
               </div>
               <h3 className="font-serif font-bold text-base text-text-primary">
@@ -964,7 +966,7 @@ export function FaqSection() {
                             {item.q}
                           </span>
                           <span className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
-                            isOpen ? 'rotate-180 bg-accent-blue/10 text-accent-blue' : 'bg-primary-bg text-text-secondary'
+                            isOpen ? 'rotate-180 bg-mint text-on-mint' : 'bg-primary-bg text-text-secondary'
                           }`}>
                             <ChevronDown className="w-4 h-4" />
                           </span>

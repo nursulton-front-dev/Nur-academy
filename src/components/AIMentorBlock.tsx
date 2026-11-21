@@ -17,7 +17,7 @@ type FetchState = 'loading' | 'ready' | 'error' | 'hidden' | 'locked';
 function AvatarCircle({ hint }: { hint?: boolean }) {
   return (
     <div
-      className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-accent-blue/10 border border-accent-blue/20 shadow-xs"
+      className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-accent-blue/10 border border-accent-blue/20"
     >
       <img src="/assets/brand/icons/ai_mentor.svg" alt="" className="w-4 h-4" />
     </div>
@@ -161,17 +161,17 @@ export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation
 
   if (state === 'locked') {
     return (
-      <div className="rounded-2xl border border-border-card p-5 bg-surface text-text-primary shadow-xs">
+      <div className="rounded-2xl border border-border-card p-5 bg-surface text-text-primary">
         <div className="flex items-start gap-3.5">
           <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-accent-blue/10 text-accent-blue"
+            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-mint text-on-mint"
           >
             <Lock className="w-4.5 h-4.5" />
           </div>
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2">
               <span className="text-sm font-serif font-bold text-text-primary">AI Mentor tushuntirishi</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-accent-gold/20 text-accent-gold-dark border border-accent-gold/40">
+              <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-accent-gold/20 text-accent-gold-dark border border-accent-gold/40">
                 PRO
               </span>
             </div>
@@ -183,7 +183,7 @@ export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation
             <div className="pt-1">
               <Link
                 to="/kurs/attestatsiya/obuna"
-                className="inline-flex items-center gap-1.5 bg-accent-blue hover:bg-accent-hover text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 bg-accent-blue hover:bg-accent-hover text-white px-4 py-2 rounded-xl text-sm font-bold transition-colors"
               >
                 <span>Pro tarifga o‘tish</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -196,7 +196,7 @@ export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation
   }
 
   return (
-    <div className="rounded-2xl border border-accent-blue/20 p-4 sm:p-5 bg-accent-blue/[0.04] dark:bg-accent-blue/[0.08] text-text-primary shadow-xs transition-colors duration-200">
+    <div className="rounded-2xl border border-accent-blue/20 p-4 sm:p-5 bg-accent-blue/[0.04] dark:bg-accent-blue/[0.08] text-text-primary transition-colors duration-200">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
@@ -206,10 +206,10 @@ export function AIMentorBlock({ questionId, userAnswerIndex, mode = 'explanation
           </span>
         </div>
         <span
-          className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md border ${
+          className={`text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md border ${
             isHint
               ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20'
-              : 'bg-accent-blue/10 text-accent-blue border-accent-blue/20'
+              : 'bg-mint text-on-mint border-accent-blue/20'
           }`}
         >
           {isHint ? 'MASLAHAT' : 'TUSHUNTIRISH'}

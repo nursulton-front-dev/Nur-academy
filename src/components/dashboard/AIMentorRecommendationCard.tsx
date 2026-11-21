@@ -14,7 +14,7 @@ type State = 'loading' | 'pro' | 'locked' | 'error';
 
 function MentorShell({ badge, children }: { badge: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="rounded-3xl border overflow-hidden bg-surface border-border-card shadow-xs flex flex-col justify-between">
+    <div className="rounded-3xl border overflow-hidden bg-surface border-border-card flex flex-col justify-between">
       <div className="p-6 sm:p-7 flex flex-col gap-4 flex-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -23,7 +23,7 @@ function MentorShell({ badge, children }: { badge: React.ReactNode; children: Re
             </div>
             <div>
               <span className="text-sm font-serif font-extrabold text-text-primary block">AI Mentor tavsiyasi</span>
-              <span className="text-[11px] text-text-secondary">Shaxsiy metodik ko‘rsatma</span>
+              <span className="text-[13px] text-text-secondary">Shaxsiy metodik ko‘rsatma</span>
             </div>
           </div>
           {badge}
@@ -36,7 +36,7 @@ function MentorShell({ badge, children }: { badge: React.ReactNode; children: Re
 
 function Badge({ label }: { label: string }) {
   return (
-    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-accent-blue/10 text-accent-blue border border-accent-blue/20">
+    <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-mint text-on-mint border border-accent-blue/20">
       {label}
     </span>
   );
@@ -112,7 +112,7 @@ export default function AIMentorRecommendationCard({ currentLesson }: AIMentorRe
         </div>
         <Link
           to="/attestatsiya/obuna"
-          className="mt-auto w-full inline-flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-colors shadow-sm shadow-emerald-500/20"
+          className="mt-auto w-full inline-flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-colors"
         >
           Pro tarifga o‘tish
           <ArrowRight className="w-3.5 h-3.5" />
@@ -171,7 +171,7 @@ export default function AIMentorRecommendationCard({ currentLesson }: AIMentorRe
               to={link.href}
               className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${
                 i === 0
-                  ? 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-sm shadow-emerald-500/20'
+                  ? 'bg-emerald-500 hover:bg-emerald-400 text-white'
                   : 'bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
               }`}
             >

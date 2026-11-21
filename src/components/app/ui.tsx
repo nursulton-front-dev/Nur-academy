@@ -83,18 +83,16 @@ interface MetricCardProps {
 /** Compact KPI tile used in the summary strips at the top of list pages. */
 export function MetricCard({ icon, label, value, hint, accent = 'blue' }: MetricCardProps) {
   return (
-    <div className="bg-surface border border-border-card rounded-2xl p-4 flex items-start gap-3 transition-all hover:border-accent-blue/40 hover:shadow-sm">
+    <div className="bg-surface border border-border-card rounded-[14px] p-4 flex items-start gap-3.5 transition-colors hover:border-accent-blue/40">
       <div
         className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${ACCENT_SOFT_BG[accent]} ${ACCENT_TEXT[accent]}`}
       >
         {icon}
       </div>
       <div className="min-w-0 space-y-0.5">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-text-secondary truncate">
-          {label}
-        </p>
-        <p className="text-xl font-serif font-extrabold text-text-primary leading-none">{value}</p>
-        {hint && <p className="text-[11px] text-text-secondary truncate">{hint}</p>}
+        <p className="text-sm font-semibold text-text-secondary truncate">{label}</p>
+        <p className="text-2xl font-extrabold text-text-primary leading-tight tabular-nums">{value}</p>
+        {hint && <p className="text-xs text-text-secondary truncate">{hint}</p>}
       </div>
     </div>
   );
@@ -111,13 +109,13 @@ interface SectionCardProps {
 /** Larger page section shell with an optional header row. */
 export function SectionCard({ title, icon, action, children, className = '' }: SectionCardProps) {
   return (
-    <section className={`bg-surface border border-border-card rounded-3xl p-5 sm:p-6 shadow-xs ${className}`}>
+    <section className={`bg-surface border border-border-card rounded-[18px] p-5 sm:p-6 ${className}`}>
       {(title || action) && (
         <div className="flex items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-2.5 min-w-0">
             {icon && <span className="shrink-0">{icon}</span>}
             {title && (
-              <h2 className="font-serif font-bold text-base sm:text-lg text-text-primary truncate">
+              <h2 className="font-extrabold text-xl sm:text-2xl text-text-primary truncate tracking-[-0.01em]">
                 {title}
               </h2>
             )}
@@ -135,9 +133,9 @@ type StatusVariant = 'completed' | 'open' | 'current' | 'locked' | 'strong' | 'm
 const STATUS_STYLES: Record<StatusVariant, string> = {
   completed: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
   strong: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
-  open: 'bg-accent-blue/10 text-accent-blue border-accent-blue/20',
-  current: 'bg-accent-blue/10 text-accent-blue border-accent-blue/20',
-  mid: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+  open: 'bg-mint text-on-mint border-transparent',
+  current: 'bg-mint-strong text-on-mint border-transparent',
+  mid: 'bg-warn-bg text-[#B4561A] dark:text-cta border-warn-border',
   low: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
   locked: 'bg-surface-muted text-text-secondary border-border-card',
 };
@@ -152,7 +150,7 @@ interface StatusBadgeProps {
 export function StatusBadge({ variant, label, icon }: StatusBadgeProps) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[11px] font-bold ${STATUS_STYLES[variant]}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-bold ${STATUS_STYLES[variant]}`}
     >
       {icon && <span className="shrink-0">{icon}</span>}
       {label}
@@ -173,7 +171,7 @@ const ACCENT_BAR: Record<Accent, string> = {
   amber: 'bg-amber-500',
   red: 'bg-rose-500',
   purple: 'bg-purple-500',
-  orange: 'bg-orange-500',
+  orange: 'bg-cta',
 };
 
 export function ProgressBar({ value, accent = 'blue', className = '', height = 'h-2' }: ProgressBarProps) {
@@ -243,7 +241,7 @@ export function AppButton({
 
   const variantStyles = {
     primary:
-      'bg-accent-blue text-white hover:bg-accent-blue/90 shadow-sm active:scale-[0.98] border border-transparent',
+      'bg-accent-blue text-white hover:bg-accent-blue/90 active:scale-[0.98] border border-transparent',
     cta:
       'bg-cta text-on-cta hover:bg-cta-hover active:scale-[0.98] border border-transparent',
     secondary:
@@ -253,7 +251,7 @@ export function AppButton({
     ghost:
       'bg-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-transparent',
     danger:
-      'bg-rose-500 text-white hover:bg-rose-600 shadow-sm active:scale-[0.98] border border-transparent',
+      'bg-rose-500 text-white hover:bg-rose-600 active:scale-[0.98] border border-transparent',
   };
 
   return (

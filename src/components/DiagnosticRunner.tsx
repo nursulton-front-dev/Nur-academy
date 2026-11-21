@@ -48,15 +48,15 @@ function ConfirmModal({
         {stats && (
           <div className="bg-primary-bg p-3.5 rounded-xl border border-border-card grid grid-cols-3 gap-2 text-center">
             <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Javob berilgan</p>
+              <p className="text-xs uppercase font-bold text-text-secondary">Javob berilgan</p>
               <p className="text-lg font-serif font-extrabold text-success-green">{stats.answered}</p>
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Javob berilmagan</p>
+              <p className="text-xs uppercase font-bold text-text-secondary">Javob berilmagan</p>
               <p className="text-lg font-serif font-extrabold text-text-secondary">{stats.unanswered}</p>
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-text-secondary">Belgilangan</p>
+              <p className="text-xs uppercase font-bold text-text-secondary">Belgilangan</p>
               <p className="text-lg font-serif font-extrabold text-amber-500">{stats.flagged}</p>
             </div>
           </div>
@@ -72,7 +72,7 @@ function ConfirmModal({
           <button
             type="button"
             onClick={onConfirm}
-            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-98 cursor-pointer"
+            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold transition-all active:scale-98 cursor-pointer"
           >
             {confirmText}
           </button>
@@ -207,9 +207,9 @@ export default function DiagnosticRunner({
     const answered = isAnswered(answers[q.id]);
     const isFlag = flagged.has(q.id);
     let style = 'bg-surface text-text-secondary border-border-card hover:bg-surface-hover';
-    if (isCurrent) style = 'bg-accent-blue text-white border-accent-blue font-bold shadow-xs';
-    else if (isFlag) style = 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40 font-bold';
-    else if (answered) style = 'bg-success-green/15 text-success-green border-success-green/40 font-bold';
+    if (isCurrent) style = 'bg-surface text-text-primary border-2 border-text-primary font-bold';
+    else if (isFlag) style = 'bg-warn-bg text-warn-icon border-warn-border font-bold';
+    else if (answered) style = 'bg-accent-blue text-white border-accent-blue font-bold';
     return (
       <button
         key={q.id}
@@ -256,7 +256,7 @@ export default function DiagnosticRunner({
           </button>
           <button
             onClick={() => setShowSubmit(true)}
-            className="bg-accent-blue hover:bg-accent-hover text-white px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-98 cursor-pointer shrink-0"
+            className="bg-cta hover:bg-cta-hover text-on-cta px-5 sm:px-6 py-2.5 rounded-[10px] text-sm font-bold transition-colors cursor-pointer shrink-0"
           >
             Yakunlash
           </button>
@@ -267,7 +267,7 @@ export default function DiagnosticRunner({
         {/* Desktop left panel */}
         <aside className="hidden lg:flex lg:flex-col w-[280px] shrink-0 gap-4 min-h-0">
           {/* Progress + timer */}
-          <div className="bg-surface border border-border-card rounded-2xl p-4 shadow-xs flex items-center gap-3">
+          <div className="bg-surface border border-border-card rounded-2xl p-4 flex items-center gap-3">
             <div className="relative flex items-center justify-center shrink-0">
               <svg height={radius * 2} width={radius * 2} className="transform -rotate-90">
                 <circle stroke="var(--theme-border-card)" fill="transparent" strokeWidth={stroke} r={normRadius} cx={radius} cy={radius} />
@@ -284,19 +284,19 @@ export default function DiagnosticRunner({
                   className="transition-all duration-350"
                 />
               </svg>
-              <span className="absolute text-[11px] font-serif font-bold text-text-primary">{answeredPercent}%</span>
+              <span className="absolute text-[13px] font-serif font-bold text-text-primary">{answeredPercent}%</span>
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Progress</p>
+              <p className="text-xs font-bold text-text-secondary uppercase tracking-widest">Progress</p>
               <p className="text-sm font-serif font-extrabold text-text-primary">
                 {answeredCount} <span className="text-xs font-normal text-text-secondary">/ {questions.length}</span>
               </p>
             </div>
           </div>
 
-          <div className={`bg-surface border rounded-2xl p-4 shadow-xs transition-colors ${isTimeCritical ? 'border-rose-400 bg-rose-500/5' : 'border-border-card'}`}>
+          <div className={`bg-surface border rounded-2xl p-4 transition-colors ${isTimeCritical ? 'border-rose-400 bg-rose-500/5' : 'border-border-card'}`}>
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Qolgan vaqt</span>
+              <span className="text-xs font-bold text-text-secondary uppercase tracking-widest">Qolgan vaqt</span>
               <Clock className={`w-4 h-4 ${isTimeCritical ? 'text-rose-500 animate-pulse' : 'text-text-secondary'}`} />
             </div>
             <div className={`text-2xl font-serif font-extrabold tracking-tight font-mono ${isTimeCritical ? 'text-rose-500' : 'text-text-primary'}`}>
@@ -305,17 +305,17 @@ export default function DiagnosticRunner({
           </div>
 
           {/* Navigator — 6-col grid, square cells (~36px), no internal scroll */}
-          <div className="bg-surface border border-border-card rounded-2xl p-4 shadow-xs min-h-0 flex-1 flex flex-col overflow-hidden">
-            <h4 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-3">Savollar navigatori</h4>
+          <div className="bg-surface border border-border-card rounded-2xl p-4 min-h-0 flex-1 flex flex-col overflow-hidden">
+            <h4 className="text-xs font-bold text-text-secondary uppercase tracking-widest mb-3">Savollar navigatori</h4>
             <div className="grid grid-cols-6 gap-1.5 overflow-y-auto pr-1 flex-1 [&>button]:aspect-square [&>button]:min-h-[34px]">
               {questions.map((q, idx) => renderNavCell(idx, q))}
             </div>
 
             {/* Legend */}
-            <div className="mt-3 pt-3 border-t border-border-card grid grid-cols-2 gap-2 text-[10px] font-semibold text-text-secondary">
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-accent-blue shrink-0" />Joriy</span>
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-success-green shrink-0" />Javob berilgan</span>
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />Belgilangan</span>
+            <div className="mt-3 pt-3 border-t border-border-card grid grid-cols-2 gap-2 text-xs font-semibold text-text-secondary">
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full border-2 border-text-primary shrink-0" />Joriy</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-accent-blue shrink-0" />Javob berilgan</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-cta shrink-0" />Belgilangan</span>
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-border-card border border-border-card shrink-0" />Berilmagan</span>
             </div>
           </div>
@@ -358,9 +358,9 @@ export default function DiagnosticRunner({
               </div>
 
               <div className="pt-3 border-t border-border-card grid grid-cols-2 gap-2 text-xs text-text-secondary">
-                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-accent-blue" /> Joriy</span>
-                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-success-green" /> Javob berilgan</span>
-                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Belgilangan</span>
+                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full border-2 border-text-primary" /> Joriy</span>
+                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-accent-blue" /> Javob berilgan</span>
+                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-cta" /> Belgilangan</span>
                 <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-border-card border border-border-card" /> Berilmagan</span>
               </div>
             </div>
@@ -368,17 +368,17 @@ export default function DiagnosticRunner({
         )}
 
         {/* Main workspace */}
-        <main className="flex-1 min-h-0 bg-surface border border-border-card rounded-2xl p-4 sm:p-6 flex flex-col shadow-xs overflow-hidden text-left">
+        <main className="flex-1 min-h-0 bg-surface border border-border-card rounded-2xl p-4 sm:p-6 flex flex-col overflow-hidden text-left">
           <div className="flex justify-between items-center pb-3 border-b border-border-card/50 shrink-0 gap-3">
             <div className="space-y-0.5 min-w-0">
-              <span className="text-[10px] font-bold text-accent-blue uppercase tracking-widest truncate block">{domainLabel(current.domain)}</span>
-              <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
+              <span className="text-sm font-extrabold text-accent-blue uppercase tracking-[0.04em] truncate block">{domainLabel(current.domain)}</span>
+              <p className="text-xs font-bold text-text-secondary uppercase tracking-widest">
                 Savol {currentIndex + 1} / {questions.length}
               </p>
             </div>
             <button
               onClick={toggleFlag}
-              className={`inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer shrink-0 ${isFlagged ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40' : 'bg-surface text-text-secondary border-border-card hover:bg-surface-hover'}`}
+              className={`inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer shrink-0 ${isFlagged ? 'bg-warn-bg text-warn-icon border-warn-border' : 'bg-surface text-text-secondary border-border-card hover:bg-surface-hover'}`}
             >
               <Bookmark className="w-4 h-4" fill={isFlagged ? 'currentColor' : 'none'} />
               <span className="hidden sm:inline">Belgilash</span>
@@ -388,12 +388,12 @@ export default function DiagnosticRunner({
           {/* Scrollable question area (only this scrolls, if long) — centered, max 720px */}
           <div className="flex-1 min-h-0 overflow-y-auto py-4">
             <div className="max-w-[720px] mx-auto w-full space-y-5">
-            <h2 className="text-lg sm:text-xl font-serif font-extrabold text-text-primary leading-relaxed">
+            <h2 className="text-xl sm:text-[26px] font-extrabold text-text-primary leading-snug tracking-[-0.01em]">
               {current.text}
             </h2>
             {current.questionType === 'input' ? (
               <div className="space-y-2">
-                <label className="text-[11px] font-bold text-text-secondary uppercase tracking-widest">
+                <label className="text-[13px] font-bold text-text-secondary uppercase tracking-widest">
                   Javobingizni kiriting
                 </label>
                 <input
@@ -414,16 +414,12 @@ export default function DiagnosticRunner({
                   <button
                     key={idx}
                     onClick={() => selectOption(idx)}
-                    className={`w-full flex items-center text-left min-h-[54px] px-4 sm:px-5 py-3.5 rounded-xl border transition-all duration-150 cursor-pointer group ${isSelected ? 'bg-accent-blue/10 border-accent-blue font-semibold' : 'bg-surface border-border-card hover:bg-surface-hover hover:border-accent-blue/45'}`}
+                    className={`w-full flex items-center gap-4 sm:gap-5 text-left min-h-[56px] pl-2.5 pr-4 py-2 rounded-[10px] border-[1.5px] transition-colors cursor-pointer group ${isSelected ? 'bg-mint border-accent-blue' : 'bg-row border-row-border hover:border-accent-blue/50'}`}
                   >
-                    <div className={`w-5.5 h-5.5 rounded-full border flex items-center justify-center mr-4 shrink-0 transition-colors ${isSelected ? 'border-accent-blue bg-accent-blue' : 'border-border-card group-hover:border-accent-blue/40'}`}>
-                      {isSelected ? (
-                        <div className="w-2 h-2 rounded-full bg-white" />
-                      ) : (
-                        <span className="text-[10px] font-bold text-text-secondary group-hover:text-text-primary">{String.fromCharCode(65 + idx)}</span>
-                      )}
-                    </div>
-                    <span className={`text-sm leading-relaxed ${isSelected ? 'text-text-primary' : 'text-text-secondary group-hover:text-text-primary'}`}>
+                    <span className={`w-10 h-[30px] rounded-md grid place-items-center shrink-0 text-[15px] font-bold transition-colors ${isSelected ? 'bg-accent-blue text-white' : 'bg-mint text-on-mint'}`}>
+                      {String.fromCharCode(65 + idx)}
+                    </span>
+                    <span className="text-base sm:text-[17px] font-semibold leading-relaxed text-text-primary">
                       {option}
                     </span>
                   </button>
@@ -448,13 +444,13 @@ export default function DiagnosticRunner({
               <button
                 type="button"
                 onClick={toggleFlag}
-                className={`sm:hidden inline-flex items-center gap-1.5 px-3 py-3 rounded-xl text-xs font-bold border transition-colors ${isFlagged ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40' : 'bg-surface text-text-secondary border-border-card hover:bg-surface-hover'}`}
+                className={`sm:hidden inline-flex items-center gap-1.5 px-3 py-3 rounded-xl text-xs font-bold border transition-colors ${isFlagged ? 'bg-warn-bg text-warn-icon border-warn-border' : 'bg-surface text-text-secondary border-border-card hover:bg-surface-hover'}`}
               >
                 <Bookmark className="w-4 h-4" fill={isFlagged ? 'currentColor' : 'none'} />
               </button>
               <button
                 onClick={() => (currentIndex === questions.length - 1 ? setShowSubmit(true) : handleNext())}
-                className="inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-hover text-white px-5 sm:px-7 py-3 rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-hover text-white px-5 sm:px-7 py-3 rounded-xl text-sm font-bold transition-all cursor-pointer"
               >
                 <span>{currentIndex === questions.length - 1 ? 'Yakunlash' : 'Keyingi'}</span>
                 {currentIndex < questions.length - 1 && <ChevronRight className="w-4 h-4" />}

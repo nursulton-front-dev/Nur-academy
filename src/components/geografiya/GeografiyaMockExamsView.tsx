@@ -101,7 +101,7 @@ export default function GeografiyaMockExamsView() {
               >
                 <div className="space-y-1.5 max-w-xl">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-accent-blue/10 text-accent-blue font-mono">
+                    <span className="px-2 py-0.5 rounded text-xs font-bold bg-mint text-on-mint font-mono">
                       {exam.id} varianti
                     </span>
                     <span className="text-xs font-bold text-text-secondary">
@@ -119,11 +119,11 @@ export default function GeografiyaMockExamsView() {
                 <div className="flex items-center gap-3 shrink-0">
                   <div className="text-right text-xs text-text-secondary hidden sm:block">
                     <p className="font-bold text-text-primary">{exam.durationMinutes} daqiqa</p>
-                    <p className="text-[10px]">50 ta savol</p>
+                    <p className="text-xs">50 ta savol</p>
                   </div>
                   <button
                     onClick={() => handleStart(exam.id)}
-                    className="px-4 py-2.5 rounded-xl bg-accent-blue text-white text-xs font-bold hover:bg-accent-blue/90 transition-all flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl bg-accent-blue text-white text-sm font-bold hover:bg-accent-blue/90 transition-all flex items-center gap-1.5 cursor-pointer"
                   >
                     <PlayCircle className="w-4 h-4" />
                     Boshlash
@@ -155,7 +155,7 @@ export default function GeografiyaMockExamsView() {
               >
                 <div className="space-y-1.5 max-w-xl">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-500 font-mono">
+                    <span className="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-500 font-mono">
                       {oddiy.variant} varianti
                     </span>
                     <span className="text-xs text-text-secondary">
@@ -173,7 +173,7 @@ export default function GeografiyaMockExamsView() {
                 <div className="flex items-center gap-3 shrink-0">
                   <div className="text-right text-xs text-text-secondary hidden sm:block">
                     <p className="font-bold text-text-primary">{oddiy.durationMinutes} daqiqa</p>
-                    <p className="text-[10px]">20 ta savol</p>
+                    <p className="text-xs">20 ta savol</p>
                   </div>
                   {oddiy.unlocked ? (
                     <button

@@ -95,17 +95,17 @@ export default function ModulesSection({ modules, loading }: ModulesSectionProps
                 key={mod.id}
                 className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${
                   isCurrent
-                    ? 'bg-accent-blue/5 border-accent-blue/40 shadow-xs'
+                    ? 'bg-accent-blue/5 border-accent-blue/40'
                     : isLocked
                       ? 'bg-surface border-border-card opacity-60'
-                      : 'bg-surface border-border-card hover:border-accent-blue/30 hover:shadow-xs'
+                      : 'bg-surface border-border-card hover:border-accent-blue/30'
                 }`}
               >
                 {/* Number badge / Icon */}
                 <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-xs font-bold ${
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-sm font-bold ${
                     isCurrent
-                      ? 'bg-accent-blue text-white shadow-sm'
+                      ? 'bg-accent-blue text-white'
                       : isCompleted
                         ? 'bg-emerald-500/10 text-emerald-500'
                         : 'bg-primary-bg text-text-secondary border border-border-card'
@@ -162,7 +162,7 @@ export default function ModulesSection({ modules, loading }: ModulesSectionProps
                   ) : isCurrent ? (
                     <Link
                       to={targetHref}
-                      className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-accent-blue/90 transition-all shadow-xs active:scale-[0.98]"
+                      className="inline-flex items-center gap-1.5 bg-accent-blue text-white px-3.5 py-2 rounded-xl text-sm font-bold hover:bg-accent-blue/90 transition-all active:scale-[0.98]"
                     >
                       Davom etish <ArrowRight className="w-3.5 h-3.5" />
                     </Link>

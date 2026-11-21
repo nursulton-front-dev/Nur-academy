@@ -225,10 +225,10 @@ export default function Signup() {
                 ))}
               </div>
 
-              <p className="text-[11px] text-text-secondary leading-snug">
+              <p className="text-[13px] text-text-secondary leading-snug">
                 {strength.feedbackUz}
               </p>
-              <p className="text-[10px] text-text-secondary/60 leading-tight">
+              <p className="text-xs text-text-secondary/60 leading-tight">
                 * Ushbu baho xavfsizlikning mutlaq kafolati emas.
               </p>
             </div>
@@ -287,7 +287,7 @@ export default function Signup() {
         <button
           type="submit"
           disabled={loading || (confirmPassword.length > 0 && passwordsMatch === false)}
-          className="w-full bg-accent-blue hover:bg-accent-blue/95 text-white py-3.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-accent-blue/20 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:hover:translate-y-0 flex items-center justify-center gap-2 cursor-pointer mt-2"
+          className="w-full bg-cta hover:bg-cta-hover text-on-cta h-[54px] rounded-xl font-bold text-base transition-colors disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer mt-2"
         >
           {loading ? (
             <>
@@ -303,7 +303,7 @@ export default function Signup() {
       {/* Divider */}
       <div className="my-6 flex items-center">
         <div className="flex-grow border-t border-border-card"></div>
-        <span className="px-4 text-[11px] font-bold text-text-secondary uppercase tracking-widest">
+        <span className="px-4 text-[13px] font-bold text-text-secondary uppercase tracking-widest">
           Yoki
         </span>
         <div className="flex-grow border-t border-border-card"></div>
@@ -313,7 +313,7 @@ export default function Signup() {
       <button
         onClick={handleGoogleSignup}
         type="button"
-        className="w-full flex items-center justify-center space-x-3 border border-border-card bg-surface py-3 rounded-xl text-text-primary text-sm font-semibold hover:border-accent-blue/50 hover:bg-surface-hover transition-all shadow-xs cursor-pointer"
+        className="w-full flex items-center justify-center space-x-3 border border-border-card bg-surface py-3 rounded-xl text-text-primary text-sm font-semibold hover:border-accent-blue/50 hover:bg-surface-hover transition-all cursor-pointer"
       >
         <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
           <path

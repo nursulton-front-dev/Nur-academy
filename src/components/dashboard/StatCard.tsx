@@ -12,7 +12,7 @@ interface StatCardProps {
 
 export default function StatCard({ icon, value, label, subtext, accentColor = 'blue', to }: StatCardProps) {
   const colorMap: Record<string, string> = {
-    blue: 'bg-accent-blue/10 text-accent-blue',
+    blue: 'bg-mint text-on-mint',
     green: 'bg-emerald-500/10 text-emerald-500',
     amber: 'bg-amber-500/10 text-amber-500',
     orange: 'bg-orange-500/10 text-orange-500',
@@ -21,7 +21,7 @@ export default function StatCard({ icon, value, label, subtext, accentColor = 'b
   };
 
   const content = (
-    <div className="bg-surface border border-border-card rounded-2xl p-4 space-y-2.5 hover:shadow-md hover:border-accent-blue/40 transition-all duration-200 min-h-[104px] flex flex-col justify-between">
+    <div className="bg-surface border border-border-card rounded-2xl p-4 space-y-2.5 hover:border-accent-blue/40 transition-all duration-200 min-h-[104px] flex flex-col justify-between">
       <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${colorMap[accentColor] || colorMap.blue}`}>
         {icon}
       </div>
@@ -35,7 +35,7 @@ export default function StatCard({ icon, value, label, subtext, accentColor = 'b
           {label && <span className="text-xs font-sans font-semibold text-text-secondary ml-1">{label}</span>}
         </p>
         {subtext && (
-          <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-1 truncate">
+          <p className="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1 truncate">
             {subtext}
           </p>
         )}

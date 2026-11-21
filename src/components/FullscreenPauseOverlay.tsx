@@ -24,7 +24,7 @@ export default function FullscreenPauseOverlay({
 }: FullscreenPauseOverlayProps) {
   return (
     <div className="fixed inset-0 z-[120] bg-primary-bg/97 backdrop-blur-sm flex items-center justify-center p-4 font-sans">
-      <div className="bg-surface border border-border-card rounded-[24px] max-w-md w-full p-7 sm:p-9 text-center space-y-5 shadow-2xl animate-fadeIn">
+      <div className="bg-surface border border-border-card rounded-[18px] max-w-md w-full p-7 sm:p-9 text-center space-y-5 shadow-2xl animate-fadeIn">
         {terminated ? (
           <>
             <div className="w-16 h-16 mx-auto rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center">

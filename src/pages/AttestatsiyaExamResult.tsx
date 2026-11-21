@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { HeroPanel } from '../components/brand/Ornaments';
 import { useParams, Link } from 'react-router-dom';
 import {
   Award,
@@ -63,48 +64,35 @@ export default function AttestatsiyaExamResult() {
   // Function to get color class based on score percentage
   const getProgressColor = (percent: number) => {
     if (percent >= 70) return 'bg-success-green';
-    if (percent >= 40) return 'bg-accent-blue';
+    if (percent >= 40) return 'bg-cta';
     return 'bg-rose-500';
   };
 
   const getTextColor = (percent: number) => {
     if (percent >= 70) return 'text-success-green';
-    if (percent >= 40) return 'text-accent-blue';
+    if (percent >= 40) return 'text-warn-icon';
     return 'text-rose-500';
   };
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto transition-colors duration-200 text-left font-sans">
       {/* Title / Main Banner */}
-      <div className="bg-surface rounded-2xl border border-border-card p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-center gap-6 shadow-xs">
-        <div className="space-y-2 text-center sm:text-left">
-          <span className="text-[10px] bg-accent-blue/10 text-accent-blue px-3 py-1 rounded-full font-bold uppercase tracking-wider">
-            Natija e’lon qilindi
-          </span>
-          <h1 className="font-serif font-extrabold text-2xl sm:text-3xl text-text-primary">
-            {exam.title}
-          </h1>
-          <p className="text-xs sm:text-sm text-text-secondary">
-            Topshirilgan sana: Bugun, {new Date().toLocaleDateString('uz-UZ')}
-          </p>
+      <HeroPanel
+        chip="Natija eʼlon qilindi"
+        chipIcon={<Award className="h-4 w-4" />}
+        title={exam.title}
+        description={`Topshirilgan sana: ${new Date().toLocaleDateString('uz-UZ')}`}
+      >
+        <div className="flex items-end gap-3">
+          <span className="text-[64px] font-extrabold leading-[0.9] tabular-nums">{score}</span>
+          <span className="pb-2 text-lg font-semibold text-white/90">/ 100 ball</span>
         </div>
-
-        {/* Large Score Circle */}
-        <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-accent-blue flex flex-col items-center justify-center bg-surface border-border-card shadow-xs flex-shrink-0">
-          <span className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary">
-            {score}
-          </span>
-          <span className="text-[11px] font-bold text-text-secondary uppercase border-t border-border-card pt-1 mt-1">
-            / 100 ball
-          </span>
-        </div>
-      </div>
+      </HeroPanel>
 
       {/* Breakdown by Modules */}
-      <div className="bg-surface rounded-2xl border border-border-card p-6 sm:p-7 shadow-xs space-y-5">
-        <div className="flex items-center space-x-2 pb-3 border-b border-border-card">
-          <BookOpen className="w-5 h-5 text-accent-blue" />
-          <h2 className="font-serif font-bold text-lg sm:text-xl text-text-primary">
+      <div className="bg-surface rounded-[18px] border border-border-card p-6 sm:p-7 space-y-5">
+        <div className="flex items-center space-x-2">
+          <h2 className="text-[26px] text-text-primary">
             Bo‘limlar bo‘yicha tahlil
           </h2>
         </div>
@@ -125,7 +113,7 @@ export default function AttestatsiyaExamResult() {
                     {item.correct}/{item.total} ({percentage}%)
                   </span>
                 </div>
-                <div className="w-full bg-border-card h-2.5 rounded-full overflow-hidden">
+                <div className="w-full bg-surface-hover h-2.5 rounded-full overflow-hidden">
                   <div 
                     className={`${colorClass} h-full rounded-full transition-all duration-500`}
                     style={{ width: `${percentage}%` }}
@@ -158,7 +146,7 @@ export default function AttestatsiyaExamResult() {
 
         <button
           onClick={() => setShowReview(!showReview)}
-          className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-accent-blue hover:bg-accent-hover text-white px-6 py-3 rounded-xl text-xs font-bold shadow-xs transition-all active:scale-97 cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-accent-blue hover:bg-accent-hover text-white px-6 py-3 rounded-xl text-sm font-bold transition-all active:scale-97 cursor-pointer"
         >
           <span>Javoblarni ko‘rish</span>
           {showReview ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -174,20 +162,20 @@ export default function AttestatsiyaExamResult() {
 
           {/* Free-tier banner */}
           {tier === 'free' && (
-            <div className="rounded-2xl border border-border-card p-5 bg-surface shadow-xs flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-accent-blue/10 text-accent-blue">
+            <div className="rounded-2xl border border-border-card p-5 bg-surface flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-mint text-on-mint">
                 <Sparkles className="w-5 h-5" />
               </div>
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-serif font-bold text-text-primary">AI Mentor tushuntirishlari</span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-accent-gold/20 text-accent-gold-dark border border-accent-gold/40">PRO</span>
+                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-accent-gold/20 text-accent-gold-dark border border-accent-gold/40">PRO</span>
                 </div>
                 <p className="text-xs text-text-secondary leading-relaxed">
                   Har bir xato sababini AI Mentor bilan chuqur tahlil qilish uchun Pro tarifga o‘ting.
                 </p>
                 <div className="pt-1">
-                  <Link to="/kurs/attestatsiya/obuna" className="inline-flex items-center gap-1.5 bg-accent-blue hover:bg-accent-hover text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-xs">
+                  <Link to="/kurs/attestatsiya/obuna" className="inline-flex items-center gap-1.5 bg-accent-blue hover:bg-accent-hover text-white px-4 py-2 rounded-xl text-sm font-bold transition-colors">
                     Pro tarifga o‘tish <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>

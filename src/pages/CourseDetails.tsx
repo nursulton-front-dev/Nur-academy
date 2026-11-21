@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { PlayCircle, CheckCircle, Circle, Lock } from 'lucide-react';
+import { PlayCircle, CheckCircle, Circle, Lock, GraduationCap, ArrowRight } from 'lucide-react';
+import { HeroPanel, ctaClass } from '../components/brand/Ornaments';
 import { Seo } from '../components/Seo';
 
 interface CourseData {
@@ -206,40 +207,35 @@ export default function CourseDetails() {
         type="article"
       />
       {/* Course Header */}
-      <div className="bg-surface border-b border-border-card py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row gap-8 items-start">
-            <div className="w-full md:w-1/3 aspect-video rounded-xl overflow-hidden bg-surface-muted border border-border-card shrink-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+        <HeroPanel
+          size="lg"
+          chip="Kurs"
+          chipIcon={<GraduationCap className="h-4 w-4" />}
+          title={course.title}
+          description={course.description}
+          footer={
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               {course.cover_url && (
-                <img src={course.cover_url} alt={course.title} className="w-full h-full object-cover" />
+                <img src={course.cover_url} alt="" className="hidden h-20 w-32 rounded-xl border border-border-card object-cover sm:block" />
               )}
-            </div>
-            <div className="flex-1">
-              <h1 className="text-3xl md:text-4xl font-serif font-bold text-text-primary mb-4">{course.title}</h1>
-              <p className="text-lg text-text-secondary mb-8 leading-relaxed max-w-3xl">
-                {course.description}
-              </p>
-              
               {isEnrolled ? (
                 <Link
                   to={firstUncompletedLessonId ? `/learn/${firstUncompletedLessonId}` : '#'}
-                  className="inline-flex items-center space-x-2 bg-success-green text-white px-6 py-2.5 rounded-xl font-medium shadow-sm transition-all active:scale-95 hover:bg-opacity-90"
+                  className={`${ctaClass} flex-1`}
                 >
-                  <PlayCircle className="w-5 h-5" />
-                  <span>Davom etish</span>
+                  <PlayCircle className="h-5 w-5" />
+                  Davom etish
                 </Link>
               ) : (
-                <button
-                  onClick={handleEnroll}
-                  disabled={enrolling}
-                  className="inline-flex items-center space-x-2 bg-accent-blue text-white px-6 py-2.5 rounded-xl font-medium shadow-sm transition-all active:scale-95 hover:bg-opacity-90 disabled:opacity-70 disabled:scale-100"
-                >
-                  <span>{enrolling ? 'Yozilmoqda...' : 'Kursga yozilish'}</span>
+                <button onClick={handleEnroll} disabled={enrolling} className={`${ctaClass} flex-1 cursor-pointer`}>
+                  {enrolling ? 'Yozilmoqda...' : 'Kursga yozilish'}
+                  {!enrolling && <ArrowRight className="h-5 w-5" />}
                 </button>
               )}
             </div>
-          </div>
-        </div>
+          }
+        />
       </div>
 
       {/* Course Content Grid */}
@@ -273,14 +269,14 @@ export default function CourseDetails() {
                     <div key={`progress-${module.id}`} className="flex flex-col items-center relative group">
                       <div 
                         className={`rounded-full flex items-center justify-center font-bold transition-all duration-300 z-10 
-                          ${isModuleCompleted ? 'w-10 h-10 bg-success-green text-white shadow-lg' : 
+                          ${isModuleCompleted ? 'w-10 h-10 bg-success-green text-white' : 
                             isActuallyCurrent ? 'w-14 h-14 bg-surface border-4 border-accent-blue text-accent-blue shadow-xl text-lg scale-110' : 
                             'w-10 h-10 bg-surface border-2 border-border-card text-text-secondary text-sm'}`}
                       >
                         {isModuleCompleted ? <CheckCircle className="w-6 h-6 text-white" /> : String(mIndex + 1).padStart(2, '0')}
                       </div>
                       
-                      <div className="absolute -bottom-10 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity bg-text-primary text-white text-xs py-1 px-3 rounded shadow-lg">
+                      <div className="absolute -bottom-10 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity bg-text-primary text-white text-xs py-1 px-3 rounded">
                         {module.title}
                       </div>
                       
@@ -305,7 +301,7 @@ export default function CourseDetails() {
             const hasStartedModule = module.lessons.some(l => completedLessonIds.has(l.id));
             
             return (
-              <div key={module.id} className="bg-surface rounded-2xl border border-border-card overflow-hidden shadow-xs">
+              <div key={module.id} className="bg-surface rounded-2xl border border-border-card overflow-hidden">
                 <div className="p-6 bg-surface-hover border-b border-border-card flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm border-2 ${isModuleCompleted ? 'bg-success-green border-success-green text-white' : hasStartedModule ? 'bg-surface border-accent-blue text-accent-blue' : 'bg-surface border-border-card text-text-secondary'}`}>

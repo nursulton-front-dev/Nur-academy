@@ -18,6 +18,7 @@ import {
 import { learningEngineService, ErrorRecord } from '../lib/learningEngine';
 import { useProStatus } from '../hooks/useProStatus';
 import { AppPage, PageHeader, PageContent } from '../components/app/AppPage';
+import { ListRow } from '../components/brand/Ornaments';
 import { EmptyState } from '../components/app/ui';
 
 export default function ErrorNotebook() {
@@ -68,7 +69,7 @@ export default function ErrorNotebook() {
           <div className="pt-2">
             <Link
               to="/kurs/attestatsiya/obuna"
-              className="inline-flex items-center space-x-2 bg-accent-blue text-white px-8 py-3.5 rounded-xl font-bold text-xs shadow-md hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center space-x-2 bg-accent-blue text-white px-8 py-3.5 rounded-xl font-bold text-sm hover:bg-accent-hover transition-colors"
             >
               <span>Pro tarifga o‘tish</span>
             </Link>
@@ -127,9 +128,9 @@ export default function ErrorNotebook() {
         title="Xatolar daftarchasi"
         description="Darslar, mavzu testlari va mock imtihonlardagi xatolaringizning tizimli tahlili."
         action={
-          <div className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-4 py-2 rounded-xl border border-amber-500/20 flex items-center space-x-2 shrink-0">
-            <span className="text-lg font-serif font-extrabold">{reviewQueue.length}</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary">Takrorlashga tayyor</span>
+          <div className="bg-warn-bg text-text-primary px-4 py-2 rounded-xl border border-warn-border flex items-center gap-2 shrink-0">
+            <span className="text-xl font-extrabold text-warn-icon tabular-nums">{reviewQueue.length}</span>
+            <span className="text-sm font-semibold">takrorlashga tayyor</span>
           </div>
         }
       />
@@ -137,27 +138,15 @@ export default function ErrorNotebook() {
 
       {/* 1. TOP STATS (Eng ko'p xato qilingan mavzular) */}
       {errors.length > 0 && (
-        <div className="bg-surface border border-border-card rounded-2xl p-6 shadow-xs space-y-4">
-          <div className="flex items-center space-x-2">
-            <TrendingUp className="w-5 h-5 text-accent-blue" />
-            <h3 className="font-serif font-bold text-base text-text-primary">Eng ko‘p xato qilingan bo‘limlar</h3>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <section className="bg-surface border border-border-card rounded-[18px] px-5 pb-6 pt-7 sm:pl-6">
+          <h2 className="mb-4 text-[26px] text-text-primary">Eng koʻp xato qilingan boʻlimlar</h2>
+          <ol className="flex flex-col gap-2">
             {sortedStats.map(([topic, count], idx) => (
-              <div key={idx} className="bg-primary-bg p-4 rounded-xl border border-border-card flex justify-between items-center">
-                <div className="min-w-0">
-                  <p className="text-xs font-bold text-text-primary truncate">{topic}</p>
-                  <p className="text-[10px] text-text-secondary">Faol xatolar soni</p>
-                </div>
-                <span className="text-base font-serif font-extrabold text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-lg">{count} ta</span>
-              </div>
+              <React.Fragment key={idx}><ListRow n={idx + 1} title={topic} meta={<span className="font-bold text-warn-icon">{count} ta xato</span>} /></React.Fragment>
             ))}
-            {sortedStats.length === 0 && (
-              <p className="text-xs text-text-secondary italic">Hozircha xatolar yo‘q.</p>
-            )}
-          </div>
-        </div>
+          </ol>
+          {sortedStats.length === 0 && <p className="text-sm text-text-secondary">Hozircha xatolar yoʻq.</p>}
+        </section>
       )}
 
       {/* 2. FILTER CONTROLS */}
@@ -168,7 +157,7 @@ export default function ErrorNotebook() {
           <button
             onClick={() => { setActiveTab('queue'); setSolvingId(null); }}
             className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'queue' ? 'bg-surface text-accent-blue shadow-sm' : 'text-text-secondary hover:text-text-primary'
+              activeTab === 'queue' ? 'bg-surface text-accent-blue' : 'text-text-secondary hover:text-text-primary'
             }`}
           >
             Bugun takrorlash ({reviewQueue.length})
@@ -176,7 +165,7 @@ export default function ErrorNotebook() {
           <button
             onClick={() => { setActiveTab('all'); setSolvingId(null); }}
             className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'all' ? 'bg-surface text-accent-blue shadow-sm' : 'text-text-secondary hover:text-text-primary'
+              activeTab === 'all' ? 'bg-surface text-accent-blue' : 'text-text-secondary hover:text-text-primary'
             }`}
           >
             Barcha xatolar ({errors.length})
@@ -208,9 +197,9 @@ export default function ErrorNotebook() {
           return (
             <div 
               key={record.questionId}
-              className={`bg-surface border rounded-2xl p-5.5 transition-all shadow-xs ${
+              className={`bg-surface border rounded-2xl p-5.5 transition-all ${
                 isSolving 
-                  ? 'border-accent-blue shadow-sm' 
+                  ? 'border-accent-blue' 
                   : isMastered
                     ? 'border-emerald-500/20 bg-emerald-500/[0.02]'
                     : 'border-border-card hover:border-accent-blue/30'
@@ -218,7 +207,7 @@ export default function ErrorNotebook() {
             >
               
               {/* Header stats bar */}
-              <div className="flex justify-between items-start gap-4 pb-3 border-b border-border-card/50 text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+              <div className="flex justify-between items-start gap-4 pb-3 border-b border-border-card/50 text-xs text-text-secondary font-bold uppercase tracking-wider">
                 <div className="flex flex-wrap gap-2">
                   <span className="text-accent-blue">Mavzu: {record.topic}</span>
                   <span>•</span>
@@ -301,7 +290,7 @@ export default function ErrorNotebook() {
                           )}
                         </div>
                         {record.explanation && (
-                          <div className="pt-2 border-t border-border-card/30 text-[11px] text-text-secondary leading-relaxed">
+                          <div className="pt-2 border-t border-border-card/30 text-[13px] text-text-secondary leading-relaxed">
                             <span className="font-bold text-text-primary block mb-1">Izoh (Tushuntirish):</span>
                             {record.explanation}
                           </div>
@@ -329,7 +318,7 @@ export default function ErrorNotebook() {
                           <button
                             onClick={() => handleCheckAnswer(record)}
                             disabled={record.options ? selectedOption === null : calcInput.trim() === ''}
-                            className="bg-accent-blue hover:bg-accent-blue/95 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all active:scale-97 cursor-pointer"
+                            className="bg-accent-blue hover:bg-accent-blue/95 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-97 cursor-pointer"
                           >
                             Tekshirish
                           </button>
@@ -341,14 +330,14 @@ export default function ErrorNotebook() {
                 ) : (
                   /* Standard view card actions */
                   <div className="flex justify-between items-center pt-2 border-t border-border-card/40">
-                    <span className="text-[10px] text-text-secondary italic">
+                    <span className="text-xs text-text-secondary italic">
                       Navbatdagi takrorlash: {new Date(record.nextReviewAt).toLocaleDateString('uz-UZ')}
                     </span>
                     
                     {!isMastered && (
                       <button
                         onClick={() => handleStartSolve(record)}
-                        className="inline-flex items-center space-x-1.5 bg-accent-blue/10 hover:bg-accent-blue/15 text-accent-blue px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-97 cursor-pointer"
+                        className="inline-flex items-center space-x-1.5 bg-accent-blue/10 hover:bg-mint text-on-mint px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-97 cursor-pointer"
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
                         <span>Qayta ishlash</span>
@@ -378,7 +367,7 @@ export default function ErrorNotebook() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   to="/attestatsiya/testlar"
-                  className="inline-flex items-center justify-center gap-1.5 bg-accent-blue hover:bg-accent-blue/95 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95"
+                  className="inline-flex items-center justify-center gap-1.5 bg-accent-blue hover:bg-accent-blue/95 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95"
                 >
                   <FileText className="w-4 h-4" />
                   Mavzu testlariga oʻtish
@@ -403,7 +392,7 @@ export default function ErrorNotebook() {
                     className="flex items-center gap-2 bg-surface-muted/60 border border-border-card rounded-xl px-3 py-2.5 text-left"
                   >
                     <span className="text-accent-blue shrink-0">{tip.icon}</span>
-                    <span className="text-[11px] font-semibold text-text-secondary">{tip.label}</span>
+                    <span className="text-[13px] font-semibold text-text-secondary">{tip.label}</span>
                   </div>
                 ))}
               </div>

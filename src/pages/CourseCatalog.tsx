@@ -1,6 +1,7 @@
 import { upcomingCourses } from '../data/upcomingCourses';
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Search, Sparkles, GraduationCap } from 'lucide-react';
+import { IslimiCorner } from '../components/brand/Ornaments';
 import { Seo } from '../components/Seo';
 import { fetchPublishedCourses, type CourseMeta, ATTESTATSIYA_COURSE_ID } from '../lib/courses';
 import { useAuth } from '../contexts/AuthContext';
@@ -91,14 +92,14 @@ export default function CourseCatalog() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div className="space-y-2">
-          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider bg-accent-blue/10 text-accent-blue px-3 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider bg-mint-strong text-on-mint px-3.5 py-1.5 rounded-[10px]">
             <Sparkles className="w-3.5 h-3.5" />
             Katalog
           </span>
-          <h1 className="text-3xl sm:text-4xl font-serif font-extrabold text-text-primary tracking-tight">
+          <h1 className="text-[32px] sm:text-[40px] font-extrabold text-text-primary tracking-tight">
             Kurslar katalogi
           </h1>
-          <p className="text-text-secondary text-sm sm:text-base">
+          <p className="text-text-primary text-base">
             Barcha mavjud oʻquv dasturlari — oʻzingizga mosini tanlang va boshlang.
           </p>
         </div>
@@ -132,7 +133,7 @@ export default function CourseCatalog() {
       ) : !hasAnyResults ? (
         /* Empty state: nothing found in BOTH active and upcoming */
         <div className="bg-surface border border-dashed border-border-card rounded-3xl p-12 sm:p-16 text-center">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center mb-5">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-mint text-on-mint flex items-center justify-center mb-5">
             <BookOpen className="w-8 h-8" />
           </div>
           <h2 className="text-xl font-serif font-extrabold text-text-primary mb-2">
@@ -152,10 +153,11 @@ export default function CourseCatalog() {
               {filtered.map((course) => (
                 <div
                   key={course.id}
-                  className="group flex flex-col rounded-2xl border border-border-card bg-surface overflow-hidden hover:border-accent-blue/50 hover:shadow-md transition-all duration-200"
+                  className="group flex flex-col rounded-2xl border border-border-card bg-surface overflow-hidden hover:border-accent-blue/50 transition-all duration-200"
                 >
                   {/* Cover */}
-                  <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-accent-blue/15 to-emerald-500/10">
+                  <div className="aspect-video relative overflow-hidden bg-deep">
+                    <IslimiCorner className="h-[110px] w-[200px] opacity-90" />
                     {course.cover_url ? (
                       <img
                         src={course.cover_url}
@@ -163,16 +165,16 @@ export default function CourseCatalog() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-accent-blue/40">
+                      <div className="relative w-full h-full flex items-center justify-center text-white/35">
                         <GraduationCap className="w-14 h-14 group-hover:scale-110 transition-transform duration-300" />
                       </div>
                     )}
                     {/* Price chip */}
                     <span
-                      className={`absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full backdrop-blur-md ${
+                      className={`absolute top-3 right-3 text-[13px] font-bold px-2.5 py-1 rounded-lg ${
                         course.price > 0
-                          ? 'bg-amber-500/90 text-white'
-                          : 'bg-emerald-500/90 text-white'
+                          ? 'bg-cta text-on-cta'
+                          : 'bg-mint-strong text-on-mint'
                       }`}
                     >
                       {priceLabel(course.price)}
@@ -191,7 +193,7 @@ export default function CourseCatalog() {
                       course={course}
                       enrolled={enrolledIds.has(course.id)}
                       onEnrolled={markEnrolled}
-                      className="mt-auto w-full inline-flex items-center justify-center gap-2 bg-accent-blue/10 hover:bg-accent-blue hover:text-white text-accent-blue font-bold text-sm px-4 py-2.5 rounded-xl transition-all disabled:opacity-60"
+                      className="mt-auto w-full inline-flex h-12 items-center justify-center gap-2 bg-cta hover:bg-cta-hover text-on-cta font-bold text-base px-4 rounded-xl transition-colors disabled:opacity-60"
                     />
                     {getCourseTeachers(course) && (
                       <div className="mt-4 pt-3 border-t border-border-card/60 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 text-xs">
@@ -218,7 +220,7 @@ export default function CourseCatalog() {
       {matchingUpcoming.length > 0 && (
         <section className="mt-14" aria-labelledby="upcoming-heading">
           <div className="mb-6">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full mb-2">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full mb-2">
               Tez kunda
             </span>
             <h2 id="upcoming-heading" className="text-2xl sm:text-3xl font-serif font-bold text-text-primary">
@@ -233,7 +235,7 @@ export default function CourseCatalog() {
             {matchingUpcoming.map((item) => (
               <article
                 key={item.id}
-                className="group flex flex-col rounded-2xl border border-border-card bg-surface overflow-hidden hover:border-accent-blue/50 hover:shadow-md transition-all duration-200"
+                className="group flex flex-col rounded-2xl border border-border-card bg-surface overflow-hidden hover:border-accent-blue/50 transition-all duration-200"
               >
                 <div className="aspect-video relative overflow-hidden bg-primary-bg">
                   <img
@@ -244,7 +246,7 @@ export default function CourseCatalog() {
                     loading="lazy"
                     className="w-full max-w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <span className="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full backdrop-blur-md bg-amber-500/90 text-white">
+                  <span className="absolute top-3 right-3 text-[13px] font-bold px-2.5 py-1 rounded-lg bg-amber-500/90 text-white">
                     {item.badge}
                   </span>
                 </div>

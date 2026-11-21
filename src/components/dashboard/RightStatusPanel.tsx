@@ -26,7 +26,7 @@ function CardLabel({ icon, tint, children }: { icon: React.ReactNode; tint: stri
   return (
     <div className="flex items-center gap-2.5">
       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${tint}`}>{icon}</div>
-      <span className="text-[11px] font-bold text-slate-500 dark:text-[#8B9CB3] uppercase tracking-wider">{children}</span>
+      <span className="text-[13px] font-bold text-slate-500 dark:text-[#8B9CB3] uppercase tracking-wider">{children}</span>
     </div>
   );
 }
@@ -65,7 +65,7 @@ export default function RightStatusPanel({
             {pointsLeft} <span className="text-sm font-sans font-semibold text-slate-500 dark:text-[#8B9CB3]">ball qoldi</span>
           </p>
           <ProgressBar value={currentScore} max={goalScore} color="bg-[#0E7A62]" />
-          <p className="text-[11px] font-bold text-slate-400 dark:text-[#8B9CB3]">{currentScore}/{goalScore}</p>
+          <p className="text-[13px] font-bold text-slate-400 dark:text-[#8B9CB3]">{currentScore}/{goalScore}</p>
         </div>
       </StatusCard>
 
@@ -77,32 +77,32 @@ export default function RightStatusPanel({
         <p className="text-xl font-serif font-extrabold text-slate-900 dark:text-white">
           {streak} <span className="text-sm font-sans font-semibold text-slate-500 dark:text-[#8B9CB3]">kun</span>
         </p>
-        <p className="text-[11px] font-semibold text-slate-400 dark:text-[#8B9CB3]">Davom ettiring!</p>
+        <p className="text-[13px] font-semibold text-slate-400 dark:text-[#8B9CB3]">Davom ettiring!</p>
       </StatusCard>
 
       {/* Haftalik yutuq */}
       <StatusCard>
-        <CardLabel icon={<BookOpen className="w-4 h-4 text-[#4CAF82]" />} tint="bg-emerald-500/10 dark:bg-[#4CAF82]/15">
+        <CardLabel icon={<BookOpen className="w-4 h-4 text-[#0E7A62]" />} tint="bg-emerald-500/10 dark:bg-[#0E7A62]/15">
           Haftalik yutuq
         </CardLabel>
         <div className="space-y-2">
           <p className="text-sm font-bold text-slate-700 dark:text-[#EAF3F0]">
             {weeklyLessons} dars · <span className="text-slate-500 dark:text-[#8B9CB3]">{weeklyLessons}/{weeklyTotal}</span>
           </p>
-          <ProgressBar value={weeklyLessons} max={weeklyTotal || 10} color="bg-[#4CAF82]" />
+          <ProgressBar value={weeklyLessons} max={weeklyTotal || 10} color="bg-[#0E7A62]" />
         </div>
       </StatusCard>
 
       {/* Bu hafta */}
       <StatusCard>
-        <CardLabel icon={<Calendar className="w-4 h-4 text-[#4CAF82]" />} tint="bg-emerald-500/10 dark:bg-[#4CAF82]/15">
+        <CardLabel icon={<Calendar className="w-4 h-4 text-[#0E7A62]" />} tint="bg-emerald-500/10 dark:bg-[#0E7A62]/15">
           Bu hafta
         </CardLabel>
         <div className="space-y-2">
           <p className="text-sm font-bold text-slate-700 dark:text-[#EAF3F0]">
             {thisWeekLessons}/{thisWeekTotal} dars
           </p>
-          <ProgressBar value={thisWeekLessons} max={thisWeekTotal || 5} color="bg-[#4CAF82]" />
+          <ProgressBar value={thisWeekLessons} max={thisWeekTotal || 5} color="bg-[#0E7A62]" />
         </div>
       </StatusCard>
 
@@ -115,7 +115,7 @@ export default function RightStatusPanel({
           <p className="text-sm font-bold text-slate-700 dark:text-[#EAF3F0]">
             Yangi daraja: {nextLevelXp} ball
           </p>
-          <span className="inline-flex items-center bg-purple-500/10 dark:bg-[#8B5CF6]/15 text-[#8B5CF6] text-[10px] font-bold px-2 py-0.5 rounded-full">
+          <span className="inline-flex items-center bg-purple-500/10 dark:bg-[#8B5CF6]/15 text-[#8B5CF6] text-xs font-bold px-2 py-0.5 rounded-full">
             Lv.{level + 1}
           </span>
         </div>

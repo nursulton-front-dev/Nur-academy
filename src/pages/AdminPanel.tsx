@@ -90,7 +90,7 @@ function StatCard({ icon: Icon, label, value, color }: { icon: any; label: strin
         <Icon className="w-5 h-5" />
       </div>
       <p className="text-2xl font-serif font-extrabold text-text-primary">{value}</p>
-      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">{label}</p>
+      <p className="text-xs font-bold text-text-secondary uppercase tracking-widest">{label}</p>
     </div>
   );
 }
@@ -426,9 +426,9 @@ export default function AdminPanel() {
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
               activeTab === t.id
-                ? 'bg-accent-blue text-white shadow-md'
+                ? 'bg-accent-blue text-white'
                 : 'bg-surface border border-border-card text-text-secondary hover:bg-surface-hover'
             }`}
           >
@@ -442,13 +442,13 @@ export default function AdminPanel() {
       {activeTab === 'overview' && (
         <div className="space-y-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={Users} label="Foydalanuvchilar" value={stats.totalUsers} color="bg-accent-blue/10 text-accent-blue" />
+            <StatCard icon={Users} label="Foydalanuvchilar" value={stats.totalUsers} color="bg-mint text-on-mint" />
             <StatCard icon={Award} label="Pro obunachi" value={stats.proUsers} color="bg-purple-500/10 text-purple-500" />
             <StatCard icon={BookOpen} label="Kursga yozilgan" value={stats.enrolledUsers} color="bg-success-green/10 text-success-green" />
             <StatCard icon={HelpCircle} label="Savollar" value={stats.totalQuestions} color="bg-warning-amber/10 text-warning-amber" />
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={ClipboardList} label="Imtihon topshirildi" value={stats.finishedExams} color="bg-accent-blue/10 text-accent-blue" />
+            <StatCard icon={ClipboardList} label="Imtihon topshirildi" value={stats.finishedExams} color="bg-mint text-on-mint" />
             <StatCard icon={BarChart3} label="O'rtacha ball" value={stats.avgExamScore != null ? `${stats.avgExamScore}%` : '—'} color="bg-success-green/10 text-success-green" />
             <StatCard icon={TrendingUp} label="Diagnostika tugandi" value={stats.finishedDiagnostics} color="bg-purple-500/10 text-purple-500" />
             <StatCard icon={CheckSquare} label="Dars tugatildi" value={stats.completedLessons} color="bg-warning-amber/10 text-warning-amber" />
@@ -463,18 +463,18 @@ export default function AdminPanel() {
             <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">Savollar bazasi</h3>
             <button
               onClick={() => setShowQuestionForm(!showQuestionForm)}
-              className="inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-blue/95 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 bg-accent-blue hover:bg-accent-blue/95 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" /> Yangi savol
             </button>
           </div>
 
           {showQuestionForm && (
-            <div className="bg-surface border border-border-card rounded-[24px] p-6 space-y-4">
+            <div className="bg-surface border border-border-card rounded-[18px] p-6 space-y-4">
               <h4 className="text-sm font-bold text-text-primary">Yangi savol qo'shish</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-[10px] font-bold text-text-secondary uppercase">Bo'lim</label>
+                  <label className="text-xs font-bold text-text-secondary uppercase">Bo'lim</label>
                   <select value={newQuestion.domain} onChange={e => setNewQuestion(p => ({ ...p, domain: e.target.value }))}
                     className="w-full mt-1 px-3 py-2.5 rounded-xl border border-border-card bg-surface text-sm text-text-primary focus:outline-none focus:border-accent-blue">
                     <option value="">Tanlang</option>
@@ -489,7 +489,7 @@ export default function AdminPanel() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-text-secondary uppercase">Qiyinlik</label>
+                  <label className="text-xs font-bold text-text-secondary uppercase">Qiyinlik</label>
                   <select value={newQuestion.difficulty} onChange={e => setNewQuestion(p => ({ ...p, difficulty: e.target.value }))}
                     className="w-full mt-1 px-3 py-2.5 rounded-xl border border-border-card bg-surface text-sm text-text-primary focus:outline-none focus:border-accent-blue">
                     <option value="easy">Oson</option>
@@ -498,20 +498,20 @@ export default function AdminPanel() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-text-secondary uppercase">Subdomain</label>
+                  <label className="text-xs font-bold text-text-secondary uppercase">Subdomain</label>
                   <input type="text" value={newQuestion.subdomain} onChange={e => setNewQuestion(p => ({ ...p, subdomain: e.target.value }))}
                     placeholder="Masalan: Python OOP"
                     className="w-full mt-1 px-3 py-2.5 rounded-xl border border-border-card bg-surface text-sm text-text-primary focus:outline-none focus:border-accent-blue" />
                 </div>
               </div>
               <div>
-                <label className="text-[10px] font-bold text-text-secondary uppercase">Savol matni</label>
+                <label className="text-xs font-bold text-text-secondary uppercase">Savol matni</label>
                 <textarea value={newQuestion.question_text} onChange={e => setNewQuestion(p => ({ ...p, question_text: e.target.value }))}
                   rows={3}
                   className="w-full mt-1 px-3 py-2.5 rounded-xl border border-border-card bg-surface text-sm text-text-primary focus:outline-none focus:border-accent-blue resize-none" />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-text-secondary uppercase">Javob variantlari (belgilang to'g'risini)</label>
+                <label className="text-xs font-bold text-text-secondary uppercase">Javob variantlari (belgilang to'g'risini)</label>
                 {newQuestion.options.map((opt, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <input type="radio" name="correct" checked={opt.is_correct} onChange={() => {
@@ -528,22 +528,22 @@ export default function AdminPanel() {
                 <button onClick={() => setShowQuestionForm(false)} className="px-4 py-2.5 rounded-xl border border-border-card text-xs font-bold text-text-secondary hover:bg-surface-hover cursor-pointer">
                   Bekor qilish
                 </button>
-                <button onClick={handleAddQuestion} className="px-6 py-2.5 rounded-xl bg-accent-blue text-white text-xs font-bold shadow-md hover:bg-accent-blue/95 cursor-pointer">
+                <button onClick={handleAddQuestion} className="px-6 py-2.5 rounded-xl bg-accent-blue text-white text-sm font-bold hover:bg-accent-blue/95 cursor-pointer">
                   Saqlash
                 </button>
               </div>
             </div>
           )}
 
-          <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
+          <div className="bg-surface border border-border-card rounded-[18px] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border-card bg-primary-bg">
-                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">ID</th>
-                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Bo'lim</th>
-                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Qiyinlik</th>
-                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Turi</th>
+                    <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">ID</th>
+                    <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Bo'lim</th>
+                    <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Qiyinlik</th>
+                    <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Turi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -552,7 +552,7 @@ export default function AdminPanel() {
                       <td className="py-3 px-4 font-mono text-xs text-text-secondary">{q.id.slice(0, 8)}...</td>
                       <td className="py-3 px-4 text-text-primary">{q.domain}</td>
                       <td className="py-3 px-4">
-                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
+                        <span className={`px-2 py-0.5 rounded-md text-xs font-bold uppercase ${
                           q.difficulty === 'easy' ? 'bg-success-green/10 text-success-green' :
                           q.difficulty === 'hard' ? 'bg-error-red/10 text-error-red' :
                           'bg-warning-amber/10 text-warning-amber'
@@ -638,18 +638,18 @@ export default function AdminPanel() {
               <option value="pro">Pro</option>
             </select>
           </div>
-          <p className="text-[11px] text-text-secondary">{filteredUsers.length} / {users.length} foydalanuvchi</p>
+          <p className="text-[13px] text-text-secondary">{filteredUsers.length} / {users.length} foydalanuvchi</p>
 
-          <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
+          <div className="bg-surface border border-border-card rounded-[18px] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border-card bg-primary-bg">
-                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Ism</th>
-                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Obuna</th>
-                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">XP</th>
-                    <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Huquq</th>
-                    <th className="text-right py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Amallar</th>
+                    <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Ism</th>
+                    <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Obuna</th>
+                    <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">XP</th>
+                    <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Huquq</th>
+                    <th className="text-right py-3 px-4 text-xs font-bold text-text-secondary uppercase">Amallar</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -661,34 +661,34 @@ export default function AdminPanel() {
                       <tr key={u.id} className="border-b border-border-card/40 hover:bg-surface-hover">
                         <td className="py-3 px-4">
                           <div className="font-medium text-text-primary">{u.full_name || 'Noma\'lum'}</div>
-                          <div className="text-[10px] text-text-secondary font-mono">{u.id.slice(0, 12)}...</div>
+                          <div className="text-xs text-text-secondary font-mono">{u.id.slice(0, 12)}...</div>
                         </td>
                         <td className="py-3 px-4">
-                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
+                          <span className={`px-2 py-0.5 rounded-md text-xs font-bold uppercase ${
                             isPro ? 'bg-purple-500/10 text-purple-500' : 'bg-primary-bg text-text-secondary'
                           }`}>{u.subscription_tier || 'free'}</span>
                         </td>
                         <td className="py-3 px-4 text-text-secondary font-mono text-xs">{u.xp ?? 0}</td>
                         <td className="py-3 px-4">
                           {u.is_admin ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-accent-blue/10 text-accent-blue">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold uppercase bg-mint text-on-mint">
                               <ShieldCheck className="w-3 h-3" /> Admin
                             </span>
                           ) : (
-                            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-primary-bg text-text-secondary">
+                            <span className="px-2 py-0.5 rounded-md text-xs font-bold uppercase bg-primary-bg text-text-secondary">
                               {u.role || 'user'}
                             </span>
                           )}
                         </td>
                         <td className="py-3 px-4">
                           {isSelf ? (
-                            <span className="block text-right text-[10px] text-text-secondary italic">Siz</span>
+                            <span className="block text-right text-xs text-text-secondary italic">Siz</span>
                           ) : (
                             <div className="flex items-center justify-end gap-2">
                               <button
                                 onClick={() => handleSetTier(u, isPro ? 'free' : 'pro')}
                                 disabled={busy}
-                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                                   isPro
                                     ? 'border border-border-card text-text-secondary hover:bg-surface-hover'
                                     : 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20'
@@ -700,7 +700,7 @@ export default function AdminPanel() {
                               <button
                                 onClick={() => { setActionError(null); setDeleteTarget(u); }}
                                 disabled={busy}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-error-red hover:bg-error-red/10 transition-all cursor-pointer disabled:opacity-50"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold text-error-red hover:bg-error-red/10 transition-all cursor-pointer disabled:opacity-50"
                               >
                                 <Trash2 className="w-3.5 h-3.5" /> O'chirish
                               </button>
@@ -721,7 +721,7 @@ export default function AdminPanel() {
       {/* ─── DELETE CONFIRMATION MODAL ─── */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="bg-surface border border-border-card rounded-[24px] p-6 max-w-md w-full space-y-4 shadow-2xl">
+          <div className="bg-surface border border-border-card rounded-[18px] p-6 max-w-md w-full space-y-4 shadow-2xl">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-error-red/10 flex items-center justify-center">
@@ -738,7 +738,7 @@ export default function AdminPanel() {
               ma'lumotlari (progress, konspektlar, diagnostika, imtihonlar, XP, ro'yxatlar) butunlay o'chiriladi.
               Bu amalni qaytarib bo'lmaydi.
             </p>
-            <p className="text-[11px] text-text-secondary bg-primary-bg rounded-lg px-3 py-2">
+            <p className="text-[13px] text-text-secondary bg-primary-bg rounded-lg px-3 py-2">
               Eslatma: foydalanuvchining login (auth) akkaunti Supabase Dashboard orqali alohida o'chiriladi.
             </p>
             {actionError && (
@@ -758,7 +758,7 @@ export default function AdminPanel() {
               <button
                 onClick={() => handleDeleteUser(deleteTarget)}
                 disabled={deleting}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-error-red text-white text-xs font-bold shadow-md hover:bg-error-red/90 cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-error-red text-white text-xs font-bold hover:bg-error-red/90 cursor-pointer disabled:opacity-50"
               >
                 {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                 O'chirish
@@ -772,17 +772,17 @@ export default function AdminPanel() {
       {activeTab === 'analytics' && (
         <div className="space-y-6">
           {/* Recent exam attempts */}
-          <div className="bg-surface border border-border-card rounded-[24px] p-6 space-y-4">
+          <div className="bg-surface border border-border-card rounded-[18px] p-6 space-y-4">
             <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">So'nggi imtihonlar</h3>
             {recentExams.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border-card">
-                      <th className="text-left py-2 text-[10px] font-bold text-text-secondary uppercase">Foydalanuvchi</th>
-                      <th className="text-left py-2 text-[10px] font-bold text-text-secondary uppercase">Imtihon</th>
-                      <th className="text-right py-2 text-[10px] font-bold text-text-secondary uppercase">Ball</th>
-                      <th className="text-right py-2 text-[10px] font-bold text-text-secondary uppercase">Sana</th>
+                      <th className="text-left py-2 text-xs font-bold text-text-secondary uppercase">Foydalanuvchi</th>
+                      <th className="text-left py-2 text-xs font-bold text-text-secondary uppercase">Imtihon</th>
+                      <th className="text-right py-2 text-xs font-bold text-text-secondary uppercase">Ball</th>
+                      <th className="text-right py-2 text-xs font-bold text-text-secondary uppercase">Sana</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -810,16 +810,16 @@ export default function AdminPanel() {
           </div>
 
           {/* Recent diagnostics */}
-          <div className="bg-surface border border-border-card rounded-[24px] p-6 space-y-4">
+          <div className="bg-surface border border-border-card rounded-[18px] p-6 space-y-4">
             <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">So'nggi diagnostikalar</h3>
             {recentDiagnostics.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border-card">
-                      <th className="text-left py-2 text-[10px] font-bold text-text-secondary uppercase">Foydalanuvchi</th>
-                      <th className="text-right py-2 text-[10px] font-bold text-text-secondary uppercase">Ball</th>
-                      <th className="text-right py-2 text-[10px] font-bold text-text-secondary uppercase">Sana</th>
+                      <th className="text-left py-2 text-xs font-bold text-text-secondary uppercase">Foydalanuvchi</th>
+                      <th className="text-right py-2 text-xs font-bold text-text-secondary uppercase">Ball</th>
+                      <th className="text-right py-2 text-xs font-bold text-text-secondary uppercase">Sana</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -840,7 +840,7 @@ export default function AdminPanel() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Tier breakdown */}
-            <div className="bg-surface border border-border-card rounded-[24px] p-6 space-y-4">
+            <div className="bg-surface border border-border-card rounded-[18px] p-6 space-y-4">
               <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">Obuna bo'linmasi</h3>
               {tierBreakdown.map(t => (
                 <div key={t.tier} className="flex items-center justify-between">
@@ -861,7 +861,7 @@ export default function AdminPanel() {
             </div>
 
             {/* Top XP users */}
-            <div className="bg-surface border border-border-card rounded-[24px] p-6 space-y-3">
+            <div className="bg-surface border border-border-card rounded-[18px] p-6 space-y-3">
               <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">Top foydalanuvchilar (XP)</h3>
               {topXpUsers.map((u, i) => (
                 <div key={u.id} className="flex items-center gap-3">
@@ -888,10 +888,10 @@ export default function AdminPanel() {
           {(() => {
             const active = campaigns.find(c => c.is_active && new Date(c.ends_at) > new Date());
             return active ? (
-              <div className="bg-accent-blue/8 border border-accent-blue/30 rounded-[24px] p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="bg-accent-blue/8 border border-accent-blue/30 rounded-[18px] p-5 flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-green-500/10 text-green-500 text-xs font-bold uppercase">
                       <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                       Faol
                     </span>
@@ -912,7 +912,7 @@ export default function AdminPanel() {
                 </button>
               </div>
             ) : (
-              <div className="bg-surface border border-border-card rounded-[24px] p-5 flex items-center gap-3">
+              <div className="bg-surface border border-border-card rounded-[18px] p-5 flex items-center gap-3">
                 <span className="w-2 h-2 rounded-full bg-text-secondary" />
                 <p className="text-sm text-text-secondary">Hozirda faol aksiya yo'q.</p>
               </div>
@@ -920,7 +920,7 @@ export default function AdminPanel() {
           })()}
 
           {/* Launch form */}
-          <div className="bg-surface border border-border-card rounded-[24px] p-6 space-y-4">
+          <div className="bg-surface border border-border-card rounded-[18px] p-6 space-y-4">
             <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">Yangi aksiya boshlash</h3>
             {campaignError && (
               <p className="text-xs text-error-red">{campaignError}</p>
@@ -959,7 +959,7 @@ export default function AdminPanel() {
 
           {/* Campaign history */}
           {campaigns.length > 0 && (
-            <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
+            <div className="bg-surface border border-border-card rounded-[18px] overflow-hidden">
               <div className="px-6 py-4 border-b border-border-card">
                 <h3 className="text-sm font-bold text-text-secondary uppercase tracking-widest">Tarix</h3>
               </div>
@@ -967,9 +967,9 @@ export default function AdminPanel() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border-card bg-primary-bg">
-                      <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Sarlavha</th>
-                      <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Tugadi</th>
-                      <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Holat</th>
+                      <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Sarlavha</th>
+                      <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Tugadi</th>
+                      <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Holat</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -980,18 +980,18 @@ export default function AdminPanel() {
                         <tr key={c.id} className="border-b border-border-card/40">
                           <td className="py-3 px-4">
                             <p className="font-medium text-text-primary">{c.title}</p>
-                            <p className="text-[11px] text-text-secondary line-clamp-1 mt-0.5">{c.message}</p>
+                            <p className="text-[13px] text-text-secondary line-clamp-1 mt-0.5">{c.message}</p>
                           </td>
                           <td className="py-3 px-4 text-xs text-text-secondary">
                             {new Date(c.ends_at).toLocaleString('uz-UZ')}
                           </td>
                           <td className="py-3 px-4">
                             {isRunning ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/10 text-green-500 text-xs font-bold uppercase">
                                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />Faol
                               </span>
                             ) : (
-                              <span className="px-2 py-0.5 rounded-full bg-primary-bg text-text-secondary text-[10px] font-bold uppercase">
+                              <span className="px-2 py-0.5 rounded-full bg-primary-bg text-text-secondary text-xs font-bold uppercase">
                                 {expired ? 'Tugagan' : 'To\'xtatilgan'}
                               </span>
                             )}
@@ -1041,21 +1041,21 @@ export default function AdminPanel() {
             </div>
 
             {filtered.length === 0 ? (
-              <div className="bg-surface border border-border-card rounded-[24px] p-8 text-center">
+              <div className="bg-surface border border-border-card rounded-[18px] p-8 text-center">
                 <p className="text-sm text-text-secondary">Fikrlar yo'q</p>
               </div>
             ) : (
-              <div className="bg-surface border border-border-card rounded-[24px] overflow-hidden">
+              <div className="bg-surface border border-border-card rounded-[18px] overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-border-card bg-primary-bg">
-                        <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Foydalanuvchi</th>
-                        <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Tur</th>
-                        <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Xabar</th>
-                        <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Reyting</th>
-                        <th className="text-left py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Sana</th>
-                        <th className="text-right py-3 px-4 text-[10px] font-bold text-text-secondary uppercase">Status</th>
+                        <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Foydalanuvchi</th>
+                        <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Tur</th>
+                        <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Xabar</th>
+                        <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Reyting</th>
+                        <th className="text-left py-3 px-4 text-xs font-bold text-text-secondary uppercase">Sana</th>
+                        <th className="text-right py-3 px-4 text-xs font-bold text-text-secondary uppercase">Status</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1063,11 +1063,11 @@ export default function AdminPanel() {
                         <tr key={f.id} className="border-b border-border-card/40 hover:bg-surface-hover">
                           <td className="py-3 px-4">
                             <p className="font-medium text-text-primary text-xs">{(f.profiles as any)?.full_name || 'Noma\'lum'}</p>
-                            <p className="text-[10px] text-text-secondary font-mono">{f.user_id.slice(0, 10)}…</p>
+                            <p className="text-xs text-text-secondary font-mono">{f.user_id.slice(0, 10)}…</p>
                           </td>
                           <td className="py-3 px-4">
-                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
-                              f.type === 'review' ? 'bg-accent-blue/10 text-accent-blue' :
+                            <span className={`px-2 py-0.5 rounded-md text-xs font-bold uppercase ${
+                              f.type === 'review' ? 'bg-mint text-on-mint' :
                               f.type === 'bug' ? 'bg-error-red/10 text-error-red' :
                               'bg-purple-500/10 text-purple-500'
                             }`}>{f.type}</span>
@@ -1075,7 +1075,7 @@ export default function AdminPanel() {
                           <td className="py-3 px-4 max-w-[240px]">
                             <p className="text-xs text-text-primary line-clamp-2">{f.message}</p>
                             {(f.courses as any)?.title && (
-                              <p className="text-[10px] text-text-secondary mt-0.5">{(f.courses as any).title}</p>
+                              <p className="text-xs text-text-secondary mt-0.5">{(f.courses as any).title}</p>
                             )}
                           </td>
                           <td className="py-3 px-4">
@@ -1092,14 +1092,14 @@ export default function AdminPanel() {
                           </td>
                           <td className="py-3 px-4 text-right">
                             {f.status === 'reviewed' ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-green-500/10 text-green-500">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-green-500/10 text-green-500">
                                 <CheckSquare className="w-3 h-3" />Ko'rilgan
                               </span>
                             ) : (
                               <button
                                 onClick={() => handleMarkReviewed(f.id)}
                                 disabled={markingId === f.id}
-                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold border border-border-card text-text-secondary hover:bg-surface-hover cursor-pointer disabled:opacity-50"
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold border border-border-card text-text-secondary hover:bg-surface-hover cursor-pointer disabled:opacity-50"
                               >
                                 {markingId === f.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckSquare className="w-3 h-3" />}
                                 Ko'rildi

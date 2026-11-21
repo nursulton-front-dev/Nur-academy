@@ -41,11 +41,11 @@ export function PageHeader({ title, description, action, breadcrumbs }: PageHead
       {breadcrumbs && <Breadcrumbs items={breadcrumbs} className="mb-2" />}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div className="space-y-1.5 min-w-0">
-          <h1 className="text-xl sm:text-2xl font-serif font-extrabold text-text-primary leading-tight">
+          <h1 className="text-[26px] sm:text-[31px] font-extrabold text-text-primary leading-tight tracking-[-0.01em]">
             {title}
           </h1>
           {description && (
-            <p className="text-text-secondary text-sm max-w-2xl leading-relaxed">{description}</p>
+            <p className="text-text-primary text-base max-w-3xl leading-relaxed">{description}</p>
           )}
         </div>
         {action && <div className="shrink-0">{action}</div>}

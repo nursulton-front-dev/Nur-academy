@@ -158,10 +158,10 @@ export default function StepLesson({
   return (
     <div className="w-full max-w-[1080px] mx-auto flex flex-col h-[calc(100dvh-150px)] min-h-[520px] overflow-hidden px-4 sm:px-0">
       {/* Step navigator */}
-      <div className="shrink-0 bg-surface border border-border-card rounded-2xl p-4 sm:p-5 mb-4 shadow-xs">
+      <div className="shrink-0 bg-surface border border-border-card rounded-2xl p-4 sm:p-5 mb-4">
         <div className="flex items-center justify-between mb-3.5 gap-3">
           <div className="min-w-0">
-            <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest truncate">
+            <p className="text-xs font-bold text-text-secondary uppercase tracking-widest truncate">
               {moduleTitle ? `${moduleTitle} · ` : ''}{lessonTitle}
             </p>
             <h2 className="text-base font-serif font-extrabold text-text-primary truncate mt-0.5">
@@ -169,10 +169,10 @@ export default function StepLesson({
             </h2>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg ${activeBadge.bg} ${activeBadge.text}`}>
+            <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${activeBadge.bg} ${activeBadge.text}`}>
               {current ? TYPE_LABEL[current.step_type] : ''}
             </span>
-            <span className="text-[11px] font-bold text-text-secondary hidden sm:inline-block">
+            <span className="text-[13px] font-bold text-text-secondary hidden sm:inline-block">
               Qadam {currentIndex + 1} / {steps.length}
             </span>
           </div>
@@ -192,7 +192,7 @@ export default function StepLesson({
                 title={TYPE_LABEL[s.step_type]}
                 className={`relative w-11 h-11 shrink-0 rounded-xl border flex items-center justify-center text-[13px] font-bold transition-all overflow-hidden ${
                   isCurrent
-                    ? 'text-white border-transparent ring-2 ring-accent-blue ring-offset-2 ring-offset-surface scale-105 shadow-sm bg-accent-blue'
+                    ? 'text-white border-transparent ring-2 ring-accent-blue ring-offset-2 ring-offset-surface scale-105 bg-accent-blue'
                     : isDone
                     ? 'border-transparent text-success-green bg-success-green/10 hover:bg-success-green/15 cursor-pointer'
                     : locked
@@ -219,14 +219,14 @@ export default function StepLesson({
           <div className="flex-1 h-1.5 bg-border-card/50 rounded-full overflow-hidden">
             <div className="h-full rounded-full bg-accent-blue transition-all duration-300" style={{ width: `${progressPct}%` }} />
           </div>
-          <span className="text-[10px] font-bold text-text-secondary shrink-0 tabular-nums">
+          <span className="text-xs font-bold text-text-secondary shrink-0 tabular-nums">
             {completedCount} / {steps.length} qadam · {progressPct}%
           </span>
         </div>
       </div>
 
       {/* Content (scrolls inside) */}
-      <div className="flex-1 min-h-0 overflow-y-auto bg-surface border border-border-card rounded-2xl shadow-xs px-5 py-8 sm:p-8 lg:px-14 lg:py-12">
+      <div className="flex-1 min-h-0 overflow-y-auto bg-surface border border-border-card rounded-2xl px-5 py-8 sm:p-8 lg:px-14 lg:py-12">
         {renderStep()}
         {/* End-of-lesson konspekt — appears on the final step regardless of its type. */}
         {currentIndex === steps.length - 1 && (
@@ -239,7 +239,7 @@ export default function StepLesson({
       {/* Sticky bottom action bar — card surface. Back lives here; forward is the
           single contextual in-step button (Tushundim / Keyingi qadam / Modulni
           yakunlash) so there is never a duplicate "forward" control. */}
-      <div className="shrink-0 mt-4 flex items-center justify-between gap-3 bg-surface/90 backdrop-blur-sm border border-border-card rounded-2xl shadow-sm px-3 sm:px-4 py-3">
+      <div className="shrink-0 mt-4 flex items-center justify-between gap-3 bg-surface/90 backdrop-blur-sm border border-border-card rounded-2xl px-3 sm:px-4 py-3">
         <button
           onClick={() => goToStep(currentIndex - 1)}
           disabled={currentIndex === 0}
@@ -248,7 +248,7 @@ export default function StepLesson({
           <ChevronLeft className="w-4 h-4" /> Oldingi
         </button>
 
-        <span className="text-[11px] font-bold text-text-secondary hidden sm:block">
+        <span className="text-[13px] font-bold text-text-secondary hidden sm:block">
           {completedCount} / {steps.length} qadam
         </span>
 

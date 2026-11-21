@@ -44,7 +44,7 @@ export default function DevStatus() {
         <div className="bg-[#eff6ff] dark:bg-[#1e293b] border border-border-card text-accent-blue px-4.5 py-2 rounded-2xl flex items-center space-x-2.5">
           <Activity className="w-5 h-5 text-accent-blue animate-pulse" />
           <div>
-            <p className="text-[9px] uppercase font-bold text-text-secondary tracking-wider">MVP Readiness</p>
+            <p className="text-[13px] uppercase font-bold text-text-secondary tracking-wider">MVP Readiness</p>
             <p className="text-sm font-extrabold text-text-primary">{mvpPercent}% Tayyor</p>
           </div>
         </div>
@@ -52,7 +52,7 @@ export default function DevStatus() {
 
       {/* 1. GENERAL PROGRESS CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm flex items-start space-x-4">
+        <div className="bg-surface border border-border-card rounded-[18px] p-6 flex items-start space-x-4">
           <div className="p-3 bg-emerald-500/10 text-emerald-600 rounded-xl">
             <CheckCircle2 className="w-6 h-6" />
           </div>
@@ -63,7 +63,7 @@ export default function DevStatus() {
           </div>
         </div>
 
-        <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm flex items-start space-x-4">
+        <div className="bg-surface border border-border-card rounded-[18px] p-6 flex items-start space-x-4">
           <div className="p-3 bg-orange-500/10 text-orange-600 rounded-xl">
             <AlertCircle className="w-6 h-6" />
           </div>
@@ -74,7 +74,7 @@ export default function DevStatus() {
           </div>
         </div>
 
-        <div className="bg-surface border border-border-card rounded-[24px] p-6 shadow-sm flex items-start space-x-4">
+        <div className="bg-surface border border-border-card rounded-[18px] p-6 flex items-start space-x-4">
           <div className="p-3 bg-rose-500/10 text-rose-600 rounded-xl">
             <XCircle className="w-6 h-6" />
           </div>
@@ -90,7 +90,7 @@ export default function DevStatus() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
         {/* Left Column: MVP Checklist */}
-        <div className="bg-surface border border-border-card rounded-[28px] p-6.5 shadow-sm space-y-6">
+        <div className="bg-surface border border-border-card rounded-[18px] p-6.5 space-y-6">
           <div className="flex items-center space-x-2 pb-3 border-b border-border-card/50">
             <Award className="w-5 h-5 text-accent-blue" />
             <h2 className="font-serif font-bold text-lg text-text-primary">MVP Checklist</h2>
@@ -134,13 +134,13 @@ export default function DevStatus() {
         <div className="space-y-6">
           
           {/* Monetization Readiness Card */}
-          <div className="bg-surface border border-border-card rounded-[28px] p-6.5 shadow-sm space-y-5">
+          <div className="bg-surface border border-border-card rounded-[18px] p-6.5 space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-border-card/50">
               <div className="flex items-center space-x-2">
                 <DollarSign className="w-5 h-5 text-accent-blue" />
                 <h2 className="font-serif font-bold text-lg text-text-primary">Monetization Readiness</h2>
               </div>
-              <span className="text-[10px] bg-rose-500/10 text-rose-600 px-2.5 py-1 rounded-full font-bold">0% Tayyor</span>
+              <span className="text-xs bg-rose-500/10 text-rose-600 px-2.5 py-1 rounded-full font-bold">0% Tayyor</span>
             </div>
             
             <p className="text-xs text-text-secondary leading-relaxed">
@@ -164,31 +164,31 @@ export default function DevStatus() {
           </div>
 
           {/* Learning System Readiness Card */}
-          <div className="bg-surface border border-border-card rounded-[28px] p-6.5 shadow-sm space-y-5">
+          <div className="bg-surface border border-border-card rounded-[18px] p-6.5 space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-border-card/50">
               <div className="flex items-center space-x-2">
                 <TrendingUp className="w-5 h-5 text-accent-blue" />
                 <h2 className="font-serif font-bold text-lg text-text-primary">Learning System Audit</h2>
               </div>
-              <span className="text-[10px] bg-accent-blue/10 text-accent-blue px-2.5 py-1 rounded-full font-bold">75% Moslik</span>
+              <span className="text-xs bg-mint text-on-mint px-2.5 py-1 rounded-full font-bold">75% Moslik</span>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="p-3 bg-primary-bg rounded-xl space-y-1">
                 <p className="font-bold text-text-primary">Yo'nalish (Roadmap)</p>
-                <p className="text-[10px] text-text-secondary">Mavjud (Horizontal mini-cards)</p>
+                <p className="text-xs text-text-secondary">Mavjud (Horizontal mini-cards)</p>
               </div>
               <div className="p-3 bg-primary-bg rounded-xl space-y-1">
                 <p className="font-bold text-text-primary">Dars oqimi (Flow)</p>
-                <p className="text-[10px] text-text-secondary">Ulanish mukammal (Video + Konspekt + Kviz)</p>
+                <p className="text-xs text-text-secondary">Ulanish mukammal (Video + Konspekt + Kviz)</p>
               </div>
               <div className="p-3 bg-primary-bg rounded-xl space-y-1">
                 <p className="font-bold text-text-primary">Xatolar Daftari</p>
-                <p className="text-[10px] text-rose-500 font-semibold">Mutlaqo yo'q</p>
+                <p className="text-xs text-rose-500 font-semibold">Mutlaqo yo'q</p>
               </div>
               <div className="p-3 bg-primary-bg rounded-xl space-y-1">
                 <p className="font-bold text-text-primary">Takrorlash (Spaced)</p>
-                <p className="text-[10px] text-rose-500 font-semibold">Hali rejalashtirilmagan</p>
+                <p className="text-xs text-rose-500 font-semibold">Hali rejalashtirilmagan</p>
               </div>
             </div>
           </div>
@@ -197,7 +197,7 @@ export default function DevStatus() {
       </div>
 
       {/* 3. NEXT DEV TASKS */}
-      <div className="bg-surface border border-border-card rounded-[28px] p-6.5 shadow-sm space-y-6">
+      <div className="bg-surface border border-border-card rounded-[18px] p-6.5 space-y-6">
         <div className="flex items-center space-x-2 pb-3 border-b border-border-card/50">
           <BookOpen className="w-5 h-5 text-accent-blue" />
           <h2 className="font-serif font-bold text-lg text-text-primary">Prioritetli Vazifalar (Top 10 Tasks)</h2>

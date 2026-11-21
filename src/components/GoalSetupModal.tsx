@@ -25,7 +25,7 @@ export default function GoalSetupModal({ isOpen, onClose, onSave }: GoalSetupMod
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-surface border border-border-card rounded-[28px] max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 text-left relative overflow-hidden transform scale-100 transition-all">
+      <div className="bg-surface border border-border-card rounded-[18px] max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 text-left relative overflow-hidden transform scale-100 transition-all">
         
         {/* Decorative elements */}
         <div className="absolute -top-12 -right-12 w-36 h-36 bg-accent-blue/10 rounded-full blur-2xl pointer-events-none" />
@@ -67,7 +67,7 @@ export default function GoalSetupModal({ isOpen, onClose, onSave }: GoalSetupMod
                 onClick={() => setSelectedGoal(option.value)}
                 className={`w-full text-left p-4.5 rounded-2xl border transition-all flex items-start space-x-4 cursor-pointer group ${
                   isSelected 
-                    ? 'bg-accent-blue/10 border-accent-blue shadow-[0_0_12px_rgba(59,130,246,0.12)]' 
+                    ? 'bg-mint border-accent-blue' 
                     : 'bg-primary-bg/50 border-border-card hover:bg-surface-hover hover:border-accent-blue/35'
                 }`}
               >
@@ -97,7 +97,7 @@ export default function GoalSetupModal({ isOpen, onClose, onSave }: GoalSetupMod
           <button
             onClick={handleSave}
             disabled={selectedGoal === null}
-            className="flex-1 bg-accent-blue hover:bg-accent-blue/95 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3.5 rounded-xl text-xs font-bold shadow-md shadow-accent-blue/10 transition-all active:scale-97 cursor-pointer"
+            className="flex-1 bg-accent-blue hover:bg-accent-blue/95 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3.5 rounded-xl text-sm font-bold transition-all active:scale-97 cursor-pointer"
           >
             Maqsadni belgilash
           </button>
